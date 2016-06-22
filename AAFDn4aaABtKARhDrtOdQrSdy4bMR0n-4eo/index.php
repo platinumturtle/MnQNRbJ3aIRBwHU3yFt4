@@ -262,58 +262,6 @@ function randomFart() {
 
 function getSong() {
 	$storedSong = array(
-					/*"AwADBAADXgYAApdgXwAB1_EpTZIT6kUC",
-					"AwADBAADXwYAApdgXwABfOpS0XXgLU0C",
-					"AwADBAADZgYAApdgXwABefOMnOl4DuUC",
-					"AwADBAADYgYAApdgXwAB03V_VKiN3akC",
-					"AwADBAADYAYAApdgXwABQD6klwYo-3YC",
-					"AwADBAADZAYAApdgXwABL6iL9Yt1AVoC",
-					"AwADBAADaAYAApdgXwABQCErEmyjTZMC",
-					"AwADBAADYQYAApdgXwABeMFNvCEW2CEC",
-					"AwADBAADZwYAApdgXwABPqBmwdNoHR4C",
-					"AwADBAADaQYAApdgXwABqLvE3UNFO4AC",
-					"AwADBAADYwYAApdgXwAB3STKFoXN8tYC",
-					"AwADBAADZQYAApdgXwABdSTjW0_5FoUC",
-					"AwADBAADagYAApdgXwAB965QuwY0M84C",
-					"AwADBAADbAYAApdgXwABpFyikSoT78gC",
-					"AwADBAADawYAApdgXwABxp2lRc2DgsoC",
-					"AwADBAADbQYAApdgXwABdrvqpZYhJykC",
-					"AwADBAADbwYAApdgXwABlKSKlz1tI3wC",
-					"AwADBAADbgYAApdgXwABrW9gLejinpwC",
-					"AwADBAADcQYAApdgXwABZrpPVzwVhbYC",
-					"AwADBAADcAYAApdgXwAByQS-Entj264C",
-					"AwADBAADcwYAApdgXwABeojBXOeTsIgC",
-					"AwADBAADcgYAApdgXwABHAmOM9RtpxQC"
-					
-					
-					"BQADBAADwQYAApdgXwABsHxgdaeIDKcC",
-					"BQADBAADwgYAApdgXwABmlPMQOgr_1cC",
-					"BQADBAADygYAApdgXwAB7lyWU-lq-IUC",
-					"BQADBAADywYAApdgXwABKTbEu09L51kC",
-					"BQADBAADzAYAApdgXwAB6VGN53fL2XEC",
-					"BQADBAADzgYAApdgXwAB9N2F3D6WXWMC",
-					"BQADBAADzwYAApdgXwABnU83tdVgdeIC",
-					"BQADBAAD0AYAApdgXwABYGt_-lc0ircC",
-					"BQADBAAD0QYAApdgXwABQEY8qVs8T6oC",
-					"BQADBAAD0wYAApdgXwABI4FF5sai-EQC",
-					"AwADBAADYwYAApdgXwAB3STKFoXN8tYC",
-					"AwADBAADZQYAApdgXwABdSTjW0_5FoUC",
-					"AwADBAADagYAApdgXwAB965QuwY0M84C",
-					"AwADBAADbAYAApdgXwABpFyikSoT78gC",
-					"AwADBAADawYAApdgXwABxp2lRc2DgsoC",
-					"AwADBAADbQYAApdgXwABdrvqpZYhJykC",
-					"AwADBAADbwYAApdgXwABlKSKlz1tI3wC",
-					
-					"AwADBAAD2wYAApdgXwABekIgU3FrQxcC",
-					"AwADBAAD2QYAApdgXwAB0gWf-mXVMs4C",
-					"AwADBAAD2gYAApdgXwABxsz_XKqSOcQC",
-					"AwADBAAD2AYAApdgXwABiZDcxUxQDiYC",
-					"BQADBAAD3AYAApdgXwABXgmGbmBnY5EC",
-					"BQADBAAD3QYAApdgXwABkwABxvTn7ICsAg",
-					"BQADBAAD3gYAApdgXwABjjpROv6DIiUC",
-					"BQADBAAD4AYAApdgXwABp4-rA6makikC",
-					"AwADBAAD3wYAApdgXwABuC-PI-9f8pcC",
-					"AwADBAAD1wYAApdgXwABXL6AFAy5PQMC"*/
 					"AwADBAAD6gYAApdgXwABBWWaUZt10xIC",
 					"AwADBAAD6wYAApdgXwABgPtrtKG5_XIC",
 					"AwADBAAD7QYAApdgXwAB8UG_B4vc-l0C",
@@ -1400,7 +1348,7 @@ function commandsList() {
 				.PHP_EOL.PHP_EOL.
 				"Este bot se actualiza con frecuencia, si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.1 creado por @Kamisuke."
+				"@DemisukeBot v1.1.1 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.

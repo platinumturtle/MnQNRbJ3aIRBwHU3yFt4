@@ -235,25 +235,25 @@ function yesNoQuestion() {
 
 function randomFart() {
 	$storedFart = array(
-						"AwADBAADdAYAApdgXwABIC4BpCHWlM8C",
-						"AwADBAADdQYAApdgXwABgbzUNnQLRZIC",
-						"AwADBAADfgYAApdgXwABA1KaDpE_BlUC",
-						"AwADBAADfAYAApdgXwABLGn3BJRBBBkC",
-						"AwADBAADfQYAApdgXwABS5EsyGrdwHMC",
-						"AwADBAADeAYAApdgXwABaFR9OAyt5R4C",
-						"AwADBAADewYAApdgXwABYZDK9-pi8RUC",
-						"AwADBAADegYAApdgXwABlj2Ra7c-iGoC",
-						"AwADBAADdgYAApdgXwABQktgg09PGV0C",
-						"AwADBAADdwYAApdgXwABBnHBKKLcMukC",
-						"AwADBAADfwYAApdgXwABjV1uZqsiTY0C",
-						"AwADBAADeQYAApdgXwAB-UTbiWZWPe8C",
-						"AwADBAADgAYAApdgXwABdKDu0_bLehUC",
-						"AwADBAADgQYAApdgXwAB81M6x6VzTXoC",
-						"AwADBAADggYAApdgXwAB9rb_EsM6dnsC",
-						"AwADBAADgwYAApdgXwABFUXnRaQ_6eoC",
-						"AwADBAADhAYAApdgXwABSnwXA17rHZYC",
-						"AwADBAADhQYAApdgXwABGvk5Na5s5gEC",
-						"AwADBAADhgYAApdgXwABpMiah0jrpC8C"
+					"AwADBAAEBwACl2BfAAEvvURrC5Sp_wI",
+					"AwADBAADAQcAApdgXwABiM1bF3LWCskC",
+					"AwADBAADCwcAApdgXwABvy-D2hFUZ0wC",
+					"AwADBAADAgcAApdgXwABGCCV_cLnc1wC",
+					"AwADBAADBAcAApdgXwAB6BroBPSCZ4kC",
+					"AwADBAADAwcAApdgXwAB3ozZDE9QYCgC",
+					"AwADBAADCgcAApdgXwABirTtILZTgP8C",
+					"AwADBAADBgcAApdgXwABR1U0uRDwLM0C",
+					"AwADBAADBwcAApdgXwABAdJ5RXXrGWsC",
+					"AwADBAADCQcAApdgXwABlRPN-KBQV6IC",
+					"AwADBAADCAcAApdgXwABqf59O9FN5HAC",
+					"AwADBAADBQcAApdgXwABXqi6kloEw1UC",
+					"AwADBAADDAcAApdgXwACWOLjzT6L1AI",
+					"AwADBAADDQcAApdgXwABDkHF5tSRptQC",
+					"AwADBAADDgcAApdgXwABbsaXqtONpxsC",
+					"AwADBAADDwcAApdgXwABUn9kO5QPW_wC",
+					"AwADBAADEAcAApdgXwABmF8g0NjjTuMC",
+					"AwADBAADEgcAApdgXwABvNKuNxNJ2g8C",
+					"AwADBAADEQcAApdgXwABUrjAtI-Cc5MC"
 						);
 	$n = sizeof($storedFart) - 1;
 	$n = rand(0,$n);

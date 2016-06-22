@@ -1967,6 +1967,13 @@ function processMessage($message) {
   $message_id = $message['message_id'];
   $chat_id = $message['chat']['id'];
   $randomTicket = lucky();
+  if(isset($message['from']['username'])) {
+	$logname = "@".$message['from']['username'];
+  } else if (isset($message['from']['first_name'])) {
+	$logname = $message['from']['first_name'];
+  } else {
+	$logname = "ID".$chat_id;
+  }
   if (isset($message['text'])) {
     // incoming text message
     $text = $message['text'];
@@ -2116,17 +2123,11 @@ function processMessage($message) {
 	} else if (strlen($text) > 1000) {
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADhwMAApdgXwABpjPrfVQHDkoC'));
 	} else if (strpos(strtolower($text), "pole") !== false) {
+		error_log($logname." triggered: Pole.");
 		usleep(500000);
 		$gif = getPole();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
     } else if (strpos(strtolower($text), "pillo sitio") !== false) {
-		if(isset($message['from']['username'])) {
-			$logname = "@".$message['from']['username'];
-		} else if (isset($message['from']['first_name'])) {
-			$logname = $message['from']['first_name'];
-		} else {
-			$logname = "ID".$chat_id;
-		}
 		error_log($logname." triggered: Pillo sitio.");
 		usleep(500000);
 		$gif = getSpot();

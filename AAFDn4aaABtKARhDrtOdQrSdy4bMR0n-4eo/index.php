@@ -1639,7 +1639,7 @@ function processMessage($message) {
 }
 
 
-define('WEBHOOK_URL', 'https://kamigram.herokuapp.com/AAFDn4aaABtKARhDrtOdQrSdy4bMR0n-4eo/');
+define('WEBHOOK_URL', 'https://demisuke-kamigram.rhcloud.com/AAFDn4aaABtKARhDrtOdQrSdy4bMR0n-4eo/');
 
 if (php_sapi_name() == 'cli') {
   // if run from console, set or delete webhook

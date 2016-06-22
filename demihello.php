@@ -1983,15 +1983,19 @@ function processMessage($message) {
       //  'keyboard' => array(array('Hello', 'Hi')),
       //  'one_time_keyboard' => true,
       //  'resize_keyboard' => true)));
+	  error_log($logname." triggered: /start.");
 	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke para saber qué hace este bot."));
     } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
+		error_log($logname." triggered: !ayuda.");
 		$help = commandsList();
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $help));
     } else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
+		error_log($logname." triggered: Hola.");
 		$greeting = greeting();
 		sleep(2);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$greeting."*"));
     } else if (strpos(strtolower($text), "!dados") !== false) {
+		error_log($logname." triggered: !dados.");
 		rollDice($chat_id);
     } else if (strpos($text, "/stop") === 0) {
       // stop now
@@ -2004,17 +2008,20 @@ function processMessage($message) {
 			} else {
 				$name = "compi";
 			}
+			error_log($logname." triggered: Forwarding bot.");
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Buena esa, ".$name.".* 😎"));			
 		}
 	} else if (isset($message['reply_to_message']['from']['username'])){
 		if($message['reply_to_message']['from']['username'] == 'DemisukeBot' || $message['reply_to_message']['from']['username'] == 'Demitest_bot') {
+			error_log($logname." triggered: Reply to bot.");
 			$dummy = " ";
 			$insult = insult($dummy);
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*No sé qué has dicho, pero ".$insult.".*"));			
 		}
 	} else if (strpos(strtolower($text), "!insulta a") !== false) {
+		error_log($logname." triggered: !insulta.");
 		if(probability(80) && strpos(strtolower($text), "kamisuke") === false && strpos(strtolower($text), "demigranciasbot") === false && strpos(strtolower($text), "demisuke") === false && strpos(strtolower($text), "osvaldopaniccia") === false && strpos(strtolower($text), "ekd") === false) {
 			$insult = insult($text);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$insult.".</b>"));
@@ -2023,6 +2030,7 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "reply_to_message_id" => $message_id, "text" => "<b>".$insult.".</b>"));
 		}
 	} else if (strpos(strtolower($text), "demisuke") !== false) {
+		error_log($logname." triggered: Bot mention.");
 		if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
 			usleep(500000);
 			if(isset($message['from']['username'])) {
@@ -2041,11 +2049,14 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Hola, jefe</b> @".$message['from']['username']." 😊"));
 		}
 	} else if (strpos(strtolower($text), "!siono") === 0 && strlen($text) > 8) {
+		error_log($logname." triggered: !siono.");
 		$respuesta = yesNoQuestion();
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$respuesta.".*"));
 	} else if (strpos(strtolower($text), "!ping") !== false) {
+		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));
 	} else if (strpos(strtolower($text), "!temazo") !== false || strpos(strtolower($text), "!cancion") !== false || strpos(strtolower($text), "!canción") !== false) {
+		error_log($logname." triggered: !cancion.");
 		$song = getSong();
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
 	} else if (strpos($text, "%GETSONG%") !== false) {
@@ -2099,6 +2110,7 @@ function processMessage($message) {
 			default:	break;
 		}
 	} else if (strpos(strtolower($text), "roto2") !== false) {
+		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
 	} else if (strpos($text, "%%CONNTRY%%") !== false) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "VOY"));
@@ -2108,6 +2120,7 @@ function processMessage($message) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $final));
 		mysqli_close($con);*/
 	} else if (strpos(strtolower($text), "reportado") !== false) {
+		error_log($logname." triggered: Reportado.");
 		$miniTicket = rand(1,10);
 		if($miniTicket > 2) {
 		$gif = getReport();
@@ -2133,20 +2146,25 @@ function processMessage($message) {
 		$gif = getSpot();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 	} else if (strpos(strtolower($text), "melafo") !== false) {
+		error_log($logname." triggered: Melafo.");
 		usleep(500000);
 		$gif = getHitIt();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 	} else if (strpos(strtolower($text), "mis dies") !== false) {
+		error_log($logname." triggered: Mis dies.");
 		usleep(500000);
 		$gif = getMyTen();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 	} else if (strtolower($text) === "sticker" || strpos(strtolower($text), "!sticker") !== false) {
+		error_log($logname." triggered: !sticker.");
 		$sticker = getSticker();
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => $sticker));
     } else if (strpos(strtolower($text), "!nick") !== false) {
+		error_log($logname." triggered: !nick.");
 		$nick = getNickname();
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El nombre de usuario generado automáticamente es ".$nick.".*"));
     } else if (strpos(strtolower($text), "!historia") !== false) {
+		error_log($logname." triggered: !historia.");
 		if (isset($message['from']['first_name'])) {
 			$name = $message['from']['first_name'];
 		} else if (isset($message['from']['username'])) {
@@ -2164,20 +2182,26 @@ function processMessage($message) {
 		sleep(2);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text."*"));
     } else if ($message['chat']['type'] == "private" && $message['from']['username'] !== "Kamisuke") {
+		error_log($logname." triggered: Private chat.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
     } else if ($randomTicket == 17) {
+		error_log($logname." triggered: xD (random ticket).");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*xD*"));
     } else if ($randomTicket == 25) {
+		error_log($logname." triggered: Ok (random ticket).");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "👍"));
     } else if ($randomTicket == 34) {
+		error_log($logname." triggered: Sticker (random ticket).");
 		$sticker = randomSticker();
 		sleep(1);
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => $sticker));
     } else if ($randomTicket == 52) {
+		error_log($logname." triggered: Fart (random ticket).");
 		$fart = randomFart();
 		sleep(3);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $fart));
     } else if ($randomTicket == 73 || $randomTicket == 74) {
+		error_log($logname." triggered: Sentence (random ticket).");
 		$sentence = randomSentence();
 		sleep(2);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence.".*"));
@@ -2186,12 +2210,15 @@ function processMessage($message) {
     } 
   } else {
 	 if (isset($message['new_chat_title'])) {
+		error_log("Trigger: Group title.");
 		$msg = "*¿".$message['new_chat_title']."?*";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));		
 	} else if (isset($message['new_chat_photo'])) {
+		error_log("Trigger: Group photo.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, "reply_to_message_id" => $message_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));		
 	}else if (isset($message['new_chat_member'])) {
+		error_log("Trigger: Newcomer to group.");
 		$imNewcomer = false;
 		if(isset($message['new_chat_member']['username'])) {
 			if($message['new_chat_member']['username'] == "DemisukeBot" || $message['new_chat_member']['username'] == "Demitest_bot") {
@@ -2227,8 +2254,10 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		}
 	} else if (isset($message['left_chat_member'])) {
+		error_log("Trigger: Left group.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*DEP. Nunca te recordaremos.*"));
 	} else if (isset($message['pinned_message'])) {
+		error_log("Trigger: Pinned message.");
 		if(isset($message['pinned_message']['from']['username']) && $message['pinned_message']['from']['username'] === "Demitest_bot") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Ahí, ahí.* 😎"));
 		} else {
@@ -2242,6 +2271,7 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		}
 	} else if (isset($message['forward_from']['username'])){
+		error_log("Trigger: Forward message.");
 		if($message['forward_from']['username'] == 'DemisukeBot' || $message['forward_from']['username'] == 'Demitest_bot') {
 			if (isset($message['from']['first_name'])) {
 				$name = $message['from']['first_name'];

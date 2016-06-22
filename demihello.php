@@ -2249,7 +2249,7 @@ function processMessage($message) {
 }
 
 
-define('WEBHOOK_URL', 'https://kamigram.herokuapp.com/demihello.php');
+define('WEBHOOK_URL', 'https://demisuke-kamigram.rhcloud.com/demihello.php');
 
 if (php_sapi_name() == 'cli') {
   // if run from console, set or delete webhook

@@ -2120,6 +2120,7 @@ function processMessage($message) {
 		$gif = getPole();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
     } else if (strpos(strtolower($text), "pillo sitio") !== false) {
+		error_log("sitio");
 		usleep(500000);
 		$gif = getSpot();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));

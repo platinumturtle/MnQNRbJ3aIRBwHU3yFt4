@@ -1040,13 +1040,16 @@ function getGroupBattle($owngroup) {
 			}
 		}
 	}
+	if($owngroup != 0) {
+		mysql_free_result($result);
+		$query = 'SELECT * FROM groupbattle WHERE group_id = '.$owngroup;
+		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$row = mysql_fetch_array($result);
+		$text = $text.
+				"<b>\"".$row['name']."\" tiene un total de ".$row['total']." puntos.</b>"
+				.PHP_EOL.PHP_EOL;
+	}
 	mysql_free_result($result);
-	$query = 'SELECT * FROM groupbattle WHERE group_id = '.$owngroup;
-	$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-	$row = mysql_fetch_array($result);
-	$text = $text.
-			"<b>\"".$row['name']."\" tiene un total de ".$row['total']." puntos.</b>"
-			.PHP_EOL.PHP_EOL;
 	mysql_close($link);
 	$text = $text.
 			"<b>Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.</b>";
@@ -2262,7 +2265,12 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!grupos") !== false) {
 		error_log($logname." triggered: !grupos.");
 		usleep(250000);
-		$result = getGroupBattle();
+		if($message['chat']['type'] == "private") {
+			$myPoints = 0;
+		} else {
+			$myPoints = $chat_id;
+		}
+		$result = getGroupBattle($myPoints);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "mis dies") !== false) {
 		error_log($logname." triggered: Mis dies.");

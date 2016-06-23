@@ -34,6 +34,17 @@ function probability($percent) {
 	return true;
 }
 
+function dbConnect() {
+	$user = "tlgrmusrADDfwuPn";
+	$pass = "a5YrfX9pCXrvtW8j";
+	$server = "localhost";
+	$db = "demisuke";
+	$con = mysql_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysql_error());
+	mysql_select_db($db) or die('No se pudo seleccionar la base de datos');
+	//mysql_set_charset("UTF8");
+	mysql_set_charset("utf8mb4");
+	return $con;
+}
 function insult($name) {
 	$storedInsult = array(
 						"me como a tus ancestros",
@@ -363,6 +374,63 @@ function rollDice($id) {
 	$n = sizeof($result) - 1;
 	$n = rand(0,$n);
 	apiRequest("sendMessage", array('chat_id' => $id, 'parse_mode' => "Markdown", "text" => "*".$result[$n]."*"));
+}
+function getGroupBattle($owngroup) {
+	//HTML Parse Mode
+	$link = dbConnect();
+	$query = 'SELECT * FROM groupbattle ORDER BY total DESC, gb_id';
+	$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+	$text = "<b>🏁 Clasificación global de grupos:</b>"
+			.PHP_EOL.PHP_EOL.
+			"<b>🏆 POLE ABSOLUTA 🏆</b>"
+			.PHP_EOL;
+	for($i=0;$i<10;$i++) {
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				switch($i) {
+					case 1: $text = $text."<b>🎖2º </b>";
+							break;
+					case 2: $text = $text."<b>🏅3º </b>";
+							break;
+					case 3: $text = $text."4⃣ ";
+							break;
+					case 4: $text = $text."5⃣ ";
+							break;
+					case 5: $text = $text."6⃣ ";
+							break;
+					case 6: $text = $text."7⃣ ";
+							break;
+					case 7: $text = $text."8⃣ ";
+							break;
+					case 8: $text = $text."9⃣ ";
+							break;
+					case 9: $text = $text."🔟 ";
+							break;
+					default: break;
+				}
+				$text = $text.
+						"<b>".$row['name']."</b>"
+						.PHP_EOL.
+						"<i>".$row['total']." puntos.</i>"
+						.PHP_EOL.PHP_EOL;
+			}
+		}
+	}
+	if($owngroup != 0) {
+		mysql_free_result($result);
+		$query = 'SELECT * FROM groupbattle WHERE group_id = '.$owngroup;
+		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$row = mysql_fetch_array($result);
+		$text = $text.
+				"<b>\"".$row['name']."\" tiene un total de ".$row['total']." puntos.</b>"
+				.PHP_EOL.PHP_EOL;
+	}
+	mysql_free_result($result);
+	mysql_close($link);
+	$text = $text.
+			"<b>Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.</b>";
+	return $text;
 }
 
 function getSticker() {
@@ -1343,13 +1411,23 @@ function commandsList() {
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
+				"*Ránking de grupos*:"
+				.PHP_EOL.
+				"_¡Compite contra otros grupos con la ayuda de tus amigos a ser el grupo más activo!_"
+				.PHP_EOL.
+				"_Por cada mensaje de texto escrito en un grupo se conseguirá un punto para el mismo, siempre que el mensaje enviado no sea ningún archivo, gif o sticker y no se obra de un bot._"
+				.PHP_EOL.PHP_EOL.
+				"_Escribe \"!grupos\" para ver la clasificación global de los mejores grupos._"
+				.PHP_EOL.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.PHP_EOL.
 				"Además de las funciones disponibles, @DemisukeBot tratará de aportar vida con frecuencia a los grupos activos que lo tengan en su lista de miembros."
 				.PHP_EOL.PHP_EOL.
 				"¿Alguna sugerencia que aportar para mejorar al bot? en @KamisukeBot existe el comando /sugerencias con una opción habilitada para registrar las sugerencias para @DemisukeBot donde puedes enviar tus ideas de la manera más rápida y cómoda."
 				.PHP_EOL.PHP_EOL.
 				"Este bot se actualiza con frecuencia, si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.1.1 creado por @Kamisuke."
+				"@DemisukeBot v1.2 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
@@ -1376,7 +1454,32 @@ function processMessage($message) {
   }
   if (isset($message['text'])) {
     $text = $message['text'];
+	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+		$link = dbConnect();
+		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				$total = $row['total'] + 1;
+				mysql_free_result($result);
+				$query = 'UPDATE groupbattle SET total = '.$total.' WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+			}
+		} else {
+			mysql_free_result($result);
+			$grouptitle = $message['chat']['title'];
+			$grouptitle = str_replace("'","''",$grouptitle);
+			$query = "SET NAMES utf8mb4;";
+			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+			$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`) VALUES ('".$chat_id."', '".$grouptitle."', '1');";
+			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		}
+		mysql_free_result($result);
+		mysql_close($link);		
+	}
     if (strpos($text, "/start") === 0) {
+	  error_log($logname." triggered: /start.");
 	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke para saber qué hace este bot."));
     } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
 		error_log($logname." triggered: !ayuda.");
@@ -1486,6 +1589,16 @@ function processMessage($message) {
 		usleep(500000);
 		$gif = getHitIt();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+	} else if (strpos(strtolower($text), "!grupos") !== false) {
+		error_log($logname." triggered: !grupos.");
+		usleep(250000);
+		if($message['chat']['type'] == "private") {
+			$myPoints = 0;
+		} else {
+			$myPoints = $chat_id;
+		}
+		$result = getGroupBattle($myPoints);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "mis dies") !== false) {
 		error_log($logname." triggered: Mis dies.");
 		usleep(500000);
@@ -1545,6 +1658,23 @@ function processMessage($message) {
   } else {
 	 if (isset($message['new_chat_title'])) {
 		error_log("Trigger: Group title.");
+		$link = dbConnect();
+		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				mysql_free_result($result);
+				$newtitle = $message['new_chat_title'];
+				$newtitle = str_replace("'","''",$newtitle);
+				$query = "SET NAMES utf8mb4;";
+				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
+				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+			}
+		}
+		mysql_free_result($result);
+		mysql_close($link);
 		$msg = "*¿".$message['new_chat_title']."?*";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));		

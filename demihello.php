@@ -1980,7 +1980,21 @@ function processMessage($message) {
     $text = $message['text'];
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
-		error_log("Group");
+
+		$link = dbConnect();
+		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		/*while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+			foreach ($line as $col_value) {
+				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => $col_value));
+			}
+		}*/
+		$row = mysql_fetch_array($result);
+		error_log($row['total']);
+		mysql_free_result($result);
+		mysql_close($link);
+		
+		
 	}
 	
 

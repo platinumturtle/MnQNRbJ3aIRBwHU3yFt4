@@ -1994,6 +1994,10 @@ function processMessage($message) {
 		if(isset($row['total'])) {
 			if($row['total'] > 0) {
 				//UPDATE+1
+				$total = $row['total'] + 1;
+				mysql_free_result($result);
+				$query = 'UPDATE groupbattle SET total = '.$total.' WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 				error_log($row['total']." should have +1 now");
 			}
 		} else {

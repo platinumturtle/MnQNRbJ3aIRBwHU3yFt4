@@ -1616,11 +1616,11 @@ function processMessage($message) {
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Qué grande ".$name.".* 😎"));			
 		}
-	}/* else if (isset($message['document'])) {
+	} else if (isset($message['document']) && $message['chat']['type'] == "private") {
 		if($message['from']['username'] == 'Kamisuke'){
 			apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $message['document']['file_id']));	
 		}
-	}*/
+	}
   }
 }
 

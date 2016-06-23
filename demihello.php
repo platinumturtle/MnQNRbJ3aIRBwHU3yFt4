@@ -771,7 +771,7 @@ function randomSentence() {
 						"Alcachofa",	"Corzo",
 						"Anacardo",		"Espantapájaros",
 						"Gorrino",		"Cocotero",
-						"Celacanto",
+						"Celacanto",	"fuet",
 						"Jamón",
 						"Ventana",
 						"Ukelele",
@@ -1978,6 +1978,11 @@ function processMessage($message) {
   if (isset($message['text'])) {
     // incoming text message
     $text = $message['text'];
+	
+	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+		error_log("Group");
+	}
+	
 
     if (strpos($text, "/start") === 0) {
       //apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => 'Hello', 'reply_markup' => array(

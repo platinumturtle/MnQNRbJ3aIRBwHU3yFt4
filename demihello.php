@@ -2158,7 +2158,7 @@ function processMessage($message) {
 		mysql_select_db('demitesterbot') or die('No se pudo seleccionar la base de datos');
 		mysql_set_charset("UTF8");*/
 		$link = dbConnect();
-		$query = 'SELECT * FROM DEMITEST';
+		$query = 'SELECT * FROM groupbattle';
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
 			foreach ($line as $col_value) {

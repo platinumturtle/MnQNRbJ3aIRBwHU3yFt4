@@ -1980,20 +1980,12 @@ function processMessage($message) {
     $text = $message['text'];
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
-
 		$link = dbConnect();
 		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-		/*while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			foreach ($line as $col_value) {
-				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => $col_value));
-			}
-		}*/
 		$row = mysql_fetch_array($result);
-		//error_log($row['total']);
 		if(isset($row['total'])) {
 			if($row['total'] > 0) {
-				//UPDATE+1
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
 				$query = 'UPDATE groupbattle SET total = '.$total.' WHERE group_id = '.$chat_id;
@@ -2003,6 +1995,11 @@ function processMessage($message) {
 		} else {
 			//new group, insert 1!
 			error_log("new group detected");
+			mysql_free_result($result);
+			$grouptitle = $message['chat']['title'];
+			$grouptitle = str_replace("'","''",$grouptitle);
+			$query = "SET NAMES utf8mb4; INSERT INTO groupbattle (group_id, name, total) VALUES ('".$chat_id."', '".$grouptitle."', '1');";
+			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		}
 		mysql_free_result($result);
 		mysql_close($link);

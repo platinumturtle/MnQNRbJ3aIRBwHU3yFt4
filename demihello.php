@@ -1998,8 +1998,9 @@ function processMessage($message) {
 			mysql_free_result($result);
 			$grouptitle = $message['chat']['title'];
 			$grouptitle = str_replace("'","''",$grouptitle);
-			$query = "SET NAMES utf8mb4; INSERT INTO groupbattle (group_id, name, total) VALUES ('".$chat_id."', '".$grouptitle."', '1');";
+			$query = "SET NAMES utf8mb4; INSERT INTO demisuke.groupbattle ('group_id', 'name', 'total') VALUES ('".$chat_id."', '".$grouptitle."', '1');";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+			error_log(mysql_error());
 		}
 		mysql_free_result($result);
 		mysql_close($link);

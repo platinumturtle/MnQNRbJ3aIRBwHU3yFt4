@@ -662,7 +662,8 @@ function dbConnect() {
 	$db = "demisuke";
 	$con = mysql_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysql_error());
 	mysql_select_db($db) or die('No se pudo seleccionar la base de datos');
-	mysql_set_charset("UTF8");
+	//mysql_set_charset("UTF8");
+	mysql_set_charset("utf8mb4");
 	return $con;
 }
 

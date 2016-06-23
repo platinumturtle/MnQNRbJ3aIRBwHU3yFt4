@@ -1990,7 +1990,16 @@ function processMessage($message) {
 			}
 		}*/
 		$row = mysql_fetch_array($result);
-		error_log($row['total']);
+		//error_log($row['total']);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				//UPDATE+1
+				error_log($row['total']." should have +1 now");
+			}
+		} else {
+			//new group, insert 1!
+			error_log("new group detected");
+		}
 		mysql_free_result($result);
 		mysql_close($link);
 		

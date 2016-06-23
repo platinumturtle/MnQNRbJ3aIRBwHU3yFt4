@@ -1993,16 +1993,12 @@ function processMessage($message) {
 				error_log($row['total']." should have +1 now");
 			}
 		} else {
-			//new group, insert 1!
-			error_log("new group detected");
 			mysql_free_result($result);
 			$grouptitle = $message['chat']['title'];
 			$grouptitle = str_replace("'","''",$grouptitle);
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 			$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`) VALUES ('".$chat_id."', '".$grouptitle."', '1');";
-			error_log($query);
-			//$query = "INSERT INTO `groupbattle` ('group_id', 'name', 'total') VALUES ('".$chat_id."', '".$grouptitle."', '1');";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		}
 		mysql_free_result($result);
@@ -2259,6 +2255,32 @@ function processMessage($message) {
   } else {
 	 if (isset($message['new_chat_title'])) {
 		error_log("Trigger: Group title.");
+		
+		
+
+		$link = dbConnect();
+		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				mysql_free_result($result);
+				$newtitle = $message['new_chat_title'];
+				$newtitle = str_replace("'","''",$grouptitle);
+				$query = "SET NAMES utf8mb4;";
+				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$query = 'UPDATE groupbattle SET name = '.$newtitle.' WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				error_log("Updated title");
+			}
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		
+		
+
+		
+		
 		$msg = "*¿".$message['new_chat_title']."?*";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));		

@@ -656,13 +656,13 @@ function probability($percent) {
 }
 
 function dbConnect() {
-	$user = "u799273404_Kami";
-	$pass = "wr16zx.H";
-	//$server = "sql11.main-hosting.eu";
-	$server = "79.101.41.213";
-	$db = "u799273404_DemiB";
-	$con = mysqli_connect($server,$user,$pass,$db)/* or die ("Error iniciando usuario.".mysql_error())*/;
-	//$mysqli_select_db($db,$con);
+	$user = "tlgrmusrADDfwuPn";
+	$pass = "a5YrfX9pCXrvtW8j";
+	$server = "localhost";
+	$db = "demisuke";
+	$con = mysql_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysql_error());
+	mysql_select_db($db) or die('No se pudo seleccionar la base de datos');
+	mysql_set_charset("UTF8");
 	return $con;
 }
 
@@ -2119,6 +2119,20 @@ function processMessage($message) {
 		$final = mysql_query("SELECT DEMI_TEST FROM DEMITEST WHERE DEMI_NAME = 'KAMI'");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $final));
 		mysqli_close($con);*/
+	} else if (strpos($text, "/dbdebugging") === 0) {
+		/*$link = mysql_connect('localhost', 'admink88juIN', 'xBBarZSuzgxt') or die('No se pudo conectar: ' . mysql_error());
+		mysql_select_db('demitesterbot') or die('No se pudo seleccionar la base de datos');
+		mysql_set_charset("UTF8");*/
+		$link = dbConnect();
+		$query = 'SELECT * FROM DEMITEST';
+		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+			foreach ($line as $col_value) {
+				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => $col_value));
+			}
+		}
+		mysql_free_result($result);
+		mysql_close($link);
 	} else if (strpos(strtolower($text), "reportado") !== false) {
 		error_log($logname." triggered: Reportado.");
 		$miniTicket = rand(1,10);

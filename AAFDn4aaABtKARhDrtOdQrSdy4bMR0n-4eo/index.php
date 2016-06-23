@@ -895,6 +895,7 @@ function getPole() {
 						"BQADBAADjAYAApdgXwAB2lwy0l0FZSYC",
 						"BQADBAADvQYAApdgXwAB5u1TiTN7A5QC",
 						"BQADBAADwAYAApdgXwABgO-1Op_g00QC",
+						"BQADBAADEwcAApdgXwABqq-1eIgE_fwC",
 						"BQADBAADjQYAApdgXwABVx5LLNWg_IoC"
 						);
 	$n = sizeof($storedGif) - 1;

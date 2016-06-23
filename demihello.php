@@ -998,51 +998,11 @@ function rollDice($id) {
 	apiRequest("sendMessage", array('chat_id' => $id, 'parse_mode' => "Markdown", "text" => "*".$result[$n]."*"));
 }
 
-function getGroupBattle() {
+function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
 	$query = 'SELECT * FROM groupbattle ORDER BY total DESC, gb_id';
 	$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-	
-	/*
-	
-	🏁 Clasificación global de grupos:
-
-🏆 POLE ABSOLUTA 🏆
-
-🎖2º 
-
-🏅 3º 
-
-4⃣
-
-
-5⃣
-
-
-6⃣
-
-
-7⃣
-
-
-8⃣
-
-
-9⃣
-
-
-🔟
-
-
-Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.
-	
-	
-	*/
-	
-	
-	
-	
 	$text = "<b>🏁 Clasificación global de grupos:</b>"
 			.PHP_EOL.PHP_EOL.
 			"<b>🏆 POLE ABSOLUTA 🏆</b>"
@@ -1081,6 +1041,12 @@ Los mensajes generados automáticamente por bots o el uso de stickers o imágene
 		}
 	}
 	mysql_free_result($result);
+	$query = 'SELECT * FROM groupbattle WHERE group_id = '.$owngroup;
+	$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+	$row = mysql_fetch_array($result);
+	$text = $text.
+			"<b>\"".$row['name']."\" tiene un total de ".$row['total']." puntos.</b>"
+			.PHP_EOL.PHP_EOL;
 	mysql_close($link);
 	$text = $text.
 			"<b>Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.</b>";
@@ -2032,13 +1998,23 @@ function commandsList() {
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
+				"*Ránking de grupos*:"
+				.PHP_EOL.
+				"_¡Compite contra otros grupos con la ayuda de tus amigos a ser el grupo más activo!_"
+				.PHP_EOL.
+				"_Por cada mensaje de texto escrito en un grupo se conseguirá un punto para el mismo, siempre que el mensaje enviado no sea ningún archivo, gif o sticker y no se obra de un bot._"
+				.PHP_EOL.PHP_EOL.
+				"_Escribe \"!grupos\" para ver la clasificación global de los mejores grupos._"
+				.PHP_EOL.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.PHP_EOL.
 				"Además de las funciones disponibles, @DemisukeBot tratará de aportar vida con frecuencia a los grupos activos que lo tengan en su lista de miembros."
 				.PHP_EOL.PHP_EOL.
 				"¿Alguna sugerencia que aportar para mejorar al bot? en @KamisukeBot existe el comando /sugerencias con una opción habilitada para registrar las sugerencias para @DemisukeBot donde puedes enviar tus ideas de la manera más rápida y cómoda."
 				.PHP_EOL.PHP_EOL.
 				"Este bot se actualiza con frecuencia, si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.1.1 creado por @Kamisuke."
+				"@DemisukeBot v1.2 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.

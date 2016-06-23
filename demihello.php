@@ -998,6 +998,96 @@ function rollDice($id) {
 	apiRequest("sendMessage", array('chat_id' => $id, 'parse_mode' => "Markdown", "text" => "*".$result[$n]."*"));
 }
 
+function getGroupBattle() {
+	//HTML Parse Mode
+	$link = dbConnect();
+	$query = 'SELECT * FROM groupbattle ORDER BY total DESC, gb_id';
+	$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+	
+	/*
+	
+	🏁 Clasificación global de grupos:
+
+🏆 POLE ABSOLUTA 🏆
+
+🎖2º 
+
+🏅 3º 
+
+4⃣
+
+
+5⃣
+
+
+6⃣
+
+
+7⃣
+
+
+8⃣
+
+
+9⃣
+
+
+🔟
+
+
+Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.
+	
+	
+	*/
+	
+	
+	
+	
+	$text = "<b>🏁 Clasificación global de grupos:</b>"
+			.PHP_EOL.PHP_EOL.
+			"<b>🏆 POLE ABSOLUTA 🏆</b>"
+			.PHP_EOL;
+	for($i=0;$i<10;$i++) {
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				switch($i) {
+					case 1: $text = $text."<b>🎖2º </b>";
+							break;
+					case 2: $text = $text."<b>🏅3º </b>";
+							break;
+					case 3: $text = $text."4⃣ ";
+							break;
+					case 4: $text = $text."5⃣ ";
+							break;
+					case 5: $text = $text."6⃣ ";
+							break;
+					case 6: $text = $text."7⃣ ";
+							break;
+					case 7: $text = $text."8⃣ ";
+							break;
+					case 8: $text = $text."9⃣ ";
+							break;
+					case 9: $text = $text."🔟 ";
+							break;
+					default: break;
+				}
+				$text = $text.
+						"<b>".$row['name']."</b>"
+						.PHP_EOL.
+						"<i>".$row['total']." puntos.</i>"
+						.PHP_EOL.PHP_EOL;
+			}
+		}
+	}
+	mysql_free_result($result);
+	mysql_close($link);
+	$text = $text.
+			"<b>Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.</b>";
+	return $text;
+}
+
+
 function getSticker() {
 	$stickerList = array(
 						"BQADBAADWQADl2BfAAEq3kLUvoh-bAI",
@@ -1990,7 +2080,6 @@ function processMessage($message) {
 				mysql_free_result($result);
 				$query = 'UPDATE groupbattle SET total = '.$total.' WHERE group_id = '.$chat_id;
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-				error_log($row['total']." should have +1 now");
 			}
 		} else {
 			mysql_free_result($result);
@@ -2194,6 +2283,11 @@ function processMessage($message) {
 		usleep(500000);
 		$gif = getHitIt();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+	} else if (strpos(strtolower($text), "!grupos") !== false) {
+		error_log($logname." triggered: !grupos.");
+		usleep(250000);
+		$result = getGroupBattle();
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "mis dies") !== false) {
 		error_log($logname." triggered: Mis dies.");
 		usleep(500000);
@@ -2255,9 +2349,6 @@ function processMessage($message) {
   } else {
 	 if (isset($message['new_chat_title'])) {
 		error_log("Trigger: Group title.");
-		
-		
-
 		$link = dbConnect();
 		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
@@ -2275,11 +2366,6 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);
-		
-		
-
-		
-		
 		$msg = "*¿".$message['new_chat_title']."?*";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));		

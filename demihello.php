@@ -2264,15 +2264,13 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
 			if($row['total'] > 0) {
-				error_log("Entering conflict zone.");
 				mysql_free_result($result);
 				$newtitle = $message['new_chat_title'];
-				$newtitle = str_replace("'","''",$grouptitle);
+				$newtitle = str_replace("'","''",$newtitle);
 				$query = "SET NAMES utf8mb4;";
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-				error_log("Updated title");
 			}
 		}
 		mysql_free_result($result);

@@ -2059,7 +2059,8 @@ function processMessage($message) {
 			if($row['total'] > 0 && $time !== $row['lastpoint']) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
-				$query = 'UPDATE DEMITEST SET total = '.$total.' WHERE group_id = '.$chat_id;
+			error_log("inserto tiempo ".$time);
+				$query = 'UPDATE DEMITEST SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 			}
 		} else {
@@ -2068,7 +2069,6 @@ function processMessage($message) {
 			$grouptitle = str_replace("'","''",$grouptitle);
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-			error_log("inserto tiempo ".$time);
 			$query = "INSERT INTO `DEMITEST` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		}

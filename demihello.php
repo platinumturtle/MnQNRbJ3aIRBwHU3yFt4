@@ -2049,7 +2049,7 @@ function processMessage($message) {
     $text = $message['text'];
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
-		$time = 1 + time() - 1;
+		$time = time();
 		$link = dbConnect();
 		$query = 'SELECT total, lastpoint FROM DEMITEST WHERE group_id = '.$chat_id;
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());

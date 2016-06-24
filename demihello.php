@@ -2056,7 +2056,7 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
 			error_log($time." y ".$row['lastpoint']);
-			if($row['total'] > 0 && $time !== $row['lastpoint']) {
+			if($row['total'] > 0 && $time != $row['lastpoint']) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
 			error_log("inserto tiempo ".$time);

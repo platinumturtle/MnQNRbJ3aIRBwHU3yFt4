@@ -2058,7 +2058,7 @@ function processMessage($message) {
 			if($row['total'] > 0 && $time != $row['lastpoint']) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
-				$query = 'UPDATE groupbattle SET total = '.$total.' WHERE group_id = '.$chat_id;
+				$query = 'UPDATE DEMITEST SET total = '.$total.' WHERE group_id = '.$chat_id;
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 			}
 		} else {

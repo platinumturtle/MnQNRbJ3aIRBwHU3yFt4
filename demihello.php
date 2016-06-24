@@ -2068,6 +2068,7 @@ function processMessage($message) {
 			$grouptitle = str_replace("'","''",$grouptitle);
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+			error_log("inserto tiempo ".$time);
 			$query = "INSERT INTO `DEMITEST` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		}

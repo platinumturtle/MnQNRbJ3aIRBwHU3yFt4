@@ -1001,7 +1001,7 @@ function rollDice($id) {
 function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
-	$query = 'SELECT * FROM groupbattle ORDER BY total DESC, gb_id';
+	$query = 'SELECT * FROM DEMITEST ORDER BY total DESC, lastpoint';
 	$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 	$text = "<b>🏁 Clasificación global de grupos:</b>"
 			.PHP_EOL.PHP_EOL.
@@ -1042,7 +1042,7 @@ function getGroupBattle($owngroup) {
 	}
 	if($owngroup != 0) {
 		mysql_free_result($result);
-		$query = 'SELECT * FROM groupbattle WHERE group_id = '.$owngroup;
+		$query = 'SELECT * FROM DEMITEST WHERE group_id = '.$owngroup;
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		$row = mysql_fetch_array($result);
 		$text = $text.
@@ -2049,12 +2049,13 @@ function processMessage($message) {
     $text = $message['text'];
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+		$time = time();
 		$link = dbConnect();
-		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$query = 'SELECT total FROM DEMITEST WHERE group_id = '.$chat_id;
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
-			if($row['total'] > 0) {
+			if($row['total'] > 0 && $time != $row['lastpoint']) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
 				$query = 'UPDATE groupbattle SET total = '.$total.' WHERE group_id = '.$chat_id;
@@ -2066,7 +2067,7 @@ function processMessage($message) {
 			$grouptitle = str_replace("'","''",$grouptitle);
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-			$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`) VALUES ('".$chat_id."', '".$grouptitle."', '1');";
+			$query = "INSERT INTO `DEMITEST` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		}
 		mysql_free_result($result);
@@ -2348,7 +2349,7 @@ function processMessage($message) {
 	 if (isset($message['new_chat_title'])) {
 		error_log("Trigger: Group title.");
 		$link = dbConnect();
-		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$query = 'SELECT total FROM DEMITEST WHERE group_id = '.$chat_id;
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
@@ -2358,7 +2359,7 @@ function processMessage($message) {
 				$newtitle = str_replace("'","''",$newtitle);
 				$query = "SET NAMES utf8mb4;";
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
+				$query = "UPDATE `DEMITEST` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 			}
 		}

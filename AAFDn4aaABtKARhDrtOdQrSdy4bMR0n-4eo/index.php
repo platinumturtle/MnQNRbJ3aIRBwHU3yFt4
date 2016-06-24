@@ -45,6 +45,7 @@ function dbConnect() {
 	mysql_set_charset("utf8mb4");
 	return $con;
 }
+
 function insult($name) {
 	$storedInsult = array(
 						"me como a tus ancestros",
@@ -375,10 +376,11 @@ function rollDice($id) {
 	$n = rand(0,$n);
 	apiRequest("sendMessage", array('chat_id' => $id, 'parse_mode' => "Markdown", "text" => "*".$result[$n]."*"));
 }
+
 function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
-	$query = 'SELECT * FROM groupbattle ORDER BY total DESC, gb_id';
+	$query = 'SELECT * FROM groupbattle ORDER ORDER BY total DESC, lastpoint';
 	$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 	$text = "<b>🏁 Clasificación global de grupos:</b>"
 			.PHP_EOL.PHP_EOL.
@@ -432,6 +434,7 @@ function getGroupBattle($owngroup) {
 			"<b>Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.</b>";
 	return $text;
 }
+
 
 function getSticker() {
 	$stickerList = array(
@@ -1044,6 +1047,7 @@ function getSpot() {
 	$n = rand(0,$n);
 	return $storedGif[$n];
 }
+
 function getNickname() {
 	$name = "";
 	$storedPartA = array(
@@ -1455,15 +1459,16 @@ function processMessage($message) {
   if (isset($message['text'])) {
     $text = $message['text'];
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+		$time = time();
 		$link = dbConnect();
-		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$query = 'SELECT total, lastpoint FROM groupbattle WHERE group_id = '.$chat_id;
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
-			if($row['total'] > 0) {
+			if($row['total'] > 0 && $time != $row['lastpoint']) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
-				$query = 'UPDATE groupbattle SET total = '.$total.' WHERE group_id = '.$chat_id;
+				$query = 'UPDATE groupbattle SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 			}
 		} else {
@@ -1472,7 +1477,7 @@ function processMessage($message) {
 			$grouptitle = str_replace("'","''",$grouptitle);
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-			$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`) VALUES ('".$chat_id."', '".$grouptitle."', '1');";
+			$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		}
 		mysql_free_result($result);

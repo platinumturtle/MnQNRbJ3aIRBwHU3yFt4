@@ -771,8 +771,8 @@ function randomSentence() {
 						"Alcachofa",	"Corzo",
 						"Anacardo",		"Espantapájaros",
 						"Gorrino",		"Cocotero",
-						"Celacanto",	"fuet",
-						"Jamón",
+						"Celacanto",	"Fuet",
+						"Jamón",		"Salmorejo",
 						"Ventana",
 						"Ukelele",
 						"Moneda",
@@ -801,8 +801,8 @@ function randomSentence() {
 						"espacial",					"de metal",
 						"sideral",					"de pladur",
 						"del Cáucaso",				"radiocontrol",
-						"temporal",
-						"con escayola",
+						"temporal",					"sensual",
+						"con escayola",				"pelotari",
 						"selección",
 						"presidente",
 						"reversible",
@@ -1534,6 +1534,7 @@ function randomSticker() {
 						"BQADBAADGwIAApdgXwAB2yTvLz6_T6IC",
 						"BQADBAADkAIAApdgXwABM7R-I2pFViMC",
 						"BQADBAADugIAApdgXwABm2taRiAxj2EC",
+						"BQADBAADvwYAApdgXwABpYy5KdsUFfMC",
 						"BQADBAAD8QIAApdgXwABd9b80jVwjwUC",
 						"BQADBAADsQMAApdgXwABA1YgXLa99qIC",
 						"BQADBAADgAQAApdgXwABslbJX3gzis4C",
@@ -1547,10 +1548,6 @@ function randomSticker() {
 
 function lucky() {
 	$n = rand(0,200);
-	//if($n < 200) {
-	//	return false;
-	//}
-	//return true;
 	return $n;
 }
 
@@ -2055,11 +2052,9 @@ function processMessage($message) {
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
-			error_log($time." y ".$row['lastpoint']);
 			if($row['total'] > 0 && $time != $row['lastpoint']) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
-			error_log("inserto tiempo ".$time);
 				$query = 'UPDATE DEMITEST SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 			}

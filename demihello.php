@@ -2220,7 +2220,7 @@ function processMessage($message) {
 	} else if (strpos($text, "/dbdebugging") === 0) {
 		/*$link = mysql_connect('localhost', 'admink88juIN', 'xBBarZSuzgxt') or die('No se pudo conectar: ' . mysql_error());
 		mysql_select_db('demitesterbot') or die('No se pudo seleccionar la base de datos');
-		mysql_set_charset("UTF8");*/
+		mysql_set_charset("UTF8");
 		$link = dbConnect();
 		$query = 'SELECT * FROM groupbattle';
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
@@ -2230,7 +2230,21 @@ function processMessage($message) {
 			}
 		}
 		mysql_free_result($result);
-		mysql_close($link);
+		mysql_close($link);*/
+		$time = time();
+		error_log($time);
+		$time = time();
+		error_log($time);
+		sleep(1);
+		$time = time();
+		error_log($time);
+		$time = time();
+		error_log($time);
+		sleep(2);
+		$time = time();
+		error_log($time);
+		$time = time();
+		error_log($time);
 	} else if (strpos(strtolower($text), "reportado") !== false) {
 		error_log($logname." triggered: Reportado.");
 		$miniTicket = rand(1,10);

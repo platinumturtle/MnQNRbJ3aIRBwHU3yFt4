@@ -2229,20 +2229,12 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);*/
-		$time = time();
-		error_log($time);
-		$time = time();
-		error_log($time);
-		sleep(1);
-		$time = time();
-		error_log($time);
-		$time = time();
-		error_log($time);
-		sleep(2);
-		$time = time();
-		error_log($time);
-		$time = time();
-		error_log($time);
+		$currentTime = time();
+		$minutes = date('i');
+		$seconds = date('s');
+		$flagTime = $currentTime - ($minutes * 60) - $seconds;
+		error_log($currentTime." tiempo actual ".date('H:i:s  d-m-Y'));
+		error_log($flagTime." tiempo en punto ".date('H:i:s  d-m-Y'));		
 	} else if (strpos(strtolower($text), "reportado") !== false) {
 		error_log($logname." triggered: Reportado.");
 		$miniTicket = rand(1,10);

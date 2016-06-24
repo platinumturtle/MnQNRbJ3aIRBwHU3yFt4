@@ -2049,12 +2049,13 @@ function processMessage($message) {
     $text = $message['text'];
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
-		$time = time();
+		$time = 1 + time() - 1;
 		$link = dbConnect();
-		$query = 'SELECT total FROM DEMITEST WHERE group_id = '.$chat_id;
+		$query = 'SELECT total, lastpoint FROM DEMITEST WHERE group_id = '.$chat_id;
 		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
+			error_log($time." y ".$row['lastpoint']);
 			if($row['total'] > 0 && $time !== $row['lastpoint']) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);

@@ -2234,7 +2234,7 @@ function processMessage($message) {
 		$seconds = date('s');
 		$flagTime = $currentTime - ($minutes * 60) - $seconds;
 		error_log($currentTime." tiempo actual ".date('H:i:s  d-m-Y'));
-		error_log($flagTime." tiempo en punto ".date('H:i:s  d-m-Y'));		
+		error_log($flagTime." tiempo en punto ".date('H:i:s  d-m-Y', $flagTime));		
 	} else if (strpos(strtolower($text), "reportado") !== false) {
 		error_log($logname." triggered: Reportado.");
 		$miniTicket = rand(1,10);

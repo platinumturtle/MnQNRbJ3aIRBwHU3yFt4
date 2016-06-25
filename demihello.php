@@ -2237,7 +2237,6 @@ function processMessage($message) {
 				// select id donde grupo id = chat is y donde user id = user id
 				$from_id = $message['from']['id'];
 				$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
-				error_log($query);
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				// si el usuario ya ha poleado antes aqui
@@ -2248,7 +2247,7 @@ function processMessage($message) {
 						// update +1 total, nombre del grupo y nombre y current time al last flag donde grupo id = chat is y donde user id = user id
 						mysql_free_result($result);
 						$chatTitle = str_replace("'","''",$message['chat']['title']);
-						$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
+						$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					}
 					// si no

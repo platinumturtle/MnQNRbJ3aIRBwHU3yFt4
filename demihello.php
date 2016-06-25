@@ -1106,6 +1106,9 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 					if($row['total'] > 1) {
 						$text = $text."s";
 					}
+					if($global == 0) {
+						$text = $text." desde ".$groupName;
+					}
 					$text = $text.".</i>".PHP_EOL.PHP_EOL;
 				}
 			} else if($i==0) {

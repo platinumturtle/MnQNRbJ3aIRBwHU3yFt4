@@ -2249,13 +2249,14 @@ function processMessage($message) {
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
 			$link = dbConnect();
-			$query = "SELECT DISTINCT group_id FROM DEMITEST";
+			$query = "SELECT DISTINCT group_id, name FROM DEMITEST";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$totalGroups = 0;
 			// un select de los grupos id de la abttle
 			// total = 0
 			// en un while exista la row
 			while($row = mysql_fetch_array($result)) {
+				error_log("Trying to reach ".$row['name']);
 				apiRequest("sendMessage", array('chat_id' => $row['group_id'], 'parse_mode' => "Markdown", "text" => "*Hola*"));
 				$totalGroups = $totalGroups + 1;
 			}

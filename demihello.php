@@ -2209,9 +2209,9 @@ function processMessage($message) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
 	} else if (strpos($text, "!pole") === 0) {
+		error_log($logname." triggered: !pole.");
+		$currentTime = time();
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
-			error_log($logname." triggered: !pole.");
-			$currentTime = time();
 			$minutes = date('i');
 			$seconds = date('s');
 			$hour = date('g');
@@ -2252,18 +2252,27 @@ function processMessage($message) {
 				mysql_free_result($result);
 				$query = "UPDATE `flagcapture` SET `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$text = "*🚩🏃 ¡".$name." acaba de capturar la bandera de la";
+				$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
 				if($hour != 1 /* && $hour != 13*/) {
 					$text = $text."s";
 				}
-				$text = $text." ".$hour."! 🎉*".PHP_EOL.PHP_EOL."🏆 _Consulta con la función !banderas el ránking de usuarios con más banderas._";
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+				$text = $text." ".$hour."! 🎉</b>";				
 			} else {
-				error_log("La pole de esta hora ya está pillada.");
-				// si no
+				error_log("La pole de esta hora ya esta pillada.");
 				// select  nombre y grupo donde la hora = currentime
-				// el usuario nombre tiene la bandera de la hora que la capturo en grupo
+				mysql_free_result($result);
+				$query = "SELECT group_name, usern_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				$row = mysql_fetch_array($result);
+				$text = "🚩 <b>La bandera de la";
+				if($hour != 1) {
+					$text = $text."s";
+				}
+				$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
 			}
+			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking de usuarios con más banderas.</i>";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 			mysql_free_result($result);
 			mysql_close($link);
 		} else {

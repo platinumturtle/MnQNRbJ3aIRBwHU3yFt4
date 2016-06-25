@@ -1140,7 +1140,6 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	return $text;
 }
 
-
 function getSticker() {
 	$stickerList = array(
 						"BQADBAADWQADl2BfAAEq3kLUvoh-bAI",

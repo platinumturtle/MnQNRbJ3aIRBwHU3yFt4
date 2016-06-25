@@ -2106,7 +2106,9 @@ function commandsList() {
 				.PHP_EOL.PHP_EOL.
 				"¿Alguna sugerencia que aportar para mejorar al bot? en @KamisukeBot existe el comando /sugerencias con una opción habilitada para registrar las sugerencias para @DemisukeBot donde puedes enviar tus ideas de la manera más rápida y cómoda."
 				.PHP_EOL.PHP_EOL.
-				"Este bot anunciará automáticamente las actualziaciones más importantes que se realizan, sin embargo hay otras actualizaciones menores que se realizan con frecuencia, si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
+				"Este bot anunciará automáticamente las actualizaciones más importantes que se realizan, sin embargo hay otras actualizaciones menores que se realizan con frecuencia."
+				.PHP_EOL.
+				"Si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
 				"@DemisukeBot v1.4 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
@@ -2242,6 +2244,18 @@ function processMessage($message) {
 		error_log($logname." triggered: !siono.");
 		$respuesta = yesNoQuestion();
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$respuesta.".*"));
+	} else if (strpos(strtolower($text), "/sendNotification") === 0) {
+		error_log($logname." triggered: New Notification.");
+		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
+			error_log($logname." triggered: Notification from Admin Kamisuke.");
+			// un select de los grupos id de la abttle
+			// total = 0
+			// en un while exista la row
+				// enviar notificacion al grupo, que es el texto con un substr del principio (parsemodemarkdown)
+				// total ++;
+			// enviar mensaje a mi mismo del total de envios
+		}
+		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$respuesta.".*"));
 	} else if (strpos(strtolower($text), "!ping") !== false) {
 		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));
@@ -2304,8 +2318,13 @@ function processMessage($message) {
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
 	} else if (strpos(strtolower($text), "!banderasgrupo") !== false) {
 		error_log($logname." triggered: !banderasgrupo.");
-		$result = getFlagBattle($message['from']['id'], 0, $chat_id, $message['chat']['title']);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$result = getFlagBattle($message['from']['id'], 0, $chat_id, $message['chat']['title']);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+		} else {
+			$result = "*Para usar esta función necesitas ejecutarla desde algún grupo, ¡añademe a tu grupo favorito y compite con tus amigos!*";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+		}
 	} else if (strpos(strtolower($text), "!banderas") !== false) {
 		error_log($logname." triggered: !banderas.");
 		$result = getFlagBattle($message['from']['id'], 1);

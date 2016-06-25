@@ -2261,7 +2261,7 @@ function processMessage($message) {
 				error_log("La pole de esta hora ya esta pillada.");
 				// select  nombre y grupo donde la hora = currentime
 				mysql_free_result($result);
-				$query = "SELECT group_name, usern_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+				$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				$row = mysql_fetch_array($result);

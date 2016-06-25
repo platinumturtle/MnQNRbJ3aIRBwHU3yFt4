@@ -2253,7 +2253,9 @@ function processMessage($message) {
 					// insert user id, chat id, total = 1, nombre del grupo y nombre y current time al last flag
 					error_log("Nuevo poleador.");
 					mysql_free_result($result);
-					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$message['from']['id']."', '".$message['chat']['title']."', '".$name."', '".$currentTime."', '1');";
+					$user_id = $message['from']['id'];
+					$chatTitle = $message['chat']['title'];
+					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$name."', '".$currentTime."', '1');";
 					$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 				}
 				// update de last flag = currenttime donde la id es 0001

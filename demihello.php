@@ -1093,8 +1093,11 @@ function getFlagBattle($myself) {
 				$text = $text.
 						"<b>".$row['user_name']."</b>"
 						.PHP_EOL.
-						"<i>".$row['total']." banderas.</i>"
-						.PHP_EOL.PHP_EOL;
+						"<i>".$row['total']." bandera";
+				if($row['total'] > 1) {
+					$text = $text."s";
+				}
+				$text = $text.".</i>".PHP_EOL.PHP_EOL;
 			}
 		}
 	}
@@ -1108,14 +1111,15 @@ function getFlagBattle($myself) {
 		if($row['total'] > 1) {
 			$text = $text."s";
 		}
-		$text = $text."s.</b>".PHP_EOL.PHP_EOL;
+		$text = $text.".</b>".PHP_EOL.PHP_EOL;
 	}
 	mysql_free_result($result);
 	mysql_close($link);
 	$text = $text.
-			"<i>Cada hora se planta una nueva bandera en el bot. El primer usuario que la capture con la función !pole la tendrá en su posesión y ".
+			"<i>Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
+			"El primer usuario que la capture con la función !pole la tendrá en su posesión y ".
 			"su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, ".
-			"hasta que se plante la siguiente bandera, además de sumar una bandera a su colección.".PHP_EOL.
+			"hasta que se plante la siguiente bandera, además de sumar una bandera a su colección.".PHP_EOL.PHP_EOL.
 			"¡Captúralas todas desde un grupo o un supergrupo para aparecer en los puestos más altos de este ránking!</i>";
 	return $text;
 }

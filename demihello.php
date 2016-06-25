@@ -2237,6 +2237,7 @@ function processMessage($message) {
 				// select id donde grupo id = chat is y donde user id = user id
 				$from_id = $message['from']['id'];
 				$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".chat_id."' AND user_id = '".$from_id."'";
+				error_log($query);
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				// si el usuario ya ha poleado antes aqui
@@ -2267,7 +2268,7 @@ function processMessage($message) {
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				// mostrar mensaje de que el usuario acaba de capturar la bandera de la/s $hour (diferente de una y de trece, ya sabes...)
 				error_log("Aviso al usuario.");
-				$text = "*¡".$name.". acaba de capturar la bandera de la";
+				$text = "*¡".$name." acaba de capturar la bandera de la";
 				if($hour != 1 && $hour != 13) {
 					$text = $text."s";
 				}

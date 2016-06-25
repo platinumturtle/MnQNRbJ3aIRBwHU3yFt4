@@ -1106,9 +1106,6 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 					if($row['total'] > 1) {
 						$text = $text."s";
 					}
-					if($global == 0) {
-						$text = $text." desde ".$groupName;
-					}
 					$text = $text.".</i>".PHP_EOL.PHP_EOL;
 				}
 			} else if($i==0) {
@@ -1128,6 +1125,9 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 			"<b>".$row['user_name']." ha capturado ".$row['total']." bandera";
 			if($row['total'] > 1) {
 				$text = $text."s";
+			}
+			if($global == 0) {
+				$text = $text." desde ".$groupName;
 			}
 			$text = $text.".</b>".PHP_EOL.PHP_EOL;
 		}

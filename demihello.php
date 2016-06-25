@@ -2290,11 +2290,11 @@ function processMessage($message) {
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
 	} else if (strpos(strtolower($text), "!banderasgrupo") !== false) {
 		error_log($logname." triggered: !banderasgrupo.");
-		$result = getFlagBattle($message['from']['id'], 0);
+		$result = getFlagBattle($message['from']['id'], 0, $chat_id, $message['chat']['title']);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "!banderas") !== false) {
 		error_log($logname." triggered: !banderas.");
-		$result = getFlagBattle($message['from']['id'], 1, $chat_id, $message['chat']['title']);
+		$result = getFlagBattle($message['from']['id'], 1);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "!pole") !== false) {
 		error_log($logname." triggered: !pole.");

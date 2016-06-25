@@ -1002,7 +1002,7 @@ function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
 	$query = 'SELECT * FROM groupbattle ORDER BY total DESC, lastpoint';
-	$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = "<b>🏁 Clasificación global de grupos:</b>"
 			.PHP_EOL.PHP_EOL.
 			"<b>🏆 POLE ABSOLUTA 🏆</b>"
@@ -1043,7 +1043,7 @@ function getGroupBattle($owngroup) {
 	if($owngroup != 0) {
 		mysql_free_result($result);
 		$query = 'SELECT * FROM groupbattle WHERE group_id = '.$owngroup;
-		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		$text = $text.
 				"<b>\"".$row['name']."\" tiene un total de ".$row['total']." puntos.</b>"
@@ -2049,23 +2049,23 @@ function processMessage($message) {
 		$time = time();
 		$link = dbConnect();
 		$query = 'SELECT total, lastpoint FROM groupbattle WHERE group_id = '.$chat_id;
-		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
 			if($row['total'] > 0 && $time != $row['lastpoint']) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
 				$query = 'UPDATE groupbattle SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
-				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$result = mysql_query($query) or die((error_log('SQL ERROR: ' . mysql_error()));
 			}
 		} else {
 			mysql_free_result($result);
 			$grouptitle = $message['chat']['title'];
 			$grouptitle = str_replace("'","''",$grouptitle);
 			$query = "SET NAMES utf8mb4;";
-			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+			$result = mysql_query($query) or die((error_log('SQL ERROR: ' . mysql_error()));
 			$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
-			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}
 		mysql_free_result($result);
 		mysql_close($link);
@@ -2220,7 +2220,7 @@ function processMessage($message) {
 			error_log("Entro en !pole.");
 			// select de la hora de la ultima pole
 			$query = 'SELECT last_flag FROM flagcapture WHERE fc_id = 0001';
-			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			// si es diferente de currenttime
 			if($row['last_flag'] != $currentTime) {
@@ -2231,12 +2231,13 @@ function processMessage($message) {
 				} else {
 					$name = "Desconocido";
 				}
+				$cleanName = str_replace("'","''",$name);
 				error_log("La hora es diferente a la de la última pole.");
 				mysql_free_result($result);
 				// select id donde grupo id = chat is y donde user id = user id
 				$from_id = $message['from']['id'];
 				$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".chat_id."' AND user_id = '".$from_id."'";
-				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				// si el usuario ya ha poleado antes aqui
 				if(isset($row['fc_id'])) {
@@ -2245,8 +2246,9 @@ function processMessage($message) {
 						$total = 1 + $row['total'];
 						// update +1 total, nombre del grupo y nombre y current time al last flag donde grupo id = chat is y donde user id = user id
 						mysql_free_result($result);
-						$query = "UPDATE `flagcapture` SET `group_name` = '".$message['chat']['title']."', user_name` = '".$name."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
-						$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());	
+						$chatTitle = str_replace("'","''",$message['chat']['title']);
+						$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					}
 					// si no
 				} else {
@@ -2254,16 +2256,15 @@ function processMessage($message) {
 					error_log("Nuevo poleador.");
 					mysql_free_result($result);
 					$user_id = $message['from']['id'];
-					$chatTitle = $message['chat']['title'];
-					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$name."', '".$currentTime."', '1')";
-					error_log($query);
-					$result = mysql_query($query) or die(error_log('Consulta fallida: ' . mysql_error()));
+					$chatTitle = str_replace("'","''",$message['chat']['title']);
+					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				}
 				// update de last flag = currenttime donde la id es 0001
 				error_log("Marco la última hora de la pole.");
 				mysql_free_result($result);
 				$query = "UPDATE `flagcapture` SET `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
-				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				// mostrar mensaje de que el usuario acaba de capturar la bandera de la/s $hour (diferente de una y de trece, ya sabes...)
 				error_log("Aviso al usuario.");
 				$text = "*¡".$name.". acaba de capturar la bandera de la";
@@ -2287,7 +2288,7 @@ function processMessage($message) {
 		
 		$link = dbConnect();
 		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
-		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
 			if($row['total'] > 0) {
@@ -2295,9 +2296,9 @@ function processMessage($message) {
 				$newtitle = $message['new_chat_title'];
 				$newtitle = str_replace("'","''",$newtitle);
 				$query = "SET NAMES utf8mb4;";
-				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
-				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			}
 		}
 		mysql_free_result($result);
@@ -2321,7 +2322,7 @@ function processMessage($message) {
 		mysql_set_charset("UTF8");
 		$link = dbConnect();
 		$query = 'SELECT * FROM groupbattle';
-		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
 			foreach ($line as $col_value) {
 				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => $col_value));
@@ -2439,7 +2440,7 @@ function processMessage($message) {
 		error_log("Trigger: Group title.");
 		$link = dbConnect();
 		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
-		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['total'])) {
 			if($row['total'] > 0) {
@@ -2447,9 +2448,9 @@ function processMessage($message) {
 				$newtitle = $message['new_chat_title'];
 				$newtitle = str_replace("'","''",$newtitle);
 				$query = "SET NAMES utf8mb4;";
-				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
-				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			}
 		}
 		mysql_free_result($result);

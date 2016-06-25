@@ -2244,7 +2244,7 @@ function processMessage($message) {
 		error_log($logname." triggered: !siono.");
 		$respuesta = yesNoQuestion();
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$respuesta.".*"));
-	} else if (strpos(strtolower($text), "/sendNotification") === 0) {
+	} else if (strpos($text, "/sendNotification") === 0) {
 		error_log($logname." triggered: New Notification.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");

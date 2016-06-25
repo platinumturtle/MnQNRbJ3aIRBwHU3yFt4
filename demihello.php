@@ -2239,8 +2239,8 @@ function processMessage($message) {
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 				$row = mysql_fetch_array($result);
 				// si el usuario ya ha poleado antes aqui
-				if(isset(row['fc_id'])) {
-					if(row['fc_id'] > 1) {
+				if(isset($row['fc_id'])) {
+					if($row['fc_id'] > 1) {
 						error_log("Este usuario ya ha poleado antes.");
 						$total = 1 + $row['total'];
 						// update +1 total, nombre del grupo y nombre y current time al last flag donde grupo id = chat is y donde user id = user id

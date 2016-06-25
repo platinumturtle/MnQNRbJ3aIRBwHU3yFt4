@@ -2246,23 +2246,26 @@ function processMessage($message) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$respuesta.".*"));
 	} else if (strpos($text, "/sendNotification") === 0) {
 		error_log($logname." triggered: New Notification.");
-		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
+		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
 			$link = dbConnect();
 			$query = "SELECT DISTINCT group_id, name FROM DEMITEST";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$totalGroups = 0;
+			$notificationMessage = substr($text,18);
 			// un select de los grupos id de la abttle
 			// total = 0
 			// en un while exista la row
 			while($row = mysql_fetch_array($result)) {
 				error_log("Trying to reach ".$row['name']);
-				apiRequest("sendMessage", array('chat_id' => $row['group_id'], 'parse_mode' => "Markdown", "text" => "*Hola*"));
+				apiRequest("sendMessage", array('chat_id' => $row['group_id'], 'parse_mode' => "Markdown", "text" => $notificationMessage));
 				$totalGroups = $totalGroups + 1;
 			}
 				// enviar notificacion al grupo, que es el texto con un substr del principio (parsemodemarkdown)
 				// total ++;
 			// enviar mensaje a mi mismo del total de envios
+			mysql_free_result($result);
+			mysql_close($link);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado una notificación a ".$totalGroups." grupos.*"));
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));

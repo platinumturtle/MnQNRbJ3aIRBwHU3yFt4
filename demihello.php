@@ -2056,14 +2056,14 @@ function processMessage($message) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
 				$query = 'UPDATE groupbattle SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
-				$result = mysql_query($query) or die((error_log('SQL ERROR: ' . mysql_error()));
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			}
 		} else {
 			mysql_free_result($result);
 			$grouptitle = $message['chat']['title'];
 			$grouptitle = str_replace("'","''",$grouptitle);
 			$query = "SET NAMES utf8mb4;";
-			$result = mysql_query($query) or die((error_log('SQL ERROR: ' . mysql_error()));
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}

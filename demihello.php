@@ -2248,14 +2248,61 @@ function processMessage($message) {
 		error_log($logname." triggered: New Notification.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
+			$link = dbConnect();
+			$query = "SELECT DISTINCT group_id FROM DEMITEST";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$totalGroups = 0;
 			// un select de los grupos id de la abttle
 			// total = 0
 			// en un while exista la row
+			while($row = mysql_fetch_array($result)) {
+				apiRequest("sendMessage", array('chat_id' => $row['group_id'], 'parse_mode' => "Markdown", "text" => "*Hola*"));
+				$totalGroups = $totalGroups + 1;
+			}
 				// enviar notificacion al grupo, que es el texto con un substr del principio (parsemodemarkdown)
 				// total ++;
 			// enviar mensaje a mi mismo del total de envios
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado una notificación a ".$totalGroups." grupos.*"));
+		} else if ($message['chat']['type'] == "private") {
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
 		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$respuesta.".*"));
+	
+	
+	
+		/*
+		
+		$link = dbConnect();
+		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				mysql_free_result($result);
+				$newtitle = $message['new_chat_title'];
+				$newtitle = str_replace("'","''",$newtitle);
+				$query = "SET NAMES utf8mb4;";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			}
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		
+	
+		
+		*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	} else if (strpos(strtolower($text), "!ping") !== false) {
 		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));

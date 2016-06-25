@@ -2209,72 +2209,77 @@ function processMessage($message) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
 	} else if (strpos($text, "!pole") === 0) {
-		error_log($logname." triggered: !pole.");
-		$currentTime = time();
-		$minutes = date('i');
-		$seconds = date('s');
-		$hour = date('G');
-		$currentTime = $currentTime - ($minutes * 60) - $seconds;
-		$link = dbConnect();
-		error_log("Entro en !pole.");
-		// select de la hora de la ultima pole
-		$query = 'SELECT last_flag FROM flagcapture WHERE fc_id = 0001';
-		$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-		$row = mysql_fetch_array($result);
-		// si es diferente de currenttime
-		if($row['last_flag'] != $currentTime) {
-			if (isset($message['from']['username'])) {
-				$name = $message['from']['username'];
-			} else if (isset($message['from']['first_name'])) {
-				$name = $message['from']['first_name'];
-			} else {
-				$name = "Desconocido";
-			}
-			error_log("La hora es diferente a la de la última pole.");
-			mysql_free_result($result);
-			// select id donde grupo id = chat is y donde user id = user id
-			$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".chat_id."' AND user_id = '".$message['from']['id']."'";
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			error_log($logname." triggered: !pole.");
+			$currentTime = time();
+			$minutes = date('i');
+			$seconds = date('s');
+			$hour = date('G');
+			$currentTime = $currentTime - ($minutes * 60) - $seconds;
+			$link = dbConnect();
+			error_log("Entro en !pole.");
+			// select de la hora de la ultima pole
+			$query = 'SELECT last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
 			$row = mysql_fetch_array($result);
-			// si el usuario ya ha poleado antes aqui
-			if(isset(row['fc_id'])) {
-				if(row['fc_id'] > 1) {
-					error_log("Este usuario ya ha poleado antes.");
-					$total = 1 + $row['total'];
-					// update +1 total, nombre del grupo y nombre y current time al last flag donde grupo id = chat is y donde user id = user id
-					mysql_free_result($result);
-					$query = "UPDATE `flagcapture` SET `group_name` = '".$message['chat']['title']."', user_name` = '".$name."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
-					$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());	
+			// si es diferente de currenttime
+			if($row['last_flag'] != $currentTime) {
+				if (isset($message['from']['username'])) {
+					$name = $message['from']['username'];
+				} else if (isset($message['from']['first_name'])) {
+					$name = $message['from']['first_name'];
+				} else {
+					$name = "Desconocido";
 				}
-				// si no
-			} else {
-				// insert user id, chat id, total = 1, nombre del grupo y nombre y current time al last flag
-				error_log("Nuevo poleador.");
+				error_log("La hora es diferente a la de la última pole.");
 				mysql_free_result($result);
-				$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$message['from']['id']."', '".$message['chat']['title']."', '".$name"', '".$currentTime."', '1');";
+				// select id donde grupo id = chat is y donde user id = user id
+				$from_id = $message['from']['id'];
+				$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".chat_id."' AND user_id = '".$from_id."'";
 				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				$row = mysql_fetch_array($result);
+				// si el usuario ya ha poleado antes aqui
+				if(isset(row['fc_id'])) {
+					if(row['fc_id'] > 1) {
+						error_log("Este usuario ya ha poleado antes.");
+						$total = 1 + $row['total'];
+						// update +1 total, nombre del grupo y nombre y current time al last flag donde grupo id = chat is y donde user id = user id
+						mysql_free_result($result);
+						$query = "UPDATE `flagcapture` SET `group_name` = '".$message['chat']['title']."', user_name` = '".$name."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
+						$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());	
+					}
+					// si no
+				} else {
+					// insert user id, chat id, total = 1, nombre del grupo y nombre y current time al last flag
+					error_log("Nuevo poleador.");
+					mysql_free_result($result);
+					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$message['from']['id']."', '".$message['chat']['title']."', '".$name"', '".$currentTime."', '1');";
+					$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				}
+				// update de last flag = currenttime donde la id es 0001
+				error_log("Marco la última hora de la pole.");
+				mysql_free_result($result);
+				$query = "UPDATE `flagcapture` SET `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
+				$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+				// mostrar mensaje de que el usuario acaba de capturar la bandera de la/s $hour (diferente de una y de trece, ya sabes...)
+				error_log("Aviso al usuario.");
+				$text = "*¡".$name.". acaba de capturar la bandera de la";
+				if($hour != 1 && $hour != 13) {
+					$text = $text."s";
+				}
+				$text = $text." ".$hour."!*".PHP_EOL."*Consulta con la función !banderas el ránking de usuarios con más banderas.*";
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+			} else {
+				error_log("La pole de esta hora ya está pillada.");
+				// si no
+				// select  nombre y grupo donde la hora = currentime
+				// el usuario nombre tiene la bandera de la hora que la capturo en grupo
 			}
-			// update de last flag = currenttime donde la id es 0001
-			error_log("Marco la última hora de la pole.");
 			mysql_free_result($result);
-			$query = "UPDATE `flagcapture` SET `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
-			$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
-			// mostrar mensaje de que el usuario acaba de capturar la bandera de la/s $hour (diferente de una y de trece, ya sabes...)
-			error_log("Aviso al usuario.");
-			$text = "*¡".$name.". acaba de capturar la bandera de la";
-			if($hour != 1 && $hour != 13) {
-				$text = $text."s";
-			}
-			$text = $text." ".$hour."!*".PHP_EOL."*Consulta con la función !banderas el ránking de usuarios con más banderas.*";
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+			mysql_close($link);
 		} else {
-			error_log("La pole de esta hora ya está pillada.");
-			// si no
-			// select  nombre y grupo donde la hora = currentime
-			// el usuario nombre tiene la bandera de la hora que la capturo en grupo
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La pole solo está disponible para grupos y supergrupos, ¡añádeme a alguno!*"));
 		}
-		mysql_free_result($result);
-		mysql_close($link);
 		/*
 		
 		$link = dbConnect();

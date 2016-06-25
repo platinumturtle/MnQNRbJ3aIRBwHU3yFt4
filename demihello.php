@@ -1135,10 +1135,7 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		mysql_close($link);
 		$text = $text.
 				"<i>Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
-				"El primer usuario que la capture con la función !pole la tendrá en su posesión y ".
-				"su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, ".
-				"hasta que se plante la siguiente bandera, además de sumar una bandera a su colección.".PHP_EOL.PHP_EOL.
-				"¡Captúralas todas desde un grupo o un supergrupo para aparecer en los puestos más altos de este ránking!</i>";
+				"Recuerda que las puedes capturar con la función \"!pole\" y consultar el ránking global con \"!banderas\" y el de tu grupo con \"!banderasgrupo\".</i>";
 	}
 	return $text;
 }
@@ -2093,15 +2090,25 @@ function commandsList() {
 				.PHP_EOL.PHP_EOL.
 				"_Escribe \"!grupos\" para ver la clasificación global de los mejores grupos._"
 				.PHP_EOL.PHP_EOL.
+				"*Captura la bandera*:"
+				.PHP_EOL.
+				"_Cada hora se planta una nueva bandera en el bot._"
+				.PHP_EOL.
+				"_El primer usuario que la capture con la función !pole la tendrá en su posesión y su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, hasta que se plante la siguiente bandera, además de sumar una bandera a su colección._"
+				.PHP_EOL.PHP_EOL.
+				"_Puedes consultar el ránking global de banderas con la función \"!banderas\" o el ránking de tu grupo en concreto con \"!banderas\"._"
+				.PHP_EOL.
+				"¡Captúralas todas desde un grupo o un supergrupo para aparecer en los puestos más altos!"
+				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
 				"Además de las funciones disponibles, @DemisukeBot tratará de aportar vida con frecuencia a los grupos activos que lo tengan en su lista de miembros."
 				.PHP_EOL.PHP_EOL.
 				"¿Alguna sugerencia que aportar para mejorar al bot? en @KamisukeBot existe el comando /sugerencias con una opción habilitada para registrar las sugerencias para @DemisukeBot donde puedes enviar tus ideas de la manera más rápida y cómoda."
 				.PHP_EOL.PHP_EOL.
-				"Este bot se actualiza con frecuencia, si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
+				"Este bot anunciará automáticamente las actualziaciones más importantes que se realizan, sin embargo hay otras actualizaciones menores que se realizan con frecuencia, si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.2 creado por @Kamisuke."
+				"@DemisukeBot v1.4 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
@@ -2365,7 +2372,7 @@ function processMessage($message) {
 				}
 				$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
 			}
-			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking de usuarios con más banderas.</i>";
+			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 			mysql_free_result($result);
 			mysql_close($link);

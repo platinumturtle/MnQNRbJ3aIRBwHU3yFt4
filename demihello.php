@@ -2525,7 +2525,7 @@ if (php_sapi_name() == 'cli') {
   exit;
 }
 
-
+date_default_timezone_set('Europe/Madrid');
 $content = file_get_contents("php://input");
 $update = json_decode($content, true);
 

@@ -1052,7 +1052,71 @@ function getGroupBattle($owngroup) {
 	mysql_free_result($result);
 	mysql_close($link);
 	$text = $text.
-			"<b>Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.</b>";
+			"<i>Los mensajes generados automáticamente por bots o el uso de stickers o imágenes no sumarán ningún punto a esta clasificación.</i>";
+	return $text;
+}
+
+function getFlagBattle($myself) {
+	//HTML Parse Mode
+	$link = dbConnect();
+	$query = "SELECT user_id, user_name, MAX(last_flag) AS last_flag, SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$text = "<b>🏁 Ránking global de Banderas capturadas:</b>"
+			.PHP_EOL.PHP_EOL.
+			"<b>🏆 POLE ABSOLUTA 🏆</b>"
+			.PHP_EOL;
+	for($i=0;$i<10;$i++) {
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				switch($i) {
+					case 1: $text = $text."<b>🎖2º </b>";
+							break;
+					case 2: $text = $text."<b>🏅3º </b>";
+							break;
+					case 3: $text = $text."4⃣ ";
+							break;
+					case 4: $text = $text."5⃣ ";
+							break;
+					case 5: $text = $text."6⃣ ";
+							break;
+					case 6: $text = $text."7⃣ ";
+							break;
+					case 7: $text = $text."8⃣ ";
+							break;
+					case 8: $text = $text."9⃣ ";
+							break;
+					case 9: $text = $text."🔟 ";
+							break;
+					default: break;
+				}
+				$text = $text.
+						"<b>".$row['user_name']."</b>"
+						.PHP_EOL.
+						"<i>".$row['total']." banderas.</i>"
+						.PHP_EOL.PHP_EOL;
+			}
+		}
+	}
+	mysql_free_result($result);
+	$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$myself."' GROUP BY user_id";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	if(isset($row['user_id'])) {
+		$text = $text.
+		"<b>".$row['user_name']." ha capturado ".$row['total']." bandera";
+		if($row['total'] > 1) {
+			$text = $text."s";
+		}
+		$text = $text."s.</b>".PHP_EOL.PHP_EOL;
+	}
+	mysql_free_result($result);
+	mysql_close($link);
+	$text = $text.
+			"<i>Cada hora se planta una nueva bandera en el bot. El primer usuario que la capture con la función !pole la tendrá en su posesión y ".
+			"su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, ".
+			"hasta que se plante la siguiente bandera, además de sumar una bandera a su colección.".PHP_EOL.
+			"¡Captúralas todas desde un grupo o un supergrupo para aparecer en los puestos más altos de este ránking!</i>";
 	return $text;
 }
 
@@ -2208,6 +2272,10 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
+	} else if (strpos(strtolower($text), "!banderas") !== false) {
+		error_log($logname." triggered: !banderas.");
+		$result = getFlagBattle($message['from']['id']);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "!pole") !== false) {
 		error_log($logname." triggered: !pole.");
 		$currentTime = time();
@@ -2362,7 +2430,6 @@ function processMessage($message) {
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 	} else if (strpos(strtolower($text), "!grupos") !== false) {
 		error_log($logname." triggered: !grupos.");
-		usleep(250000);
 		if($message['chat']['type'] == "private") {
 			$myPoints = 0;
 		} else {

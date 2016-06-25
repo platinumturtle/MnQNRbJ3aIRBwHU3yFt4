@@ -2255,8 +2255,9 @@ function processMessage($message) {
 					mysql_free_result($result);
 					$user_id = $message['from']['id'];
 					$chatTitle = $message['chat']['title'];
-					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$name."', '".$currentTime."', '1');";
-					$result = mysql_query($query) or die('Consulta fallida: ' . mysql_error());
+					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$name."', '".$currentTime."', '1')";
+					error_log($query);
+					$result = mysql_query($query) or die(error_log('Consulta fallida: ' . mysql_error()));
 				}
 				// update de last flag = currenttime donde la id es 0001
 				error_log("Marco la última hora de la pole.");

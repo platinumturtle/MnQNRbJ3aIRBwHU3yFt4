@@ -2208,7 +2208,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
-	} else if (strpos($text, "!pole") === 0) {
+	} else if (strpos(strtolower($text), "!pole") !== false) {
 		error_log($logname." triggered: !pole.");
 		$currentTime = time();
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
@@ -2259,7 +2259,6 @@ function processMessage($message) {
 				$text = $text." ".$hour."! 🎉</b>";				
 			} else {
 				error_log("La pole de esta hora ya esta pillada.");
-				// select  nombre y grupo donde la hora = currentime
 				mysql_free_result($result);
 				$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

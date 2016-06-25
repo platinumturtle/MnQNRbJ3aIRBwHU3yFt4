@@ -2214,7 +2214,7 @@ function processMessage($message) {
 			$currentTime = time();
 			$minutes = date('i');
 			$seconds = date('s');
-			$hour = date('G');
+			$hour = date('g');
 			$currentTime = $currentTime - ($minutes * 60) - $seconds;
 			$link = dbConnect();
 			error_log("Entro en !pole.");
@@ -2236,7 +2236,7 @@ function processMessage($message) {
 				mysql_free_result($result);
 				// select id donde grupo id = chat is y donde user id = user id
 				$from_id = $message['from']['id'];
-				$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".chat_id."' AND user_id = '".$from_id."'";
+				$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
 				error_log($query);
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);

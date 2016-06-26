@@ -2445,7 +2445,7 @@ function processMessage($message) {
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					}
 					mysql_free_result($result);
-					$query = "UPDATE `flagcapturetest` SET `user_id` = '".$from_id."' `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
+					$query = "UPDATE `flagcapturetest` SET `user_id` = '".$from_id."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
 					if($hour != 1 /* && $hour != 13*/) {

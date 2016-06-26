@@ -2134,13 +2134,14 @@ function processMessage($message) {
   } else if (isset($message['from']['first_name'])) {
 	$logname = $message['from']['first_name'];
   } else {
-	$logname = "ID".$chat_id;
+	$logname = "ID".$message['from']['id'];
   }
   if (isset($message['text'])) {
     // incoming text message
     $text = $message['text'];
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+		// Group Battle
 		$time = time();
 		$link = dbConnect();
 		$query = 'SELECT total, lastpoint FROM groupbattle WHERE group_id = '.$chat_id;
@@ -2163,11 +2164,47 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}
 		mysql_free_result($result);
+		// User Battle
+		$user_id = $message['from']['id'];
+		$query = 'SELECT ub_id, lastpoint, total FROM userbattle WHERE group_id = '.$chat_id' AND user_id = '.$user_id;
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['ub_id'])) {
+			if($time != $row['lastpoint']) {
+				$ub_id = $row['ub_id'];
+				$total = $row['total'] + 1;
+				mysql_free_result($result);
+				$grouptitle = str_replace("'","''",$grouptitle);
+				if(isset($message['from']['username'])) {
+					$username = str_replace("'","''",$message['from']['username']);
+				} else if (isset($message['from']['first_name'])) {
+					$username = str_replace("'","''",$message['from']['first_name']);
+				} else {
+					$username = "Desconocido";
+				}
+				$query = "SET NAMES utf8mb4;";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$query = "UPDATE userbattle SET group_name = '".$grouptitle."', user_name = '".$username."' total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id" AND user_id = ".$user_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			}
+		} else {
+			mysql_free_result($result);
+			$grouptitle = str_replace("'","''",$grouptitle);
+			if(isset($message['from']['username'])) {
+				$username = str_replace("'","''",$message['from']['username']);
+			} else if (isset($message['from']['first_name'])) {
+				$username = str_replace("'","''",$message['from']['first_name']);
+			} else {
+				$username = "Desconocido";
+			}
+			$query = "SET NAMES utf8mb4;";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '".$chat_id."', '".$grouptitle."', '".$username."', '1', '".$time."', FALSE);";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		}
+		mysql_free_result($result);
 		mysql_close($link);
-		
-		
 	}
-	
 
     if (strpos($text, "/start") === 0) {
       //apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => 'Hello', 'reply_markup' => array(
@@ -2373,6 +2410,8 @@ function processMessage($message) {
 						$total = 1 + $row['total'];
 						mysql_free_result($result);
 						$chatTitle = str_replace("'","''",$message['chat']['title']);
+						$query = "SET NAMES utf8mb4;";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					}
@@ -2380,6 +2419,8 @@ function processMessage($message) {
 					mysql_free_result($result);
 					$user_id = $message['from']['id'];
 					$chatTitle = str_replace("'","''",$message['chat']['title']);
+					$query = "SET NAMES utf8mb4;";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				}

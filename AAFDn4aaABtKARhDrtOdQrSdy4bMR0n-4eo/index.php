@@ -1732,12 +1732,13 @@ function processMessage($message) {
 		error_log($logname." triggered: !pole.");
 		$currentTime = time();
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$from_id = $message['from']['id'];
 			$minutes = date('i');
 			$seconds = date('s');
 			$hour = date('g');
 			$currentTime = $currentTime - ($minutes * 60) - $seconds;
 			$link = dbConnect();
-			$query = 'SELECT last_flag FROM flagcapture WHERE fc_id = 0001';
+			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if($row['last_flag'] != $currentTime) {
@@ -1748,39 +1749,43 @@ function processMessage($message) {
 				} else {
 					$name = "Desconocido";
 				}
-				$cleanName = str_replace("'","''",$name);
-				mysql_free_result($result);
-				$from_id = $message['from']['id'];
-				$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$row = mysql_fetch_array($result);
-				if(isset($row['fc_id'])) {
-					if($row['fc_id'] > 1) {
-						$total = 1 + $row['total'];
+				if($from_id != $row['user_id']) {
+					$cleanName = str_replace("'","''",$name);
+					mysql_free_result($result);
+					$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					if(isset($row['fc_id'])) {
+						if($row['fc_id'] > 1) {
+							$total = 1 + $row['total']; 
+							mysql_free_result($result);
+							$chatTitle = str_replace("'","''",$message['chat']['title']);
+							$query = "SET NAMES utf8mb4;";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						}
+					} else {
 						mysql_free_result($result);
+						$user_id = $message['from']['id'];
 						$chatTitle = str_replace("'","''",$message['chat']['title']);
 						$query = "SET NAMES utf8mb4;";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
+
+						$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					}
-				} else {
 					mysql_free_result($result);
-					$user_id = $message['from']['id'];
-					$chatTitle = str_replace("'","''",$message['chat']['title']);
-					$query = "SET NAMES utf8mb4;";
+					$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
+					if($hour != 1 /* && $hour != 13*/) {
+						$text = $text."s";
+					}
+					$text = $text." ".$hour."! 🎉</b>";	
+				} else {
+					$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";
 				}
-				mysql_free_result($result);
-				$query = "UPDATE `flagcapture` SET `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
-				if($hour != 1 /* && $hour != 13*/) {
-					$text = $text."s";
-				}
-				$text = $text." ".$hour."! 🎉</b>";				
 			} else {
 				error_log("La pole de esta hora ya esta pillada.");
 				mysql_free_result($result);

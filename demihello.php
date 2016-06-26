@@ -2716,6 +2716,17 @@ if (!$update) {
   exit;
 }
 
+if ($http_code == 429) {
+	error_log("FLOOD");
+}
+
+if (isset($update["edited_message"])) {
+	$chat_id = $update["edited_message"]['chat']['id'];
+	$reply = $update["edited_message"]['message_id'];
+	$message = "*Los mensajes editados hacen llorar al niño Demisuke.*";
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => $message));			
+}
+
 if (isset($update["message"])) {
   processMessage($update["message"]);
 }

@@ -2199,7 +2199,7 @@ function processMessage($message) {
 			}
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '".$chat_id."', '".$grouptitle."', '".$username."', '1', '".$time."', FALSE);";
+			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '".$chat_id."', '".$grouptitle."', '".$username."', '1', '".$time."', TRUE);";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}
 		mysql_free_result($result);

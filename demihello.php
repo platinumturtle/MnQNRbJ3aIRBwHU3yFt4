@@ -2725,8 +2725,8 @@ if (isset($update["edited_message"])) {
 	$chat_id = $update["edited_message"]['chat']['id'];
 	$reply = $update["edited_message"]['message_id'];
 	$message = "*Los mensajes editados hacen llorar al niño Demisuke.*";
-	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));			
-	usleep(1500000);
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));			
+	usleep(1000000);
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $reply, "text" => $message));			
 }
 

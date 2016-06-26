@@ -1612,6 +1612,17 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
+	} else if (strpos($text, "/sendSpecialNot") === 0) {
+		error_log($logname." triggered: /sendSpecialNot.");
+		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {
+			error_log($logname." triggered: Notification from Admin Kamisuke.");
+			$group_id = -137908002;
+			$notificationMessage = "*Se ha reiniciado el contador del grupo debido al floodeo masivo de ShurNutriaFC.*";
+			apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "Markdown", "text" => $notificationMessage));
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje.*"));
+		} else if ($message['chat']['type'] == "private") {
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
+		}
 	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
 		error_log($logname." triggered: Hola.");
 		$greeting = greeting();

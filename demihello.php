@@ -2166,7 +2166,7 @@ function processMessage($message) {
 		mysql_free_result($result);
 		// User Battle
 		$user_id = $message['from']['id'];
-		$query = 'SELECT ub_id, lastpoint, total FROM userbattle WHERE group_id = '.$chat_id' AND user_id = '.$user_id;
+		$query = 'SELECT ub_id, lastpoint, total FROM userbattle WHERE group_id = '.$chat_id.' AND user_id = '.$user_id;
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {

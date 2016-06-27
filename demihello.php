@@ -1125,7 +1125,7 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		$row = mysql_fetch_array($result);
 		if(isset($row['user_id'])) {
 			$text = $text.
-			"<b>".$row['user_name']." ha capturado ".$row['total']." bandera";
+			"<b>".$myself." ha capturado ".$row['total']." bandera";
 			if($row['total'] > 1) {
 				$text = $text."s";
 			}

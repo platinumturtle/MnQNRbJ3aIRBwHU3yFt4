@@ -1125,7 +1125,7 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		$row = mysql_fetch_array($result);
 		if(isset($row['user_id'])) {
 			$text = $text.
-			"<b>".$myself." ha capturado ".$row['total']." bandera";
+			"<b>".$row['user_name']." ha capturado ".$row['total']." bandera";
 			if($row['total'] > 1) {
 				$text = $text."s";
 			}
@@ -2445,7 +2445,7 @@ function processMessage($message) {
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					}
 					mysql_free_result($result);
-					$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
+					$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
 					if($hour != 1 /* && $hour != 13*/) {

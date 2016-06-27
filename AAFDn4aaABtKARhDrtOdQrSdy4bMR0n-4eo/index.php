@@ -1621,8 +1621,8 @@ function processMessage($message) {
 		error_log($logname." triggered: /sendSpecialNot.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
-			$group_id = -0;
-			$notificationMessage = "*Se ha reiniciado el contador del grupo debido al floodeo masivo.*";
+			$group_id = -1001044604308;
+			$notificationMessage = "*Se ha reiniciado el contador del grupo debido al floodeo masivo de ShurNutriaFC.*";
 			apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "Markdown", "text" => $notificationMessage));
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje.*"));
 		} else if ($message['chat']['type'] == "private") {

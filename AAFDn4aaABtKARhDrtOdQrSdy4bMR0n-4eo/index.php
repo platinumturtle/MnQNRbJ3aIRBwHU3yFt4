@@ -181,7 +181,7 @@ function randomSentence() {
 						"del Cáucaso",				"radiocontrol",
 						"temporal",					"sensual",
 						"con escayola",				"pelotari",
-						"selección",
+						"selección",				"volante",
 						"presidente",
 						"reversible",
 						"elegante",
@@ -1051,6 +1051,7 @@ function getPole() {
 						"BQADBAADiwYAApdgXwABNKZZDVMKdUQC",
 						"BQADBAADBQQAAmhKZAABqSZ3EjIAARr6Ag",
 						"BQADBAADjAYAApdgXwAB2lwy0l0FZSYC",
+						"BQADBAADdgADxfqjAAEpCGcOf8KWnAI",
 						"BQADBAADvQYAApdgXwAB5u1TiTN7A5QC",
 						"BQADBAADwAYAApdgXwABgO-1Op_g00QC",
 						"BQADBAADEwcAApdgXwABqq-1eIgE_fwC",
@@ -1915,7 +1916,9 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		sleep(2);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence.".*"));
-    }
+    } else {
+		error_log("Standard Message from ".$logname." in ".$chat_id);
+	}
   } else {
 	 if (isset($message['new_chat_title'])) {
 		error_log("Trigger: Group title.");

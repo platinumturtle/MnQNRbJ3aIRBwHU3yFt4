@@ -2433,19 +2433,28 @@ function processMessage($message) {
 					$row = mysql_fetch_array($result);
 					if(isset($row['fc_id'])) {
 						if($row['fc_id'] > 1) {
+							$subTotal = $row['total'];
+							error_log("PASO POR AQUI ".$subTotal);
+							
+							
+							mysql_free_result($result);
+							$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapturetest WHERE user_id = '".$from_id."' GROUP BY user_id";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$row = mysql_fetch_array($result);
 							$newSeekerTotal = $row['total'];
-							error_log("PASO POR AQUI ".$newSeekerTotal);
+							
+							
 							// hacer un select y ver cuantas banderas tiene el decimo con un for de 10
 							mysql_free_result($result);
 							$query = "SELECT SUM(total) AS total FROM flagcapturetest WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$row = mysql_fetch_array($result);
 							// modo debug: aqui hare una consulta para ver si es verdad que va
-							error_log("el poleador tiene ".$newSeekerTotal." y el 10 tiene ".$row['total']);
+							error_log("el poleador tiene ".$subTotal." y el 10 tiene ".$row['total']);
 							// resto el total de poles del poleador - las del decimo puesto
 							// si el resultado es mayo de 20 ejecuto el codiiof de abajo
 							if(($newSeekerTotal - $row['total']) <= 20) {
-								$total = 1 + $newSeekerTotal; 
+								$total = 1 + $subTotal; 
 								mysql_free_result($result);
 								$chatTitle = str_replace("'","''",$message['chat']['title']);
 								$query = "SET NAMES utf8mb4;";

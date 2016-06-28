@@ -748,7 +748,7 @@ function checkUserID($id) {
 
 function checkUsername($username) {
 	$bannedUsername = array(
-					"", // DemoniaBot ShurNutriaFC DemoniaGothKestrell
+					"", // DemoniaBot ShurNutriaFC DemoniaGothKestrell TaliBOT
 					""
 				);
 	for($i=0;$i<sizeof($bannedUsername);$i++) {
@@ -761,7 +761,7 @@ function checkUsername($username) {
 
 function checkGroup($group) {
 	$bannedGroup = array(
-					"-1001056538642", // -1001044604308 GNU/Vodka
+					"", // -1001044604308 GNU/Vodka
 					""
 				);
 	for($i=0;$i<sizeof($bannedGroup);$i++) {
@@ -770,6 +770,20 @@ function checkGroup($group) {
 			exit;
 		}
 	}
+}
+
+function rankedGroup($group) {
+	$bannedGroup = array(
+					"-1001056538642", // -1001044604308 GNU/Vodka
+					""
+				);
+	for($i=0;$i<sizeof($bannedGroup);$i++) {
+		if($bannedGroup[$i] == $group) {
+			error_log("Group ".$group." is disqualified from Group Battle.");
+			return 0;
+		}
+	}
+	return 1;
 }
 
 function failInsult() {
@@ -2188,29 +2202,31 @@ function processMessage($message) {
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 		// Group Battle
-		checkGroup($message['chat']['id']);
 		$time = time();
 		$link = dbConnect();
-		$query = 'SELECT total, lastpoint FROM groupbattle WHERE group_id = '.$chat_id;
-		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$row = mysql_fetch_array($result);
-		if(isset($row['total'])) {
-			if($row['total'] > 0 && $time != $row['lastpoint']) {
-				$total = $row['total'] + 1;
+		$safeGroup = rankedGroup($message['chat']['id']);
+		if($safeGroup == 1) {
+			$query = 'SELECT total, lastpoint FROM groupbattle WHERE group_id = '.$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['total'])) {
+				if($row['total'] > 0 && $time != $row['lastpoint']) {
+					$total = $row['total'] + 1;
+					mysql_free_result($result);
+					$query = 'UPDATE groupbattle SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				}
+			} else {
 				mysql_free_result($result);
-				$query = 'UPDATE groupbattle SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
+				$grouptitle = $message['chat']['title'];
+				$grouptitle = str_replace("'","''",$grouptitle);
+				$query = "SET NAMES utf8mb4;";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			}
-		} else {
 			mysql_free_result($result);
-			$grouptitle = $message['chat']['title'];
-			$grouptitle = str_replace("'","''",$grouptitle);
-			$query = "SET NAMES utf8mb4;";
-			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
-			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}
-		mysql_free_result($result);
 		// User Battle
 		$user_id = $message['from']['id'];
 		$query = 'SELECT ub_id, lastpoint, total FROM userbattle WHERE group_id = '.$chat_id.' AND user_id = '.$user_id;
@@ -2861,6 +2877,7 @@ if (!$update) {
 if (isset($update["edited_message"])) {
 	checkUserID($update["edited_message"]['from']['id']);
 	checkUsername($update["edited_message"]['from']['username']);
+	checkGroup($update["edited_message"]['chat']['id']);
 	error_log($update["edited_message"]['from']['first_name']." triggered: Edited message.");
 	usleep(500000);
 	$chat_id = $update["edited_message"]['chat']['id'];
@@ -2874,6 +2891,7 @@ if (isset($update["edited_message"])) {
 if (isset($update["message"])) {
 	checkUserID($update["message"]['from']['id']);
 	checkUsername($update["message"]['from']['username']);
+	checkGroup($update["message"]['chat']['id']);
 	processMessage($update["message"]);
 }
 ?>

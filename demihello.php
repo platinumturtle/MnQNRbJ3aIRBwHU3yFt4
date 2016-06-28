@@ -2433,6 +2433,7 @@ function processMessage($message) {
 							mysql_free_result($result);
 							$query = "SELECT SUM(total) AS total FROM flagcapturetest WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$row = mysql_fetch_array($result);
 							// modo debug: aqui hare una consulta para ver si es verdad que va
 							error_log("el poleador tiene ".$newSeekerTotal." y el 10 tiene ".$row['total']);
 							// resto el total de poles del poleador - las del decimo puesto

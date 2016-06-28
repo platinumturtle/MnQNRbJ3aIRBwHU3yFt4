@@ -733,6 +733,22 @@ function insult($name) {
 	return $storedInsult[$n];
 }
 
+function checkUserID($id) {
+	$bannedID = array(
+					"1",
+					""
+				);
+	$ban = 0;
+	for($i=0;$i<sizeof($bannedID),$i++) {
+		if($bannedID[$i] == $id) {
+			error_log("ASD");
+			exit;
+			return 1;
+		}
+	}
+	return 0;
+}
+
 function failInsult() {
 	$storedInsult = array(
 						"No quiero, subnormal",
@@ -2798,14 +2814,24 @@ if (!$update) {
   exit;
 }
 
-if ($http_code == 429) {
-	error_log("FLOOD");
-}
+error_log("TRY: ".$http_code);
+//if ($http_code == 429) {
+//	error_log("FLOOD");
+//}
+
 
 if($update["edited_message"]['from']['username'] == "Arbustoad" || $update["message"]['from']['username'] == "Arbustoad" ) {
-	error_log(" is blocked from using Demisuke.");
-	exit;
+	if(isset($update["edited_message"]['from']['username'])) {
+		$blockedUser = $update["edited_message"]['from']['username'];
+	} else {
+		$blockedUser = $update["message"]['from']['username'];
+	}
+	//error_log($blockedUser." is blocked from using Demisuke.");
+	//exit;
+	checkUserID(1);
 }
+
+
 
 
 if (isset($update["edited_message"])) {

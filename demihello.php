@@ -739,7 +739,7 @@ function checkUserID($id) {
 					""
 				);
 	$ban = 0;
-	for($i=0;$i<sizeof($bannedID),$i++) {
+	for($i=0;$i<sizeof($bannedID);$i++) {
 		if($bannedID[$i] == $id) {
 			error_log("ASD");
 			exit;

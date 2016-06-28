@@ -2768,6 +2768,7 @@ if ($http_code == 429) {
 }
 
 if (isset($update["edited_message"])) {
+	error_log($update["edited_message"]['from']['first_name']." triggered: Edited message.");
 	usleep(500000);
 	$chat_id = $update["edited_message"]['chat']['id'];
 	$reply = $update["edited_message"]['message_id'];

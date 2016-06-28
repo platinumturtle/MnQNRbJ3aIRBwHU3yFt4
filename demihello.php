@@ -2428,6 +2428,7 @@ function processMessage($message) {
 					if(isset($row['fc_id'])) {
 						if($row['fc_id'] > 1) {
 							$newSeekerTotal = $row['total'];
+							error_log("PASO POR AQUI ".$newSeekerTotal);
 							// hacer un select y ver cuantas banderas tiene el decimo con un for de 10
 							mysql_free_result($result);
 							$query = "SELECT SUM(total) AS total FROM flagcapturetest WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";

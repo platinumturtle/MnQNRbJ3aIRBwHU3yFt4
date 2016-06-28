@@ -2098,6 +2098,10 @@ function commandsList() {
 				.PHP_EOL.
 				"_El primer usuario que la capture con la función !pole la tendrá en su posesión y su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, hasta que se plante la siguiente bandera, además de sumar una bandera a su colección._"
 				.PHP_EOL.PHP_EOL.
+				"_El usuario que tenga la bandera actual en su poder no podrá capturar la siguiente, y tampoco podrá hacerlo todo aquel usuario que tenga el inventario lleno._"
+				.PHP_EOL.
+				"_El tamaño total del inventario es de veinte ranuras para banderas además de una ranura extra por cada bandera que haya capturado el usuario que aparece en la décima posición del ránking._"
+				.PHP_EOL.
 				"_Puedes consultar el ránking global de banderas con la función \"!banderas\" o el ránking de tu grupo en concreto con \"!banderas\"._"
 				.PHP_EOL.
 				"¡Captúralas todas desde un grupo o un supergrupo para aparecer en los puestos más altos!"
@@ -2419,7 +2423,9 @@ function processMessage($message) {
 				} else {
 					$name = "Desconocido";
 				}
+				$checkMax = 0;
 				if($from_id != $row['user_id']) {
+					
 					$cleanName = str_replace("'","''",$name);
 					mysql_free_result($result);
 					$query = "SELECT fc_id, total FROM flagcapturetest WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
@@ -2449,6 +2455,8 @@ function processMessage($message) {
 								// si no, chaval deten los pies.
 							} else {
 								error_log("NO PUEDES POLEAR");
+								$checkMax = 1;
+								$text = "<b>🏴❌ ¡".$name." ha encontrado otra bandera, ¡pero ya tiene el inventario lleno!</b> 🚫";
 							}
 						}
 					} else {
@@ -2460,14 +2468,16 @@ function processMessage($message) {
 						$query = "INSERT INTO `flagcapturetest` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					}
-					mysql_free_result($result);
-					$query = "UPDATE `flagcapturetest` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
-					if($hour != 1 /* && $hour != 13*/) {
-						$text = $text."s";
+					if($checkMax == 0) {
+						mysql_free_result($result);
+						$query = "UPDATE `flagcapturetest` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
+						if($hour != 1 /* && $hour != 13*/) {
+							$text = $text."s";
+						}
+						$text = $text." ".$hour."! 🎉</b>";	
 					}
-					$text = $text." ".$hour."! 🎉</b>";	
 				} else {
 					$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";
 				}

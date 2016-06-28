@@ -2437,7 +2437,7 @@ function processMessage($message) {
 							error_log("el poleador tiene ".$newSeekerTotal." y el 10 tiene ".$row['total']);
 							// resto el total de poles del poleador - las del decimo puesto
 							// si el resultado es mayo de 20 ejecuto el codiiof de abajo
-							if(($newSeekerTotal - $row['total']) > 20) {
+							if(($newSeekerTotal - $row['total']) <= 20) {
 								$total = 1 + $newSeekerTotal; 
 								mysql_free_result($result);
 								$chatTitle = str_replace("'","''",$message['chat']['title']);

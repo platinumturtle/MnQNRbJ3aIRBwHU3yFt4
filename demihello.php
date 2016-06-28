@@ -735,18 +735,15 @@ function insult($name) {
 
 function checkUserID($id) {
 	$bannedID = array(
-					"1",
-					""
+					"9",
+					"1"
 				);
-	$ban = 0;
-	for($i=0;$i<sizeof($bannedID);$i++) {
+	for($i=0;$i<sizeof($bannedID);<$i++) {
 		if($bannedID[$i] == $id) {
-			error_log("ASD");
+			error_log($id." is banned and can't access to Demisuke.");
 			exit;
-			return 1;
 		}
 	}
-	return 0;
 }
 
 function failInsult() {

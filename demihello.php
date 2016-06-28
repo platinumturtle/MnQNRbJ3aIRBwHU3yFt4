@@ -738,7 +738,7 @@ function checkUserID($id) {
 					"9",
 					"1"
 				);
-	for($i=0;$i<sizeof($bannedID);<$i++) {
+	for($i=0;$i<sizeof($bannedID);$i++) {
 		if($bannedID[$i] == $id) {
 			error_log($id." is banned and can't access to Demisuke.");
 			exit;

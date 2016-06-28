@@ -774,12 +774,12 @@ function checkGroup($group) {
 
 function rankedGroup($group) {
 	$bannedGroup = array(
-					"-1001056538642", // -1001044604308 GNU/Vodka
+					"-1001056538642", // -1001044604308 GNU/Vodka, -1001056538642 Rincón Demigrante
 					""
 				);
 	for($i=0;$i<sizeof($bannedGroup);$i++) {
 		if($bannedGroup[$i] == $group) {
-			error_log("Group ".$group." is disqualified from Group Battle.");
+			//error_log("Group ".$group." is disqualified from Group Battle.");
 			return 0;
 		}
 	}
@@ -1101,9 +1101,16 @@ function getGroupBattle($owngroup) {
 		$query = 'SELECT * FROM groupbattle WHERE group_id = '.$owngroup;
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		$text = $text.
-				"<b>\"".$row['name']."\" tiene un total de ".$row['total']." puntos.</b>"
-				.PHP_EOL.PHP_EOL;
+		$safeGroup = rankedGroup($owngroup);
+		if($safeGroup == 1) {
+			$text = $text.
+					"<b>\"".$row['name']."\" tiene un total de ".$row['total']." puntos.</b>"
+					.PHP_EOL.PHP_EOL;
+		} else {
+			$text = $text.
+					"<b>\"".$row['name']."\" está descalificado de la competición.</b>"
+					.PHP_EOL.PHP_EOL;
+		}
 	}
 	mysql_free_result($result);
 	mysql_close($link);

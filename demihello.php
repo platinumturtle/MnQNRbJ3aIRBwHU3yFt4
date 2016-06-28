@@ -774,7 +774,7 @@ function checkGroup($group) {
 
 function rankedGroup($group) {
 	$bannedGroup = array(
-					"-1001056538642", // -1001044604308 GNU/Vodka, -1001056538642 Rincón Demigrante
+					"", // -1001044604308 GNU/Vodka, -1001056538642 Rincón Demigrante
 					""
 				);
 	for($i=0;$i<sizeof($bannedGroup);$i++) {
@@ -855,7 +855,7 @@ function randomSentence() {
 						"del Cáucaso",				"radiocontrol",
 						"temporal",					"sensual",
 						"con escayola",				"pelotari",
-						"selección",
+						"selección",				"volante",
 						"presidente",
 						"reversible",
 						"elegante",
@@ -1128,10 +1128,10 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		$link = dbConnect();
 		if($global == 1){
 			$text = "<b>🏁 Ránking global de Banderas capturadas:</b>";
-			$query = "SELECT user_id, user_name, MAX(last_flag) AS last_flag, SUM(total) AS total FROM flagcapturetest WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag";
+			$query = "SELECT user_id, user_name, MAX(last_flag) AS last_flag, SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag";
 		} else {
 			$text = "<b>🏁 Ránking de ".$groupName." de Banderas capturadas:</b>";
-			$query = "SELECT user_id, user_name, total FROM flagcapturetest WHERE total > 0 AND group_id =  '".$group."' ORDER BY total DESC , last_flag";
+			$query = "SELECT user_id, user_name, total FROM flagcapture WHERE total > 0 AND group_id =  '".$group."' ORDER BY total DESC , last_flag";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$text = $text.PHP_EOL.PHP_EOL.
@@ -1177,9 +1177,9 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		}
 		mysql_free_result($result);
 		if($global == 1) {
-			$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapturetest WHERE user_id = '".$myself."' GROUP BY user_id";
+			$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$myself."' GROUP BY user_id";
 		} else {
-			$query = "SELECT user_id, user_name, total FROM flagcapturetest WHERE user_id = '".$myself."' AND group_id = '".$group."'";
+			$query = "SELECT user_id, user_name, total FROM flagcapture WHERE user_id = '".$myself."' AND group_id = '".$group."'";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
@@ -2176,7 +2176,7 @@ function commandsList() {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.4.1 creado por @Kamisuke."
+				"@DemisukeBot v1.4.2 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
@@ -2475,7 +2475,7 @@ function processMessage($message) {
 			$hour = date('g');
 			$currentTime = $currentTime - ($minutes * 60) - $seconds;
 			$link = dbConnect();
-			$query = 'SELECT user_id, last_flag FROM flagcapturetest WHERE fc_id = 0001';
+			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if($row['last_flag'] != $currentTime) {
@@ -2488,45 +2488,33 @@ function processMessage($message) {
 				}
 				$checkMax = 0;
 				if($from_id != $row['user_id']) {
-					
 					$cleanName = str_replace("'","''",$name);
 					mysql_free_result($result);
-					$query = "SELECT fc_id, total FROM flagcapturetest WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
+					$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
 					if(isset($row['fc_id'])) {
 						if($row['fc_id'] > 1) {
 							$subTotal = $row['total'];
-							
-							
 							mysql_free_result($result);
-							$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapturetest WHERE user_id = '".$from_id."' GROUP BY user_id";
+							$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$from_id."' GROUP BY user_id";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$row = mysql_fetch_array($result);
 							$newSeekerTotal = $row['total'];
-							error_log("PASO POR AQUI ".$newSeekerTotal);
-							
-							
-							// hacer un select y ver cuantas banderas tiene el decimo con un for de 10
 							mysql_free_result($result);
-							$query = "SELECT SUM(total) AS total FROM flagcapturetest WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
+							$query = "SELECT SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$row = mysql_fetch_array($result);
-							// modo debug: aqui hare una consulta para ver si es verdad que va
-							error_log("el poleador tiene ".$subTotal." y el 10 tiene ".$row['total']);
-							// resto el total de poles del poleador - las del decimo puesto
-							// si el resultado es mayo de 20 ejecuto el codiiof de abajo
 							if(($newSeekerTotal - $row['total']) < 20) {
 								$total = 1 + $subTotal; 
 								mysql_free_result($result);
 								$chatTitle = str_replace("'","''",$message['chat']['title']);
 								$query = "SET NAMES utf8mb4;";
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-								$query = "UPDATE `flagcapturetest` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
+								$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-								// si no, chaval deten los pies.
 							} else {
-								error_log("NO PUEDES POLEAR");
+								error_log("Full inventory.");
 								$checkMax = 1;
 								$text = "<b>🏴❌ ¡".$name." ha encontrado otra bandera, ¡pero ya tiene el inventario lleno!</b> 🚫";
 							}
@@ -2537,12 +2525,12 @@ function processMessage($message) {
 						$chatTitle = str_replace("'","''",$message['chat']['title']);
 						$query = "SET NAMES utf8mb4;";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						$query = "INSERT INTO `flagcapturetest` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
+						$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					}
 					if($checkMax == 0) {
 						mysql_free_result($result);
-						$query = "UPDATE `flagcapturetest` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
+						$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
 						if($hour != 1 /* && $hour != 13*/) {
@@ -2556,7 +2544,7 @@ function processMessage($message) {
 			} else {
 				error_log("Trigger: Polefail.");
 				mysql_free_result($result);
-				$query = "SELECT group_name, user_name FROM flagcapturetest WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+				$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				$row = mysql_fetch_array($result);
@@ -2573,31 +2561,6 @@ function processMessage($message) {
 		} else {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La pole solo está disponible para grupos y supergrupos, ¡añádeme a alguno!*"));
 		}
-		/*
-		
-		$link = dbConnect();
-		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
-		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$row = mysql_fetch_array($result);
-		if(isset($row['total'])) {
-			if($row['total'] > 0) {
-				mysql_free_result($result);
-				$newtitle = $message['new_chat_title'];
-				$newtitle = str_replace("'","''",$newtitle);
-				$query = "SET NAMES utf8mb4;";
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			}
-		}
-		mysql_free_result($result);
-		mysql_close($link);
-		
-	
-		
-		*/
-
-		
 	} else if (strpos($text, "%%CONNTRY%%") !== false) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "VOY"));
 		/*$con = dbConnect();
@@ -2735,7 +2698,7 @@ function processMessage($message) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence.".*"));
     } else {
       //apiRequestWebhook("sendMessage", array('chat_id' => $chat_id, "reply_to_message_id" => $message_id, "text" => 'Cool'));
-    } 
+    }
   } else {
 	 if (isset($message['new_chat_title'])) {
 		error_log("Trigger: Group title.");
@@ -2860,26 +2823,6 @@ if (!$update) {
   // receive wrong update, must not happen
   exit;
 }
-
-//error_log("TRY: ".$http_code);
-//if ($http_code == 429) {
-//	error_log("FLOOD");
-//}
-
-
-//if($update["edited_message"]['from']['username'] == "Arbustoad" || $update["message"]['from']['username'] == "Arbustoad" ) {
-	///if(isset($update["edited_message"]['from']['username'])) {
-	//	$blockedUser = $update["edited_message"]['from']['username'];
-	//} else {
-	//	$blockedUser = $update["message"]['from']['username'];
-	//}
-	//error_log($blockedUser." is blocked from using Demisuke.");
-	//exit;
-	//checkUserID(1);
-//}
-
-
-
 
 if (isset($update["edited_message"])) {
 	checkUserID($update["edited_message"]['from']['id']);

@@ -735,12 +735,38 @@ function insult($name) {
 
 function checkUserID($id) {
 	$bannedID = array(
-					"9",
-					"1"
+					"", // 121704708 Rayne, 152288222 oikarinen
+					""
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
 		if($bannedID[$i] == $id) {
 			error_log($id." is banned and can't access to Demisuke.");
+			exit;
+		}
+	}
+}
+
+function checkUsername($username) {
+	$bannedUsername = array(
+					"", // DemoniaBot ShurNutriaFC DemoniaGothKestrell
+					""
+				);
+	for($i=0;$i<sizeof($bannedUsername);$i++) {
+		if($bannedUsername[$i] == $username) {
+			error_log("@".$username." is banned and can't access to Demisuke.");
+			exit;
+		}
+	}
+}
+
+function checkGroup($group) {
+	$bannedGroup = array(
+					"-1001056538642", // -1001044604308 GNU/Vodka
+					""
+				);
+	for($i=0;$i<sizeof($bannedGroup);$i++) {
+		if($bannedGroup[$i] == $group) {
+			error_log("Group ".$group." is banned and can't use Demisuke.");
 			exit;
 		}
 	}
@@ -2162,6 +2188,7 @@ function processMessage($message) {
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 		// Group Battle
+		checkGroup($message['chat']['id']);
 		$time = time();
 		$link = dbConnect();
 		$query = 'SELECT total, lastpoint FROM groupbattle WHERE group_id = '.$chat_id;
@@ -2811,27 +2838,29 @@ if (!$update) {
   exit;
 }
 
-error_log("TRY: ".$http_code);
+//error_log("TRY: ".$http_code);
 //if ($http_code == 429) {
 //	error_log("FLOOD");
 //}
 
 
-if($update["edited_message"]['from']['username'] == "Arbustoad" || $update["message"]['from']['username'] == "Arbustoad" ) {
-	if(isset($update["edited_message"]['from']['username'])) {
-		$blockedUser = $update["edited_message"]['from']['username'];
-	} else {
-		$blockedUser = $update["message"]['from']['username'];
-	}
+//if($update["edited_message"]['from']['username'] == "Arbustoad" || $update["message"]['from']['username'] == "Arbustoad" ) {
+	///if(isset($update["edited_message"]['from']['username'])) {
+	//	$blockedUser = $update["edited_message"]['from']['username'];
+	//} else {
+	//	$blockedUser = $update["message"]['from']['username'];
+	//}
 	//error_log($blockedUser." is blocked from using Demisuke.");
 	//exit;
-	checkUserID(1);
-}
+	//checkUserID(1);
+//}
 
 
 
 
 if (isset($update["edited_message"])) {
+	checkUserID($update["edited_message"]['from']['id']);
+	checkUsername($update["edited_message"]['from']['username']);
 	error_log($update["edited_message"]['from']['first_name']." triggered: Edited message.");
 	usleep(500000);
 	$chat_id = $update["edited_message"]['chat']['id'];
@@ -2843,6 +2872,8 @@ if (isset($update["edited_message"])) {
 }
 
 if (isset($update["message"])) {
-  processMessage($update["message"]);
+	checkUserID($update["message"]['from']['id']);
+	checkUsername($update["message"]['from']['username']);
+	processMessage($update["message"]);
 }
 ?>

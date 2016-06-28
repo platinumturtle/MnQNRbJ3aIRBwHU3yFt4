@@ -2434,7 +2434,6 @@ function processMessage($message) {
 					if(isset($row['fc_id'])) {
 						if($row['fc_id'] > 1) {
 							$subTotal = $row['total'];
-							error_log("PASO POR AQUI ".$subTotal);
 							
 							
 							mysql_free_result($result);
@@ -2442,6 +2441,7 @@ function processMessage($message) {
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$row = mysql_fetch_array($result);
 							$newSeekerTotal = $row['total'];
+							error_log("PASO POR AQUI ".$newSeekerTotal);
 							
 							
 							// hacer un select y ver cuantas banderas tiene el decimo con un for de 10
@@ -2453,7 +2453,7 @@ function processMessage($message) {
 							error_log("el poleador tiene ".$subTotal." y el 10 tiene ".$row['total']);
 							// resto el total de poles del poleador - las del decimo puesto
 							// si el resultado es mayo de 20 ejecuto el codiiof de abajo
-							if(($newSeekerTotal - $row['total']) <= 20) {
+							if(($newSeekerTotal - $row['total']) < 20) {
 								$total = 1 + $subTotal; 
 								mysql_free_result($result);
 								$chatTitle = str_replace("'","''",$message['chat']['title']);

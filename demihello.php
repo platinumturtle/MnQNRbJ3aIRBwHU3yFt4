@@ -2802,6 +2802,12 @@ if ($http_code == 429) {
 	error_log("FLOOD");
 }
 
+if($update["edited_message"]['from']['username'] == "Arbustoad" || $update["message"]['from']['username'] == "Arbustoad" ) {
+	error_log(" is blocked from using Demisuke.");
+	exit;
+}
+
+
 if (isset($update["edited_message"])) {
 	error_log($update["edited_message"]['from']['first_name']." triggered: Edited message.");
 	usleep(500000);

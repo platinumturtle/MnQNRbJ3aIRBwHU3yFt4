@@ -2136,7 +2136,9 @@ if (!$update) {
 
 if (isset($update["edited_message"])) {
 	checkUserID($update["edited_message"]['from']['id']);
-	checkUsername($update["edited_message"]['from']['username']);
+	if(isset($update["edited_message"]['from']['username'])) {
+		checkUsername($update["edited_message"]['from']['username']);
+	}
 	checkGroup($update["edited_message"]['chat']['id']);
 	error_log($update["edited_message"]['from']['first_name']." triggered: Edited message.");
 	usleep(500000);
@@ -2150,7 +2152,9 @@ if (isset($update["edited_message"])) {
 
 if (isset($update["message"])) {
 	checkUserID($update["message"]['from']['id']);
-	checkUsername($update["message"]['from']['username']);
+	if(isset($update["message"]['from']['username'])) {
+		checkUsername($update["message"]['from']['username']);
+	}
 	checkGroup($update["message"]['chat']['id']);
 	processMessage($update["message"]);
 }

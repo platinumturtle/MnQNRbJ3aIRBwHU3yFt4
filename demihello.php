@@ -2957,6 +2957,9 @@ function processMessage($message) {
 		}
 	}
   }
+  if (strpos(strtolower($text), "kamisuke") !== false) {
+	error_log($logname."'s private incoming message: ".$message['text']);
+  }
 }
 
 

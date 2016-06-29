@@ -2448,6 +2448,40 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
+	} else if (strpos(strtolower($text), "!mensajessgrupo") !== false) {
+		// query gruapl
+	} else if (strpos(strtolower($text), "!mensajess") !== false) {
+		// query 
+	} else if (strpos(strtolower($text), "!desactivame") !== false) {
+		$link = dbConnect();
+		$query = 'UPDATE userbattle SET visible = FALSE WHERE user_id = '.$message['from']['id'];
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		if(isset($message['from']['username'])) {
+			$text = "<b>❌ ".$message['from']['username'];
+		} else if(isset($message['from']['first_name'])) {
+			$text = "<b>❌ ".$message['from']['first_name'];
+		} else {
+			$text = "<b>❌ Tu nombre";
+		}
+		$text = $text." no aparecerá en las listas de usuarios más activos.</b>";
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+		mysql_free_result($result);
+		mysql_close($link);
+	} else if (strpos(strtolower($text), "!activame") !== false) {
+		$link = dbConnect();
+		$query = 'UPDATE userbattle SET visible = TRUE WHERE user_id = '.$message['from']['id'];
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		if(isset($message['from']['username'])) {
+			$text = "<b>✅ ".$message['from']['username'];
+		} else if(isset($message['from']['first_name'])) {
+			$text = "<b>✅ ".$message['from']['first_name'];
+		} else {
+			$text = "<b>✅ Tu nombre";
+		}
+		$text = $text." aparecerá en las listas de usuarios más activos.</b>";
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+		mysql_free_result($result);
+		mysql_close($link);
 	} else if (strpos(strtolower($text), "!banderasgrupo") !== false) {
 		error_log($logname." triggered: !banderasgrupo.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

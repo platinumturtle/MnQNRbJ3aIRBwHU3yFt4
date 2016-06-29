@@ -1684,7 +1684,7 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
-	} else if (strpos($text, "/sendSpecialNot") === 0) {
+	} else if (strpos($text, "/sendSpecialNet") === 0) {
 		error_log($logname." triggered: /sendSpecialNot.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");

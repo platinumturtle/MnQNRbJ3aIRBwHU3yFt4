@@ -1119,6 +1119,90 @@ function getGroupBattle($owngroup) {
 	return $text;
 }
 
+function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
+	//HTML Parse Mode
+	if($global == 0 && $group == 0) {
+		$text = "<b>La función !mensajesgrupo es exclusiva para grupos y supergrupos, ¡añádeme a alguno y utilízala allí!</b>";
+	}
+	else {
+		$link = dbConnect();
+		if($global == 1){
+			$text = "<b>🏁 TOP 10 de usuarios más activos en Telegram:</b>";
+			$query = "SELECT user_id, user_name, MAX(last_flag) AS last_flag, SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag";
+		} else {
+			$text = "<b>🏁 TOP 10 de usuarios más activos de ".$groupName.":</b>";
+			$query = "SELECT user_id, user_name, total FROM flagcapture WHERE total > 0 AND group_id =  '".$group."' ORDER BY total DESC , last_flag";
+		}
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$text = $text.PHP_EOL.PHP_EOL.
+				"<b>🏆 POLE ABSOLUTA 🏆</b>"
+				.PHP_EOL;
+		for($i=0;$i<10;$i++) {
+			$row = mysql_fetch_array($result);
+			if(isset($row['total'])) {
+				if($row['total'] > 0) {
+					switch($i) {
+						case 1: $text = $text."<b>🎖2º </b>";
+								break;
+						case 2: $text = $text."<b>🏅3º </b>";
+								break;
+						case 3: $text = $text."4⃣ ";
+								break;
+						case 4: $text = $text."5⃣ ";
+								break;
+						case 5: $text = $text."6⃣ ";
+								break;
+						case 6: $text = $text."7⃣ ";
+								break;
+						case 7: $text = $text."8⃣ ";
+								break;
+						case 8: $text = $text."9⃣ ";
+								break;
+						case 9: $text = $text."🔟 ";
+								break;
+						default: break;
+					}
+					$text = $text.
+							"<b>".$row['user_name']."</b>"
+							.PHP_EOL.
+							"<i>".$row['total']." bandera";
+					if($row['total'] > 1) {
+						$text = $text."s";
+					}
+					$text = $text.".</i>".PHP_EOL.PHP_EOL;
+				}
+			} else if($i==0) {
+				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
+			}
+		}
+		mysql_free_result($result);
+		if($global == 1) {
+			$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$myself."' GROUP BY user_id";
+		} else {
+			$query = "SELECT user_id, user_name, total FROM flagcapture WHERE user_id = '".$myself."' AND group_id = '".$group."'";
+		}
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['user_id'])) {
+			$text = $text.
+			"<b>".$row['user_name']." ha capturado ".$row['total']." bandera";
+			if($row['total'] > 1) {
+				$text = $text."s";
+			}
+			if($global == 0) {
+				$text = $text." desde ".$groupName;
+			}
+			$text = $text.".</b>".PHP_EOL.PHP_EOL;
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		$text = $text.
+				"<i>Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
+				"Recuerda que las puedes capturar con la función \"!pole\" y consultar el ránking global con \"!banderas\" y el de tu grupo con \"!banderasgrupo\".</i>";
+	}
+	return $text;
+}
+
 function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	//HTML Parse Mode
 	if($global == 0 && $group == 0) {
@@ -2449,10 +2533,20 @@ function processMessage($message) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
 	} else if (strpos(strtolower($text), "!mensajessgrupo") !== false) {
-		// query gruapl
+		error_log($logname." triggered: !mensajesgrupo.");
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$result = getUserBattle($message['from']['id'], 0, $chat_id, $message['chat']['title']);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+		} else {
+			$result = "*Para usar esta función necesitas ejecutarla desde algún grupo, ¡añademe a tu grupo favorito y compite con tus amigos!*";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+		}
 	} else if (strpos(strtolower($text), "!mensajess") !== false) {
-		// query 
+		error_log($logname." triggered: !mensajes.");
+		$result = getUserBattle($message['from']['id'], 1);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "!desactivame") !== false) {
+		error_log($logname." triggered: !desactivame.");
 		$link = dbConnect();
 		$query = 'UPDATE userbattle SET visible = FALSE WHERE user_id = '.$message['from']['id'];
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -2468,6 +2562,7 @@ function processMessage($message) {
 		mysql_free_result($result);
 		mysql_close($link);
 	} else if (strpos(strtolower($text), "!activame") !== false) {
+		error_log($logname." triggered: !activame.");
 		$link = dbConnect();
 		$query = 'UPDATE userbattle SET visible = TRUE WHERE user_id = '.$message['from']['id'];
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

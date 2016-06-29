@@ -2577,7 +2577,7 @@ function processMessage($message) {
 		error_log($logname." found !video Easter Egg!");
 		$result = getVideo();
 		$result ="[👇](".$result.")";
-		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 	} else if (strpos(strtolower($text), "!mensajesgrupo") !== false) {
 		error_log($logname." triggered: !mensajesgrupo.");
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {

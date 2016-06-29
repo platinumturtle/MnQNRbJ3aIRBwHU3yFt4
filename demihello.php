@@ -1287,6 +1287,37 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	return $text;
 }
 
+function containsCommand($text) {
+	$commandsList = array(
+						"/start",
+						"/demisuke",
+						"!dados",
+						"!insulta",
+						"!siono",
+						"!ping",
+						"!temazo",
+						"!cancion",
+						"!canción",
+						"!video",
+						"!mensajes",
+						"!desactivame",
+						"!activame",
+						"!banderas",
+						"!pole",
+						"!grupos",
+						"!nick",
+						"!historia"
+					);
+					
+	$n = sizeof($stickerList);
+	for($i=0;$i<$n;$i++) {
+		if(strpos(strtolower($text), $commandsList[$n]) !== false) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 function getSticker() {
 	$stickerList = array(
 						"BQADBAADWQADl2BfAAEq3kLUvoh-bAI",
@@ -2341,7 +2372,8 @@ function processMessage($message) {
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {
-			if(($time - 5 ) > $row['lastpoint']) {
+			$isCommand = containsCommand($message['text']);
+			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0) {
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);

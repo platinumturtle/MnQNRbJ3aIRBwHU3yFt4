@@ -2397,7 +2397,30 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
-	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
+	} else if (strpos($text, "/sendSpecialNot") === 0) {
+		error_log($logname." triggered: /sendSpecialNot.");
+		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
+			error_log($logname." triggered: Notification from Admin Kamisuke.");
+			//$group_id = -1001044604308;
+			//$notificationMessage = "*Se ha reiniciado el contador del grupo debido al floodeo masivo de DemoniaGothKestrell.*";
+			//apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "Markdown", "text" => $notificationMessage));
+			$idFinal = substr($message['text'], strpos($message['text'],"("), strpos($message['text'],")"));
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje.*"));
+		} else if ($message['chat']['type'] == "private") {
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
+		}
+	/*}  else if (strpos($text, "/sendSpecialNot") === 0) {
+		error_log($logname." triggered: /sendSpecialNot.");
+		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
+			error_log($logname." triggered: Notification from Admin Kamisuke.");
+			$group_id = -1001044604308;
+			$notificationMessage = "*Se ha reiniciado el contador del grupo debido al floodeo masivo de DemoniaGothKestrell.*";
+			apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "Markdown", "text" => $notificationMessage));
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje.*"));
+		} else if ($message['chat']['type'] == "private") {
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
+		}*/
+	}  else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
 		error_log($logname." triggered: Hola.");
 		$greeting = greeting();
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -2532,7 +2555,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
-	} else if (strpos(strtolower($text), "!mensajessgrupo") !== false) {
+	} else if (strpos(strtolower($text), "!mensajesgrupo") !== false) {
 		error_log($logname." triggered: !mensajesgrupo.");
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 			$result = getUserBattle($message['from']['id'], 0, $chat_id, $message['chat']['title']);
@@ -2541,7 +2564,7 @@ function processMessage($message) {
 			$result = "*Para usar esta función necesitas ejecutarla desde algún grupo, ¡añademe a tu grupo favorito y compite con tus amigos!*";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 		}
-	} else if (strpos(strtolower($text), "!mensajess") !== false) {
+	} else if (strpos(strtolower($text), "!mensajes") !== false) {
 		error_log($logname." triggered: !mensajes.");
 		$result = getUserBattle($message['from']['id'], 1);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));

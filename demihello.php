@@ -2576,6 +2576,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!video") !== false || strpos(strtolower($text), "!vídeo") !== false) {
 		error_log($logname." found !video Easter Egg!");
 		$result = getVideo();
+		$result ="[👇](".$result.")";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));
 	} else if (strpos(strtolower($text), "!mensajesgrupo") !== false) {
 		error_log($logname." triggered: !mensajesgrupo.");

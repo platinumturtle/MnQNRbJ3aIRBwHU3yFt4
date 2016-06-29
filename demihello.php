@@ -2094,7 +2094,7 @@ function tellStory($part,$name) {
 					"e invocó a Odín para combatir la plaga de mosquitos que atacaba las croquetas que cualquier habitante cocinaba en su domicilio, ",
 					"y se aficionó a las casas de apuestas, logrando una racha de dos aciertos seguidos en más de diez mil intentos al 'Piedra, Papel o Tijera online', ",
 					"y se casó con el bosque en un acto de amor eterno a la naturaleza, hasta que ".$name."le prendió fuego, ",
-					"y se rompió una pierna intentando tapizar un calamar como si fuera un sofá de diseño.",
+					"y se rompió una pierna intentando tapizar un calamar como si fuera un sofá de diseño ",
 					"y montó un bar con una beca que le concedieron por ser campeón de europa en abrir latas de mejillones caducados con la rodilla izquierda, "
 					);
 		$n = sizeof($storedPart) - 1;
@@ -2358,6 +2358,8 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);
+	} else {
+		error_log($logname."'s private incoming message: ".$message['text']);
 	}
 
     if (strpos($text, "/start") === 0) {
@@ -2401,9 +2403,6 @@ function processMessage($message) {
 		error_log($logname." triggered: /sendSpecialNot.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
-			//$group_id = -1001044604308;
-			//$notificationMessage = "*Se ha reiniciado el contador del grupo debido al floodeo masivo de DemoniaGothKestrell.*";
-			//apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "Markdown", "text" => $notificationMessage));
 			$destiny_id = substr($message['text'], strpos($message['text'],"(") + 1, strpos($message['text'],")") - strpos($message['text'],"(") - 1);
 			$textToSend = substr($message['text'], strpos($message['text'],")") + 2);
 			apiRequest("sendMessage", array('chat_id' => $destiny_id, 'parse_mode' => "Markdown", "text" => $textToSend));

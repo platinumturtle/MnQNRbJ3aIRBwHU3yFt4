@@ -1821,6 +1821,23 @@ function getPole() {
 	return $storedGif[$n];
 }
 
+function getVideo() {
+	$storedVideo = array(
+						"https://www.youtube.com/watch?v=10dnX3crQho",
+						"https://www.youtube.com/watch?v=kHwUVG2LopQ",
+						"https://www.youtube.com/watch?v=IAHzHZjFiMQ",
+						"https://www.youtube.com/watch?v=kSKlj-BDzEE",
+						"https://www.youtube.com/watch?v=VERNmSLe0fY",
+						"https://www.youtube.com/watch?v=tJ_6Wvuzn_k",
+						"https://www.youtube.com/watch?v=wz013VbV-rc",
+						"https://www.youtube.com/watch?v=ZgHMrDzLD2c",
+						"https://www.youtube.com/watch?v=vFBgWbc-K7M"
+						);
+	$n = sizeof($storedVideo) - 1;
+	$n = rand(0,$n);
+	return $storedVideo[$n];
+}
+
 function getHitIt() {
 	$storedGif = array(
 						"BQADBAADpgYAApdgXwABdXGpHvKQ1WcC",
@@ -2556,6 +2573,10 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
+	} else if (strpos(strtolower($text), "!video") !== false || strpos(strtolower($text), "!vídeo") !== false) {
+		error_log($logname." found !video Easter Egg!");
+		$result = getVideo();
+		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));
 	} else if (strpos(strtolower($text), "!mensajesgrupo") !== false) {
 		error_log($logname." triggered: !mensajesgrupo.");
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
@@ -2958,7 +2979,7 @@ function processMessage($message) {
 	}
   }
   if (strpos(strtolower($text), "kamisuke") !== false) {
-	error_log($logname."'s private incoming message: ".$message['text']);
+	error_log($logname."'s chat about Kamisuke: ".$message['text']);
   }
 }
 

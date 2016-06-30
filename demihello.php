@@ -1128,10 +1128,10 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		$link = dbConnect();
 		if($global == 1){
 			$text = "<b>🏁 TOP 10 de usuarios más activos en Telegram:</b>";
-			$query = "SELECT user_id, user_name, MAX(last_flag) AS last_flag, SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag";
+			$query = "SELECT user_id, user_name, MAX(lastpoint) AS lastpoint, SUM(total) AS total FROM userbattle WHERE visible = TRUE GROUP BY user_id ORDER BY total DESC, lastpoint";
 		} else {
 			$text = "<b>🏁 TOP 10 de usuarios más activos de ".$groupName.":</b>";
-			$query = "SELECT user_id, user_name, total FROM flagcapture WHERE total > 0 AND group_id =  '".$group."' ORDER BY total DESC , last_flag";
+			$query = "SELECT user_id, user_name, total FROM userbattle WHERE visible = TRUE AND group_id = '".$group."' ORDER BY total DESC, lastpoint";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$text = $text.PHP_EOL.PHP_EOL.
@@ -1165,7 +1165,7 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 					$text = $text.
 							"<b>".$row['user_name']."</b>"
 							.PHP_EOL.
-							"<i>".$row['total']." bandera";
+							"<i>".$row['total']." mensajes";
 					if($row['total'] > 1) {
 						$text = $text."s";
 					}
@@ -1177,27 +1177,27 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		}
 		mysql_free_result($result);
 		if($global == 1) {
-			$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$myself."' GROUP BY user_id";
+			$query = "SELECT user_id, user_name, SUM(total) AS total FROM userbattle WHERE user_id = '".$myself."' GROUP BY user_id";
 		} else {
-			$query = "SELECT user_id, user_name, total FROM flagcapture WHERE user_id = '".$myself."' AND group_id = '".$group."'";
+			$query = "SELECT user_id, user_name, total FROM userbattle WHERE user_id = '".$myself."' AND group_id = '".$group."'";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['user_id'])) {
 			$text = $text.
-			"<b>".$row['user_name']." ha capturado ".$row['total']." bandera";
+			"<b>".$row['user_name']." tiene un total de ".$row['total']." mensaje";
 			if($row['total'] > 1) {
 				$text = $text."s";
 			}
 			if($global == 0) {
-				$text = $text." desde ".$groupName;
+				$text = $text." escritos en ".$groupName;
 			}
 			$text = $text.".</b>".PHP_EOL.PHP_EOL;
 		}
 		mysql_free_result($result);
 		mysql_close($link);
 		$text = $text.
-				"<i>Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
+				"<i>(Sobrante) Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
 				"Recuerda que las puedes capturar con la función \"!pole\" y consultar el ránking global con \"!banderas\" y el de tu grupo con \"!banderasgrupo\".</i>";
 	}
 	return $text;
@@ -1311,9 +1311,7 @@ function containsCommand($text) {
 					
 	$n = sizeof($commandsList);
 	for($i=0;$i<$n;$i++) {
-		error_log("BUSCO ".$commandsList[$i]." EN ".$text);
 		if(strpos(strtolower($text), $commandsList[$i]) !== false) {
-			error_log("DETECTO COMANDO");
 			return 1;
 		}
 	}
@@ -2375,9 +2373,7 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {
 			$isCommand = containsCommand($message['text']);
-				error_log($isCommand);
 			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0) {
-				error_log("es un mensaje");
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
@@ -2393,8 +2389,6 @@ function processMessage($message) {
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$query = "UPDATE userbattle SET group_name = '".$grouptitle."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			} else {
-				error_log("es un comando, no sumo");
 			}
 		} else {
 			mysql_free_result($result);

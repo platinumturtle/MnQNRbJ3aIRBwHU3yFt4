@@ -2231,7 +2231,7 @@ function tellStory($part,$name) {
 	return $story;
 }
 
-function commandsList() {
+function commandsList($send_id) {
 	$commands = 
 				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
 				.PHP_EOL.
@@ -2288,10 +2288,10 @@ function commandsList() {
 				"_El bot reaccionará ante diversas palabras clave y momentos puntuales en una conversación para dar su opinión, siempre que éstas se produzcan dentro de un grupo o supergrupo."
 				.PHP_EOL.
 				"En caso de ser usuario de ForoCoches darás con la mayoría de estas palabras fácilmente. ¡Encuéntralas todas!_"
-				.PHP_EOL.PHP_EOL.
-				"〰〰〰〰〰〰〰〰〰"
-				.PHP_EOL.PHP_EOL.
-				"*Ránking de usuarios*:"
+				;
+	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
+	
+	$commands = "*Ránking de usuarios*:"
 				.PHP_EOL.
 				"_¡Con este ránking sabrás quiénes son los usuarios más activos de Telegram!_"
 				.PHP_EOL.
@@ -2333,7 +2333,7 @@ function commandsList() {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.4.2 creado por @Kamisuke."
+				"@DemisukeBot v1.5 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
@@ -2341,8 +2341,8 @@ function commandsList() {
 				.PHP_EOL.
 				"https://telegram.me/storebot?start=DemisukeBot"
 				;
-	
-	return $commands;
+	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
+	//return $commands;
 }
 
 function processMessage($message) {
@@ -2489,8 +2489,9 @@ function processMessage($message) {
 	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke para saber qué hace este bot."));
     } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
 		error_log($logname." triggered: !ayuda.");
-		$help = commandsList();
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $help));
+		//$help = commandsList();
+		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $help));
+		commandsList($chat_id);
     } else if (strpos($text, "/sendNotification") === 0) {
 		error_log($logname." triggered: New Notification.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {
@@ -3040,8 +3041,9 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			sleep(2);
-			$msg = commandsList();
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+			//$msg = commandsList();
+			//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+			commandsList($chat_id);
 		}
 	} else if (isset($message['left_chat_member'])) {
 		error_log("Trigger: Left group.");

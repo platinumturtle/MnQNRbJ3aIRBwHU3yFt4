@@ -2373,7 +2373,8 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {
 			$isCommand = containsCommand($message['text']);
-			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0) {
+			if(($time - 5 ) > $row['lastpoint'] && $isCommand === 0) {
+				error_log("es un mensaje");
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
@@ -2389,6 +2390,8 @@ function processMessage($message) {
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$query = "UPDATE userbattle SET group_name = '".$grouptitle."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			} else {
+				error_log("es un comando, no sumo");
 			}
 		} else {
 			mysql_free_result($result);

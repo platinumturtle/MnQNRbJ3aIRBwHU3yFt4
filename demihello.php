@@ -1131,7 +1131,7 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 			$query = "SELECT user_id, first_name, user_name, MAX(lastpoint) AS lastpoint, SUM(total) AS total FROM userbattle WHERE visible = TRUE GROUP BY user_id ORDER BY total DESC, lastpoint";
 		} else {
 			$text = "<b>🏁 TOP 10 de usuarios más activos de ".$groupName.":</b>";
-			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE visible = TRUE AND group_id = '".$group."' ORDER BY total DESC, lastpoint";
+			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE group_id = '".$group."' ORDER BY total DESC, lastpoint";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$text = $text.PHP_EOL.PHP_EOL;
@@ -1163,13 +1163,12 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 						default: break;
 					}
 					$text = $text.
-							"<b>".$row['user_name']."</b>"
-							.PHP_EOL.
-							"<i>".$row['total']." mensaje";
-					if($row['total'] > 1) {
-						$text = $text."s";
+							"<b>".$row['first_name']."</b>";
+					if(strlen($row['user_name'] > 0)) {
+						$text = $text.
+							"<b> (".$row['user_name'].")</b>";
 					}
-					$text = $text.".</i>".PHP_EOL.PHP_EOL;
+					$text = $text."<b>:</b> ".$row['total'];
 				}
 			} else if($i==0) {
 				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
@@ -1190,15 +1189,21 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 				$text = $text."s";
 			}
 			if($global == 0) {
-				$text = $text." escritos en ".$groupName;
+				$text = $text." válidos escritos en ".$groupName;
 			}
 			$text = $text.".</b>".PHP_EOL.PHP_EOL;
 		}
 		mysql_free_result($result);
 		mysql_close($link);
-		$text = $text.
-				"<i>(Sobrante) Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
-				"Recuerda que las puedes capturar con la función \"!pole\" y consultar el ránking global con \"!banderas\" y el de tu grupo con \"!banderasgrupo\".</i>";
+		if($global == 1){
+			$text = "<i>Recuerda que para competir en este ránking debes apuntarte con la función !activame, siempre podrás ocultarte de nuevo con !desactivame.</i>".
+					PHP_EOL."<i>Consulta con !mensajesgrupo el ránking usuarios activos de este grupo.</i>";
+		} else {
+			$text = "<i>Consulta con !mensajes el ránking general de usuarios activos en Telegram.</i>";
+		}
+		//$text = $text.
+		//		"<i>(Sobrante) Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
+		//		"Recuerda que las puedes capturar con la función \"!pole\" y consultar el ránking global con \"!banderas\" y el de tu grupo con \"!banderasgrupo\".</i>";
 	}
 	return $text;
 }
@@ -2448,7 +2453,7 @@ function processMessage($message) {
 			mysql_free_result($result);
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `first_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '0', 'Privado', '".$firstname."', '".$username."', '1', '".$time."', FALSE);";
+			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `first_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '0', 'Privado', '".$firstname."', '".$username."', '0', '".$time."', FALSE);";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}
 		mysql_free_result($result);

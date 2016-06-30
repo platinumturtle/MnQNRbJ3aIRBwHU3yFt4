@@ -2408,15 +2408,35 @@ function processMessage($message) {
 			if(strlen($username) == 0 && strlen($firstname) == 0) {
 				$firstname = "Desconocido";
 			}
+			// aqui habria que mirar si ya esta en otro grupo, si esta, sera true o false el active segun lo que haya, si no, visible = false
+			$query = 'SELECT visible FROM userbattle WHERE user_id = '.$user_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['visible'])) {
+				$visibleValue = $row['visible'];
+			} else {
+				$visibleValue = 0;
+			}
+			mysql_free_result($result);
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `first_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '".$chat_id."', '".$grouptitle."', '".$firstname."', '".$username."', '1', '".$time."', TRUE);";
+			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `first_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '".$chat_id."', '".$grouptitle."', '".$firstname."', '".$username."', '1', '".$time."', ".$visibleValue.");";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}
 		mysql_free_result($result);
 		mysql_close($link);
 	} else {
 		error_log($logname."'s private incoming message: ".$message['text']);
+		$time = time();
+		$link = dbConnect();
+		$user_id = $message['from']['id'];
+		$query = 'SELECT ub_id FROM userbattle WHERE user_id = '.$user_id;
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(!isset($row['ub_id'])) {
+			error_log($logname." is a new user.");
+			
+		}
 	}
 
     if (strpos($text, "/start") === 0) {

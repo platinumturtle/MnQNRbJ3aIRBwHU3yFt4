@@ -1128,20 +1128,20 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		$link = dbConnect();
 		if($global == 1){
 			$text = "<b>🏁 TOP 10 de usuarios más activos en Telegram:</b>";
-			$query = "SELECT user_id, user_name, MAX(lastpoint) AS lastpoint, SUM(total) AS total FROM userbattle WHERE visible = TRUE GROUP BY user_id ORDER BY total DESC, lastpoint";
+			$query = "SELECT user_id, first_name, user_name, MAX(lastpoint) AS lastpoint, SUM(total) AS total FROM userbattle WHERE visible = TRUE GROUP BY user_id ORDER BY total DESC, lastpoint";
 		} else {
 			$text = "<b>🏁 TOP 10 de usuarios más activos de ".$groupName.":</b>";
-			$query = "SELECT user_id, user_name, total FROM userbattle WHERE visible = TRUE AND group_id = '".$group."' ORDER BY total DESC, lastpoint";
+			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE visible = TRUE AND group_id = '".$group."' ORDER BY total DESC, lastpoint";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$text = $text.PHP_EOL.PHP_EOL.
-				"<b>🏆 POLE ABSOLUTA 🏆</b>"
-				.PHP_EOL;
+		$text = $text.PHP_EOL.PHP_EOL;
 		for($i=0;$i<10;$i++) {
 			$row = mysql_fetch_array($result);
 			if(isset($row['total'])) {
 				if($row['total'] > 0) {
 					switch($i) {
+						case 0: $text = $text."<b>🏆 Líder </b>";
+								break;
 						case 1: $text = $text."<b>🎖2º </b>";
 								break;
 						case 2: $text = $text."<b>🏅3º </b>";
@@ -1165,7 +1165,7 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 					$text = $text.
 							"<b>".$row['user_name']."</b>"
 							.PHP_EOL.
-							"<i>".$row['total']." mensajes";
+							"<i>".$row['total']." mensaje";
 					if($row['total'] > 1) {
 						$text = $text."s";
 					}
@@ -2378,31 +2378,39 @@ function processMessage($message) {
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
 				$grouptitle = str_replace("'","''",$message['chat']['title']);
+				$username = "";
+				$firstname = "";
 				if(isset($message['from']['username'])) {
 					$username = str_replace("'","''",$message['from']['username']);
-				} else if (isset($message['from']['first_name'])) {
-					$username = str_replace("'","''",$message['from']['first_name']);
-				} else {
-					$username = "Desconocido";
+				} 
+				if (isset($message['from']['first_name'])) {
+					$firstname = str_replace("'","''",$message['from']['first_name']);
+				}
+				if(strlen($username) == 0 && strlen($firstname) == 0) {
+					$firstname = "Desconocido";
 				}
 				$query = "SET NAMES utf8mb4;";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$query = "UPDATE userbattle SET group_name = '".$grouptitle."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
+				$query = "UPDATE userbattle SET group_name = '".$grouptitle."', first_name = '".$firstname."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			}
 		} else {
 			mysql_free_result($result);
 			$grouptitle = str_replace("'","''",$message['chat']['title']);
+			$username = "";
+			$firstname = "";
 			if(isset($message['from']['username'])) {
 				$username = str_replace("'","''",$message['from']['username']);
-			} else if (isset($message['from']['first_name'])) {
-				$username = str_replace("'","''",$message['from']['first_name']);
-			} else {
-				$username = "Desconocido";
+			} 
+			if (isset($message['from']['first_name'])) {
+				$firstname = str_replace("'","''",$message['from']['first_name']);
+			}
+			if(strlen($username) == 0 && strlen($firstname) == 0) {
+				$firstname = "Desconocido";
 			}
 			$query = "SET NAMES utf8mb4;";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '".$chat_id."', '".$grouptitle."', '".$username."', '1', '".$time."', TRUE);";
+			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `first_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '".$chat_id."', '".$grouptitle."', '".$firstname."', '".$username."', '1', '".$time."', TRUE);";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}
 		mysql_free_result($result);

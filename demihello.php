@@ -2408,7 +2408,6 @@ function processMessage($message) {
 			if(strlen($username) == 0 && strlen($firstname) == 0) {
 				$firstname = "Desconocido";
 			}
-			// aqui habria que mirar si ya esta en otro grupo, si esta, sera true o false el active segun lo que haya, si no, visible = false
 			$query = 'SELECT visible FROM userbattle WHERE user_id = '.$user_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
@@ -2434,9 +2433,26 @@ function processMessage($message) {
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(!isset($row['ub_id'])) {
+			$username = "";
+			$firstname = "";
+			if(isset($message['from']['username'])) {
+				$username = str_replace("'","''",$message['from']['username']);
+			} 
+			if (isset($message['from']['first_name'])) {
+				$firstname = str_replace("'","''",$message['from']['first_name']);
+			}
+			if(strlen($username) == 0 && strlen($firstname) == 0) {
+				$firstname = "Desconocido";
+			}
 			error_log($logname." is a new user.");
-			
+			mysql_free_result($result);
+			$query = "SET NAMES utf8mb4;";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$query = "INSERT INTO `userbattle` (`user_id`, `group_id`, `group_name`, `first_name`, `user_name`, `total`, `lastpoint`, `visible`) VALUES ('".$user_id."', '0', 'Privado', '".$firstname."', '".$username."', '1', '".$time."', FALSE);";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		}
+		mysql_free_result($result);
+		mysql_close($link);
 	}
 
     if (strpos($text, "/start") === 0) {

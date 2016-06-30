@@ -1134,7 +1134,7 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE group_id = '".$group."' ORDER BY total DESC, lastpoint";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$text = $text.PHP_EOL.PHP_EOL;
+		$text = $text.PHP_EOL;
 		for($i=0;$i<10;$i++) {
 			$row = mysql_fetch_array($result);
 			if(isset($row['total'])) {
@@ -1176,9 +1176,9 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		}
 		mysql_free_result($result);
 		if($global == 1) {
-			$query = "SELECT user_id, user_name, SUM(total) AS total FROM userbattle WHERE visible = TRUE AND user_id = '".$myself."' GROUP BY user_id";
+			$query = "SELECT user_id, first_name, user_name, SUM(total) AS total FROM userbattle WHERE visible = TRUE AND user_id = '".$myself."' GROUP BY user_id";
 		} else {
-			$query = "SELECT user_id, user_name, total FROM userbattle WHERE user_id = '".$myself."' AND group_id = '".$group."'";
+			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE user_id = '".$myself."' AND group_id = '".$group."'";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);

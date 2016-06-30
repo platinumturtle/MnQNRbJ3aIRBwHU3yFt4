@@ -2285,7 +2285,7 @@ function commandsList($send_id) {
 				.PHP_EOL.PHP_EOL.
 				"*Palabras y acciones clave*:"
 				.PHP_EOL.
-				"_El bot reaccionará ante diversas palabras clave y momentos puntuales en una conversación para dar su opinión, siempre que éstas se produzcan dentro de un grupo o supergrupo."
+				"_El bot reaccionará ante diversas palabras clave y momentos puntuales en una conversación para dar su opinión, siempre que éstas se produzcan dentro de un grupo o supergrupo (¡contiene incluso Easter Eggs!)."
 				.PHP_EOL.
 				"En caso de ser usuario de ForoCoches darás con la mayoría de estas palabras fácilmente. ¡Encuéntralas todas!_"
 				;
@@ -2540,7 +2540,7 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}*/
-	}  else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
+	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
 		error_log($logname." triggered: Hola.");
 		$greeting = greeting();
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -3107,7 +3107,9 @@ if (!$update) {
 
 if (isset($update["edited_message"])) {
 	checkUserID($update["edited_message"]['from']['id']);
-	checkUsername($update["edited_message"]['from']['username']);
+	if(isset($update["edited_message"]['from']['username'])) {
+		checkUsername($update["edited_message"]['from']['username']);
+	}
 	checkGroup($update["edited_message"]['chat']['id']);
 	error_log($update["edited_message"]['from']['first_name']." triggered: Edited message.");
 	usleep(500000);
@@ -3121,7 +3123,9 @@ if (isset($update["edited_message"])) {
 
 if (isset($update["message"])) {
 	checkUserID($update["message"]['from']['id']);
-	checkUsername($update["message"]['from']['username']);
+	if(isset($update["message"]['from']['username'])) {
+		checkUsername($update["message"]['from']['username']);
+	}
 	checkGroup($update["message"]['chat']['id']);
 	processMessage($update["message"]);
 }

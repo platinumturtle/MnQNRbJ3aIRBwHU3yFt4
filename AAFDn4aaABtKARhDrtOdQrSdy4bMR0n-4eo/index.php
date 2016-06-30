@@ -114,7 +114,7 @@ function insult($name) {
 
 function checkUserID($id) {
 	$bannedID = array(
-					"", // 121704708 Rayne, 152288222 oikarinen
+					"119769161", // 121704708 Rayne, 152288222 oikarinen
 					""
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
@@ -317,6 +317,7 @@ function randomFart() {
 					"AwADBAADDwcAApdgXwABUn9kO5QPW_wC",
 					"AwADBAADEAcAApdgXwABmF8g0NjjTuMC",
 					"AwADBAADEgcAApdgXwABvNKuNxNJ2g8C",
+					"AwADBAADGwcAApdgXwAB_LLmFDE9AnQC",
 					"AwADBAADEQcAApdgXwABUrjAtI-Cc5MC"
 						);
 	$n = sizeof($storedFart) - 1;
@@ -1276,6 +1277,7 @@ function getHitIt() {
 						"BQADBAADsQYAApdgXwABQZmG9fxpfb4C",
 						"BQADBAADsgYAApdgXwABWwh3Ow0-ce0C",
 						"BQADBAADswYAApdgXwABfuL6ytEbDYAC",
+						"BQADBAADmgADqW4iAAH8we7qash6xgI",
 						"BQADBAADqQYAApdgXwABLZsztGDJz8cC"
 						);
 	$n = sizeof($storedGif) - 1;

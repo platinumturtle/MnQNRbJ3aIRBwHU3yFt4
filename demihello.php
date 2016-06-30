@@ -735,7 +735,7 @@ function insult($name) {
 
 function checkUserID($id) {
 	$bannedID = array(
-					"", // 121704708 Rayne, 152288222 oikarinen
+					"119769161", // 121704708 Rayne, 152288222 oikarinen
 					""
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {

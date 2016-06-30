@@ -1134,7 +1134,7 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE group_id = '".$group."' ORDER BY total DESC, lastpoint";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$text = $text.PHP_EOL;
+		$text = $text.PHP_EOL.PHP_EOL;
 		for($i=0;$i<10;$i++) {
 			$row = mysql_fetch_array($result);
 			if(isset($row['total'])) {
@@ -1168,7 +1168,7 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 						$text = $text.
 							"<b> (".$row['user_name'].")</b>";
 					}
-					$text = $text."<b>:</b> ".$row['total'].PHP_EOL;
+					$text = $text."<b>:</b> ".$row['total'].PHP_EOL.PHP_EOL;
 				}
 			} else if($i==0) {
 				$text = $text."<i>Nadie.</i>".PHP_EOL;
@@ -1184,7 +1184,11 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		$row = mysql_fetch_array($result);
 		if(isset($row['user_id'])) {
 			$text = $text.PHP_EOL.
-			"<b>".$row['first_name']." (".$row['user_name'].") tiene un total de ".$row['total']." mensaje";
+			"<b>".$row['first_name'];
+			if(strlen($row['user_name']) > 0) {
+				$text = $text."(".$row['user_name'].")";
+			}
+			$text = $text." tiene un total de ".$row['total']." mensaje";
 			if($row['total'] > 1) {
 				$text = $text."s válidos";
 			} else {

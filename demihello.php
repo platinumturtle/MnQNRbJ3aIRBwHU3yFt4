@@ -1196,10 +1196,10 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		mysql_free_result($result);
 		mysql_close($link);
 		if($global == 1){
-			$text = "<i>Recuerda que para competir en este ránking debes apuntarte con la función !activame, siempre podrás ocultarte de nuevo con !desactivame.</i>".
+			$text = $text."<i>Recuerda que para competir en este ránking debes apuntarte con la función !activame, siempre podrás ocultarte de nuevo con !desactivame.</i>".
 					PHP_EOL."<i>Consulta con !mensajesgrupo el ránking usuarios activos de este grupo.</i>";
 		} else {
-			$text = "<i>Consulta con !mensajes el ránking general de usuarios activos en Telegram.</i>";
+			$text = $text."<i>Consulta con !mensajes el ránking general de usuarios activos en Telegram.</i>";
 		}
 		//$text = $text.
 		//		"<i>(Sobrante) Cada hora se planta una nueva bandera en el bot.".PHP_EOL.

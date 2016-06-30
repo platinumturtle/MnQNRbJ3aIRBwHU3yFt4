@@ -1171,7 +1171,7 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 					$text = $text."<b>:</b> ".$row['total'].PHP_EOL.PHP_EOL;
 				}
 			} else if($i==0) {
-				$text = $text."<i>Nadie.</i>".PHP_EOL;
+				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
 			}
 		}
 		mysql_free_result($result);
@@ -1183,10 +1183,10 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['user_id'])) {
-			$text = $text.PHP_EOL.
+			$text = $text.
 			"<b>".$row['first_name'];
 			if(strlen($row['user_name']) > 0) {
-				$text = $text."(".$row['user_name'].")";
+				$text = $text." (".$row['user_name'].")";
 			}
 			$text = $text." tiene un total de ".$row['total']." mensaje";
 			if($row['total'] > 1) {
@@ -2290,6 +2290,16 @@ function commandsList() {
 				"En caso de ser usuario de ForoCoches darás con la mayoría de estas palabras fácilmente. ¡Encuéntralas todas!_"
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.PHP_EOL.
+				"*Ránking de usuarios*:"
+				.PHP_EOL.
+				"_¡Con este ránking sabrás quiénes son los usuarios más activos de Telegram!_"
+				.PHP_EOL.
+				"_Utiliza \"!mensajesgrupo\" para ver la lista de usuarios más activos de tu grupo, o utiliza \"!mensajes\" para ver la lista global entre todos los grupos._"
+				.PHP_EOL.PHP_EOL.
+				"_Para mantener la privacidad, por defecto no aparecerás en la lista global de usuarios. Si quieres participar en ella usa la función \"!activame\" y tus puntos serán visibles en el ránking. Siempre podrás volver a ocultarte con \"!desactivame\"._"
+				.PHP_EOL.PHP_EOL.
+				"_Hay un máximo de diez puntos por minuto posibles. Usar masivamente funciones del bot, realizar 'flood' o enviar varios mensajes seguidos no añadirán más puntos a tu marcador._"
 				.PHP_EOL.PHP_EOL.
 				"*Ránking de grupos*:"
 				.PHP_EOL.

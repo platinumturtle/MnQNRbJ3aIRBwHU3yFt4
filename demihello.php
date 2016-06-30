@@ -1164,32 +1164,38 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 					}
 					$text = $text.
 							"<b>".$row['first_name']."</b>";
-					if(strlen($row['user_name'] > 0)) {
+					if(strlen($row['user_name']) > 0) {
 						$text = $text.
 							"<b> (".$row['user_name'].")</b>";
 					}
-					$text = $text."<b>:</b> ".$row['total'];
+					$text = $text."<b>:</b> ".$row['total'].PHP_EOL;
 				}
 			} else if($i==0) {
-				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
+				$text = $text."<i>Nadie.</i>".PHP_EOL;
 			}
 		}
 		mysql_free_result($result);
 		if($global == 1) {
-			$query = "SELECT user_id, user_name, SUM(total) AS total FROM userbattle WHERE user_id = '".$myself."' GROUP BY user_id";
+			$query = "SELECT user_id, user_name, SUM(total) AS total FROM userbattle WHERE visible = TRUE AND user_id = '".$myself."' GROUP BY user_id";
 		} else {
 			$query = "SELECT user_id, user_name, total FROM userbattle WHERE user_id = '".$myself."' AND group_id = '".$group."'";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['user_id'])) {
-			$text = $text.
-			"<b>".$row['user_name']." tiene un total de ".$row['total']." mensaje";
+			$text = $text.PHP_EOL.
+			"<b>".$row['first_name']." (".$row['user_name'].") tiene un total de ".$row['total']." mensaje";
 			if($row['total'] > 1) {
-				$text = $text."s";
+				$text = $text."s válidos";
+			} else {
+				$text = $text." válido";
 			}
 			if($global == 0) {
-				$text = $text." válidos escritos en ".$groupName;
+				$text = $text." escrito";
+				if($row['total'] > 1) {
+					$text = $text."s";
+				}
+				$text = $text." en ".$groupName;
 			}
 			$text = $text.".</b>".PHP_EOL.PHP_EOL;
 		}

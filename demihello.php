@@ -1312,6 +1312,7 @@ function containsCommand($text) {
 	$n = sizeof($stickerList);
 	for($i=0;$i<$n;$i++) {
 		if(strpos(strtolower($text), $commandsList[$n]) !== false) {
+			error_log("DETECTO COMANDO");
 			return 1;
 		}
 	}
@@ -2373,7 +2374,8 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {
 			$isCommand = containsCommand($message['text']);
-			if(($time - 5 ) > $row['lastpoint'] && $isCommand === 0) {
+				error_log($isCommand);
+			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0) {
 				error_log("es un mensaje");
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;

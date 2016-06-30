@@ -1309,7 +1309,7 @@ function containsCommand($text) {
 						"!historia"
 					);
 					
-	$n = sizeof($stickerList);
+	$n = sizeof($commandsList);
 	for($i=0;$i<$n;$i++) {
 		if(strpos(strtolower($text), $commandsList[$n]) !== false) {
 			error_log("DETECTO COMANDO");

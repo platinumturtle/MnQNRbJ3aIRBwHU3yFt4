@@ -1057,7 +1057,7 @@ function rollDice($id) {
 function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
-	$query = 'SELECT * FROM groupbattle ORDER BY total DESC, lastpoint';
+	$query = 'SELECT * FROM groupbattle WHERE lastpoint > 0 ORDER BY total DESC, lastpoint';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = "<b>🏁 Clasificación global de grupos:</b>"
 			.PHP_EOL.PHP_EOL.

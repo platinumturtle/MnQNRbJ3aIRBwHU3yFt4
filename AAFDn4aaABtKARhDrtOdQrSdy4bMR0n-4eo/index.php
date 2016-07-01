@@ -1733,7 +1733,7 @@ function commandsList($send_id) {
 				.PHP_EOL.
 				"_El primer usuario que la capture con la función !pole la tendrá en su posesión y su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, hasta que se plante la siguiente bandera, además de sumar una bandera a su colección._"
 				.PHP_EOL.PHP_EOL.
-				"_El usuario que tenga la bandera actual en su poder no podrá capturar la siguiente, y tampoco podrá hacerlo todo aquel usuario que tenga el inventario lleno._"
+				"_El usuario que tenga la bandera actual en su poder no podrá capturar la siguiente, y tampoco podrá hacerlo todo aquel usuario que tenga el inventario lleno o trate de capturarla desde un grupo muy pequeño._"
 				.PHP_EOL.
 				"_El tamaño total del inventario es de veinte ranuras para banderas además de una ranura extra por cada bandera que haya capturado el usuario que aparece en la décima posición del ránking._"
 				.PHP_EOL.
@@ -1751,7 +1751,7 @@ function commandsList($send_id) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.5 creado por @Kamisuke."
+				"@DemisukeBot v1.5.1 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
@@ -1779,6 +1779,7 @@ function processMessage($message) {
   if (isset($message['text'])) {
     $text = $message['text'];
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+		$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
 		// Group Battle
 		$time = time();
 		$link = dbConnect();
@@ -1788,7 +1789,7 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['total'])) {
-				if($row['total'] > 0 && $time != $row['lastpoint']) {
+				if($row['total'] > 0 && $time != $row['lastpoint'] && $usersGroupCount > 3) {
 					$total = $row['total'] + 1;
 					mysql_free_result($result);
 					$query = 'UPDATE groupbattle SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
@@ -1812,26 +1813,32 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {
 			$isCommand = containsCommand($message['text']);
-			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0) {
+			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0 && $usersGroupCount > 3) {
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
-				$grouptitle = str_replace("'","''",$message['chat']['title']);
-				$username = "";
-				$firstname = "";
-				if(isset($message['from']['username'])) {
-					$username = str_replace("'","''",$message['from']['username']);
-				} 
-				if (isset($message['from']['first_name'])) {
-					$firstname = str_replace("'","''",$message['from']['first_name']);
-				}
-				if(strlen($username) == 0 && strlen($firstname) == 0) {
-					$firstname = "Desconocido";
-				}
-				$query = "SET NAMES utf8mb4;";
+				$query = 'SELECT MAX(lastpoint) AS lastpoint FROM userbattle WHERE user_id = '.$user_id.' GROUP BY user_id';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$query = "UPDATE userbattle SET group_name = '".$grouptitle."', first_name = '".$firstname."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if(($time - 5 ) > $row['lastpoint']) {
+					mysql_free_result($result);
+					$grouptitle = str_replace("'","''",$message['chat']['title']);
+					$username = "";
+					$firstname = "";
+					if(isset($message['from']['username'])) {
+						$username = str_replace("'","''",$message['from']['username']);
+					} 
+					if (isset($message['from']['first_name'])) {
+						$firstname = str_replace("'","''",$message['from']['first_name']);
+					}
+					if(strlen($username) == 0 && strlen($firstname) == 0) {
+						$firstname = "Desconocido";
+					}
+					$query = "SET NAMES utf8mb4;";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$query = "UPDATE userbattle SET group_name = '".$grouptitle."', first_name = '".$firstname."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				}
 			}
 		} else {
 			mysql_free_result($result);
@@ -2117,7 +2124,8 @@ function processMessage($message) {
 					$name = "Desconocido";
 				}
 				$checkMax = 0;
-				if($from_id != $row['user_id']) {
+				$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
+				if($from_id != $row['user_id'] && $usersGroupCount > 4) {
 					$cleanName = str_replace("'","''",$name);
 					mysql_free_result($result);
 					$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
@@ -2167,9 +2175,10 @@ function processMessage($message) {
 							$text = $text."s";
 						}
 						$text = $text." ".$hour."! 🎉</b>";	
-					}
-				} else {
+				} else if($usersGroupCount > 4) {
 					$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";
+				} else {
+					$text = "<b>🏴❌ ".$name." ha encontrado una bandera, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
 				}
 			} else {
 				error_log("Trigger: Polefail.");

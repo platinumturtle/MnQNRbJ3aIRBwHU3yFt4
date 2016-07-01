@@ -2365,6 +2365,7 @@ function processMessage($message) {
     $text = $message['text'];
 	
 	if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+		$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
 		// Group Battle
 		$time = time();
 		$link = dbConnect();
@@ -2374,7 +2375,7 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['total'])) {
-				if($row['total'] > 0 && $time != $row['lastpoint']) {
+				if($row['total'] > 0 && $time != $row['lastpoint'] && $usersGroupCount > 3) {
 					$total = $row['total'] + 1;
 					mysql_free_result($result);
 					$query = 'UPDATE groupbattle SET total = '.$total.', lastpoint = '.$time.' WHERE group_id = '.$chat_id;
@@ -2398,7 +2399,7 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {
 			$isCommand = containsCommand($message['text']);
-			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0) {
+			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0 && $usersGroupCount > 3) {
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
@@ -2983,8 +2984,8 @@ function processMessage($message) {
 		sleep(2);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence.".*"));
     } else {
-		$users = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
-		error_log($users." users here.");
+		//$users = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
+		//error_log($users." users here.");
       //apiRequestWebhook("sendMessage", array('chat_id' => $chat_id, "reply_to_message_id" => $message_id, "text" => 'Cool'));
     }
   } else {

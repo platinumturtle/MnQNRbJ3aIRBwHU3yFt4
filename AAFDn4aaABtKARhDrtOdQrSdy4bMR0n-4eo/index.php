@@ -2034,14 +2034,19 @@ function processMessage($message) {
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
 	} else if (strpos(strtolower($text), "!info") !== false) {
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-116857426'));
+		$extra = apiRequest("getChatMembersCount", array('chat_id' => '1467411967'));
 
 		error_log($logname." triggered: !info. - ".$extra);
 		
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '1467381365'));
+		$extra = apiRequest("getChatAdministrators", array('chat_id' => '1467415876'));
 		error_log($logname." tried to reach a normal group. - ".$extra);
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-1001044604308'));
+		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-1769104'));
 		error_log($logname." tried to reach a banned group - ".$extra);
+		
+		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-1001060814557'));
+		error_log($logname." tried to reach one more normal group. - ".$extra);
+		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-1001061700650'));
+		error_log($logname." tried to reach one more banned group - ".$extra);
 		
 		
 	} else if (strpos(strtolower($text), "roto2") !== false) {

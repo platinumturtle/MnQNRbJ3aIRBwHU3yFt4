@@ -2033,6 +2033,17 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_audio"));
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
+	} else if (strpos(strtolower($text), "!info") !== false) {
+		$extra = apiRequest("getChatMembersCount", array('chat_id' => '-116857426'));
+
+		error_log($logname." triggered: !info. - ".$extra);
+		
+		$extra = apiRequest("getChatMembersCount", array('chat_id' => '1467381365'));
+		error_log($logname." tried to reach a normal group. - ".$extra);
+		$extra = apiRequest("getChatMembersCount", array('chat_id' => '-1001044604308'));
+		error_log($logname." tried to reach a banned group - ".$extra);
+		
+		
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));

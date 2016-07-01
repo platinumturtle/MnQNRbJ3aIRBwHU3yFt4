@@ -697,6 +697,7 @@ function containsCommand($text) {
 						"!pole",
 						"!grupos",
 						"!nick",
+						"!info",
 						"!historia"
 					);
 					
@@ -1762,7 +1763,7 @@ function commandsList($send_id) {
 
 	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
 }
-/*
+
 function processMessage($message) {
   // process incoming message
   //debugMode($message);
@@ -1911,7 +1912,7 @@ function processMessage($message) {
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
 			$link = dbConnect();
-			$query = "SELECT DISTINCT group_id, name FROM groupbattle";
+			$query = "SELECT DISTINCT group_id, name FROM groupbattle WHERE lastpoint > 0";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$totalGroups = 0;
 			$notificationMessage = substr($text,18);
@@ -2000,7 +2001,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "demisuke") !== false) {
 		error_log($logname." triggered: Bot mention.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*//*) {
+		if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
 			usleep(500000);
 			if(isset($message['from']['username'])) {
 				$name = "@".$message['from']['username'];
@@ -2171,10 +2172,11 @@ function processMessage($message) {
 						$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
-						if($hour != 1 /* && $hour != 13*//*) {
+						if($hour != 1 /* && $hour != 13*/) {
 							$text = $text."s";
 						}
 						$text = $text." ".$hour."! 🎉</b>";	
+					}
 				} else if($usersGroupCount > 4) {
 					$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";
 				} else {
@@ -2426,7 +2428,7 @@ function processMessage($message) {
   if (strpos(strtolower($text), "kamisuke") !== false) {
 	error_log($logname."'s chat about Kamisuke: ".$message['text']);
   }
-}*/
+}
 
 
 define('WEBHOOK_URL', 'https://demisuke-kamigram.rhcloud.com/AAFDn4aaABtKARhDrtOdQrSdy4bMR0n-4eo/');
@@ -2469,6 +2471,6 @@ if (isset($update["message"])) {
 		checkUsername($update["message"]['from']['username']);
 	}
 	checkGroup($update["message"]['chat']['id']);
-	//processMessage($update["message"]);
+	processMessage($update["message"]);
 }
 ?>

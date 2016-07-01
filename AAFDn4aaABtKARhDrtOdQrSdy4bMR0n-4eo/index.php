@@ -2471,4 +2471,6 @@ if (isset($update["message"])) {
 	checkGroup($update["message"]['chat']['id']);
 	processMessage($update["message"]);
 }
+
+
 ?>

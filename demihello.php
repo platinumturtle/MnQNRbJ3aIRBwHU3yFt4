@@ -2403,22 +2403,28 @@ function processMessage($message) {
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
-				$grouptitle = str_replace("'","''",$message['chat']['title']);
-				$username = "";
-				$firstname = "";
-				if(isset($message['from']['username'])) {
-					$username = str_replace("'","''",$message['from']['username']);
-				} 
-				if (isset($message['from']['first_name'])) {
-					$firstname = str_replace("'","''",$message['from']['first_name']);
-				}
-				if(strlen($username) == 0 && strlen($firstname) == 0) {
-					$firstname = "Desconocido";
-				}
-				$query = "SET NAMES utf8mb4;";
+				$query = 'SELECT MAX(lastpoint) FROM userbattle WHERE ub_id = '.$ub_id.' GROUP BY ub_id';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$query = "UPDATE userbattle SET group_name = '".$grouptitle."', first_name = '".$firstname."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if(($time - 5 ) > $row['lastpoint']) {
+					mysql_free_result($result);
+					$grouptitle = str_replace("'","''",$message['chat']['title']);
+					$username = "";
+					$firstname = "";
+					if(isset($message['from']['username'])) {
+						$username = str_replace("'","''",$message['from']['username']);
+					} 
+					if (isset($message['from']['first_name'])) {
+						$firstname = str_replace("'","''",$message['from']['first_name']);
+					}
+					if(strlen($username) == 0 && strlen($firstname) == 0) {
+						$firstname = "Desconocido";
+					}
+					$query = "SET NAMES utf8mb4;";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$query = "UPDATE userbattle SET group_name = '".$grouptitle."', first_name = '".$firstname."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				}
 			}
 		} else {
 			mysql_free_result($result);

@@ -1976,10 +1976,17 @@ function processMessage($message) {
 			usleep(500000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$insult.".</b>"));
 		} else {
-			$insult = failInsult();
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			usleep(500000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "reply_to_message_id" => $message_id, "text" => "<b>".$insult.".</b>"));
+			$willBeTest = rand(1,10);
+			if($willBeTest < 9) {
+				$insult = failInsult();
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(500000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "reply_to_message_id" => $message_id, "text" => "<b>".$insult.".</b>"));
+			}
+			else {
+				$gif = "BQADBAADow4AAksYZAcZ8kFXOQJ3uAI";
+				apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+			}
 		}
 	} else if (strpos(strtolower($text), "demisuke") !== false) {
 		error_log($logname." triggered: Bot mention.");

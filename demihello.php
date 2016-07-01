@@ -2583,7 +2583,7 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$insult.".</b>"));
 		} else {
 			$willBeTest = rand(1,10);
-			if($willBeTest < 8) {
+			if($willBeTest < 9) {
 				$insult = failInsult();
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				usleep(500000);

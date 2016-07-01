@@ -2469,6 +2469,6 @@ if (isset($update["message"])) {
 		checkUsername($update["message"]['from']['username']);
 	}
 	checkGroup($update["message"]['chat']['id']);
-	processMessage($update["message"]);
+	//processMessage($update["message"]);
 }
 ?>

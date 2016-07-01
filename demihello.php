@@ -2983,6 +2983,8 @@ function processMessage($message) {
 		sleep(2);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence.".*"));
     } else {
+		$users = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
+		error_log($users." users here.");
       //apiRequestWebhook("sendMessage", array('chat_id' => $chat_id, "reply_to_message_id" => $message_id, "text" => 'Cool'));
     }
   } else {

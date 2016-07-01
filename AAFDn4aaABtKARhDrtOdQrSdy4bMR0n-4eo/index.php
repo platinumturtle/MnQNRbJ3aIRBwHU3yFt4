@@ -2408,7 +2408,11 @@ function processMessage($message) {
 		if($message['from']['username'] == 'Kamisuke'){
 			apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $message['document']['file_id']));	
 		}
-	}
+	} else if (isset($message['voice']) && $message['chat']['type'] == "private") {
+		if($message['from']['username'] == 'Kamisuke'){
+			apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $message['voice']['file_id']));	
+		}
+	} 
   }
   if (strpos(strtolower($text), "kamisuke") !== false) {
 	error_log($logname."'s chat about Kamisuke: ".$message['text']);

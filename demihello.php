@@ -2403,7 +2403,7 @@ function processMessage($message) {
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);
-				$query = 'SELECT MAX(lastpoint) FROM userbattle WHERE user_id = '.$user_id.' GROUP BY user_id';
+				$query = 'SELECT MAX(lastpoint) AS lastpoint FROM userbattle WHERE user_id = '.$user_id.' GROUP BY user_id';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				error_log("son las ".$time." y en la bbdd pone ".$row['lastpoint']);

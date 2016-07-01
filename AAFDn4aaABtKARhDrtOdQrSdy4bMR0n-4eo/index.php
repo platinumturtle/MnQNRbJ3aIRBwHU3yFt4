@@ -235,7 +235,7 @@ function randomSentence() {
 						"temporal",					"sensual",
 						"con escayola",				"pelotari",
 						"selección",				"volante",
-						"presidente",				"anccestral",
+						"presidente",				"ancestral",
 						"reversible",
 						"elegante",
 						"manual",

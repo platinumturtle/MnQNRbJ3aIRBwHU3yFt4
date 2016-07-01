@@ -2644,7 +2644,6 @@ function processMessage($message) {
 
 		error_log($logname." triggered: !info.");
 		
-		
 	} else if (strpos($text, "%GETSONG%") !== false) {
 		$text = substr($text,9);
 		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));

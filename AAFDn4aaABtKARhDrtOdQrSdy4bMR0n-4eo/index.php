@@ -1,4 +1,4 @@
-<?php
+<?php /*
 //TOKEN for @DemisukeBot
 define('BOT_TOKEN', '233309633:AAFDn4aaABtKARhDrtOdQrSdy4bMR0n-4eo');
 define('API_URL', 'https://api.telegram.org/bot'.BOT_TOKEN.'/');
@@ -2000,7 +2000,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "demisuke") !== false) {
 		error_log($logname." triggered: Bot mention.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
+		if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*//*) {
 			usleep(500000);
 			if(isset($message['from']['username'])) {
 				$name = "@".$message['from']['username'];
@@ -2171,7 +2171,7 @@ function processMessage($message) {
 						$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
-						if($hour != 1 /* && $hour != 13*/) {
+						if($hour != 1 /* && $hour != 13*//*) {
 							$text = $text."s";
 						}
 						$text = $text." ".$hour."! 🎉</b>";	
@@ -2470,7 +2470,5 @@ if (isset($update["message"])) {
 	}
 	checkGroup($update["message"]['chat']['id']);
 	processMessage($update["message"]);
-}
-
-
+}*/
 ?>

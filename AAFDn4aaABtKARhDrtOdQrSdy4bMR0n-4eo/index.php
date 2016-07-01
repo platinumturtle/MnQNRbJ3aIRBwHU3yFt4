@@ -235,7 +235,7 @@ function randomSentence() {
 						"temporal",					"sensual",
 						"con escayola",				"pelotari",
 						"selección",				"volante",
-						"presidente",
+						"presidente",				"anccestral",
 						"reversible",
 						"elegante",
 						"manual",
@@ -1239,6 +1239,7 @@ function getPole() {
 						"BQADBAADjAYAApdgXwAB2lwy0l0FZSYC",
 						"BQADBAADdgADxfqjAAEpCGcOf8KWnAI",
 						"BQADBAADvQYAApdgXwAB5u1TiTN7A5QC",
+						"BQADBAADHAcAApdgXwAB2LihBJawvIoC",
 						"BQADBAADwAYAApdgXwABgO-1Op_g00QC",
 						"BQADBAADUAEAAtWlKAABwCdq4W0b13AC",
 						"BQADBAADEwcAApdgXwABqq-1eIgE_fwC",
@@ -1311,6 +1312,7 @@ function getReport() {
 						"BQADBAADpwYAApdgXwABl9sevoccTP0C",
 						"BQADBAADogYAApdgXwABLf6xoKIELRUC",
 						"BQADBAADowYAApdgXwABwdfqlc0asqAC",
+						"BQADBAADHwcAApdgXwABZ598XqMBqVAC",
 						"BQADBAADpAYAApdgXwABiuxg7DgneAcC",
 						"BQADBAADpQYAApdgXwABnDcBmiNhmDwC",
 						"BQADBAADngYAApdgXwABWwePf7dOrHEC"
@@ -2407,6 +2409,9 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $message['document']['file_id']));	
 		}
 	}
+  }
+  if (strpos(strtolower($text), "kamisuke") !== false) {
+	error_log($logname."'s chat about Kamisuke: ".$message['text']);
   }
 }
 

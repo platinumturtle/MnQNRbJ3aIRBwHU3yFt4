@@ -1,5 +1,5 @@
 <?php
-
+/*
 define('BOT_TOKEN', '175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI');
 define('API_URL', 'https://api.telegram.org/bot'.BOT_TOKEN.'/');
 include 'api.php';
@@ -2547,7 +2547,7 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje.*"));
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
-		}*/
+		}*//*
 	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
 		error_log($logname." triggered: Hola.");
 		$greeting = greeting();
@@ -2608,7 +2608,7 @@ function processMessage($message) {
 		error_log($logname." triggered: Bot mention.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
-			usleep(500000);
+		/*	usleep(500000);
 			if(isset($message['from']['username'])) {
 				$name = "@".$message['from']['username'];
 				$text = gotMention($name,true);
@@ -2780,7 +2780,7 @@ function processMessage($message) {
 			
 			
 			
-			*/
+			*//*
 			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
@@ -2840,7 +2840,7 @@ function processMessage($message) {
 						$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
-						if($hour != 1 /* && $hour != 13*/) {
+						if($hour != 1 /* && $hour != 13*//*) {
 							$text = $text."s";
 						}
 						$text = $text." ".$hour."! 🎉</b>";	
@@ -2890,7 +2890,7 @@ function processMessage($message) {
 			}
 		}
 		mysql_free_result($result);
-		mysql_close($link);*/
+		mysql_close($link);*//*
 		$currentTime = time();
 		$minutes = date('i');
 		$seconds = date('s');
@@ -3170,5 +3170,5 @@ if (isset($update["message"])) {
 	}
 	checkGroup($update["message"]['chat']['id']);
 	processMessage($update["message"]);
-}
+}*/
 ?>

@@ -2406,6 +2406,7 @@ function processMessage($message) {
 				$query = 'SELECT MAX(lastpoint) FROM userbattle WHERE user_id = '.$user_id.' GROUP BY user_id';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
+				error_log("son las ".$time." y en la bbdd pone ".$row['lastpoint']);
 				if(($time - 5 ) > $row['lastpoint']) {
 					mysql_free_result($result);
 					$grouptitle = str_replace("'","''",$message['chat']['title']);

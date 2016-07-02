@@ -2033,7 +2033,7 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_audio"));
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
-	} else if (strpos(strtolower($text), "!info") !== false) {
+	}/* else if (strpos(strtolower($text), "!info") !== false) {
 		$link = dbConnect();
 		$query = 'SELECT group_id, name FROM `groupbattle`';
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -2060,7 +2060,7 @@ function processMessage($message) {
 					PHP_EOL."Además llevo en mi mochila bien guardados una serie de vídeos sobre la historia de Yodo contada por sus ancestros vivientes, ¡que pese a llevarlos guardados algún que otro habitante me los ha visto! Aunque ellos comentan algo sobre huevos de pascua en cuanto los encuentran, no entiendo qué querrán decir...".PHP_EOL.
 					PHP_EOL."Actualmente tengo viajes planeados a ".$totalActive." territorios distintos para seguir ayudando a quien lo necesita, ¡y me siento con fuerzas de ir a más sitios!*";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
-	} else if (strpos(strtolower($text), "roto2") !== false) {
+	}*/ else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
 	} else if (strpos(strtolower($text), "!video") !== false || strpos(strtolower($text), "!vídeo") !== false) {

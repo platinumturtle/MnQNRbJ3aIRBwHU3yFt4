@@ -1924,7 +1924,7 @@ function processMessage($message) {
 				while($row = mysql_fetch_array($result)) {
 					$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
 					$total = $total + 1;
-					if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
+					if($counter > 0) {
 						if($deadTime > $row['lastpoint']) {
 							error_log($row['name']." has ".$counter." member/s but it's inactive.");
 							$updateQuery = $updateQuery." ".$row['group_id'].",";

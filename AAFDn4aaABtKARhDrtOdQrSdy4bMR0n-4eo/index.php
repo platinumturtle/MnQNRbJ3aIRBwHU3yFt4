@@ -1914,17 +1914,19 @@ function processMessage($message) {
 				$row = mysql_fetch_array($result);
 				$oldTotalActive = $row['total_active'];
 				mysql_free_result($result);
-				$query = 'SELECT group_id, name FROM `groupbattle`';
+				$query = 'SELECT group_id, name, lastpoint FROM `groupbattle`';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$total = 0;
 				$totalActive = 0;
 				$updateQuery = "UPDATE groupbattle SET lastpoint = 0 WHERE group_id IN (";
-				$deadTime = time() - 1296000;
+				$deadTime = time();
+				$deadTime = $deadTime - 1296000;
 				while($row = mysql_fetch_array($result)) {
 					$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
 					$total = $total + 1;
 					if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
 						if($deadTime > $row['lastpoint']) {
+							error_log("hace quince dias era ".$deadTime." y este grupo es mas peque aun, ".$row['lastpoint']);
 							error_log($row['name']." has ".$counter." member/s but it's inactive.");
 							$updateQuery = $updateQuery." ".$row['group_id'].",";
 						} else {
@@ -1939,8 +1941,8 @@ function processMessage($message) {
 				$updateQuery = rtrim($updateQuery, ",");
 				$updateQuery = $updateQuery.")";
 				mysql_free_result($result);
-				$result = mysql_query($updateQuery) or die(error_log('SQL ERROR: ' . mysql_error()));
-				mysql_free_result($result);
+				//$result = mysql_query($updateQuery) or die(error_log('SQL ERROR: ' . mysql_error()));
+				//mysql_free_result($result);
 				$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);

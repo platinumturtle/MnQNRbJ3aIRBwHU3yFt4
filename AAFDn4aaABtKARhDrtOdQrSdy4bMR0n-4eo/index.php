@@ -2042,8 +2042,8 @@ function processMessage($message) {
 		$totalbuenos = 0;
 		while($row = mysql_fetch_array($result)) {
 			$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
-			error_log($row['name']." = ".$counter);
-			total = total + 1;
+			error_log($row['name']." tiene ".$counter);
+			$total = $total + 1;
 			if($counter > 0) {
 				$totalbuenos = $totalbuenos + 1;
 			}

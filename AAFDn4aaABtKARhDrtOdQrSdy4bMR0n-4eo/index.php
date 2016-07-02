@@ -2034,6 +2034,26 @@ function processMessage($message) {
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
 	} else if (strpos(strtolower($text), "!info") !== false) {
+		
+		$link = dbConnect();
+		$query = 'SELECT group_id, name FROM `groupbattle`';
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$total = 0;
+		$totalbuenos = 0;
+		while($row = mysql_fetch_array($result)) {
+			$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
+			error_log($row['name']." = ".$counter);
+			total = total + 1;
+			if($counter > 0) {
+				$totalbuenos = $totalbuenos + 1;
+			}
+		}
+		
+		error_log("TOTALES = ".$total);
+		error_log("BUENOS = ".$totalbuenos);
+		mysql_free_result($result);
+		mysql_close($link);
+		/*
 		$extra = apiRequest("getChatMembersCount", array('chat_id' => '1467411967'));
 
 		error_log($logname." triggered: !info. - ".$extra);
@@ -2048,7 +2068,7 @@ function processMessage($message) {
 		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-115596215'));
 		error_log($logname." tried to reach one more banned group - ".$extra);
 		
-		
+		*/
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));

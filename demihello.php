@@ -975,6 +975,26 @@ function getSong() {
 	return $storedSong[$n];
 }
 
+function launchTdsPts($chat_id) {
+	$chooseType = rand(1,10);
+	if($chooseType > 7) {
+		$gif = Array (
+						"BQADBAADLAcAApdgXwABvo9JwunlPxIC",
+						"BQADBAADLQcAApdgXwAB3woT9FwhQUoC"
+						);
+		$n = sizeof($gif) - 1;
+		$n = rand(0,$n);
+		usleep(500000);
+		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif[$n]));
+	} else {
+		$sound = "AwADBAADJQcAApdgXwABtUqPAAHCU01fAg";
+		
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
+		sleep(3);
+		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $sound));
+	}
+}
+
 function rollDice($id) {
 	$storedStarting = array(
 						"De acuerdo, allá voy.",
@@ -2923,6 +2943,9 @@ function processMessage($message) {
 		usleep(500000);
 		$gif = getSpot();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+	} else if (strpos(strtolower($text), "todas putas") !== false || strpos(strtolower($text), "tds pts") !== false || strpos(strtolower($text), "tdspts") !== false) {
+		error_log($logname." triggered: Tds Pts.");
+		launchTdsPts($chat_id);
 	} else if (strpos(strtolower($text), "melafo") !== false) {
 		error_log($logname." triggered: Melafo.");
 		usleep(500000);

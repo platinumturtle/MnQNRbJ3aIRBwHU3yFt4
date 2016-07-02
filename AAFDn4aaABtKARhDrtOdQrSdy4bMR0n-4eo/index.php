@@ -2034,41 +2034,32 @@ function processMessage($message) {
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
 	} else if (strpos(strtolower($text), "!info") !== false) {
-		
 		$link = dbConnect();
 		$query = 'SELECT group_id, name FROM `groupbattle`';
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$total = 0;
-		$totalbuenos = 0;
+		$totalActive = 0;
 		while($row = mysql_fetch_array($result)) {
 			$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
-			error_log($row['name']." tiene ".$counter);
+			//error_log($row['name']." has ".$counter);
 			$total = $total + 1;
 			if($counter > 0) {
-				$totalbuenos = $totalbuenos + 1;
+				$totalActive = $totalActive + 1;
 			}
 		}
-		
-		error_log("TOTALES = ".$total);
-		error_log("BUENOS = ".$totalbuenos);
 		mysql_free_result($result);
 		mysql_close($link);
-		/*
-		$extra = apiRequest("getChatMembersCount", array('chat_id' => '1467411967'));
-
-		error_log($logname." triggered: !info. - ".$extra);
-		
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-13412450'));
-		error_log($logname." tried to reach a normal group. - ".$extra);
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-96774'));
-		error_log($logname." tried to reach a banned group - ".$extra);
-		
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-131169647'));
-		error_log($logname." tried to reach one more normal group. - ".$extra);
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-115596215'));
-		error_log($logname." tried to reach one more banned group - ".$extra);
-		
-		*/
+		$totalActive = $totalActive + 2;
+		$result = "*Me llamo Demisuke. Soy hijo del Dios Yodo, famoso por ser el único ente del universo capaz de bautizar a alguien eternamente para ser reconocidos como hijos de Yodo por nuestras manchas marrones en la cabeza.".PHP_EOL.
+					.PHP_EOL."Como hijo de Yodo, me puedes ver bautizado en mi foto de perfil, esas manchas marrones en la cabeza son inconfundibles, pero me quedan de lujo.".PHP_EOL.
+					"Mi archienemigo, al igual que el de todos los que hemos sido bautizados por Yodo, es Caballo Loco, el único inmune al bautismo por su ya predeterminado tono marrón.".PHP_EOL.
+					.PHP_EOL."Cuenta la leyenda que hay varios seres superiores a Yodo, y que fueron ellos quienes bautizaron al mismísimo Yodo. Pero también cuenta que estos seres supremos, pese a poder transformarse en Caballo Loco, adoran a Yodo, y como prueba de ello le realizaron el Sagrado Ritual.".PHP_EOL.
+					.PHP_EOL."Actualmente cultivo lonchas de york en escabeche, y trato de expandir la harmonía del imperio de Yodo más allá de sus tierras.".PHP_EOL.
+					"Para ello, me paseo alrededor del planeta Telegram en busca de nuevas civilizaciones, expandiendo la palabra de Yodo allá por donde voy. ¡Ya he logrado visitar ".$total." territorios distintos!".PHP_EOL.
+					.PHP_EOL."Una de las tareas que realizo allá por donde voy es la de ayudar a los demás para esparcir la buena voluntad de Yodo, y para ello pongo al alcance de los habitantes con quien me cruzo una serie de funciones que les pueden interesar.".PHP_EOL.
+					.PHP_EOL."Además llevo en mi mochila bien guardados una serie de vídeos sobre la historia de Yodo contada por sus ancestros vivientes, ¡que pese a llevarlos guardados algún que otro habitante me los ha visto! Aunque ellos comentan algo sobre huevos de pascua en cuanto los encuentran, no entiendo qué querrán decir...".PHP_EOL.
+					.PHP_EOL."Actualmente tengo viajes planeados a ".$totalActive." territorios distintos para seguir ayudando a quien lo necesita, ¡y me siento con fuerzas de ir a más sitios!*";
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));

@@ -1926,7 +1926,6 @@ function processMessage($message) {
 					$total = $total + 1;
 					if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
 						if($deadTime > $row['lastpoint']) {
-							error_log("hace quince dias era ".$deadTime." y este grupo es mas peque aun, ".$row['lastpoint']);
 							error_log($row['name']." has ".$counter." member/s but it's inactive.");
 							$updateQuery = $updateQuery." ".$row['group_id'].",";
 						} else {
@@ -1941,8 +1940,8 @@ function processMessage($message) {
 				$updateQuery = rtrim($updateQuery, ",");
 				$updateQuery = $updateQuery.")";
 				mysql_free_result($result);
-				//$result = mysql_query($updateQuery) or die(error_log('SQL ERROR: ' . mysql_error()));
-				//mysql_free_result($result);
+				$result = mysql_query($updateQuery) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
 				$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);

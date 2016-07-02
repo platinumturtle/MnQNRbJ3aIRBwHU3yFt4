@@ -2038,14 +2038,14 @@ function processMessage($message) {
 
 		error_log($logname." triggered: !info. - ".$extra);
 		
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '1467415876'));
+		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-13412450'));
 		error_log($logname." tried to reach a normal group. - ".$extra);
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-1769104'));
+		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-96774'));
 		error_log($logname." tried to reach a banned group - ".$extra);
 		
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-1001060814557'));
+		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-131169647'));
 		error_log($logname." tried to reach one more normal group. - ".$extra);
-		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-1001061700650'));
+		$extra = apiRequest("getChatAdministrators", array('chat_id' => '-115596215'));
 		error_log($logname." tried to reach one more banned group - ".$extra);
 		
 		

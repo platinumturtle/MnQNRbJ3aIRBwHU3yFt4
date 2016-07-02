@@ -1921,21 +1921,25 @@ function processMessage($message) {
 				$updateQuery = "UPDATE grouptable SET lastpoint = 0 WHERE group_id IN (";
 				while($row = mysql_fetch_array($result)) {
 					$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
-					//error_log($row['name']." has ".$counter);
 					$total = $total + 1;
 					if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
 						$totalActive = $totalActive + 1;
+						error_log($row['name']." has ".$counter." member/s.");
 					} else {
 						error_log($row['name']." is dead.");
 						$updateQuery = $updateQuery." ".$row['group_id'].",";
 					}
 				}
-				rtrim($updateQuery, ",");
+				$updateQuery = rtrim($updateQuery, ",");
 				$updateQuery = $updateQuery.")";
 				mysql_free_result($result);
-				//$result = mysql_query($updateQuery) or die(error_log('SQL ERROR: ' . mysql_error()));
-				//mysql_free_result($result);
-				error_log("Aqui se ejecutaria: ".$updateQuery);
+				$result = mysql_query($updateQuery) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				$totalActive = $row['total_active'];
+				mysql_free_result($result);
 				mysql_close($link);
 				$result = "*Se ha actualizado la lista. Los grupos activos pasan a ser ".$totalActive." de los ".$oldTotalActive." que habían antes.*";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));

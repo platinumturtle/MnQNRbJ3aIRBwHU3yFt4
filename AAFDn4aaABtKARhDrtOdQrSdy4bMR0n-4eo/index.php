@@ -1918,13 +1918,19 @@ function processMessage($message) {
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$total = 0;
 				$totalActive = 0;
-				$updateQuery = "UPDATE grouptable SET lastpoint = 0 WHERE group_id IN (";
+				$updateQuery = "UPDATE groupbattle SET lastpoint = 0 WHERE group_id IN (";
+				$deadTime = time() - 1296000;
 				while($row = mysql_fetch_array($result)) {
 					$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
 					$total = $total + 1;
 					if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
-						$totalActive = $totalActive + 1;
-						error_log($row['name']." has ".$counter." member/s.");
+						if($deadTime > $row['lastpoint']) {
+							error_log($row['name']." has ".$counter." member/s but it's inactive.");
+							$updateQuery = $updateQuery." ".$row['group_id'].",";
+						} else {
+							$totalActive = $totalActive + 1;
+							error_log($row['name']." has ".$counter." member/s.");
+						}
 					} else {
 						error_log($row['name']." is dead.");
 						$updateQuery = $updateQuery." ".$row['group_id'].",";

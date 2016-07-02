@@ -857,7 +857,7 @@ function randomSentence() {
 						"con escayola",				"pelotari",
 						"selección",				"volante",
 						"presidente",				"ancestral",
-						"reversible",
+						"reversible",				"atrapamoscas",
 						"elegante",
 						"manual",
 						"terrícola",
@@ -2312,7 +2312,13 @@ function commandsList($send_id) {
 				;
 	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
 	
-	$commands = "*Ránking de usuarios*:"
+	$commands = "*Historia del bot*:"
+				.PHP_EOL.
+				"_Con la función \"!info\" el bot relatará su historia y podrás saber de dónde procede y más datos sobre su vida, tanto en Telegram como fuera._"
+				.PHP_EOL.PHP_EOL.
+				"_Además contará en cuántos grupos está instalado y te dará pistas sobre funciones ocultas como huevos de pascua o palabras clave._"
+				.PHP_EOL.PHP_EOL.
+				"*Ránking de usuarios*:"
 				.PHP_EOL.
 				"_¡Con este ránking sabrás quiénes son los usuarios más activos de Telegram!_"
 				.PHP_EOL.
@@ -2354,7 +2360,7 @@ function commandsList($send_id) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.5.1 creado por @Kamisuke."
+				"@DemisukeBot v1.5.2 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.

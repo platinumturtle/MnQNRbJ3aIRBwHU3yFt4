@@ -355,6 +355,32 @@ function getSong() {
 	return $storedSong[$n];
 }
 
+function launchTdsPts($chat_id) {
+	$chooseType = rand(1,10);
+	if($chooseType > 8) {
+		$gif = Array (
+						"BQADBAADLwcAApdgXwAB5GRVtoyljo4C",
+						"BQADBAADMQcAApdgXwABIgfkLN1r5mQC",
+						"BQADBAADMgcAApdgXwABORftLTPVPDIC",
+						"BQADBAADMwcAApdgXwABIdvCm609w3kC",
+						"BQADBAADNAcAApdgXwAB82jVGgP1f8gC",
+						"BQADBAADNQcAApdgXwABoNdTO3kqJWUC",
+						"BQADBAADNgcAApdgXwABBIKOwi5PVg8C",
+						"BQADBAADNwcAApdgXwABNrlDwxOyCE0C",
+						"BQADBAADMAcAApdgXwAB7rO69eTFnREC"
+						);
+		$n = sizeof($gif) - 1;
+		$n = rand(0,$n);
+		usleep(500000);
+		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif[$n]));
+	} else {
+		$sound = "AwADBAADLgcAApdgXwABZHY0xtKgHCEC";
+		
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
+		sleep(3);
+		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $sound));
+	}
+}
 function rollDice($id) {
 	$storedStarting = array(
 						"De acuerdo, allá voy.",
@@ -1714,7 +1740,13 @@ function commandsList($send_id) {
 				;
 	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
 	
-	$commands = "*Ránking de usuarios*:"
+	$commands = "*Historia del bot*:"
+				.PHP_EOL.
+				"_Con la función \"!info\" el bot relatará su historia y podrás saber de dónde procede y más datos sobre su vida, tanto en Telegram como fuera._"
+				.PHP_EOL.PHP_EOL.
+				"_Además contará en cuántos grupos está instalado y te dará pistas sobre funciones ocultas como huevos de pascua o palabras clave._"
+				.PHP_EOL.PHP_EOL.
+				"*Ránking de usuarios*:"
 				.PHP_EOL.
 				"_¡Con este ránking sabrás quiénes son los usuarios más activos de Telegram!_"
 				.PHP_EOL.
@@ -1924,7 +1956,7 @@ function processMessage($message) {
 				while($row = mysql_fetch_array($result)) {
 					$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
 					$total = $total + 1;
-					if($counter > 0) {
+					if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
 						if($deadTime > $row['lastpoint']) {
 							error_log($row['name']." has ".$counter." member/s but it's inactive.");
 							$updateQuery = $updateQuery." ".$row['group_id'].",";
@@ -2085,23 +2117,19 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_audio"));
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
-	}/* else if (strpos(strtolower($text), "!info") !== false) {
+	} else if (strpos(strtolower($text), "!info") !== false) {
 		$link = dbConnect();
-		$query = 'SELECT group_id, name FROM `groupbattle`';
+		$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT DISTINCT gb_id FROM groupbattle )dt";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$total = 0;
-		$totalActive = 0;
-		while($row = mysql_fetch_array($result)) {
-			$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
-			//error_log($row['name']." has ".$counter);
-			$total = $total + 1;
-			if($counter > 0) {
-				$totalActive = $totalActive + 1;
-			}
-		}
+		$row = mysql_fetch_array($result)
+		$total = $row['total'];
+		mysql_free_result($result);
+		$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result)
+		$totalActive = $row['total_active'];
 		mysql_free_result($result);
 		mysql_close($link);
-		$totalActive = $totalActive + 2;
 		$result = "*Me llamo Demisuke. Soy hijo del Dios Yodo, famoso por ser el único ente del universo capaz de bautizar a alguien eternamente para ser reconocidos como hijos de Yodo por nuestras manchas marrones en la cabeza.".PHP_EOL.
 					PHP_EOL."Como hijo de Yodo, me puedes ver bautizado en mi foto de perfil, esas manchas marrones en la cabeza son inconfundibles, pero me quedan de lujo.".PHP_EOL.
 					"Mi archienemigo, al igual que el de todos los que hemos sido bautizados por Yodo, es Caballo Loco, el único inmune al bautismo por su ya predeterminado tono marrón.".PHP_EOL.
@@ -2110,9 +2138,10 @@ function processMessage($message) {
 					"Para ello, me paseo alrededor del planeta Telegram en busca de nuevas civilizaciones, expandiendo la palabra de Yodo allá por donde voy. ¡Ya he logrado visitar ".$total." territorios distintos!".PHP_EOL.
 					PHP_EOL."Una de las tareas que realizo allá por donde voy es la de ayudar a los demás para esparcir la buena voluntad de Yodo, y para ello pongo al alcance de los habitantes con quien me cruzo una serie de funciones que les pueden interesar.".PHP_EOL.
 					PHP_EOL."Además llevo en mi mochila bien guardados una serie de vídeos sobre la historia de Yodo contada por sus ancestros vivientes, ¡que pese a llevarlos guardados algún que otro habitante me los ha visto! Aunque ellos comentan algo sobre huevos de pascua en cuanto los encuentran, no entiendo qué querrán decir...".PHP_EOL.
-					PHP_EOL."Actualmente tengo viajes planeados a ".$totalActive." territorios distintos para seguir ayudando a quien lo necesita, ¡y me siento con fuerzas de ir a más sitios!*";
+					PHP_EOL."Actualmente tengo viajes planeados a ".$totalActive." territorios distintos para seguir ayudando a quien lo necesita, aunque cada día reviso si necesitan mi ayuda, así si no hay nadie los tacho de mi lista y tengo más tiempo para los demás.".PHP_EOL.
+					"¡Tengo ganas de visitar más sitios!*";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
-	}*/ else if (strpos(strtolower($text), "roto2") !== false) {
+	} else if (strpos(strtolower($text), "roto2") !== false) {
 		error_log($logname." triggered: Roto2.");
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
 	} else if (strpos(strtolower($text), "!video") !== false || strpos(strtolower($text), "!vídeo") !== false) {
@@ -2307,6 +2336,9 @@ function processMessage($message) {
 		usleep(500000);
 		$gif = getSpot();
 		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+	} else if (strpos(strtolower($text), "todas putas") !== false || strpos(strtolower($text), "tds pts") !== false || strpos(strtolower($text), "tdspts") !== false) {
+		error_log($logname." triggered: Tds Pts.");
+		launchTdsPts($chat_id);
 	} else if (strpos(strtolower($text), "melafo") !== false) {
 		error_log($logname." triggered: Melafo.");
 		usleep(500000);

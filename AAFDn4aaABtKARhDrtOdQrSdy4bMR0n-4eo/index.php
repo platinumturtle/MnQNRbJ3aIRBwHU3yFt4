@@ -2121,7 +2121,7 @@ function processMessage($message) {
 		$link = dbConnect();
 		$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT DISTINCT gb_id FROM groupbattle )dt";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$row = mysql_fetch_array($result)
+		$row = mysql_fetch_array($result);
 		$total = $row['total'];
 		mysql_free_result($result);
 		$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";

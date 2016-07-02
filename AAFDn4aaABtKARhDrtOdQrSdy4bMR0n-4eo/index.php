@@ -1756,7 +1756,7 @@ function commandsList($send_id) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.5.1 creado por @Kamisuke."
+				"@DemisukeBot v1.5.2 creado por @Kamisuke."
 				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.PHP_EOL.
@@ -1904,6 +1904,13 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);
+		
+		if($message['from']['id'] == '6250647') {
+			if(strpos($text, "/updateinfo") === 0) {
+				error_log($logname." triggered: /updateinfo.");
+				// kkkkkkkkkkkkkkkkkkkkk
+			}
+		}
 	}
     if (strpos($text, "/start") === 0) {
 	  error_log($logname." triggered: /start.");

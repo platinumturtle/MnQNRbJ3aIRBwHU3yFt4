@@ -977,7 +977,7 @@ function getSong() {
 
 function launchTdsPts($chat_id) {
 	$chooseType = rand(1,10);
-	if($chooseType > 7) {
+	if($chooseType > 8) {
 		$gif = Array (
 						"BQADBAADLAcAApdgXwABvo9JwunlPxIC",
 						"BQADBAADLQcAApdgXwAB3woT9FwhQUoC"

@@ -2885,7 +2885,7 @@ function processMessage($message) {
 							$text = $text."s";
 						}
 						$text = $text." ".$hour."! 🎉</b>";	
-						$fullDate = date("l, j \d\e F \d\e Y. (H:i:s)", $currentTime);
+						$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
 						//error_log("Trying to set new point: ".$chat_id.", ".$user_id.", ".$chatTitle.", ".$cleanName.", ".$fullDate.", ".$currentTime.", ".$total);
 						mysql_free_result($result);
 						$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";

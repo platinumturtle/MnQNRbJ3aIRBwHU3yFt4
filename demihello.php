@@ -2902,7 +2902,7 @@ function processMessage($message) {
 						mysql_free_result($result);
 						if($fullTotal != $disctintTotal) {
 							$admin_id = 6250647;
-							apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados en la captura de la bandera.*"));
+							apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados en la captura de ".$cleanName." la bandera.*"));
 						}
 					}
 				} else if($usersGroupCount > 4) {

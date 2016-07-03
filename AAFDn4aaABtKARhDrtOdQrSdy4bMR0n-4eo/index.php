@@ -357,7 +357,7 @@ function getSong() {
 
 function launchTdsPts($chat_id) {
 	$chooseType = rand(1,10);
-	if($chooseType > 8) {
+	if($chooseType > 3) {
 		$gif = Array (
 						"BQADBAADLwcAApdgXwAB5GRVtoyljo4C",
 						"BQADBAADMQcAApdgXwABIgfkLN1r5mQC",
@@ -1908,7 +1908,7 @@ function processMessage($message) {
 		mysql_free_result($result);
 		mysql_close($link);
 	} else {
-		error_log($logname."'s private incoming message: ".$message['text']);
+		error_log($logname."'s private incoming message (".$chat_id."): ".$message['text']);
 		$time = time();
 		$link = dbConnect();
 		$user_id = $message['from']['id'];
@@ -2025,6 +2025,20 @@ function processMessage($message) {
 			$textToSend = substr($message['text'], strpos($message['text'],")") + 2);
 			apiRequest("sendMessage", array('chat_id' => $destiny_id, 'parse_mode' => "Markdown", "text" => $textToSend));
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje al destinatario.*"));
+		} else if ($message['chat']['type'] == "private") {
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
+		}
+	} else if (strpos($text, "/checkflags") === 0) {
+		error_log($logname." triggered: /checkflags.");
+		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
+			$link = dbConnect();
+			$query = "SELECT SUM(total) as 'total' FROM `flagcapture`";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			$total = $row['total'];
+			mysql_free_result($result);
+			mysql_close($link);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se han capturado un total de ".$total." banderas.*"));
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
@@ -2284,6 +2298,7 @@ function processMessage($message) {
 				$checkMax = 0;
 				$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
 				if($from_id != $row['user_id'] && $usersGroupCount > 4) {
+					$total = 1;
 					$cleanName = str_replace("'","''",$name);
 					mysql_free_result($result);
 					$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
@@ -2329,10 +2344,29 @@ function processMessage($message) {
 						$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
-						if($hour != 1 /* && $hour != 13*/) {
+						if($hour != 1) {
 							$text = $text."s";
 						}
 						$text = $text." ".$hour."! 🎉</b>";	
+						$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
+						mysql_free_result($result);
+						$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT DISTINCT epoch_time FROM flagwinnerlog )dt";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						$disctintTotal = $row['total'];
+						mysql_free_result($result);
+						$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT epoch_time FROM flagwinnerlog )dt";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						$fullTotal = $row['total'];
+						mysql_free_result($result);
+						if($fullTotal != $disctintTotal) {
+							$admin_id = 6250647;
+							apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados probablemente de ".$cleanName." en la captura de la bandera.*"));
+						}
 					}
 				} else if($usersGroupCount > 4) {
 					$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";

@@ -2574,6 +2574,20 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}*/
+	} else if (strpos($text, "/checkflags") === 0) {
+		error_log($logname." triggered: /checkflags.");
+		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
+			$link = dbConnect();
+			$query = "SELECT SUM(total) as 'total ' FROM `flagcapture`";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			$total = $row['total'];
+			mysql_free_result($result);
+			mysql_close($link);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se han capturado un total de ".$total." banderas.*"));
+		} else if ($message['chat']['type'] == "private") {
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
+		}
 	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
 		error_log($logname." triggered: Hola.");
 		$greeting = greeting();

@@ -2484,7 +2484,7 @@ function processMessage($message) {
 		mysql_free_result($result);
 		mysql_close($link);
 	} else {
-		error_log($logname."'s private incoming message: ".$message['text']);
+		error_log($logname."'s private incoming message (".$chat_id."): ".$message['text']);
 		$time = time();
 		$link = dbConnect();
 		$user_id = $message['from']['id'];
@@ -2886,11 +2886,24 @@ function processMessage($message) {
 						}
 						$text = $text." ".$hour."! 🎉</b>";	
 						$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
-						//error_log("Trying to set new point: ".$chat_id.", ".$user_id.", ".$chatTitle.", ".$cleanName.", ".$fullDate.", ".$currentTime.", ".$total);
 						mysql_free_result($result);
 						$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						/* pene */
+						mysql_free_result($result);
+						$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT DISTINCT epoch_time FROM flagwinnerlog )dt";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						$disctintTotal = $row['total'];
+						mysql_free_result($result);
+						$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT epoch_time FROM flagwinnerlog )dt";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						$fullTotal = $row['total'];
+						mysql_free_result($result);
+						if($fullTotal != $disctintTotal) {
+							//$admin_id = ;
+							//apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados en la captura de la bandera.*"));
+						}
 					}
 				} else if($usersGroupCount > 4) {
 					$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";

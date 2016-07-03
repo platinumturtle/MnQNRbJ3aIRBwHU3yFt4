@@ -114,8 +114,8 @@ function insult($name) {
 
 function checkUserID($id) {
 	$bannedID = array(
-					"119769161", // 121704708 Rayne, 152288222 oikarinen
-					""
+					"119769161", // TaliBOT - 121704708 Rayne, 152288222 oikarinen
+					"" // MH (13707497)
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
 		if($bannedID[$i] == $id) {

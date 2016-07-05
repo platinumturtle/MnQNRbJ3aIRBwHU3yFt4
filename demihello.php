@@ -907,7 +907,7 @@ function reverseString ($message) {
 	$message = strrev($message);
 	//$reconvertMessage = implode("_", strrev($message));
 	//$reconvertMessage = (string)$reconvertMessage;
-	$caca = str_plit($message, strlen($message));
+	$caca = str_split($message, strlen($message));
 	error_log("ASDASDSADASD ".$caca[0]);
 	
 	

@@ -921,7 +921,7 @@ function reverseString ($message) {
 	//$caqui = strval($failedShit);
 	//error_log(var_dump($failedShit));
 	
-	return $processMessage;
+	return $message;
 }
 
 function failInsult() {
@@ -3405,7 +3405,7 @@ if (isset($update["message"])) {
 		$raboFrescu = $raboFrescu.$reverseText[1];
 		$raboFrescu = $raboFrescu.$reverseText[0];
 		//$pedorreta = reverseString($claveles);
-		$pedorreta = reverseString($text);
+		$pedorreta = reverseString($claveles);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

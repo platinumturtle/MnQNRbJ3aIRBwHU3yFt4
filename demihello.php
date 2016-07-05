@@ -3237,8 +3237,11 @@ if (isset($update["message"])) {
 
 if (isset($update["inline_query"])) {
 	error_log("Me escriben algo: ".$update["inline_query"]["query"]);
-	$text = "pingas";
-	$results = array($text,$update["inline_query"]["query"]);
+	//$text = "pingas";
+	//$results = array($text,$update["inline_query"]["query"]);
+	$messageResult = apiRequestJson("InputTextMessageContent", array('message_text' => "PENEEEE", 'disable_web_page_preview' => TRUE));
+	$object = apiRequestJson("InlineQueryResultArticle", array('type' => "article", 'id' => 1, 'title' => "titel", 'input_message_content' => $messageResult, 'description' => "descripshon"));
+	$results = Array($object);
 	apiRequestJson("answerInlineQuery", array('inline_query_id' => $update["inline_query"]["id"], 'results' => $results, 'is_personal' => TRUE));	
 	
 }

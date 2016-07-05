@@ -3391,10 +3391,11 @@ if (isset($update["message"])) {
 		$reverseText = reverseString($text);
 
 
-		$claveles = "";
+		/*$claveles = "";
 		for($i=strlen($text)-1;$i>=0;$i--) {
 			$claveles = $claveles.$text[$i];
-		}
+		}*/
+		$claveles = reverseString($text);
 
 		//$pedorreta = reverseString($claveles);
 		//$pedorreta = str_replace("g","n",$claveles);

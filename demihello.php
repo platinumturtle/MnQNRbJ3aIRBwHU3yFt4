@@ -789,7 +789,7 @@ function rankedGroup($group) {
 function cleanHTML ($message) {
 	$message = str_replace("<", "&lt", $message);
 	$message = str_replace(">", "$gt", $message);
-	$message = str_replace("&", "&amp", $message);
+	//$message = str_replace("&", "&amp", $message);
 	$message = str_replace("\"", "&quot", $message);
 	return $message;
 }

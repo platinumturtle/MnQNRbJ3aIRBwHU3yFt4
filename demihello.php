@@ -900,7 +900,7 @@ function reverseString ($message) {
 	
 	
 	
-	return $message;
+	return $reversedMessage;
 }
 
 function failInsult() {

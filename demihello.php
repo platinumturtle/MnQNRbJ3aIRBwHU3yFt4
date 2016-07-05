@@ -882,8 +882,8 @@ function reverseString ($message) {
 	$message = str_replace("ɔ́", "ç", $message);
 	$message = str_replace("Ɔ́", "Ç", $message);
 	
-	//$message = strrev($message);
 	$message = (string)$message;
+	$message = strrev($message);
 	return $message;
 }
 

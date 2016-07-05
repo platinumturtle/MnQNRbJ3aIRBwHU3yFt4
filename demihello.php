@@ -3237,7 +3237,9 @@ if (isset($update["message"])) {
 
 if (isset($update["inline_query"])) {
 	error_log("Me escriben algo: ".$update["inline_query"]["query"]);
-	
+	$text = "pingas";
+	$results = array($text,$update["inline_query"]["query"]);
+	apiRequestJson("answerInlineQuery", array('inline_query_id' => $update["inline_query"]["id"], 'results' => $results, 'is_personal' => TRUE));	
 	
 }
 ?>

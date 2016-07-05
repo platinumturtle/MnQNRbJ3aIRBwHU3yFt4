@@ -884,6 +884,7 @@ function reverseString ($message) {
 	
 	$message = (string)$message;
 	$message = strrev($message);
+	$message = (string)$message;
 	return $message;
 }
 

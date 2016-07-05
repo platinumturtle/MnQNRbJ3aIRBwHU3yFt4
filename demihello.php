@@ -3387,15 +3387,16 @@ if (isset($update["message"])) {
 		//for($i=strlen($reverseText)-1, $j=0; $j<$i; $i--, $j++) {
 		//	list($reverseText[$j], $reverseText[$i]) = array($reverseText[$i], $reverseText[$j]);
 		//}
-		$raboFresco = Array ("t","u","y");
-		//$raboFresco[0] = 't';
-		//$raboFresco[1] = 'u';
-		//$raboFresco[2] = 'y';
-		//$raboFresco[3] = NULL;
+		//$raboFresco = Array ("t","u","y");
+		$raboFresco = "";
+		$raboFresco[0] = 't';
+		$raboFresco[1] = 'u';
+		$raboFresco[2] = 'y';
+		$raboFresco[3] = NULL;
 		$raboFrescu = "";
-		$rabofrescu = $raboFrescu.$raboFresco[0];
-		$rabofrescu = $raboFrescu.$raboFresco[1];
-		$rabofrescu = $raboFrescu.$raboFresco[2];
+		$raboFrescu = $raboFrescu.$raboFresco[0];
+		$raboFrescu = $raboFrescu.$raboFresco[1];
+		$raboFrescu = $raboFrescu.$raboFresco[2];
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

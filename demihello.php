@@ -795,10 +795,94 @@ function cleanHTML ($message) {
 	$message = str_replace("</i>", "", $message);
 	$message = str_replace("</code>", "", $message);
 	$message = str_replace("</pre>", "", $message);
-	//$message = str_replace(">", "$gt", $message);
-	//$message = str_replace("&", "&amp", $message);
-	//$message = str_replace("\"", "&quot", $message);
-	//$message = htmlspecialchars_decode($message);
+	return $message;
+}
+
+function reverseString ($message) {
+	$message = cleanHTML($message);
+
+	$message = str_replace("á", "a", $message);
+	$message = str_replace("à", "a", $message);
+	$message = str_replace("é", "e", $message);
+	$message = str_replace("è", "e", $message);
+	$message = str_replace("í", "i", $message);
+	$message = str_replace("ó", "o", $message);
+	$message = str_replace("ò", "o", $message);
+	$message = str_replace("ú", "u", $message);
+	$message = str_replace("ü", "u", $message);
+	$message = str_replace("ï", "i", $message);
+
+	$message = str_replace("Á", "A", $message);
+	$message = str_replace("À", "A", $message);
+	$message = str_replace("É", "E", $message);
+	$message = str_replace("È", "E", $message);
+	$message = str_replace("Í", "I", $message);
+	$message = str_replace("Ó", "O", $message);
+	$message = str_replace("Ò", "O", $message);
+	$message = str_replace("Ú", "U", $message);
+	$message = str_replace("Ü", "U", $message);
+	$message = str_replace("Ï", "I", $message);
+
+	$message = str_replace("A", "∀", $message);
+	//$message = str_replace("B", "B", $message);
+	$message = str_replace("C", "Ɔ", $message);
+	$message = str_replace("D", "D", $message);
+	$message = str_replace("E", "Ǝ", $message);
+	$message = str_replace("F", "Ⅎ", $message);
+	$message = str_replace("G", "פ", $message);
+	//$message = str_replace("H", "H", $message);
+	//$message = str_replace("I", "I", $message);
+	$message = str_replace("J", "ſ", $message);
+	//$message = str_replace("K", "K", $message);
+	$message = str_replace("L", "˥", $message);
+	$message = str_replace("M", "W", $message);
+	//$message = str_replace("N", "N", $message);
+	//$message = str_replace("O", "O", $message);
+	$message = str_replace("P", "Ԁ", $message);
+	//$message = str_replace("Q", "Q", $message);
+	//$message = str_replace("R", "R", $message);
+	//$message = str_replace("S", "S", $message);
+	$message = str_replace("T", "┴", $message);
+	$message = str_replace("U", "∩", $message);
+	$message = str_replace("V", "Λ", $message);
+	$message = str_replace("W", "M", $message);
+	//$message = str_replace("X", "X", $message);
+	$message = str_replace("Y", "⅄", $message);
+	//$message = str_replace("Z", "Z", $message);
+
+	$message = str_replace("a", "ɐ", $message);
+	$message = str_replace("b", "ʠ", $message);
+	$message = str_replace("c", "ɔ", $message);
+	$message = str_replace("d", "p", $message);
+	$message = str_replace("e", "ǝ", $message);
+	$message = str_replace("f", "ɟ", $message);
+	$message = str_replace("g", "פ", $message);
+	$message = str_replace("h", "ɥ", $message);
+	$message = str_replace("i", "ı", $message);
+	$message = str_replace("j", "ɾ", $message);
+	$message = str_replace("k", "ʞ", $message);
+	//$message = str_replace("l", "l", $message);
+	$message = str_replace("m", "ɯ", $message);
+	$message = str_replace("n", "u", $message);
+	//$message = str_replace("o", "o", $message);
+	$message = str_replace("p", "d", $message);
+	$message = str_replace("q", "b", $message);
+	$message = str_replace("r", "ɹ", $message);
+	//$message = str_replace("s", "s", $message);
+	$message = str_replace("t", "ʇ", $message);
+	$message = str_replace("u", "n", $message);
+	$message = str_replace("v", "ʌ", $message);
+	$message = str_replace("w", "ʍ", $message);
+	//$message = str_replace("x", "x", $message);
+	$message = str_replace("y", "ʎ", $message);
+	//$message = str_replace("z", "z", $message);
+	//añadir eñes y cedillas, interrogaciones y exclamaciones, punto, coma, comillas simples y dobles, parentesis cocrhcetes y llaves, barra y contrabarra
+	$message = str_replace("ų", "ñ", $message);
+	$message = str_replace("Ņ", "Ñ", $message);
+	$message = str_replace("ɔ́", "ç", $message);
+	$message = str_replace("Ɔ́", "Ç", $message);
+	
+	$message = strrev($message);
 	return $message;
 }
 
@@ -3266,10 +3350,12 @@ if (isset($update["message"])) {
 		$text = $update["inline_query"]["query"];
 		$text = cleanHTML($text);
 		$boldText = "<b>".$text."</b>";
+		$reverseText = reverseString($text);
+		$reverseText = "<b>".$reverseText."</b>";
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
-		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "ojala me leyerassss",],
-		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => "*".$update["inline_query"]["query"]."*", 'parse_mode' => "Markdown",],
+		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],
+		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => $reverseText, 'parse_mode' => "HTML",],
 		]]);
 	}
 }

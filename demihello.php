@@ -3389,27 +3389,19 @@ if (isset($update["message"])) {
 		$text = cleanHTML($text);
 		$boldText = "<b>".$text."</b>";
 		$reverseText = reverseString($text);
-		//for($i=strlen($reverseText)-1, $j=0; $j<$i; $i--, $j++) {
-		//	list($reverseText[$j], $reverseText[$i]) = array($reverseText[$i], $reverseText[$j]);
-		//}
-		//$raboFresco = Array ("t","u","y");
+
+
 		$claveles = "";
-		for($i=strlen($text)-1;$i>0;$i--) {
+		for($i=strlen($text)-1;$i>=0;$i--) {
 			$claveles = $claveles.$text[$i];
 		}
-		$raboFrescu = "";
-		$raboFrescu = $raboFrescu.$reverseText[5];
-		$raboFrescu = $raboFrescu.$reverseText[4];
-		$raboFrescu = $raboFrescu.$reverseText[3];
-		$raboFrescu = $raboFrescu.$reverseText[2];
-		$raboFrescu = $raboFrescu.$reverseText[1];
-		$raboFrescu = $raboFrescu.$reverseText[0];
+
 		//$pedorreta = reverseString($claveles);
-		$pedorreta = reverseString($claveles);
+		$pedorreta = str_replace("ñ","n",$claveles);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],
-		//["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => $pedorreta, 'parse_mode' => "HTML",],
+		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => $pedorreta, 'parse_mode' => "HTML",],
 		]]);
 	}
 }

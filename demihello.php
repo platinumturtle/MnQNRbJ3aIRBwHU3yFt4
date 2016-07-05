@@ -786,6 +786,14 @@ function rankedGroup($group) {
 	return 1;
 }
 
+function cleanHTML ($message) {
+	$message = str_replace("<", "&lt", $message);
+	$message = str_replace(">", "$gt", $message);
+	$message = str_replace("&", "&amp", $message);
+	$message = str_replace("\"", "&quot", $message);
+	return $message;
+}
+
 function failInsult() {
 	$storedInsult = array(
 						"No quiero, subnormal",
@@ -3210,7 +3218,15 @@ if (!$update) {
   exit;
 }
 
-if (isset($update["edited_message"])) {
+
+if (isset($update["message"])) {
+	checkUserID($update["message"]['from']['id']);
+	if(isset($update["message"]['from']['username'])) {
+		checkUsername($update["message"]['from']['username']);
+	}
+	checkGroup($update["message"]['chat']['id']);
+	processMessage($update["message"]);
+} else if (isset($update["edited_message"])) {
 	checkUserID($update["edited_message"]['from']['id']);
 	if(isset($update["edited_message"]['from']['username'])) {
 		checkUsername($update["edited_message"]['from']['username']);
@@ -3224,18 +3240,11 @@ if (isset($update["edited_message"])) {
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));			
 	usleep(1000000);
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $reply, "text" => $message));			
-}
-
-if (isset($update["message"])) {
-	checkUserID($update["message"]['from']['id']);
-	if(isset($update["message"]['from']['username'])) {
-		checkUsername($update["message"]['from']['username']);
+} else if (isset($update["inline_query"])) {
+	checkUserID($update["inline_query"]['from']['id']);
+	if(isset($update["inline_query"]['from']['username'])) {
+		checkUsername($update["inline_query"]['from']['username']);
 	}
-	checkGroup($update["message"]['chat']['id']);
-	processMessage($update["message"]);
-}
-
-if (isset($update["inline_query"])) {
 	error_log("Me escriben algo: ".$update["inline_query"]["query"]);
 	$queryId = $update["inline_query"]["id"];
 	//$text = "pingas";
@@ -3246,16 +3255,14 @@ if (isset($update["inline_query"])) {
 	//apiRequestJson("answerInlineQuery", array('inline_query_id' => $update["inline_query"]["id"], 'results' => $object, 'is_personal' => TRUE));	
 	
 	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
-	
-		//crearlo en HTML y crear una funcion de cleanHTML que mande a la porra cualquier etiqueta que la peña intente mandar :D
+		$text = $update["inline_query"]["query"];
+		$text = cleanHTML($text);
+		$boldText = "<b>".$text."</b>";
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
-		
-		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $update["inline_query"]["query"],],
+		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "ojala me leyerassss",],
 		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => "*".$update["inline_query"]["query"]."*", 'parse_mode' => "Markdown",],
-		
 		]]);
-		
 	}
 }
 ?>

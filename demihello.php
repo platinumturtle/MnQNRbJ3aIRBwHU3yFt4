@@ -911,7 +911,7 @@ function reverseString ($message) {
 	$revert = "‫‬‭‮҉";
 	error_log("ASDASDSADASD ".$revert.$message);
 	
-	$message = $revert.$message;
+	$message = $revert.$message.$revert;
 	
 	return $message;
 }

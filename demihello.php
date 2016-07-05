@@ -905,12 +905,13 @@ function reverseString ($message) {
 	
 	error_log("INVERTIDO: ".$message);*/
 	$message = strrev($message);
-	$reconvertMessage = implode("_", strrev($message));
+	//$reconvertMessage = implode("_", strrev($message));
 	//$reconvertMessage = (string)$reconvertMessage;
-	error_log("ASDASDSADASD ".$reconvertMessage);
+	$caca = str_plit($message, strlen($message));
+	error_log("ASDASDSADASD ".$caca[0]);
 	
 	
-	return $reconvertMessage;
+	return $caca[0];
 }
 
 function failInsult() {

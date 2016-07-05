@@ -3387,11 +3387,11 @@ if (isset($update["message"])) {
 		//for($i=strlen($reverseText)-1, $j=0; $j<$i; $i--, $j++) {
 		//	list($reverseText[$j], $reverseText[$i]) = array($reverseText[$i], $reverseText[$j]);
 		//}
-		$raboFresco = "";
-		$raboFresco[0] = 't';
-		$raboFresco[1] = 'u';
-		$raboFresco[2] = 'y';
-		$raboFresco[3] = NULL;
+		$raboFresco = Array ("t","u","y");
+		//$raboFresco[0] = 't';
+		//$raboFresco[1] = 'u';
+		//$raboFresco[2] = 'y';
+		//$raboFresco[3] = NULL;
 		$raboFrescu = "";
 		$rabofrescu = $raboFrescu.$raboFresco[0];
 		$rabofrescu = $raboFrescu.$raboFresco[1];

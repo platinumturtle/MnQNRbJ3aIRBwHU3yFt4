@@ -883,7 +883,6 @@ function reverseString ($message) {
 	$message = str_replace("Ɔ́", "Ç", $message);
 	
 	$message = strrev($message);
-	error_log("HOLA SOY EL STRING ".$message);
 	return $message;
 }
 
@@ -3352,7 +3351,7 @@ if (isset($update["message"])) {
 		$text = cleanHTML($text);
 		$boldText = "<b>".$text."</b>";
 		$reverseText = reverseString($text);
-		$reverseText = "<b>".$reverseText."</b>";
+		$reverseText = "<b>".(string)$reverseText."</b>";
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

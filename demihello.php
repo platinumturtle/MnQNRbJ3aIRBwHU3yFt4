@@ -887,12 +887,15 @@ function reverseString ($message) {
 	//$message = (string)$message;
 	
 	
-	$length = strlen($message)-1;
+	/*$length = strlen($message)-1;
 	$i = 0;
 	while ($i < $length+1) {
 		$message[$i] = $message[$length-$i];
 		$i++;
-	}
+	}*/
+	$reversedMessage = strrev($message);
+	$reversedMessage = (string)$reversedMessage;
+	error_log("INVERTIDO: ".$reversedMessage);
 	
 	
 	

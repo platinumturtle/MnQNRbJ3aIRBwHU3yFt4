@@ -912,10 +912,11 @@ function reverseString ($message) {
 	error_log("ASDASDSADASD ".$message);
 	
 	//$message = $revert.$message.$revert;
-	$failedShit = (String)strrev($message);
-	error_log(var_dump($failedShit));
+	$failedShit = (string)strrev($message);
+	$caqui = strval($failedShit);
+	//error_log(var_dump($failedShit));
 	
-	return $message;
+	return $caqui;
 }
 
 function failInsult() {

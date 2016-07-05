@@ -806,27 +806,27 @@ function reverseString ($message) {
 		$processMessage = $processMessage.$message[$i];
 	}*/
 
-	$message = str_replace("á", "a", $message);
-	$message = str_replace("à", "a", $message);
-	$message = str_replace("é", "e", $message);
-	$message = str_replace("è", "e", $message);
-	$message = str_replace("í", "i", $message);
-	$message = str_replace("ó", "o", $message);
-	$message = str_replace("ò", "o", $message);
-	$message = str_replace("ú", "u", $message);
-	$message = str_replace("ü", "u", $message);
-	$message = str_replace("ï", "i", $message);
+//	$message = str_replace("á", "a", $message);
+//	$message = str_replace("à", "a", $message);
+//	$message = str_replace("é", "e", $message);
+//	$message = str_replace("è", "e", $message);
+//	$message = str_replace("í", "i", $message);
+//	$message = str_replace("ó", "o", $message);
+//	$message = str_replace("ò", "o", $message);
+//	$message = str_replace("ú", "u", $message);
+//	$message = str_replace("ü", "u", $message);
+//	$message = str_replace("ï", "i", $message);
 
-	$message = str_replace("Á", "∀", $message);
-	$message = str_replace("À", "∀", $message);
-	$message = str_replace("É", "E", $message);
-	$message = str_replace("È", "E", $message);
-	$message = str_replace("Í", "I", $message);
-	$message = str_replace("Ó", "O", $message);
-	$message = str_replace("Ò", "O", $message);
-	$message = str_replace("Ú", "U", $message);
-	$message = str_replace("Ü", "U", $message);
-	$message = str_replace("Ï", "I", $message);
+//	$message = str_replace("Á", "∀", $message);
+//	$message = str_replace("À", "∀", $message);
+//	$message = str_replace("É", "E", $message);
+//	$message = str_replace("È", "E", $message);
+//	$message = str_replace("Í", "I", $message);
+//	$message = str_replace("Ó", "O", $message);
+//	$message = str_replace("Ò", "O", $message);
+//	$message = str_replace("Ú", "U", $message);
+//	$message = str_replace("Ü", "U", $message);
+//	$message = str_replace("Ï", "I", $message);
 
 	$message = str_replace("A", "∀", $message);
 	//$message = str_replace("B", "B", $message);
@@ -882,10 +882,10 @@ function reverseString ($message) {
 	$message = str_replace("y", "ʎ", $message);
 	//$message = str_replace("z", "z", $message);
 	//añadir eñes y cedillas, interrogaciones y exclamaciones, punto, coma, comillas simples y dobles, parentesis cocrhcetes y llaves, barra y contrabarra
-	$message = str_replace("ų", "ñ", $message);
-	$message = str_replace("Ņ", "Ñ", $message);
-	$message = str_replace("ɔ́", "ç", $message);
-	$message = str_replace("Ɔ́", "Ç", $message);
+//	$message = str_replace("ų", "ñ", $message);
+//	$message = str_replace("Ņ", "Ñ", $message);
+//	$message = str_replace("ɔ́", "ç", $message);
+//	$message = str_replace("Ɔ́", "Ç", $message);
 	
 	//$message = (string)$message;
 	//$message = strrev($message);
@@ -3396,8 +3396,8 @@ if (isset($update["message"])) {
 			$claveles = $claveles.$text[$i];
 		}
 
-		//$pedorreta = reverseString($claveles);
-		$pedorreta = str_replace("g","n",$claveles);
+		$pedorreta = reverseString($claveles);
+		//$pedorreta = str_replace("g","n",$claveles);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

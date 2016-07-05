@@ -893,14 +893,22 @@ function reverseString ($message) {
 		$message[$i] = $message[$length-$i];
 		$i++;
 	}*/
-	$reversedMessage = strrev($message);
-	$reversedMessage = (string)$reversedMessage;
-	error_log("INVERTIDO: ".$reversedMessage);
+	//$reversedMessage = strrev($message);
+	//$reversedMessage = (string)$reversedMessage;
+	
+	
+	//$reversedMessage = "";
+	for($i=strlen($message)-1, $j=0; $j<$i; $i--, $j++) {
+		list($message[$j], $message[$i]) = array($message[$i], $message[$j]);
+	}
+	
+	
+	error_log("INVERTIDO: ".$message);
 	
 	
 	
 	
-	return (string)$reversedMessage;
+	return $message;
 }
 
 function failInsult() {

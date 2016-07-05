@@ -787,7 +787,14 @@ function rankedGroup($group) {
 }
 
 function cleanHTML ($message) {
-	$message = str_replace('<', '&lt', $message);
+	$message = str_replace("<b>", "", $message);
+	$message = str_replace("<i>", "", $message);
+	$message = str_replace("<code>", "", $message);
+	$message = str_replace("<pre>", "", $message);
+	$message = str_replace("</b>", "", $message);
+	$message = str_replace("</i>", "", $message);
+	$message = str_replace("</code>", "", $message);
+	$message = str_replace("</pre>", "", $message);
 	//$message = str_replace(">", "$gt", $message);
 	//$message = str_replace("&", "&amp", $message);
 	//$message = str_replace("\"", "&quot", $message);

@@ -3404,7 +3404,8 @@ if (isset($update["message"])) {
 		$raboFrescu = $raboFrescu.$reverseText[2];
 		$raboFrescu = $raboFrescu.$reverseText[1];
 		$raboFrescu = $raboFrescu.$reverseText[0];
-		$pedorreta = reverseString($claveles);
+		//$pedorreta = reverseString($claveles);
+		$pedorreta = reverseString($text);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

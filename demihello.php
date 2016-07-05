@@ -3245,7 +3245,17 @@ if (isset($update["inline_query"])) {
 	//$results = Array($object);
 	//apiRequestJson("answerInlineQuery", array('inline_query_id' => $update["inline_query"]["id"], 'results' => $object, 'is_personal' => TRUE));	
 	
-	apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [["type" => "article", "id" => "0", "title" => "juejue", "message_text" => "ojala me leyerassss",],]]);
+	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
 	
+		//crearlo en HTML y crear una funcion de cleanHTML que mande a la porra cualquier etiqueta que la peña intente mandar :D
+		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
+		
+		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $update["inline_query"]["query"],],
+		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "ojala me leyerassss",],
+		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => "*".$update["inline_query"]["query"]."*", 'parse_mode' => "Markdown",],
+		
+		]]);
+		
+	}
 }
 ?>

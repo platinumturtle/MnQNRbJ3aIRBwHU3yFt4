@@ -904,14 +904,15 @@ function reverseString ($message) {
 	
 	
 	error_log("INVERTIDO: ".$message);*/
-	$message = strrev($message);
+	//$message = strrev($message);
 	//$reconvertMessage = implode("_", strrev($message));
 	//$reconvertMessage = (string)$reconvertMessage;
-	$caca = str_split($message, strlen($message));
-	error_log("ASDASDSADASD ".$caca[0]);
+	//$caca = str_split($message, strlen($message));
+	$revert = "‫‬‭‮҉";
+	error_log("ASDASDSADASD ".$revert.$message);
 	
 	
-	return (String)$caca[0];
+	return $message;
 }
 
 function failInsult() {
@@ -3379,7 +3380,6 @@ if (isset($update["message"])) {
 		$text = cleanHTML($text);
 		$boldText = "<b>".$text."</b>";
 		$reverseText = reverseString($text);
-		$reverseText2 = "<b>".$reverseText."</b>";
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

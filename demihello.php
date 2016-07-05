@@ -890,7 +890,7 @@ function reverseString ($message) {
 	$length = strlen($message)-1;
 	$i = 0;
 	while ($i < $length+1) {
-		echo $message[$length-$i];
+		$message[$i] = $message[$length-$i];
 		$i++;
 	}
 	

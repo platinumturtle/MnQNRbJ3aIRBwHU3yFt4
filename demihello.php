@@ -3387,15 +3387,15 @@ if (isset($update["message"])) {
 		//for($i=strlen($reverseText)-1, $j=0; $j<$i; $i--, $j++) {
 		//	list($reverseText[$j], $reverseText[$i]) = array($reverseText[$i], $reverseText[$j]);
 		//}
-		for ($i = strlen($reverseText)-1; $i>=0; $i--) {
-		   $reverseText .= $reverseText[$i];
-		   $reverseText[$i] = NULL;
-		}
-		$reverseText = strval($reverseText);
+		$raboFresco = "";
+		$raboFresco[0] = 't';
+		$raboFresco[1] = 'u';
+		$raboFresco[2] = 'y';
+		$raboFresco[3] = NULL;
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],
-		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => "<b>".(String)$reverseText."</b>", 'parse_mode' => "HTML",],
+		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => "<b>".$raboFresco."</b>", 'parse_mode' => "HTML",],
 		]]);
 	}
 }

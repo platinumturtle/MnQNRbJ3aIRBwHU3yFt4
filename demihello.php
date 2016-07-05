@@ -3397,7 +3397,7 @@ if (isset($update["message"])) {
 		}
 
 		//$pedorreta = reverseString($claveles);
-		$pedorreta = str_replace("ñ","n",$claveles);
+		$pedorreta = str_replace("g","n",$claveles);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

@@ -3237,12 +3237,15 @@ if (isset($update["message"])) {
 
 if (isset($update["inline_query"])) {
 	error_log("Me escriben algo: ".$update["inline_query"]["query"]);
+	$queryId = $update["inline_query"]["id"];
 	//$text = "pingas";
 	//$results = array($text,$update["inline_query"]["query"]);
-	$messageResult = apiRequestJson("InputTextMessageContent", array('message_text' => "PENEEEE", 'disable_web_page_preview' => TRUE));
-	$object = apiRequestJson("InlineQueryResultArticle", array('type' => "article", 'id' => 1, 'title' => "titel", 'input_message_content' => $messageResult, 'description' => "descripshon"));
-	$results = Array($object);
-	apiRequestJson("answerInlineQuery", array('inline_query_id' => $update["inline_query"]["id"], 'results' => $results, 'is_personal' => TRUE));	
+	//$messageResult = apiRequestJson("InputTextMessageContent", array('message_text' => "PENEEEE", 'disable_web_page_preview' => TRUE));
+	//$object = apiRequestJson("InlineQueryResultArticle", array('type' => "article", 'id' => 1, 'title' => "titel", 'input_message_content' => $messageResult, 'description' => "descripshon"));
+	//$results = Array($object);
+	//apiRequestJson("answerInlineQuery", array('inline_query_id' => $update["inline_query"]["id"], 'results' => $object, 'is_personal' => TRUE));	
+	
+	apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [["type" => "article", "id" => "0", "title" => "juejue", "message_text" => "ojala me leyerassss",],]]);
 	
 }
 ?>

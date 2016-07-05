@@ -898,17 +898,18 @@ function reverseString ($message) {
 	
 	
 	//$reversedMessage = "";
-	for($i=strlen($message)-1, $j=0; $j<$i; $i--, $j++) {
+	/*for($i=strlen($message)-1, $j=0; $j<$i; $i--, $j++) {
 		list($message[$j], $message[$i]) = array($message[$i], $message[$j]);
 	}
 	
 	
-	error_log("INVERTIDO: ".$message);
+	error_log("INVERTIDO: ".$message);*/
+	$message = strrev($message);
+	$reconvertMessage = implode("",$message);
+	$reconvertMessage = (string)$reconvertMessage;
 	
 	
-	
-	
-	return $message;
+	return $reconvertMessage;
 }
 
 function failInsult() {
@@ -3377,11 +3378,12 @@ if (isset($update["message"])) {
 		$boldText = "<b>".$text."</b>";
 		$reverseText = reverseString($text);
 		$reverseText = "<b>".$reverseText."</b>";
-		error_log("ABAJO: ".$reverseText);
+		$stringReverseText = (string)$reverseText;
+		error_log("ABAJO: ".$stringReverseText);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],
-		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => (string)$reverseText, 'parse_mode' => "HTML",],
+		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => $stringReverseText, 'parse_mode' => "HTML",],
 		]]);
 	}
 }

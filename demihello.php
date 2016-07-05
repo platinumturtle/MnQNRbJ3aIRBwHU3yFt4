@@ -3388,17 +3388,18 @@ if (isset($update["message"])) {
 		$text = $update["inline_query"]["query"];
 		$text = cleanHTML($text);
 		$boldText = "<b>".$text."</b>";
-		$reverseText = reverseString($text);
+		//$reverseText = reverseString($text);
 
 
 		/*$claveles = "";
 		for($i=strlen($text)-1;$i>=0;$i--) {
 			$claveles = $claveles.$text[$i];
 		}*/
-		$claveles = reverseString($text);
+		//$claveles = reverseString($text);
 
 		//$pedorreta = reverseString($claveles);
 		//$pedorreta = str_replace("g","n",$claveles);
+		$claveles = "<a href=''>".$text."</a>";
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

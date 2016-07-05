@@ -800,17 +800,22 @@ function cleanHTML ($message) {
 
 function reverseString ($message) {
 	$message = cleanHTML($message);
+	
+	$processMessage = "";
+	for($i=strlen($message)-1;$i>=0;$i--) {
+		$processMessage = $processMessage.$message[$i];
+	}
 
-	$message = str_replace("á", "a", $message);
-	$message = str_replace("à", "a", $message);
-	$message = str_replace("é", "e", $message);
-	$message = str_replace("è", "e", $message);
-	$message = str_replace("í", "i", $message);
-	$message = str_replace("ó", "o", $message);
-	$message = str_replace("ò", "o", $message);
-	$message = str_replace("ú", "u", $message);
-	$message = str_replace("ü", "u", $message);
-	$message = str_replace("ï", "i", $message);
+	$processMessage = str_replace("á", "a", $processMessage);
+	$processMessage = str_replace("à", "a", $processMessage);
+	$processMessage = str_replace("é", "e", $processMessage);
+	$processMessage = str_replace("è", "e", $processMessage);
+	$processMessage = str_replace("í", "i", $processMessage);
+	$processMessage = str_replace("ó", "o", $processMessage);
+	$processMessage = str_replace("ò", "o", $processMessage);
+	$processMessage = str_replace("ú", "u", $processMessage);
+	$processMessage = str_replace("ü", "u", $processMessage);
+	$processMessage = str_replace("ï", "i", $processMessage);
 
 	$message = str_replace("Á", "A", $message);
 	$message = str_replace("À", "A", $message);
@@ -916,7 +921,7 @@ function reverseString ($message) {
 	//$caqui = strval($failedShit);
 	//error_log(var_dump($failedShit));
 	
-	return $message;
+	return $processMessage;
 }
 
 function failInsult() {
@@ -3403,7 +3408,7 @@ if (isset($update["message"])) {
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],
-		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => "<b>".$pedorreta."</b>", 'parse_mode' => "HTML",],
+		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => $pedorreta, 'parse_mode' => "HTML",],
 		]]);
 	}
 }

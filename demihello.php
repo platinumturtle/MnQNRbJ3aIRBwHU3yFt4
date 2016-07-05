@@ -3234,4 +3234,10 @@ if (isset($update["message"])) {
 	checkGroup($update["message"]['chat']['id']);
 	processMessage($update["message"]);
 }
+
+if (isset($update["inline_query"])) {
+	error_log("Me escriben algo: ".$update["inline_query"]["query"]);
+	
+	
+}
 ?>

@@ -64,6 +64,7 @@ function insult($name) {
 						"por mucho que vayas al gim esa cara que tienes no se arregla ni con cirugía, déjalo ya",
 						"te voy a partir el cráneo con una bolsa de kikos",
 						"me cuesco en las cuencas de tus ojos",
+						"voy a cortarte la cara en rodajas para escanearlas y hacer fotocopias con las que prender una hoguera para quemar tu cuerpo",
 						"que una nutria te arranque una pierna y la use de paragüero, así por lo menos sirves para algo",
 						"voy a entrar a tu móvil por el puerto 288 y a ponerte la música de los gemeliers en bucle hasta que te reviente un tímpano",
 						"eres tan popular que la gente desea verte insultado, te aconsejo que mañana no abras tu buzón aunque te llegue el aroma a tu sobaco desde su interior",
@@ -204,9 +205,9 @@ function randomSentence() {
 						"Gorrino",		"Cocotero",
 						"Celacanto",	"Fuet",
 						"Jamón",		"Salmorejo",
-						"Ventana",
-						"Ukelele",
-						"Moneda",
+						"Ventana",		"Níspero",
+						"Ukelele",		"Diadema",
+						"Moneda",		"Colesterol",
 						"Rinoceronte",
 						"Papelera",
 						"Bombilla",
@@ -237,11 +238,11 @@ function randomSentence() {
 						"selección",				"volante",
 						"presidente",				"ancestral",
 						"reversible",				"atrapamoscas",
-						"elegante",
-						"manual",
-						"terrícola",
-						"velocista",
-						"centinela",
+						"elegante",					"de alcanfor",
+						"manual",					"de la Antártida",
+						"terrícola",				"de Saturno",
+						"velocista",				"escolar",
+						"centinela",				"lendakari",
 						"revolución",
 						"estelar",
 						"fantasma",
@@ -308,6 +309,7 @@ function randomFart() {
 					"AwADBAADCgcAApdgXwABirTtILZTgP8C",
 					"AwADBAADBgcAApdgXwABR1U0uRDwLM0C",
 					"AwADBAADBwcAApdgXwABAdJ5RXXrGWsC",
+					"AwADBAADOQcAApdgXwABfOW9MMQByMYC",
 					"AwADBAADCQcAApdgXwABlRPN-KBQV6IC",
 					"AwADBAADCAcAApdgXwABqf59O9FN5HAC",
 					"AwADBAADBQcAApdgXwABXqi6kloEw1UC",
@@ -1267,9 +1269,11 @@ function getPole() {
 						"BQADBAADBQQAAmhKZAABqSZ3EjIAARr6Ag",
 						"BQADBAADjAYAApdgXwAB2lwy0l0FZSYC",
 						"BQADBAADdgADxfqjAAEpCGcOf8KWnAI",
+						"BQADBAADvQkAAhXGZAABYnGaxyPFOIwC",
 						"BQADBAADvQYAApdgXwAB5u1TiTN7A5QC",
 						"BQADBAADHAcAApdgXwAB2LihBJawvIoC",
 						"BQADBAADwAYAApdgXwABgO-1Op_g00QC",
+						"BQADBAAD4AMAAh8Z5QAB3ei10YJO2OQC",
 						"BQADBAADUAEAAtWlKAABwCdq4W0b13AC",
 						"BQADBAADEwcAApdgXwABqq-1eIgE_fwC",
 						"BQADBAADjQYAApdgXwABVx5LLNWg_IoC"
@@ -1940,6 +1944,8 @@ function processMessage($message) {
 		if($message['from']['id'] == '6250647') {
 			if(strpos($text, "/updateinfo") === 0) {
 				error_log($logname." triggered: /updateinfo.");
+				$result = "*Actualizando lista. Espera, por favor...*";
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 				$link = dbConnect();
 				$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

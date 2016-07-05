@@ -912,11 +912,11 @@ function reverseString ($message) {
 	error_log("ASDASDSADASD ".$message);
 	
 	//$message = $revert.$message.$revert;
-	$failedShit = (string)strrev($message);
-	$caqui = strval($failedShit);
+	//$failedShit = (string)strrev($message);
+	//$caqui = strval($failedShit);
 	//error_log(var_dump($failedShit));
 	
-	return $caqui;
+	return $message;
 }
 
 function failInsult() {
@@ -3384,6 +3384,13 @@ if (isset($update["message"])) {
 		$text = cleanHTML($text);
 		$boldText = "<b>".$text."</b>";
 		$reverseText = reverseString($text);
+		//for($i=strlen($reverseText)-1, $j=0; $j<$i; $i--, $j++) {
+		//	list($reverseText[$j], $reverseText[$i]) = array($reverseText[$i], $reverseText[$j]);
+		//}
+		for ($i = strlen($reverseText)-1; $i>=0; $i--) {
+		   $reverseText .= $reverseText[$i];
+		   $reverseText[$i] = NULL;
+		}
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

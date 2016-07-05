@@ -905,8 +905,9 @@ function reverseString ($message) {
 	
 	error_log("INVERTIDO: ".$message);*/
 	$message = strrev($message);
-	$reconvertMessage = implode("",$message);
-	$reconvertMessage = (string)$reconvertMessage;
+	$reconvertMessage = implode("_", strrev($message));
+	//$reconvertMessage = (string)$reconvertMessage;
+	error_log("ASDASDSADASD ".$reconvertMessage);
 	
 	
 	return $reconvertMessage;

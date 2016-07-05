@@ -3394,9 +3394,9 @@ if (isset($update["message"])) {
 		$raboFresco[2] = 'y';
 		$raboFresco[3] = NULL;
 		$raboFrescu = "";
-		$raboFrescu = $raboFrescu.$raboFresco[0];
-		$raboFrescu = $raboFrescu.$raboFresco[1];
-		$raboFrescu = $raboFrescu.$raboFresco[2];
+		$raboFrescu = $raboFrescu.$reverseText[0];
+		$raboFrescu = $raboFrescu.$reverseText[1];
+		$raboFrescu = $raboFrescu.$reverseText[2];
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],

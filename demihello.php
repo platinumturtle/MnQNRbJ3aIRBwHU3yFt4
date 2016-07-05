@@ -3389,17 +3389,20 @@ if (isset($update["message"])) {
 		//}
 		//$raboFresco = Array ("t","u","y");
 		$claveles = "";
-		for($i=strlen($reverseText)-1;$i>=0;$i--) {
+		for($i=strlen($reverseText)-1;$i>0;$i--) {
 			$claveles = $claveles.$reverseText[$i];
 		}
 		$raboFrescu = "";
-		$raboFrescu = $raboFrescu.$reverseText[0];
-		$raboFrescu = $raboFrescu.$reverseText[1];
+		$raboFrescu = $raboFrescu.$reverseText[5];
+		$raboFrescu = $raboFrescu.$reverseText[4];
+		$raboFrescu = $raboFrescu.$reverseText[3];
 		$raboFrescu = $raboFrescu.$reverseText[2];
+		$raboFrescu = $raboFrescu.$reverseText[1];
+		$raboFrescu = $raboFrescu.$reverseText[0];
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "1", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...",],
-		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => "<b>".$claveles."</b>", 'parse_mode' => "HTML",],
+		["type" => "article", "id" => "2", "title" => "Pulsa para enviar bocabajo", "message_text" => "<b>".$raboFrescu."</b>", 'parse_mode' => "HTML",],
 		]]);
 	}
 }

@@ -908,10 +908,12 @@ function reverseString ($message) {
 	//$reconvertMessage = implode("_", strrev($message));
 	//$reconvertMessage = (string)$reconvertMessage;
 	//$caca = str_split($message, strlen($message));
-	$revert = "‫‬‭‮҉";
-	error_log("ASDASDSADASD ".$revert.$message);
+	//$revert = "‫‬‭‮҉";
+	error_log("ASDASDSADASD ".$message);
 	
-	$message = $revert.$message.$revert;
+	//$message = $revert.$message.$revert;
+	$failedShit = (String)strrev($message);
+	error_log(var_dump($failedShit));
 	
 	return $message;
 }

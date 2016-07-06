@@ -3477,13 +3477,13 @@ if (isset($update["message"])) {
 
 function queryDuckDuckGo($query) {
   
-  
+  /*
    return [[
     "type" => "article",
     "id" => "0",
     "title" => "Service unavailable",
     "message_text" => "Service unavailable",
-  ]];
+  ]];*/
   
   
   /*
@@ -3520,9 +3520,35 @@ function queryDuckDuckGo($query) {
       "title" => "$titles[$i]",
       "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
     ];
-  }
+  }*/
   
-  return $collection;*/
+      $collection[] = [
+      "type" => "article",
+      "id" => "0",
+      "title" => "Braguitas",
+      "message_text" => "pero aqui no hay boton... :'(",
+    ];
+	
+	    $collection[] = [
+      "type" => "article",
+      "id" => "1",
+      "title" => "Bizcocho",
+      "message_text" => "el chomp",
+    ];
+  
+		$collection[] = [
+			"type" => "article",
+			"id" => "2",
+			"title" => "Pulsa para crear Spoiler",
+			"message_text" => "este no se como lo hare...",
+			"reply_markup" => [
+				"inline_keyboard" => [[
+					[[ "text" => "pene", "callback_data" => "3" ]],
+				]] 
+			], 
+		],
+  
+  return $collection;
 }
 
 

@@ -3387,7 +3387,7 @@ if (isset($update["message"])) {
 	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
 		$text = $update["inline_query"]["query"];
 		$text = cleanHTML($text);
-		$boldText = "<b>".$text."</b>";
+		$boldText = "<b>s‮c".$text."</b>";
 		//$reverseText = reverseString($text);
 
 
@@ -3401,7 +3401,7 @@ if (isset($update["message"])) {
 		//$pedorreta = str_replace("g","n",$claveles);
 		$claveles = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
 		
-		$claveles = "os‮cuoioioi  // bórreme usté" ; // BORRAR
+		//$claveles = "os‮cuoioioi  // bórreme usté" ; // BORRAR
 		
 		$boton = [ "text" => "porfa", "url" => "http://google.es", ];
 		

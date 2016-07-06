@@ -3461,8 +3461,9 @@ if (isset($update["message"])) {
 }else if(isset($update["callback_query"])) {
 	error_log("se pulsa el boton del spoiler");
 	$callback = $update["callback_query"];
-	$chat_id = $callback['from'];
-	$result = "Spoiler start: ".$callback['message'].PHP_EOL."From question: ".$callback['inline_message_id'];
+	$chat_id = $callback['from']['id'];
+	$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
+	error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".$callback['message']['text']." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
 	apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
 }
 

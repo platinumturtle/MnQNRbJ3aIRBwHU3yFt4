@@ -3546,7 +3546,7 @@ function queryDuckDuckGo($query) {
 					[[ "text" => "pene", "callback_data" => "3" ]],
 				]] 
 			], 
-		],
+		];
   
   return $collection;
 }

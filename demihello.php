@@ -3466,8 +3466,10 @@ function inlineOptions($text) {
 	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
 	$spoilerText = $text; // @TODO
 	$encryptedURL = "https://telegram.me/Demitest_bot?start=1m4Kdk3";
-	$encryptedText = encryptSpoiler($text);
+	$encryptedText = spoiler::encrypt($text); //encryptSpoiler($text);
 	$encryptedURL = $encryptedURL.$encryptedText;
+	$dec = spoiler::decrypt($text);
+	error_log("ENCR ".$encryptedText." DECR ".$dec);
 	$keboardButton = (object) ["text" => "Desvelar spoiler", "url" => $encryptedURL];
 	$buttons[] = [
 		"type" => "article",
@@ -3483,16 +3485,16 @@ function inlineOptions($text) {
     $buttons[] = [
 		"type" => "article",
 		"id" => "1",
-		"title" => "Braguitas",
+		"title" => "Pulsa para enviar en negrita",
 		"message_text" => $boldText,
     ];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "2",
-		"title" => "Bizcocho",
+		"title" => "Pulsa para enviar en azul",
 		"message_text" => $blueText,
     ];
-	return $buttons;
+	return $buttons;	
 	
 	
 	// https://telegram.me/spoibot?start=TSWDUGUSIMTSVEUXIIHCOOVZCMWYOM
@@ -3550,7 +3552,21 @@ function decryptSpoiler($text) {
 	return $decryptedText;
 }
 
-
+class spoiler {
+ 
+    private static $Key = "dublin";
+ 
+    public static function encrypt ($input) {
+        $output = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5(Encrypter::$Key), $input, MCRYPT_MODE_CBC, md5(md5(Encrypter::$Key))));
+        return $output;
+    }
+ 
+    public static function decrypt ($input) {
+        $output = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5(Encrypter::$Key), base64_decode($input), MCRYPT_MODE_CBC, md5(md5(Encrypter::$Key))), "\0");
+        return $output;
+    }
+ 
+}
 
 
 

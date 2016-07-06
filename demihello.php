@@ -3387,7 +3387,7 @@ if (isset($update["message"])) {
 	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
 		$text = $update["inline_query"]["query"];
 		$text = cleanHTML($text);
-		$boldText = "<b>s‮c".$text."</b>";
+		$boldText = "<b>".$text."</b>";
 		//$reverseText = reverseString($text);
 
 
@@ -3401,12 +3401,10 @@ if (isset($update["message"])) {
 		//$pedorreta = str_replace("g","n",$claveles);
 		$claveles = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
 		
-		//$claveles = "os‮cuoioioi  // bórreme usté" ; // BORRAR
-		
-		$boton = [ "text" => "porfa", "url" => "http://google.es", ];
+		$boton = (object) [ "text" => "porfa", "url" => "http://google.es", ];
 		
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
-		//["type" => "article", "id" => "0", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...", "reply_markup" => ["inline_keyboard" => [[ [[ $boton ]], ]] ], ],
+		["type" => "article", "id" => "0", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...", "reply_markup" => ["inline_keyboard" => [[ [[ $boton ]], ]] ], ],
 		["type" => "article", "id" => "1", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "2", "title" => "Pulsa para enviar en azul", "message_text" => $claveles, 'parse_mode' => "HTML", 'disable_web_page_preview' => TRUE],
 		]]);

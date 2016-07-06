@@ -3458,6 +3458,12 @@ if (isset($update["message"])) {
 		
 		
 	}
+}else if(isset($update["callback_query"])) {
+	error_log("se pulsa el boton del spoiler");
+	$callback = $update["callback_query"];
+	$chat_id = $callback['from']:
+	$result = "Spoiler start: ".$callback['message'].PHP_EOL."From question: ".$callback['inline_message_id'];
+	apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
 }
 
 
@@ -3465,12 +3471,12 @@ function inlineOptions($text) {
 	$boldText = "<b>".$text."</b>";
 	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
 	$spoilerText = $text; // @TODO
-	$encryptedURL = "https://telegram.me/Demitest_bot?start=1m4Kdk3";
+	$encryptedSpoiler = "1m4Kdk3";
 	$encryptedText = spoiler::encrypt($text); //encryptSpoiler($text);
 	$encryptedURL = $encryptedURL.$encryptedText;
 	$dec = spoiler::decrypt($encryptedText);
 	error_log("ENCR ".$encryptedText." DECR ".$dec);
-	$keboardButton = (object) ["text" => "Desvelar spoiler", "url" => $encryptedURL];
+	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $encryptedSpoiler];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",

@@ -3468,7 +3468,7 @@ function inlineOptions($text) {
 	$encryptedURL = "https://telegram.me/Demitest_bot?start=1m4Kdk3";
 	$encryptedText = spoiler::encrypt($text); //encryptSpoiler($text);
 	$encryptedURL = $encryptedURL.$encryptedText;
-	$dec = spoiler::decrypt($text);
+	$dec = spoiler::decrypt($encryptedText);
 	error_log("ENCR ".$encryptedText." DECR ".$dec);
 	$keboardButton = (object) ["text" => "Desvelar spoiler", "url" => $encryptedURL];
 	$buttons[] = [
@@ -3554,7 +3554,7 @@ function decryptSpoiler($text) {
 
 class spoiler {
  
-    private static $Key = "dublin";
+    private static $Key = "17251956fJcSdDIcScjShcYcsW";
  
     public static function encrypt ($input) {
         $output = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5(spoiler::$Key), $input, MCRYPT_MODE_CBC, md5(md5(spoiler::$Key))));

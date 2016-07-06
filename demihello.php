@@ -3546,7 +3546,7 @@ function queryDuckDuckGo($query) {
 			"message_text" => "este no se como lo hare...",
 			"reply_markup" => [
 				"inline_keyboard" => [[
-					[[$myObject]],
+					$myObject,
 				]] 
 			], 
 		];

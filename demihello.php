@@ -3408,7 +3408,7 @@ if (isset($update["message"])) {
 		$boton = [ "text" => "porfa", "url" => "http://google.es", ];
 		
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
-		["type" => "article", "id" => "0", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...", "reply_markup" => ["inline_keyboard" => [[ [[ $object ]], ]] ], ],
+		["type" => "article", "id" => "0", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...", "reply_markup" => ["inline_keyboard" => [[ [[ (object)$object ]], ]] ], ],
 		["type" => "article", "id" => "1", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "2", "title" => "Pulsa para enviar en azul", "message_text" => $claveles, 'parse_mode' => "HTML", 'disable_web_page_preview' => TRUE],
 		]]);

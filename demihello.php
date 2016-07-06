@@ -4,6 +4,11 @@ define('BOT_TOKEN', '175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI');
 define('API_URL', 'https://api.telegram.org/bot'.BOT_TOKEN.'/');
 include 'api.php';
 
+
+
+
+
+
 function debugMode($message) {
 	$debugFile = fopen("debug.log", "a");
 	$debugText = "Message Type: Message";
@@ -3407,12 +3412,23 @@ if (isset($update["message"])) {
 		
 		$boton = [ "text" => "porfa", "url" => "http://google.es", ];
 		
+		
+		
+		
+		apiRequestJson("answerInlineQuery", [
+			"inline_query_id" => $queryId,
+			"results" => queryDuckDuckGo($text),
+			"cache_time" => 86400,
+			]);
+			
+		/* EL MIO BUENO
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...", "reply_markup" => ["inline_keyboard" => [[ [[ (object)$object ]], ]] ], ],
 		["type" => "article", "id" => "1", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "2", "title" => "Pulsa para enviar en azul", "message_text" => $claveles, 'parse_mode' => "HTML", 'disable_web_page_preview' => TRUE],
 		]]);
 		
+		*/
 		
 		
 		
@@ -3447,4 +3463,75 @@ if (isset($update["message"])) {
 		
 	}
 }
+
+
+// hacia abajo es la locura en bicicleta, si eso a tomar viento...
+
+
+
+
+
+
+
+
+
+function queryDuckDuckGo($query) {
+  
+  
+   return [[
+    "type" => "article",
+    "id" => "0",
+    "title" => "Service unavailable",
+    "message_text" => "Service unavailable",
+  ]];
+  
+  
+  /*
+  $content = file_get_contents('https://duckduckgo.com/html/?q=' . urlencode($query));
+  
+  if(!$content) return [[
+    "type" => "article",
+    "id" => "0",
+    "title" => "Service unavailable",
+    "message_text" => "Service unavailable",
+  ]];
+  
+  $crawler = new Crawler($content);
+  
+  $results = $crawler->filter(".links_main .large");
+  foreach ($results as $result) {
+    $titles[] = trim($result->textContent);
+  }
+  
+  $results = $crawler->filter(".links_main .snippet");
+  foreach ($results as $result) {
+    $snippets[] = trim($result->textContent);
+  }
+  
+  $results = $crawler->filter(".links_main .url");
+  foreach ($results as $result) {
+    $urls[] = trim($result->textContent);
+  }
+  
+  foreach (range(0, count($titles) - 1) as $i) {
+    $collection[] = [
+      "type" => "article",
+      "id" => "$i",
+      "title" => "$titles[$i]",
+      "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
+    ];
+  }
+  
+  return $collection;*/
+}
+
+
+
+
+
+
+
+
+
+
 ?>

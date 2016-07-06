@@ -3392,7 +3392,7 @@ if (isset($update["message"])) {
 	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
 		$text = $update["inline_query"]["query"];
 		$text = cleanHTML($text);
-		$boldText = "<b>".$text."</b>";
+		//$boldText = "<b>".$text."</b>";
 		//$reverseText = reverseString($text);
 
 
@@ -3404,22 +3404,18 @@ if (isset($update["message"])) {
 
 		//$pedorreta = reverseString($claveles);
 		//$pedorreta = str_replace("g","n",$claveles);
-		$claveles = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
+		//$claveles = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
 		
-		$object = new stdClass();
-		$object->text = 'Here we go';
-		$object->url = 'http://google.es';
+		//$object = new stdClass();
+		//$object->text = 'Here we go';
+		//$object->url = 'http://google.es';
 		
-		$boton = [ "text" => "porfa", "url" => "http://google.es", ];
-		
-		
+		//$boton = [ "text" => "porfa", "url" => "http://google.es", ];
 		
 		
-		apiRequestJson("answerInlineQuery", [
-			"inline_query_id" => $queryId,
-			"results" => queryDuckDuckGo($text),
-			"cache_time" => 86400,
-			]);
+		
+		
+		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text), "cache_time" => 60,]);
 			
 		/* EL MIO BUENO
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
@@ -3465,19 +3461,43 @@ if (isset($update["message"])) {
 }
 
 
-// hacia abajo es la locura en bicicleta, si eso a tomar viento...
-
-
-
-
-
-
-
-
-
-function queryDuckDuckGo($query) {
-  
-$cc = $query;
+function inlineOptions($text) {
+	$boldText = "<b>".$text."</b>";
+	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
+	$spoilerText = $text; // @TODO
+	$encryptedURL = "https://telegram.me/Demitest_bot?start=1m4Kdk3";
+	$encryptedText = encryptSpoiler($text);
+	$encryptedURL = $encryptedURL.$encryptedText;
+	$keboardButton = (object) ["text" => "Desvelar spoiler", "url" => $encryptedURL];
+	$buttons[] = [
+		"type" => "article",
+		"id" => "0",
+		"title" => "Pulsa para crear Spoiler",
+		"message_text" => $spoilerText,
+		"reply_markup" => [
+			"inline_keyboard" => [[
+				$keboardButton,
+			]] 
+		], 
+	];
+    $buttons[] = [
+		"type" => "article",
+		"id" => "1",
+		"title" => "Braguitas",
+		"message_text" => $boldText,
+    ];
+	$buttons[] = [
+		"type" => "article",
+		"id" => "2",
+		"title" => "Bizcocho",
+		"message_text" => $blueText,
+    ];
+	return $buttons;
+	
+	
+	// https://telegram.me/spoibot?start=TSWDUGUSIMTSVEUXIIHCOOVZCMWYOM
+/*
+$cc = $text;
 $key = 'fJcSdDIcScjShcYcsW';
 $iv = '17251956';
 
@@ -3491,46 +3511,44 @@ mcrypt_generic_init($cipher, $key, $iv);
 $decrypted = mdecrypt_generic($cipher,$encrypted);
 mcrypt_generic_deinit($cipher);
 
-//echo "encrypted : ".$encrypted;
-//echo "<br>";
-//echo "decrypted : ".$decrypted;
+
   mcrypt_module_close($cipher);
   
-error_log("ENCRIPTADO: ".$encrypted." DESENCRITPADO: ".$decrypted);
-  
-      $collection[] = [
-      "type" => "article",
-      "id" => "0",
-      "title" => "Braguitas",
-      "message_text" => "pero aqui no hay boton... :'(",
-    ];
+//error_log("ENCRIPTADO: ".$encrypted." DESENCRITPADO: ".$decrypted);
+  */
+
 	
-	    $collection[] = [
-      "type" => "article",
-      "id" => "1",
-      "title" => "Bizcocho",
-      "message_text" => "el chomp",
-    ];
+
   
   
-  $myObject = (object) ["text" => "PINGA", "callback_data" => "2"];
+
   
-		$collection[] = [
-			"type" => "article",
-			"id" => "2",
-			"title" => "Pulsa para crear Spoiler",
-			"message_text" => "este no se como lo hare...",
-			"reply_markup" => [
-				"inline_keyboard" => [[
-					$myObject,
-				]] 
-			], 
-		];
   
-  return $collection;
 }
 
+function encryptSpoiler($text) {
+	$cc = $text;
+	$key = 'fJcSdDIcScjShcYcsW';
+	$iv = '17251956';
+	$cipher = mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
+	mcrypt_generic_init($cipher, $key, $iv);
+	$encryptedText = mcrypt_generic($cipher,$cc);
+	mcrypt_generic_deinit($cipher);
+	mcrypt_module_close($cipher);
+	return $encryptedText;
+}
 
+function decryptSpoiler($text) {
+	$cc = $text;
+	$key = 'fJcSdDIcScjShcYcsW';
+	$iv = '17251956';
+	$cipher = mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
+	mcrypt_generic_init($cipher, $key, $iv);
+	$decryptedText = mdecrypt_generic($cipher,$encrypted);
+	mcrypt_generic_deinit($cipher);
+	mcrypt_module_close($cipher);
+	return $decryptedText;
+}
 
 
 

@@ -3536,6 +3536,9 @@ function queryDuckDuckGo($query) {
       "message_text" => "el chomp",
     ];
   
+  
+  $myObject = (object) ["text" => "PINGA", "callback_data" => "2"];
+  
 		$collection[] = [
 			"type" => "article",
 			"id" => "2",
@@ -3543,7 +3546,7 @@ function queryDuckDuckGo($query) {
 			"message_text" => "este no se como lo hare...",
 			"reply_markup" => [
 				"inline_keyboard" => [[
-					[[ "text" => "pene", "callback_data" => "3" ]],
+					[[$myObject]],
 				]] 
 			], 
 		];

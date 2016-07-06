@@ -3477,50 +3477,26 @@ if (isset($update["message"])) {
 
 function queryDuckDuckGo($query) {
   
-  /*
-   return [[
-    "type" => "article",
-    "id" => "0",
-    "title" => "Service unavailable",
-    "message_text" => "Service unavailable",
-  ]];*/
+$cc = $query;
+$key = 'fJcSdDIcScjShcYcsW';
+$iv = '17251956';
+
+$cipher = mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
+
+mcrypt_generic_init($cipher, $key, $iv);
+$encrypted = mcrypt_generic($cipher,$cc);
+mcrypt_generic_deinit($cipher);
+
+mcrypt_generic_init($cipher, $key, $iv);
+$decrypted = mdecrypt_generic($cipher,$encrypted);
+mcrypt_generic_deinit($cipher);
+
+//echo "encrypted : ".$encrypted;
+//echo "<br>";
+//echo "decrypted : ".$decrypted;
+  mcrypt_module_close($cipher);
   
-  
-  /*
-  $content = file_get_contents('https://duckduckgo.com/html/?q=' . urlencode($query));
-  
-  if(!$content) return [[
-    "type" => "article",
-    "id" => "0",
-    "title" => "Service unavailable",
-    "message_text" => "Service unavailable",
-  ]];
-  
-  $crawler = new Crawler($content);
-  
-  $results = $crawler->filter(".links_main .large");
-  foreach ($results as $result) {
-    $titles[] = trim($result->textContent);
-  }
-  
-  $results = $crawler->filter(".links_main .snippet");
-  foreach ($results as $result) {
-    $snippets[] = trim($result->textContent);
-  }
-  
-  $results = $crawler->filter(".links_main .url");
-  foreach ($results as $result) {
-    $urls[] = trim($result->textContent);
-  }
-  
-  foreach (range(0, count($titles) - 1) as $i) {
-    $collection[] = [
-      "type" => "article",
-      "id" => "$i",
-      "title" => "$titles[$i]",
-      "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
-    ];
-  }*/
+error_log("ENCRIPTADO: ".$encrypted." DESENCRITPADO: ".$decrypted);
   
       $collection[] = [
       "type" => "article",

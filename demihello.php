@@ -3401,7 +3401,7 @@ if (isset($update["message"])) {
 		//$pedorreta = str_replace("g","n",$claveles);
 		$claveles = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
 		
-		$claveles = "os‮cuoioioi  // bórreme usté" // BORRAR
+		$claveles = "os‮cuoioioi  // bórreme usté" ; // BORRAR
 		
 		$boton = [ "text" => "porfa", "url" => "http://google.es", ];
 		

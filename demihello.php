@@ -3424,7 +3424,7 @@ function inlineOptions($text, $username) {
 		$question = substr($text, 0, $final);
 		$spoilerText = $spoilerText." <b>Además añade lo siguiente:</b>".PHP_EOL.$question;
 	}
-	$spoilerText = $spoilerText..PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
+	$spoilerText = $spoilerText.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
 	//$spoilerText = $text; // @TODO    <----- ESTO SE MUESTRA EN LA PERGUNTA DEL SPOILER DEL BOT
 	//$encryptedSpoiler = "1m4Kdk3";
 	//$encryptedText = spoiler::encrypt($text); //encryptSpoiler($text);

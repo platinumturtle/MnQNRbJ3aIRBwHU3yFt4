@@ -3426,10 +3426,10 @@ if (isset($update["message"])) {
 	//$alert = "Desvelando spoiler...";
 	if(strpos(strtolower($callback['data']), "spoiler:") !== false) {
 		//$start = strpos(strtolower($callback['data']), "spoiler:");
-		$start = strpos(strtolower($callback['message']['text']), "spoiler:");
+		$start = strpos(strtolower($callback['message']), "spoiler:");
 		$start = $start + 8;
 		//$result = substr($callback['data'], $start);
-		$result = substr($callback['message']['text'], $start);
+		$result = substr($callback['message'], $start);
 		$result = ltrim($result);
 		if($result == "") {
 			$result = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";

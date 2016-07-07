@@ -626,6 +626,13 @@ function debugMode($message) {
 			$debugText = $debugText."\n"; 
 		}
 	}
+	if (isset($message['callback_query'])) { // kkkkkkkkkkkkkkk
+		$dump = var_dump($message['callback_query']);
+		$debugText = $debugText.$dump;	
+		//$debugText = $debugText."MessageID: ";	  
+		//$debugText = $debugText.$message['message_id'];	 
+		//$debugText = $debugText."\n"; 
+	}
 	$debugText = $debugText."\n"; 
 	fwrite($debugFile, $debugText);
 	fclose($debugFile);
@@ -3381,7 +3388,7 @@ if (isset($update["message"])) {
 		checkUsername($update["inline_query"]['from']['username']);
 	}
 	if(isset($update["inline_query"]['from']['username'])) {
-	$logname = "@".$update["inline_query"]['from']['username'];
+	$logname = $update["inline_query"]['from']['username'];
 	} else if (isset($update["inline_query"]['from']['first_name'])) {
 	$logname = $update["inline_query"]['from']['first_name'];
 	} else {
@@ -3401,6 +3408,7 @@ if (isset($update["message"])) {
 		]]);*/
 	}
 }else if(isset($update["callback_query"])) {
+	debugMode($update);
 	if(isset($update["callback_query"]['from']['username'])) {
 	$logname = $update["callback_query"]['from']['username'];
 	} else if (isset($update["callback_query"]['from']['first_name'])) {
@@ -3424,7 +3432,7 @@ if (isset($update["message"])) {
 		$result = substr($callback['message']['text'], $start);
 		$result = ltrim($result);
 		if($result == "") {
-			$result = "Mensaje vacío.";
+			$result = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
 		}
 	} else {
 		$result = $callback['data'];
@@ -3444,8 +3452,8 @@ function inlineOptions($text, $username) {
 		$question = substr($text, 0, $final);
 		$spoilerText = $spoilerText." <b>Además añade lo siguiente:</b>".PHP_EOL.$question;
 	}
-	$spoilerText = $spoilerText.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
-	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $text];
+	$spoilerText = $spoilerText.PHP_EOL.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
+	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => "SPOILER"];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",

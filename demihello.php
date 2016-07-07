@@ -3402,7 +3402,7 @@ if (isset($update["message"])) {
 	}
 }else if(isset($update["callback_query"])) {
 	if(isset($update["callback_query"]['from']['username'])) {
-	$logname = "@".$update["callback_query"]['from']['username'];
+	$logname = $update["callback_query"]['from']['username'];
 	} else if (isset($update["callback_query"]['from']['first_name'])) {
 	$logname = $update["callback_query"]['from']['first_name'];
 	} else {
@@ -3417,10 +3417,15 @@ if (isset($update["message"])) {
 	//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
 	//$alert = "Desvelando spoiler...";
 	if(strpos(strtolower($callback['data']), "spoiler:") !== false) {
-		$start = strpos(strtolower($text), "spoiler:");
+		//$start = strpos(strtolower($callback['data']), "spoiler:");
+		$start = strpos(strtolower($callback['message']['text']), "spoiler:");
 		$start = $start + 8;
-		$result = substr($callback['data'], $start);
+		//$result = substr($callback['data'], $start);
+		$result = substr($callback['message']['text'], $start);
 		$result = ltrim($result);
+		if($result == "") {
+			$result = "Mensaje vacío."
+		}
 	} else {
 		$result = $callback['data'];
 	}
@@ -3475,6 +3480,7 @@ function inlineOptions($text, $username) {
 		"description" => "El texto enviado parecerá un enlace.",
 		"message_text" => $blueText,
 		"parse_mode" => "HTML",
+		"disable_web_page_preview" => TRUE,
 		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_link.png",
 		"thumb_width" => 100,
 		"thumb_height" => 100,

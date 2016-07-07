@@ -3431,7 +3431,7 @@ function inlineOptions($text, $username) {
 	//$encryptedURL = $encryptedURL.$encryptedText;
 	//$dec = spoiler::decrypt($encryptedText);
 	//error_log("ENCR ".$encryptedText." DECR ".$dec);
-	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $spoilerText];
+	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $text];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",

@@ -3461,10 +3461,12 @@ if (isset($update["message"])) {
 }else if(isset($update["callback_query"])) {
 	error_log("se pulsa el boton del spoiler");
 	$callback = $update["callback_query"];
+	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
 	$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
-	error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".$callback['message']['text']." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
-	apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
+	error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
+	//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
+	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $result, "show_alert" => TRUE));	
 }
 
 
@@ -3473,11 +3475,11 @@ function inlineOptions($text) {
 	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
 	$spoilerText = $text; // @TODO
 	$encryptedSpoiler = "1m4Kdk3";
-	$encryptedText = spoiler::encrypt($text); //encryptSpoiler($text);
-	$encryptedURL = $encryptedURL.$encryptedText;
-	$dec = spoiler::decrypt($encryptedText);
-	error_log("ENCR ".$encryptedText." DECR ".$dec);
-	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $encryptedSpoiler];
+	//$encryptedText = spoiler::encrypt($text); //encryptSpoiler($text);
+	//$encryptedURL = $encryptedURL.$encryptedText;
+	//$dec = spoiler::decrypt($encryptedText);
+	//error_log("ENCR ".$encryptedText." DECR ".$dec);
+	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $text];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",
@@ -3494,12 +3496,14 @@ function inlineOptions($text) {
 		"id" => "1",
 		"title" => "Pulsa para enviar en negrita",
 		"message_text" => $boldText,
+		"parse_mode" => "HTML",
     ];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "2",
 		"title" => "Pulsa para enviar en azul",
 		"message_text" => $blueText,
+		"parse_mode" => "HTML",
     ];
 	return $buttons;	
 	

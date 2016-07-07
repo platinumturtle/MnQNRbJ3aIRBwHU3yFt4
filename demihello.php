@@ -3424,7 +3424,7 @@ if (isset($update["message"])) {
 		$result = substr($callback['message']['text'], $start);
 		$result = ltrim($result);
 		if($result == "") {
-			$result = "Mensaje vacío."
+			$result = "Mensaje vacío.";
 		}
 	} else {
 		$result = $callback['data'];

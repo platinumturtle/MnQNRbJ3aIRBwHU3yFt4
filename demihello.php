@@ -3408,10 +3408,10 @@ if (isset($update["message"])) {
 	$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
 	error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
 	//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
-	$alert = "Desvelando spoiler...";
-	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));	
-	usleep(500000);
+	//$alert = "Desvelando spoiler...";
 	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $result, "show_alert" => TRUE));	
+	//usleep(500000);	
+	//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));
 }
 
 
@@ -3425,18 +3425,17 @@ function inlineOptions($text, $username) {
 		$spoilerText = $spoilerText." <b>Además añade lo siguiente:</b>".PHP_EOL.$question;
 	}
 	$spoilerText = $spoilerText.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
-	//$spoilerText = $text; // @TODO    <----- ESTO SE MUESTRA EN LA PERGUNTA DEL SPOILER DEL BOT
-	//$encryptedSpoiler = "1m4Kdk3";
-	//$encryptedText = spoiler::encrypt($text); //encryptSpoiler($text);
-	//$encryptedURL = $encryptedURL.$encryptedText;
-	//$dec = spoiler::decrypt($encryptedText);
-	//error_log("ENCR ".$encryptedText." DECR ".$dec);
 	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $text];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",
-		"title" => "Pulsa para crear Spoiler",
+		"title" => "Enviar spoiler",
+		"description" => "Se enviará el texto oculto.",
 		"message_text" => $spoilerText,
+		"parse_mode" => "HTML",
+		"thumb_url" => "./demisuke_spoiler.png";
+		"thumb_width" => 100;
+		"thumb_height" => 100;
 		"reply_markup" => [
 			"inline_keyboard" => [[
 				$keboardButton,
@@ -3446,16 +3445,24 @@ function inlineOptions($text, $username) {
     $buttons[] = [
 		"type" => "article",
 		"id" => "1",
-		"title" => "Pulsa para enviar en negrita",
+		"title" => "Enviar negrita",
+		"description" => "Se enviará el texto en negrita.",
 		"message_text" => $boldText,
 		"parse_mode" => "HTML",
+		"thumb_url" => "./demisuke_bold.png";
+		"thumb_width" => 100;
+		"thumb_height" => 100;
     ];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "2",
-		"title" => "Pulsa para enviar en azul",
+		"title" => "Enviar en azul",
+		"description" => "El texto enviado parecerá un enlace.",
 		"message_text" => $blueText,
 		"parse_mode" => "HTML",
+		"thumb_url" => "./demisuke_link.png";
+		"thumb_width" => 100;
+		"thumb_height" => 100;
     ];
 	return $buttons;	
 	

@@ -3433,9 +3433,9 @@ function inlineOptions($text, $username) {
 		"description" => "Se enviará el texto oculto.",
 		"message_text" => $spoilerText,
 		"parse_mode" => "HTML",
-		"thumb_url" => "./demisuke_spoiler.png";
-		"thumb_width" => 100;
-		"thumb_height" => 100;
+		"thumb_url" => "./demisuke_spoiler.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
 		"reply_markup" => [
 			"inline_keyboard" => [[
 				$keboardButton,
@@ -3449,9 +3449,9 @@ function inlineOptions($text, $username) {
 		"description" => "Se enviará el texto en negrita.",
 		"message_text" => $boldText,
 		"parse_mode" => "HTML",
-		"thumb_url" => "./demisuke_bold.png";
-		"thumb_width" => 100;
-		"thumb_height" => 100;
+		"thumb_url" => "./demisuke_bold.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
     ];
 	$buttons[] = [
 		"type" => "article",
@@ -3460,9 +3460,9 @@ function inlineOptions($text, $username) {
 		"description" => "El texto enviado parecerá un enlace.",
 		"message_text" => $blueText,
 		"parse_mode" => "HTML",
-		"thumb_url" => "./demisuke_link.png";
-		"thumb_width" => 100;
-		"thumb_height" => 100;
+		"thumb_url" => "./demisuke_link.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
     ];
 	return $buttons;	
 	

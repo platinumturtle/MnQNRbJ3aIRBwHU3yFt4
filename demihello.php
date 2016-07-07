@@ -3380,83 +3380,25 @@ if (isset($update["message"])) {
 	if(isset($update["inline_query"]['from']['username'])) {
 		checkUsername($update["inline_query"]['from']['username']);
 	}
-	error_log("Me escriben algo: ".$update["inline_query"]["query"]);
+	if(isset($update["inline_query"]['from']['username'])) {
+	$logname = "@".$update["inline_query"]['from']['username'];
+	} else if (isset($update["inline_query"]['from']['first_name'])) {
+	$logname = $update["inline_query"]['from']['first_name'];
+	} else {
+	$logname = "ID".$update["inline_query"]['from']['id'];
+	}
+	error_log($logname." starts inline query: ".$update["inline_query"]["query"]);
 	$queryId = $update["inline_query"]["id"];
-	//$text = "pingas";
-	//$results = array($text,$update["inline_query"]["query"]);
-	//$messageResult = apiRequestJson("InputTextMessageContent", array('message_text' => "PENEEEE", 'disable_web_page_preview' => TRUE));
-	//$object = apiRequestJson("InlineQueryResultArticle", array('type' => "article", 'id' => 1, 'title' => "titel", 'input_message_content' => $messageResult, 'description' => "descripshon"));
-	//$results = Array($object);
-	//apiRequestJson("answerInlineQuery", array('inline_query_id' => $update["inline_query"]["id"], 'results' => $object, 'is_personal' => TRUE));	
-	
 	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
 		$text = $update["inline_query"]["query"];
 		$text = cleanHTML($text);
-		//$boldText = "<b>".$text."</b>";
-		//$reverseText = reverseString($text);
-
-
-		/*$claveles = "";
-		for($i=strlen($text)-1;$i>=0;$i--) {
-			$claveles = $claveles.$text[$i];
-		}*/
-		//$claveles = reverseString($text);
-
-		//$pedorreta = reverseString($claveles);
-		//$pedorreta = str_replace("g","n",$claveles);
-		//$claveles = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
-		
-		//$object = new stdClass();
-		//$object->text = 'Here we go';
-		//$object->url = 'http://google.es';
-		
-		//$boton = [ "text" => "porfa", "url" => "http://google.es", ];
-		
-		
-		
-		
-		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text), "cache_time" => 60,]);
-			
+		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text,$logname), "cache_time" => 60,]);
 		/* EL MIO BUENO
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
 		["type" => "article", "id" => "0", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...", "reply_markup" => ["inline_keyboard" => [[ [[ (object)$object ]], ]] ], ],
 		["type" => "article", "id" => "1", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
 		["type" => "article", "id" => "2", "title" => "Pulsa para enviar en azul", "message_text" => $claveles, 'parse_mode' => "HTML", 'disable_web_page_preview' => TRUE],
-		]]);
-		
-		*/
-		
-		
-		
-		/*
-		
-		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => queryDuckDuckGo($queryText), "cache_time" => 86400, ]);
-		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [["type" => "article", "id" => "0", "title" => "Unnikked Blog", "message_text" => "I'm the author", ], ] ]);
-
-
-		function queryDuckDuckGo($query) {
-
-		  foreach (range(0, count($titles) - 1) as $i) {
-			$collection[] = [
-			  "type" => "article",
-			  "id" => "$i",
-			  "title" => "$titles[$i]",
-			  "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
-			];
-		  }
-		  
-		  return $collection;
-		}
-		
-		
-		Eros‮cuoioioioioioioioholAAA
-		
-		
-		*/
-		
-	
-		
-		
+		]]);*/
 	}
 }else if(isset($update["callback_query"])) {
 	error_log("se pulsa el boton del spoiler");
@@ -3466,20 +3408,30 @@ if (isset($update["message"])) {
 	$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
 	error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
 	//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
-	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $result, "show_alert" => FALSE));	
+	$alert = "Desvelando spoiler...";
+	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));	
+	usleep(500000);
+	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $result, "show_alert" => TRUE));	
 }
 
 
-function inlineOptions($text) {
+function inlineOptions($text, $username) {
 	$boldText = "<b>".$text."</b>";
 	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
-	$spoilerText = $text; // @TODO
-	$encryptedSpoiler = "1m4Kdk3";
+	$spoilerText = "<b>¡".$logname." tiene un secreto que revelarte!</b>";
+	if(strlen($text) > 10 && strpos(strtolower($text), "spoiler:") !== false) {
+		$final = strpos(strtolower($text), "spoiler:");
+		$question = substr($text, 0, $final);
+		$spoilerText = $spoilerText." <b>Además añade lo siguiente:</b>".PHP_EOL.$question;
+	}
+	$spoilerText = $spoilerText..PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
+	//$spoilerText = $text; // @TODO    <----- ESTO SE MUESTRA EN LA PERGUNTA DEL SPOILER DEL BOT
+	//$encryptedSpoiler = "1m4Kdk3";
 	//$encryptedText = spoiler::encrypt($text); //encryptSpoiler($text);
 	//$encryptedURL = $encryptedURL.$encryptedText;
 	//$dec = spoiler::decrypt($encryptedText);
 	//error_log("ENCR ".$encryptedText." DECR ".$dec);
-	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $text];
+	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $spoilerText];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",

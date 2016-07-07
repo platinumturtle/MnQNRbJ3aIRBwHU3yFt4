@@ -3401,14 +3401,29 @@ if (isset($update["message"])) {
 		]]);*/
 	}
 }else if(isset($update["callback_query"])) {
-	error_log("se pulsa el boton del spoiler");
+	if(isset($update["callback_query"]['from']['username'])) {
+	$logname = "@".$update["callback_query"]['from']['username'];
+	} else if (isset($update["callback_query"]['from']['first_name'])) {
+	$logname = $update["callback_query"]['from']['first_name'];
+	} else {
+	$logname = "ID".$update["callback_query"]['from']['id'];
+	}
+	error_log($logname." created a spoiler.");
 	$callback = $update["callback_query"];
 	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
-	$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
-	error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
+	//$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
+	//error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
 	//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
 	//$alert = "Desvelando spoiler...";
+	if(strpos(strtolower($callback['data']), "spoiler:") !== false) {
+		$start = strpos(strtolower($text), "spoiler:");
+		$start = $start + 8;
+		$result = substr($callback['data'], $start);
+		$result = ltrim($result);
+	} else {
+		$result = $callback['data'];
+	}
 	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $result, "show_alert" => TRUE));	
 	//usleep(500000);	
 	//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));
@@ -3418,7 +3433,7 @@ if (isset($update["message"])) {
 function inlineOptions($text, $username) {
 	$boldText = "<b>".$text."</b>";
 	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
-	$spoilerText = "<b>¡".$logname." tiene un secreto que revelarte!</b>";
+	$spoilerText = "<b>¡".$username." tiene un secreto que revelarte!</b>";
 	if(strlen($text) > 10 && strpos(strtolower($text), "spoiler:") !== false) {
 		$final = strpos(strtolower($text), "spoiler:");
 		$question = substr($text, 0, $final);
@@ -3445,7 +3460,7 @@ function inlineOptions($text, $username) {
     $buttons[] = [
 		"type" => "article",
 		"id" => "1",
-		"title" => "Enviar negrita",
+		"title" => "Enviar en negrita",
 		"description" => "Se enviará el texto en negrita.",
 		"message_text" => $boldText,
 		"parse_mode" => "HTML",
@@ -3465,39 +3480,8 @@ function inlineOptions($text, $username) {
 		"thumb_height" => 100,
     ];
 	return $buttons;	
-	
-	
-	// https://telegram.me/spoibot?start=TSWDUGUSIMTSVEUXIIHCOOVZCMWYOM
-/*
-$cc = $text;
-$key = 'fJcSdDIcScjShcYcsW';
-$iv = '17251956';
-
-$cipher = mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
-
-mcrypt_generic_init($cipher, $key, $iv);
-$encrypted = mcrypt_generic($cipher,$cc);
-mcrypt_generic_deinit($cipher);
-
-mcrypt_generic_init($cipher, $key, $iv);
-$decrypted = mdecrypt_generic($cipher,$encrypted);
-mcrypt_generic_deinit($cipher);
-
-
-  mcrypt_module_close($cipher);
-  
-//error_log("ENCRIPTADO: ".$encrypted." DESENCRITPADO: ".$decrypted);
-  */
-
-	
-
-  
-  
-
-  
-  
 }
-
+/*
 function encryptSpoiler($text) {
 	$cc = $text;
 	$key = 'fJcSdDIcScjShcYcsW';
@@ -3537,10 +3521,6 @@ class spoiler {
     }
  
 }
-
-
-
-
-
+*/
 
 ?>

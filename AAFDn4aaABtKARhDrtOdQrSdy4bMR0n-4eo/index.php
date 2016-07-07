@@ -1530,7 +1530,7 @@ function tellStory($part,$name) {
 					"que asustaba a las gallinas cuando se ponía el sol, ",
 					"con unas tierras en Calahorra ",
 					"con una gran pasión por el curling sobre hierba ",
-					"que coleccionaba fots de patos para adornar la cocina ",
+					"que coleccionaba fotos de patos para adornar la cocina ",
 					"que alimentaba cigüeñas a base de cáñamo de fresa ",
 					"con un diente en forma de abrelatas ",
 					"cuya afición era coleccionar bombillas "

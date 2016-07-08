@@ -2880,10 +2880,10 @@ function processMessage($message) {
 		header('Content-type: image/jpeg');
 		$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 
-		$textColor = imagecolorallocate($jpg_image, 63, 63, 63);
+		$textColor = imagecolorallocate($jpg_image, 125, 0, 125);
 
 		// Set Path to Font File
-		$font_path = 'https://demisuke-kamigram.rhcloud.com/img/cambria.ttf';
+		$font_path = dirname(__FILE__)."/img/segoeprint.ttf";
 
 		// Set Text to Be Printed On Image
 		//$text = "This is a sunset!";
@@ -2893,13 +2893,25 @@ function processMessage($message) {
 
 		// Send Image to Browser
 		imagejpeg($jpg_image, $imageURL);
-		$pingas = serialize($jpg_image);
+		//$pingas = serialize($jpg_image);
 		
 		//$codif = base64_encode($text);
 		//$text = rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
 		//error_log($text);
 		
-		apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => $pingas));
+		$photo = new CURLFile(realpath("/img/becquer_1.jpg"))
+		
+		$ch = curl_init(); 
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			"Content-Type:multipart/form-data"
+		));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $photo); 
+		$output = curl_exec($ch);
+
+
+
+		apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => $photo));
 
 		// Clear Memory
 		imagedestroy($jpg_image);

@@ -2860,8 +2860,8 @@ function processMessage($message) {
 		$start = strpos(strtolower($text), "!becquer") + 9;
 		$text = substr($text, $start);
 		$text = $text.PHP_EOL.PHP_EOL."–Gustavo Adolfo Bécquer";
-		$imageURL = rand(0,9);
-		//$imageURL = "https://demisuke-kamigram.rhcloud.com/img/becquer_".$imageURL.".jpg";
+		// $imageURL = rand(0,9);
+		$imageURL = 1;
 		$imageURL = dirname(__FILE__)."/img/becquer_".$imageURL.".jpg";
 		/*
 		$image = new Image('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
@@ -2883,21 +2883,21 @@ function processMessage($message) {
 		$textColor = imagecolorallocate($jpg_image, 63, 63, 63);
 
 		// Set Path to Font File
-		$font_path = 'https://demisuke-kamigram.rhcloud.com/img/handwritting.ttf';
+		$font_path = 'https://demisuke-kamigram.rhcloud.com/img/cambria.ttf';
 
 		// Set Text to Be Printed On Image
 		//$text = "This is a sunset!";
 
 		// Print Text On Image
-		imagettftext($jpg_image, 25, 0, 75, 300, $textColor, $font_path, $text);
+		imagettftext($jpg_image, 125, 0, 475, 200, $textColor, $font_path, $text);
 
 		// Send Image to Browser
 		imagejpeg($jpg_image, $imageURL);
 		$pingas = serialize($jpg_image);
 		
-		$codif = base64_encode($text);
-		$text = rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
-		error_log($text);
+		//$codif = base64_encode($text);
+		//$text = rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
+		//error_log($text);
 		
 		apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => $pingas));
 

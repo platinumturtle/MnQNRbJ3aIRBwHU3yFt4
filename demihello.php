@@ -2911,20 +2911,20 @@ function processMessage($message) {
 
 
 
-		$bot_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/";
-		$url        = $bot_url . "sendPhoto?chat_id=" . $chat_id ;
+		//$bot_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/";
+		//$url        = $bot_url . "sendPhoto?chat_id=" . $chat_id ;
 
 		//$post_fields = array('chat_id'   => $chat_id,
 		//					'photo' => new CURLFile(realpath("/img/becquer_1.jpg"))
 		//				);
 
-			$cfile = curl_file_create('/img/becquer_1.jpg','image/jpeg','photo');
+			//$cfile = curl_file_create('/img/becquer_1.jpg','image/jpeg','photo');
 
 			// Assign POST data
-			$data = array('chat_id' => $chat_id, 'photo' => $cfile);
+			//$data = array('chat_id' => $chat_id, 'photo' => $cfile);
 			//curl_setopt($ch, CURLOPT_POST,1);
 			//curl_setopt($ch, CURLOPT_POSTFIELDS, $data);			
-						
+		/*				
 						
 		$ch = curl_init(); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -2933,7 +2933,34 @@ function processMessage($message) {
 		curl_setopt($ch, CURLOPT_URL, $url); 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
-		$output = curl_exec($ch);
+		$output = curl_exec($ch);*/
+		
+		$target_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/sendPhoto";
+		
+		//$target_url = 'http://127.0.0.1/accept.php';
+        //This needs to be the full path to the file you want to send.
+		$fullpath = dirname(__FILE__)."/img/becquer_1.jpg";
+		//$file_name_with_full_path = realpath('/img/becquer_1.jpg');
+		$file_name_with_full_path = realpath($fullpath);
+        /* curl will accept an array here too.
+         * Many examples I found showed a url-encoded string instead.
+         * Take note that the 'key' in the array will be the key that shows up in the
+         * $_FILES array of the accept script. and the at sign '@' is required before the
+         * file name.
+         */
+	$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+ 
+        $ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL,$target_url);
+	curl_setopt($ch, CURLOPT_POST,1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+	$result=curl_exec ($ch);
+	curl_close ($ch);
+		
+		
+		
+		
 		
 		
 		

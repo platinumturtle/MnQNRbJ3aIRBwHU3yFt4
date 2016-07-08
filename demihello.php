@@ -2860,13 +2860,14 @@ function processMessage($message) {
 		$start = strpos(strtolower($text), "!becquer") + 9;
 		$text = substr($text, $start);
 		$text = wordwrap($text, 26, "\n", false);
-		$totalRows = substr_count($text, PHP_EOL);
-		error_log($totalRows." LINEAS");
-		$text = $text.PHP_EOL.PHP_EOL."-Gustavo Adolfo Bécquer";
-		$imageURL = rand(0,9);
+		$totalEOL = substr_count($text, PHP_EOL);
+		//error_log($totalRows." LINEAS");
+		if($totalEOL < 7) {
+			$text = $text.PHP_EOL.PHP_EOL."-Gustavo Adolfo Bécquer";
+			$imageURL = rand(0,9);
 		//$imageURL = 1;
-		$imageShortURL = "/img/becquer_".$imageURL.".jpg";
-		$imageURL = dirname(__FILE__).$imageShortURL;
+			$imageShortURL = "/img/becquer_".$imageURL.".jpg";
+			$imageURL = dirname(__FILE__).$imageShortURL;
 		/*
 		$image = new Image('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 		$text1 = new Text($text, 3, 25);
@@ -2880,24 +2881,24 @@ function processMessage($message) {
 		$image->addText($text1);
 		$image->render($imageURL);*/
 		
-// 6 enters
+			// 6 enters
 
-		header('Content-type: image/jpeg');
-		$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
+			header('Content-type: image/jpeg');
+			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 
-		$textColor = imagecolorallocate($jpg_image, 63,63, 63);
+			$textColor = imagecolorallocate($jpg_image, 63,63, 63);
 
 		// Set Path to Font File
-		$font_path = dirname(__FILE__)."/img/handwritting.ttf";
+			$font_path = dirname(__FILE__)."/img/handwritting.ttf";
 
 		// Set Text to Be Printed On Image
 		//$text = "This is a sunset!";
 
 		// Print Text On Image
-		imagettftext($jpg_image, 28, 0, 475, 125, $textColor, $font_path, $text);
+			imagettftext($jpg_image, 28, 0, 475, 125, $textColor, $font_path, $text);
 
 		// Send Image to Browser
-		imagejpeg($jpg_image, $imageURL);
+			imagejpeg($jpg_image, $imageURL);
 		//$pingas = serialize($jpg_image);
 		
 		//$codif = base64_encode($text);
@@ -2940,28 +2941,28 @@ function processMessage($message) {
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
 		$output = curl_exec($ch);*/
 		
-		$target_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/sendPhoto";
+			$target_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/sendPhoto";
 		
 		//$target_url = 'http://127.0.0.1/accept.php';
         //This needs to be the full path to the file you want to send.
 		//$fullpath = dirname(__FILE__)."/img/becquer_1.jpg";
 		//$file_name_with_full_path = realpath('/img/becquer_1.jpg');
-		$file_name_with_full_path = realpath($imageURL);
+			$file_name_with_full_path = realpath($imageURL);
         /* curl will accept an array here too.
          * Many examples I found showed a url-encoded string instead.
          * Take note that the 'key' in the array will be the key that shows up in the
          * $_FILES array of the accept script. and the at sign '@' is required before the
          * file name.
          */
-	$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
  
-        $ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL,$target_url);
-	curl_setopt($ch, CURLOPT_POST,1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-	$result=curl_exec ($ch);
-	curl_close ($ch);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
 		
 		
 		
@@ -2976,7 +2977,10 @@ function processMessage($message) {
 		//apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => ));
 
 		// Clear Memory
-		imagedestroy($jpg_image);
+			imagedestroy($jpg_image);
+		} else {
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
   
 		
 	} else if (strpos($text, "%GETSONG%") !== false) {

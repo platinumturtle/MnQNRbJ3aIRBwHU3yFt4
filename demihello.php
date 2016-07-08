@@ -3420,27 +3420,27 @@ if (isset($update["message"])) {
 	$callback = $update["callback_query"];
 	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
-	$message = $callback['message'];
-	$prueba = var_dump($message);
-	error_log($prueba);
+	$message = $callback['data'];
+	//$prueba = var_dump($message);
+	//error_log($prueba);
 	//$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
 	//error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
 	//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
 	//$alert = "Desvelando spoiler...";
-	if(strpos(strtolower($callback['data']), "spoiler:") !== false) {
+	//if(strpos(strtolower($message), "spoiler:") !== false) {
 		//$start = strpos(strtolower($callback['data']), "spoiler:");
-		$start = strpos(strtolower($callback['message']), "spoiler:");
-		$start = $start + 8;
+		//$start = strpos(strtolower($callback['message']), "spoiler:");
+		//$start = $start + 8;
 		//$result = substr($callback['data'], $start);
-		$result = substr($callback['message'], $start);
-		$result = ltrim($result);
-		if($result == "") {
-			$result = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
-		}
-	} else {
-		$result = $callback['data'];
+		//$result = substr($callback['message'], $start);
+		//$result = ltrim($result);
+	if($message == "") {
+		$message = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
 	}
-	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $result, "show_alert" => TRUE));	
+	//} else {
+	//	$result = $callback['data'];
+	//}
+	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "show_alert" => TRUE));	
 	//usleep(500000);	
 	//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));
 }
@@ -3454,14 +3454,31 @@ function inlineOptions($text, $username) {
 		$final = strpos(strtolower($text), "spoiler:");
 		$question = substr($text, 0, $final);
 		$spoilerText = $spoilerText." <b>Además añade lo siguiente:</b>".PHP_EOL.$question;
+		//$start = strpos(strtolower($callback['message']), "spoiler:");
+		$start = $final + 8;
+		$hiddenText = substr($text, $start);
+	} else {
+		$hiddenText = $text;
 	}
+	$hiddenText = rtrim(ltrim($hiddenText));
 	$spoilerText = $spoilerText.PHP_EOL.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
-	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => "SPOILER"];
+	$descriptionText = "Se enviará el texto oculto (";
+	if(strlen($hiddenText) > 64) {
+		$descriptionText = $descriptionText."se recortará el mensaje).";
+	} else if(strlen($hiddenText) == 64) {
+		$descriptionText = $descriptionText."tamaño al máximo).";
+	} else if(strlen($hiddenText) == 63) {
+		$descriptionText = $descriptionText."1 carácter restante).";
+	} else {
+		$left = 64 - strlen($hiddenText);
+		$descriptionText = $descriptionText.$left." caracteres restantes).";
+	}
+	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",
 		"title" => "Enviar spoiler",
-		"description" => "Se enviará el texto oculto.",
+		"description" => $descriptionText,
 		"message_text" => $spoilerText,
 		"parse_mode" => "HTML",
 		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_spoiler.png",

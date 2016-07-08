@@ -2899,7 +2899,7 @@ function processMessage($message) {
 		//$text = rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
 		//error_log($text);
 		
-		$photo = new CURLFile(realpath("/img/becquer_1.jpg"))
+		$photo = new CURLFile(realpath("/img/becquer_1.jpg"));
 		/*
 		$ch = curl_init(); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(

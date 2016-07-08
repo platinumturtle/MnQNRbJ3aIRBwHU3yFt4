@@ -2893,7 +2893,7 @@ function processMessage($message) {
 
 		// Send Image to Browser
 		imagejpeg($jpg_image, $imageURL);
-		$pingas = serialize(imagejpeg($jpg_image););
+		$pingas = serialize(imagejpeg($jpg_image));
 		apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => $pingas));
 
 		// Clear Memory

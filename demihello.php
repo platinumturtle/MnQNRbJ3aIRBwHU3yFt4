@@ -627,8 +627,8 @@ function debugMode($message) {
 		}
 	}
 	if (isset($message['callback_query'])) {
-		//$dump = var_dump($message['callback_query']);
-		//$debugText = $debugText.$dump;	
+		$dump = var_dump($message['callback_query']);
+		$debugText = $debugText.$dump;	
 	}
 	$debugText = $debugText."\n"; 
 	fwrite($debugFile, $debugText);
@@ -3395,7 +3395,8 @@ if (isset($update["message"])) {
 	$queryId = $update["inline_query"]["id"];
 	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
 		$text = $update["inline_query"]["query"];
-		$text = cleanHTML($text);
+		$text = str_replace("<", "", $text);
+		$text = str_replace(">", "", $text);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text,$logname), "cache_time" => 60,]);
 		/* EL MIO BUENO
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
@@ -3417,13 +3418,13 @@ if (isset($update["message"])) {
 	$callback = $update["callback_query"];
 	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
-	$senderName = var_dump($message['callback_query']);
+	$senderName = $message['callback_query']['message'];
 	$start = strpos($senderName, "¡");
 	$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
 	error_log($senderName." - ".$start." - ".$length);
 	$senderName = substr($senderName, $start, $length);
-	$message = "<b>Mensaje de ".$senderName." para ".$logname.":</b>".PHP_EOL.PHP_EOL;
-	$message = $message."<i>".$callback['data']."</i>";
+	$message = "Mensaje de ".$senderName." para ".$logname.":".PHP_EOL.PHP_EOL;
+	$message = $message.$callback['data'];
 	//$prueba = var_dump($message);
 	//error_log($prueba);
 	//$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
@@ -3443,7 +3444,7 @@ if (isset($update["message"])) {
 	//} else {
 	//	$result = $callback['data'];
 	//}
-	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "parse_mode" => "HTML", "show_alert" => TRUE));	
+	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "show_alert" => TRUE));	
 	//usleep(500000);	
 	//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));
 }
@@ -3456,7 +3457,7 @@ function inlineOptions($text, $username) {
 	if(strlen($text) > 10 && strpos(strtolower($text), "spoiler:") !== false) {
 		$final = strpos(strtolower($text), "spoiler:");
 		$question = substr($text, 0, $final);
-		$spoilerText = $spoilerText." <b>Además añade lo siguiente:</b>".PHP_EOL.$question;
+		$spoilerText = $spoilerText." <b>Además añade lo siguiente:</b>".PHP_EOL."<i>".$question."</i>";
 		//$start = strpos(strtolower($callback['message']), "spoiler:");
 		$start = $final + 8;
 		$hiddenText = substr($text, $start);

@@ -2860,7 +2860,7 @@ function processMessage($message) {
 		$start = strpos(strtolower($text), "!becquer") + 9;
 		$text = substr($text, $start);
 		$text = wordwrap($text, 26, "\n", false);
-		$totalRows = substr_count($text, '\n');
+		$totalRows = substr_count($text, PHP_EOL);
 		error_log($totalRows." LINEAS");
 		$text = $text.PHP_EOL.PHP_EOL."-Gustavo Adolfo Bécquer";
 		$imageURL = rand(0,9);

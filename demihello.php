@@ -3418,18 +3418,25 @@ if (isset($update["message"])) {
 	$callback = $update["callback_query"];
 	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
-	$senderName = $callback['text'];
-	$start = strpos($senderName, "¡");
-	$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
-	$str = var_export($callback, true);
-	error_log($str);
-	$str2 = json_encode($callback);
-	error_log($str2);
-	$str3 = implode("|",$callback);
-	error_log($str3);
-	error_log($senderName." - ".$start." - ".$length);
-	$senderName = substr($senderName, $start, $length);
-	$message = "Mensaje de ".$senderName." para ".$logname.":".PHP_EOL.PHP_EOL;
+	if(isset($callback['from']['username']) && strlen($callback['from']['username']) > 0) {
+		$senderName = $callback['from']['username'];
+	} else if(isset($callback['from']['first_name']) && strlen($callback['from']['first_name']) > 0) {
+		$senderName = $callback['from']['first_name'];
+	} else {
+		$senderName = "";
+	}
+	//$start = strpos($senderName, "¡");
+	//$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
+	//$str = var_export($callback, true);
+	//error_log($str);
+	//$str2 = json_encode($callback);
+	//error_log($str2);
+	//$senderName = substr($senderName, $start, $length);
+	$message = "Mensaje";
+	if(strlen($senderName) > 0) {
+		$message = $message."de ".$senderName;
+	}
+	$message = $message." para ".$logname.":".PHP_EOL.PHP_EOL;
 	$message = $message.$callback['data'];
 	//$prueba = var_dump($message);
 	//error_log($prueba);

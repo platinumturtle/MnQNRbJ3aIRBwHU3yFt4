@@ -3421,7 +3421,13 @@ if (isset($update["message"])) {
 	$senderName = $callback['text'];
 	$start = strpos($senderName, "¡");
 	$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
-	//error_log($senderName." - ".$start." - ".$length);
+	$str = var_export($callback, true);
+	error_log($str);
+	$str2 = json_encode($callback);
+	error_log($str2);
+	$str3 = implode("|",$callback);
+	error_log($str3);
+	error_log($senderName." - ".$start." - ".$length);
 	$senderName = substr($senderName, $start, $length);
 	$message = "Mensaje de ".$senderName." para ".$logname.":".PHP_EOL.PHP_EOL;
 	$message = $message.$callback['data'];

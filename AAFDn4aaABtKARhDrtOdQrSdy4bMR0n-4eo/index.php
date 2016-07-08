@@ -2140,6 +2140,7 @@ function processMessage($message) {
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
 	} else if (strpos(strtolower($text), "!info") !== false) {
+		error_log($logname." triggered: !info.");
 		$link = dbConnect();
 		$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT DISTINCT gb_id FROM groupbattle )dt";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

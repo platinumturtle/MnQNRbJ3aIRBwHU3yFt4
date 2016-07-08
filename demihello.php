@@ -2826,11 +2826,31 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_audio"));
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
+	} else if (strpos(strtolower($text), "!infomini") !== false) {
+		error_log($logname." triggered: !infomini.");
+		$link = dbConnect();
+		$query = "SELECT COUNT( * ) AS  'total_groups' FROM ( SELECT DISTINCT gb_id FROM groupbattle )dt";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$totalGroups = $row['total_groups'];
+		mysql_free_result($result);
+		$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$totalActive = $row['total_active'];
+		mysql_free_result($result);
+		$query = "SELECT COUNT( * ) AS  'total_users' FROM ( SELECT DISTINCT ub_id FROM userbattle )dt";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$totalUsers = $row['total_users'];
+		mysql_close($link);
+		$text = "*".$totalUsers." personas están usando el bot.".PHP_EOL;
+		$text = $text.$totalGroups." grupos han probado ya el bot.".PHP_EOL;
+		$text = $text.$totalActive." grupos siguen utilizando el bot.*";
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 	} else if (strpos(strtolower($text), "!info") !== false) {
-		$extra = apiRequest("getChatMembersCount", array('chat_id' => '-116857426'));
-
 		error_log($logname." triggered: !info.");
-		
+		//$extra = apiRequest("getChatMembersCount", array('chat_id' => '-116857426'));
 	} else if (strpos($text, "%GETSONG%") !== false) {
 		$text = substr($text,9);
 		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
@@ -3414,17 +3434,17 @@ if (isset($update["message"])) {
 	} else {
 		$logname = "ID".$update["callback_query"]['from']['id'];
 	}
-	error_log($logname." created a spoiler.");
+	error_log($logname." clicked on a spoiler button.");
 	$callback = $update["callback_query"];
 	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
-	if(isset($callback['from']['username']) && strlen($callback['from']['username']) > 0) {
-		$senderName = $callback['from']['username'];
-	} else if(isset($callback['from']['first_name']) && strlen($callback['from']['first_name']) > 0) {
-		$senderName = $callback['from']['first_name'];
-	} else {
-		$senderName = "";
-	}
+	//if(isset($callback['from']['username']) && strlen($callback['from']['username']) > 0) {
+	//	$senderName = $callback['from']['username'];
+	//} else if(isset($callback['from']['first_name']) && strlen($callback['from']['first_name']) > 0) {
+	//	$senderName = $callback['from']['first_name'];
+	//} else {
+	//	$senderName = "";
+	//}
 	//$start = strpos($senderName, "¡");
 	//$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
 	//$str = var_export($callback, true);
@@ -3432,11 +3452,11 @@ if (isset($update["message"])) {
 	//$str2 = json_encode($callback);
 	//error_log($str2);
 	//$senderName = substr($senderName, $start, $length);
-	$message = "Mensaje";
-	if(strlen($senderName) > 0) {
-		$message = $message."de ".$senderName;
-	}
-	$message = $message." para ".$logname.":".PHP_EOL.PHP_EOL;
+	//$message = "Mensaje";
+	//if(strlen($senderName) > 0) {
+	//	$message = $message." de ".$senderName;
+	//}
+	$message = "Mensaje oculto para ".$logname.":".PHP_EOL.PHP_EOL;
 	$message = $message.$callback['data'];
 	//$prueba = var_dump($message);
 	//error_log($prueba);

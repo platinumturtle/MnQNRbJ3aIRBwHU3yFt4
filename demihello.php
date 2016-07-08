@@ -3418,10 +3418,10 @@ if (isset($update["message"])) {
 	$callback = $update["callback_query"];
 	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
-	$senderName = $message['callback_query']['message'];
+	$senderName = $callback['text'];
 	$start = strpos($senderName, "¡");
 	$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
-	error_log($senderName." - ".$start." - ".$length);
+	//error_log($senderName." - ".$start." - ".$length);
 	$senderName = substr($senderName, $start, $length);
 	$message = "Mensaje de ".$senderName." para ".$logname.":".PHP_EOL.PHP_EOL;
 	$message = $message.$callback['data'];
@@ -3457,7 +3457,7 @@ function inlineOptions($text, $username) {
 	if(strlen($text) > 10 && strpos(strtolower($text), "spoiler:") !== false) {
 		$final = strpos(strtolower($text), "spoiler:");
 		$question = substr($text, 0, $final);
-		$spoilerText = $spoilerText." <b>Además añade lo siguiente:</b>".PHP_EOL."<i>".$question."</i>";
+		$spoilerText = $spoilerText.PHP_EOL."<b>Además añade lo siguiente:</b>".PHP_EOL."<i>".$question."</i>";
 		//$start = strpos(strtolower($callback['message']), "spoiler:");
 		$start = $final + 8;
 		$hiddenText = substr($text, $start);

@@ -2828,6 +2828,7 @@ function processMessage($message) {
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
 	} else if (strpos(strtolower($text), "!infomini") !== false) {
 		error_log($logname." triggered: !infomini.");
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		$link = dbConnect();
 		$query = "SELECT COUNT( * ) AS  'total_groups' FROM ( SELECT DISTINCT gb_id FROM groupbattle )dt";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -2839,7 +2840,7 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		$totalActive = $row['total_active'];
 		mysql_free_result($result);
-		$query = "SELECT COUNT( * ) AS  'total_users' FROM ( SELECT DISTINCT ub_id FROM userbattle )dt";
+		$query = "SELECT COUNT( * ) AS  'total_users' FROM ( SELECT DISTINCT user_name FROM userbattle )dt";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		$totalUsers = $row['total_users'];
@@ -2847,10 +2848,33 @@ function processMessage($message) {
 		$text = "*".$totalUsers." personas están usando el bot.".PHP_EOL;
 		$text = $text.$totalGroups." grupos han probado ya el bot.".PHP_EOL;
 		$text = $text.$totalActive." grupos siguen utilizando el bot.*";
+		usleep(250000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 	} else if (strpos(strtolower($text), "!info") !== false) {
 		error_log($logname." triggered: !info.");
 		//$extra = apiRequest("getChatMembersCount", array('chat_id' => '-116857426'));
+	} else if (strpos(strtolower($text), "!becquer") !== false || strpos(strtolower($text), "!bequer") !== false || strpos(strtolower($text), "!becker") !== false || strpos(strtolower($text), "!bécquer") !== false) {
+		error_log($logname." triggered: !becquer.");
+		$text = str_replace("!bequer", "!becquer", $text);
+		$text = str_replace("!becker", "!becquer", $text);
+		$start = strpos(strtolower($text), "!becquer") + 9;
+		$text = substr($text, $start);
+		$text = $text.PHP_EOL.PHP_EOL."–Gustavo Adolfo Bécquer";
+		
+		$image = new Image('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
+		$text1 = new Text($text, 3, 25);
+		$text1->align = 'left';
+		$text1->color = 'FFFFFF';
+		$text1->font = 'https://demisuke-kamigram.rhcloud.com/img/handwritting.ttf';
+		$text1->lineHeight = 36;
+		$text1->size = 24;
+		$text1->startX = 40;
+		$text1->startY = 40;
+		$image->addText($text1);
+		$imageURL = rand(0,9);
+		$imageURL = "https://demisuke-kamigram.rhcloud.com/img/becquer_".$imageURL.".jpg";
+		$image->render($imageURL);
+		
 	} else if (strpos($text, "%GETSONG%") !== false) {
 		$text = substr($text,9);
 		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
@@ -3597,5 +3621,173 @@ class spoiler {
  
 }
 */
+
+
+
+
+
+
+
+
+
+
+class Text
+{
+    public $text = 'Demisuke soy yo reencarnado.';
+    public $width = 80;
+    public $startX = 0;
+    public $startY = 0;
+    public $align = 'left';
+    public $color = '3f3f3f';
+    public $font = 'handwritting.ttf';
+    public $lineHeight = 24;
+    public $size = 16;
+    protected $lines;
+
+    public function __construct($text, $numLines = 1, $width = 80)
+    {
+        $this->text = $text;
+        $this->width = $width;
+        $this->addLines($numLines);
+    }
+
+    public function addLines($numLines = 1)
+    {
+        for ($i = 0; $i < $numLines; $i++) {
+            $this->lines[] = array(
+                'chars' => 0,
+                'words' => array(),
+                'full' => false
+            );
+        }
+    }
+
+    public function Image $image)
+    {
+        // Allocate words to lines
+        $this->distributeText();
+        // Calculate maximum potential line width (close enough) in pixels
+        $maxWidthString = implode('', array_fill(0, $this->width, 'x'));
+        $maxWidthBoundingBox = imagettfbbox($this->size, 0, $this->font, $maxWidthString);
+        $maxLineWidth = abs($maxWidthBoundingBox[0] - $maxWidthBoundingBox[2]); // (lower left corner, X position) - (lower right corner, X position)
+        // Calculate each line width in pixels for alignment purposes
+        for ($j = 0; $j < count($this->lines); $j++) {
+            // Fetch line
+            $line =& $this->lines[$j];
+            // Remove unused lines
+            if (empty($line['words'])) {
+                unset($this->lines[$j]);
+                continue;
+            }
+            // Calculate width
+            $lineText = implode(' ', $line['words']);
+            $lineBoundingBox = imagettfbbox($this->size, 0, $this->font, $lineText);
+            $line['width'] = abs($lineBoundingBox[0] - $lineBoundingBox[2]); // (lower left corner, X position) - (lower right corner, X position)
+            $line['text'] = $lineText;
+        }
+        // Calculate line offsets
+        for ($i = 0; $i < count($this->lines); $i++) {
+            // Fetch line
+            if (array_key_exists($i, $this->lines)) {
+                $line =& $this->lines[$i];
+                // Calculate line width in pixels
+                $lineBoundingBox = imagettfbbox($this->size, 0, $this->font, $line['text']);
+                $lineWidth = abs($lineBoundingBox[0] - $lineBoundingBox[2]); // (lower left corner, X position) - (lower right corner, X position)
+                // Calculate line X,Y offsets in pixels
+                switch ($this->align) {
+                    case 'left':
+                        $offsetX = $this->startX;
+                        $offsetY = $this->startY + $this->lineHeight + ($this->lineHeight * $i);
+                        break;
+                    case 'center':
+                        $imageWidth = $image->getWidth();
+                        $offsetX = (($maxLineWidth - $lineWidth) / 2) + $this->startX;
+                        $offsetY = $this->startY + $this->lineHeight + ($this->lineHeight * $i);
+                        break;
+                    case 'right':
+                        $imageWidth = $image->getWidth();
+                        $offsetX = $imageWidth - $line['width'] - $this->startX;
+                        $offsetY = $this->startY + $this->lineHeight + ($this->lineHeight * $i);
+                        break;
+                }
+                // Render text onto image
+                $image->getImage()->text($line['text'], $offsetX, $offsetY, $this->size, $this->color, 0, $this->font);
+            }
+        }
+    }
+
+    protected function distributeText()
+    {
+        // Explode input text on word boundaries
+        $words = explode(' ', $this->text);
+        // Fill lines with words, toss exception if exceed available lines
+        while ($words) {
+            $word = array_shift($words);
+            for ($i = 0; $i < count($this->lines); $i++) {
+                $line =& $this->lines[$i];
+                if ($line['full'] === false) {
+                    $charsPotential = strlen($word) + $line['chars'];
+                    if ($charsPotential <= $this->width) {
+                        array_push($line['words'], $word);
+                        $line['chars'] = $charsPotential;
+                        break;
+                    } else {
+                        $line['full'] = true;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+class Image
+{
+    public $image;
+    public $textObjects = array();
+    public function __construct($sourceImage)
+    {
+        $this->image = Image::make($sourceImage);
+    }
+    public function addText(Text $text)
+    {
+        $this->textObjects[] = $text;
+    }
+    public function drawText()
+    {
+        foreach ($this->textObjects as $text) {
+            $text->renderToImage($this);
+        }
+    }
+    public function render($outputImagePath)
+    {
+        $this->drawText();
+        $this->image->save($outputImagePath);
+    }
+    public function getWidth()
+    {
+        return imagesx($this->image->resource);
+    }
+    public function getImage()
+    {
+        return $this->image;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ?>

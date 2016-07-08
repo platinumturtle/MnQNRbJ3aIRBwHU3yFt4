@@ -2914,17 +2914,25 @@ function processMessage($message) {
 		$bot_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/";
 		$url        = $bot_url . "sendPhoto?chat_id=" . $chat_id ;
 
-		$post_fields = array('chat_id'   => $chat_id,
-							'photo' => new CURLFile(realpath("/img/becquer_1.jpg"))
-						);
+		//$post_fields = array('chat_id'   => $chat_id,
+		//					'photo' => new CURLFile(realpath("/img/becquer_1.jpg"))
+		//				);
 
+			$cfile = curl_file_create('/img/becquer_1.jpg','image/jpeg','photo');
+
+			// Assign POST data
+			$data = array('chat_id' => $chat_id, 'photo' => $cfile);
+			//curl_setopt($ch, CURLOPT_POST,1);
+			//curl_setopt($ch, CURLOPT_POSTFIELDS, $data);			
+						
+						
 		$ch = curl_init(); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		"Content-Type:multipart/form-data"
 		));
 		curl_setopt($ch, CURLOPT_URL, $url); 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields); 
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
 		$output = curl_exec($ch);
 		
 		

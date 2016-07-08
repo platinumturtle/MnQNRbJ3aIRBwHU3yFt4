@@ -2859,10 +2859,11 @@ function processMessage($message) {
 		$text = str_replace("!becker", "!becquer", $text);
 		$start = strpos(strtolower($text), "!becquer") + 9;
 		$text = substr($text, $start);
-		$text = $text.PHP_EOL.PHP_EOL."–Gustavo Adolfo Bécquer";
-		// $imageURL = rand(0,9);
-		$imageURL = 1;
-		$imageURL = dirname(__FILE__)."/img/becquer_".$imageURL.".jpg";
+		$text = $text.PHP_EOL.PHP_EOL."-Gustavo Adolfo Bécquer";
+		$imageURL = rand(0,9);
+		//$imageURL = 1;
+		$imageShortURL = "/img/becquer_".$imageURL.".jpg";
+		$imageURL = dirname(__FILE__).$imageShortURL;
 		/*
 		$image = new Image('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 		$text1 = new Text($text, 3, 25);
@@ -2889,7 +2890,7 @@ function processMessage($message) {
 		//$text = "This is a sunset!";
 
 		// Print Text On Image
-		imagettftext($jpg_image, 125, 0, 475, 200, $textColor, $font_path, $text);
+		imagettftext($jpg_image, 32, 0, 475, 200, $textColor, $font_path, $text);
 
 		// Send Image to Browser
 		imagejpeg($jpg_image, $imageURL);
@@ -2939,9 +2940,9 @@ function processMessage($message) {
 		
 		//$target_url = 'http://127.0.0.1/accept.php';
         //This needs to be the full path to the file you want to send.
-		$fullpath = dirname(__FILE__)."/img/becquer_1.jpg";
+		//$fullpath = dirname(__FILE__)."/img/becquer_1.jpg";
 		//$file_name_with_full_path = realpath('/img/becquer_1.jpg');
-		$file_name_with_full_path = realpath($fullpath);
+		$file_name_with_full_path = realpath($imageURL);
         /* curl will accept an array here too.
          * Many examples I found showed a url-encoded string instead.
          * Take note that the 'key' in the array will be the key that shows up in the

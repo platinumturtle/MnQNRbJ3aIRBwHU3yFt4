@@ -2863,6 +2863,8 @@ function processMessage($message) {
 		$totalEOL = substr_count($text, PHP_EOL);
 		//error_log($totalRows." LINEAS");
 		if($totalEOL < 7) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
 			$text = $text.PHP_EOL.PHP_EOL."-Gustavo Adolfo Bécquer";
 			$imageURL = rand(0,9);
 		//$imageURL = 1;
@@ -2979,6 +2981,8 @@ function processMessage($message) {
 		// Clear Memory
 			imagedestroy($jpg_image);
 		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
 		}
   

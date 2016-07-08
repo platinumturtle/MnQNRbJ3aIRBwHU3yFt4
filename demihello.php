@@ -2859,7 +2859,9 @@ function processMessage($message) {
 		$text = str_replace("!becker", "!becquer", $text);
 		$start = strpos(strtolower($text), "!becquer") + 9;
 		$text = substr($text, $start);
-		$text = wordwrap($text, 28, "\n", false);
+		$text = wordwrap($text, 26, "\n", false);
+		$totalRows = substr_count($text, '\n');
+		error_log($totalRows." LINEAS");
 		$text = $text.PHP_EOL.PHP_EOL."-Gustavo Adolfo Bécquer";
 		$imageURL = rand(0,9);
 		//$imageURL = 1;
@@ -2878,6 +2880,7 @@ function processMessage($message) {
 		$image->addText($text1);
 		$image->render($imageURL);*/
 		
+// 6 enters
 
 		header('Content-type: image/jpeg');
 		$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');

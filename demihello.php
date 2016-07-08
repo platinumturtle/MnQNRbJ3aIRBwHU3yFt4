@@ -2890,7 +2890,7 @@ function processMessage($message) {
 		//$text = "This is a sunset!";
 
 		// Print Text On Image
-		imagettftext($jpg_image, 32, 0, 475, 200, $textColor, $font_path, $text);
+		imagettftext($jpg_image, 28, 0, 475, 200, $textColor, $font_path, $text);
 
 		// Send Image to Browser
 		imagejpeg($jpg_image, $imageURL);

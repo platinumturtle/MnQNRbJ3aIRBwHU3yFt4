@@ -2891,7 +2891,8 @@ function processMessage($message) {
 		imagettftext($jpg_image, 25, 0, 75, 300, $textColor, $font_path, $text);
 
 		// Send Image to Browser
-		imagejpeg($jpg_image, $imageURL);
+		//imagejpeg($jpg_image, $imageURL);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'photo' => imagejpeg($jpg_image)));
 
 		// Clear Memory
 		imagedestroy($jpg_image);

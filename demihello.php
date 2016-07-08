@@ -2860,7 +2860,9 @@ function processMessage($message) {
 		$start = strpos(strtolower($text), "!becquer") + 9;
 		$text = substr($text, $start);
 		$text = $text.PHP_EOL.PHP_EOL."–Gustavo Adolfo Bécquer";
-		
+		$imageURL = rand(0,9);
+		$imageURL = "https://demisuke-kamigram.rhcloud.com/img/becquer_".$imageURL.".jpg";
+		/*
 		$image = new Image('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 		$text1 = new Text($text, 3, 25);
 		$text1->align = 'left';
@@ -2871,9 +2873,29 @@ function processMessage($message) {
 		$text1->startX = 40;
 		$text1->startY = 40;
 		$image->addText($text1);
-		$imageURL = rand(0,9);
-		$imageURL = "https://demisuke-kamigram.rhcloud.com/img/becquer_".$imageURL.".jpg";
-		$image->render($imageURL);
+		$image->render($imageURL);*/
+		
+
+
+		$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
+
+		$textColor = imagecolorallocate($jpg_image, 63, 63, 63);
+
+		// Set Path to Font File
+		$font_path = 'https://demisuke-kamigram.rhcloud.com/img/handwritting.ttf';
+
+		// Set Text to Be Printed On Image
+		//$text = "This is a sunset!";
+
+		// Print Text On Image
+		imagettftext($jpg_image, 25, 0, 75, 300, $textColor, $font_path, $text);
+
+		// Send Image to Browser
+		imagejpeg($jpg_image, $imageURL);
+
+		// Clear Memory
+		imagedestroy($jpg_image);
+  
 		
 	} else if (strpos($text, "%GETSONG%") !== false) {
 		$text = substr($text,9);
@@ -3629,7 +3651,7 @@ class spoiler {
 
 
 
-
+/*
 
 class Text
 {
@@ -3782,7 +3804,7 @@ class Image
 
 
 
-
+*/
 
 
 

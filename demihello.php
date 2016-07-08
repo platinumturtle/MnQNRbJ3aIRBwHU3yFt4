@@ -2876,7 +2876,7 @@ function processMessage($message) {
 		$image->render($imageURL);*/
 		
 
-
+		header('Content-type: image/jpeg');
 		$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 
 		$textColor = imagecolorallocate($jpg_image, 63, 63, 63);

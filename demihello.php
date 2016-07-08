@@ -626,12 +626,9 @@ function debugMode($message) {
 			$debugText = $debugText."\n"; 
 		}
 	}
-	if (isset($message['callback_query'])) { // kkkkkkkkkkkkkkk
-		$dump = var_dump($message['callback_query']);
-		$debugText = $debugText.$dump;	
-		//$debugText = $debugText."MessageID: ";	  
-		//$debugText = $debugText.$message['message_id'];	 
-		//$debugText = $debugText."\n"; 
+	if (isset($message['callback_query'])) {
+		//$dump = var_dump($message['callback_query']);
+		//$debugText = $debugText.$dump;	
 	}
 	$debugText = $debugText."\n"; 
 	fwrite($debugFile, $debugText);
@@ -3410,17 +3407,18 @@ if (isset($update["message"])) {
 }else if(isset($update["callback_query"])) {
 	debugMode($update);
 	if(isset($update["callback_query"]['from']['username'])) {
-	$logname = $update["callback_query"]['from']['username'];
+		$logname = $update["callback_query"]['from']['username'];
 	} else if (isset($update["callback_query"]['from']['first_name'])) {
-	$logname = $update["callback_query"]['from']['first_name'];
+		$logname = $update["callback_query"]['from']['first_name'];
 	} else {
-	$logname = "ID".$update["callback_query"]['from']['id'];
+		$logname = "ID".$update["callback_query"]['from']['id'];
 	}
 	error_log($logname." created a spoiler.");
 	$callback = $update["callback_query"];
 	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
-	$message = $callback['data'];
+	$message = "Mensaje de ".substr($callback['message'], 1, strpos(strtolower($callback['message']), " tiene un secreto"))." para ".$logname.":".PHP_EOL;
+	$message = $message.$callback['data'];
 	//$prueba = var_dump($message);
 	//error_log($prueba);
 	//$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
@@ -3434,9 +3432,9 @@ if (isset($update["message"])) {
 		//$result = substr($callback['data'], $start);
 		//$result = substr($callback['message'], $start);
 		//$result = ltrim($result);
-	if($message == "") {
-		$message = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
-	}
+	//if($message == "") {
+	//	$message = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
+	//}
 	//} else {
 	//	$result = $callback['data'];
 	//}
@@ -3460,8 +3458,11 @@ function inlineOptions($text, $username) {
 	} else {
 		$hiddenText = $text;
 	}
+	if($hiddenText == "") {
+		$hiddenText = $username." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
+	}
 	$hiddenText = rtrim(ltrim($hiddenText));
-	$spoilerText = $spoilerText.PHP_EOL.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
+	//$spoilerText = $spoilerText.PHP_EOL.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
 	$descriptionText = "Se enviará el texto oculto (";
 	if(strlen($hiddenText) > 64) {
 		$descriptionText = $descriptionText."se recortará el mensaje).";

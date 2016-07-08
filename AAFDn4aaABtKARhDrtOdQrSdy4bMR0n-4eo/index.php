@@ -211,7 +211,7 @@ function randomSentence() {
 						"Rinoceronte",	"Perineo",
 						"Papelera",		"Triciclo",
 						"Bombilla",		"Gominola",
-						"Plástico",
+						"Plástico",		"Dinosaurio",
 						"Coliflor",
 						"Meteorito",
 						"Puercoespín",

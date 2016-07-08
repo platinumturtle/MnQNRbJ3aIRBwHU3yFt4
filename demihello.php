@@ -3662,7 +3662,7 @@ class Text
         }
     }
 
-    public function Image ($image)
+    public function renderToImage(Image $image)
     {
         // Allocate words to lines
         $this->distributeText();

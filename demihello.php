@@ -2862,7 +2862,7 @@ function processMessage($message) {
 		$text = $text.PHP_EOL.PHP_EOL."–Gustavo Adolfo Bécquer";
 		$imageURL = rand(0,9);
 		//$imageURL = "https://demisuke-kamigram.rhcloud.com/img/becquer_".$imageURL.".jpg";
-		$imageURL = "becquer_".$imageURL.".jpg";
+		$imageURL = dirname(__FILE__)."/img/becquer_".$imageURL.".jpg";
 		/*
 		$image = new Image('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 		$text1 = new Text($text, 3, 25);

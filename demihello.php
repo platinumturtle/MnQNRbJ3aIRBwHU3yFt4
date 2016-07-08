@@ -2861,7 +2861,8 @@ function processMessage($message) {
 		$text = substr($text, $start);
 		$text = $text.PHP_EOL.PHP_EOL."–Gustavo Adolfo Bécquer";
 		$imageURL = rand(0,9);
-		$imageURL = "https://demisuke-kamigram.rhcloud.com/img/becquer_".$imageURL.".jpg";
+		//$imageURL = "https://demisuke-kamigram.rhcloud.com/img/becquer_".$imageURL.".jpg";
+		$imageURL = "becquer_".$imageURL.".jpg";
 		/*
 		$image = new Image('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 		$text1 = new Text($text, 3, 25);
@@ -2891,8 +2892,8 @@ function processMessage($message) {
 		imagettftext($jpg_image, 25, 0, 75, 300, $textColor, $font_path, $text);
 
 		// Send Image to Browser
-		//imagejpeg($jpg_image, $imageURL);
-		apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => imagejpeg($jpg_image)));
+		imagejpeg($jpg_image, $imageURL);
+		apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => $jpg_image));
 
 		// Clear Memory
 		imagedestroy($jpg_image);

@@ -3473,6 +3473,7 @@ function inlineOptions($text, $username) {
 		$left = 64 - strlen($hiddenText);
 		$descriptionText = $descriptionText.$left." caracteres restantes).";
 	}
+	$hiddenText = mb_strimwidth($hiddenText, 0, 64);
 	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];
 	$buttons[] = [
 		"type" => "article",

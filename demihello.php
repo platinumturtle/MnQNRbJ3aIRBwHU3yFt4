@@ -2880,10 +2880,10 @@ function processMessage($message) {
 		header('Content-type: image/jpeg');
 		$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
 
-		$textColor = imagecolorallocate($jpg_image, 125, 0, 125);
+		$textColor = imagecolorallocate($jpg_image, 63,63, 63);
 
 		// Set Path to Font File
-		$font_path = dirname(__FILE__)."/img/segoeprint.ttf";
+		$font_path = dirname(__FILE__)."/img/handwritting.ttf";
 
 		// Set Text to Be Printed On Image
 		//$text = "This is a sunset!";
@@ -2898,9 +2898,9 @@ function processMessage($message) {
 		//$codif = base64_encode($text);
 		//$text = rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
 		//error_log($text);
-		
-		$photo = new CURLFile(realpath("/img/becquer_1.jpg"));
 		/*
+		$photo = new CURLFile(realpath("/img/becquer_1.jpg"));
+		
 		$ch = curl_init(); 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 			"Content-Type:multipart/form-data"
@@ -2911,7 +2911,29 @@ function processMessage($message) {
 
 
 
-		apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => $photo));
+		$bot_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/";
+		$url        = $bot_url . "sendPhoto?chat_id=" . $chat_id ;
+
+		$post_fields = array('chat_id'   => $chat_id,
+							'photo' => new CURLFile(realpath("/img/becquer_1.jpg"))
+						);
+
+		$ch = curl_init(); 
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		"Content-Type:multipart/form-data"
+		));
+		curl_setopt($ch, CURLOPT_URL, $url); 
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields); 
+		$output = curl_exec($ch);
+		
+		
+		
+		
+		
+		
+		
+		//apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => ));
 
 		// Clear Memory
 		imagedestroy($jpg_image);

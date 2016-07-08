@@ -3385,11 +3385,11 @@ if (isset($update["message"])) {
 		checkUsername($update["inline_query"]['from']['username']);
 	}
 	if(isset($update["inline_query"]['from']['username'])) {
-	$logname = $update["inline_query"]['from']['username'];
+		$logname = $update["inline_query"]['from']['username'];
 	} else if (isset($update["inline_query"]['from']['first_name'])) {
-	$logname = $update["inline_query"]['from']['first_name'];
+		$logname = $update["inline_query"]['from']['first_name'];
 	} else {
-	$logname = "ID".$update["inline_query"]['from']['id'];
+		$logname = "ID".$update["inline_query"]['from']['id'];
 	}
 	error_log($logname." starts inline query: ".$update["inline_query"]["query"]);
 	$queryId = $update["inline_query"]["id"];
@@ -3417,7 +3417,8 @@ if (isset($update["message"])) {
 	$callback = $update["callback_query"];
 	$query_id = $update["callback_query"]["id"];
 	$chat_id = $callback['from']['id'];
-	$message = "Mensaje de ".substr($callback['message'], 1, strpos(strtolower($callback['message']), " tiene un secreto"))." para ".$logname.":".PHP_EOL;
+	error_log($callback['message']['text']." - ".strpos(strtolower($callback['message']['text']), " tiene un secreto")." - ".substr($callback['message']['text'], 1, strpos(strtolower($callback['message']['text']), " tiene un secreto")));
+	$message = "Mensaje de ".substr($callback['message']['text'], 1, strpos(strtolower($callback['message']['text']), " tiene un secreto"))." para ".$logname.":".PHP_EOL;
 	$message = $message.$callback['data'];
 	//$prueba = var_dump($message);
 	//error_log($prueba);
@@ -3458,9 +3459,6 @@ function inlineOptions($text, $username) {
 	} else {
 		$hiddenText = $text;
 	}
-	if($hiddenText == "") {
-		$hiddenText = $username." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
-	}
 	$hiddenText = rtrim(ltrim($hiddenText));
 	//$spoilerText = $spoilerText.PHP_EOL.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
 	$descriptionText = "Se enviará el texto oculto (";
@@ -3473,6 +3471,9 @@ function inlineOptions($text, $username) {
 	} else {
 		$left = 64 - strlen($hiddenText);
 		$descriptionText = $descriptionText.$left." caracteres restantes).";
+	}
+	if($hiddenText == "") {
+		$hiddenText = "Mi estupidez me ha hecho enviar el mensaje en blanco.";
 	}
 	$hiddenText = mb_strimwidth($hiddenText, 0, 64);
 	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];

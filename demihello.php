@@ -2992,7 +2992,7 @@ function processMessage($message) {
 		
 	} else if (strpos(strtolower($text), "!cita") !== false) {
 		error_log($logname." triggered: !cita.");
-		$start = strpos(strtolower($text), "!cita") + 5;
+		$start = strpos(strtolower($text), "!cita") + 4;
 		$text = substr($text, $start);
 		$text = ltrim(rtrim($text));
 		$userQuote = "";
@@ -3023,7 +3023,7 @@ function processMessage($message) {
 				header('Content-type: image/png');
 				$png_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/cita.png');
 				$textColor = imagecolorallocate($png_image, 255, 255, 255);
-				$font_path = dirname(__FILE__)."/img/chaparral.ttf";
+				$font_path = dirname(__FILE__)."/img/cambria.ttf";
 				imagettftext($png_image, 28, 0, 100, $YPos, $textColor, $font_path, $text);
 				imagepng($png_image, $imageURL);
 				$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";

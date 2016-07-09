@@ -2999,17 +2999,18 @@ function processMessage($message) {
 		$text = ltrim(rtrim($text));
 		error_log($text);
 		$userQuote = "";
-		if(strpos($text, "(") == 0) {
+		if(strpos($text, "(") === 0) {
+			error_log("viene con premio");
 			$length = strpos($text, ")");
-			$userQuote = substr($text, 1, $length);
+			$userQuote = substr($text, 1, $length - 1);
 			$text = substr($text, $length + 1);
 			$userQuote = ltrim(rtrim($userQuote));
 		}
-		error_log($text);
+		error_log($text."OJO");
 		$text = ltrim(rtrim($text));
 		error_log($text);
 		if(strlen($text) > 0) {
-			$text = wordwrap($text, 28, "\n", false);
+			//$text = wordwrap($text, 28, "\n", false);
 			$text = '“'.$text.'”';
 		error_log($text);
 			$totalEOL = substr_count($text, PHP_EOL);
@@ -3021,7 +3022,7 @@ function processMessage($message) {
 					$YPos = $YPos - (30 * ($totalEOL - 3));
 				}
 				if(strlen($userQuote) > 0) {
-					$text = $text.PHP_EOL."-".$userQuote;
+					$text = $text.PHP_EOL."- ".$userQuote;
 				}
 				$imageURL = rand(0,9);
 				$imageShortURL = "/img/cita_".$imageURL.".png";
@@ -3030,7 +3031,7 @@ function processMessage($message) {
 				$png_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/cita.png');
 				$textColor = imagecolorallocate($png_image, 255, 255, 255);
 				$font_path = dirname(__FILE__)."/img/journal.ttf";
-				imagettftext($png_image, 28, 0, 100, $YPos, $textColor, $font_path, $text);
+				imagettftext($png_image, 32, 0, 100, $YPos, $textColor, $font_path, $text);
 				imagepng($png_image, $imageURL);
 				$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 				$file_name_with_full_path = realpath($imageURL);

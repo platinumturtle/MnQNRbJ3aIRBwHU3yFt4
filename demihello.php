@@ -2993,26 +2993,19 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!cita") !== false) {
 		error_log($logname." triggered: !cita.");
 		$start = strpos(strtolower($text), "!cita") + 5;
-		error_log($text);
 		$text = substr($text, $start);
-		error_log($text);
 		$text = ltrim(rtrim($text));
-		error_log($text);
 		$userQuote = "";
 		if(strpos($text, "(") === 0) {
-			error_log("viene con premio");
 			$length = strpos($text, ")");
 			$userQuote = substr($text, 1, $length - 1);
 			$text = substr($text, $length + 1);
 			$userQuote = ltrim(rtrim($userQuote));
 		}
-		error_log($text."OJO");
 		$text = ltrim(rtrim($text));
-		error_log($text);
 		if(strlen($text) > 0) {
-			//$text = wordwrap($text, 28, "\n", false);
+			$text = wordwrap($text, 35, "\n", false);
 			$text = '“'.$text.'”';
-		error_log($text);
 			$totalEOL = substr_count($text, PHP_EOL);
 			if($totalEOL < 9) {
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));

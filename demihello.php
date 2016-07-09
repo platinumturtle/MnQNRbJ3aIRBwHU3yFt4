@@ -3773,9 +3773,11 @@ if (isset($update["message"])) {
 	$callback = $update["callback_query"];
 	if($callback['data'] == "FLIPCOINqGq3Z6yf1guhfgFdwkzt") {
 		error_log($logname." flipped a coin.");
-		apiRequestJson("editMessageText", ["message_id" => $callback['message']['message_id'], "text" => "*Pingas*", 'parse_mode' => "Markdown",]);
+		error_log($callback['message']['chat']['id']);
+		error_log($callback['message']['message_id']);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*Pingas*", 'parse_mode' => "Markdown",]);
 		sleep(1);
-		apiRequestJson("editMessageText", ["message_id" => $callback['message']['message_id'], "text" => "*Manolo*", 'parse_mode' => "Markdown",]);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*Manolo*", 'parse_mode' => "Markdown",]);
 	} else {
 		error_log($logname." clicked on a spoiler button.");
 		$query_id = $update["callback_query"]["id"];

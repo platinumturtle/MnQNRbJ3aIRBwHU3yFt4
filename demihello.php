@@ -2967,7 +2967,7 @@ function processMessage($message) {
 		$time = time() - 60;
 		if($time >= $flip) {
 			$time = $time + 60;
-			$query = "INSERT INTO `flipcoin` (`user_id`, `group_id`, `last_flip`) VALUES ('".$message['from']['id']."', '".$chat_id."', '".$time."')";
+			$query = "UPDATE `flipcoin` SET `user_id` = '".$message['from']['id']."', `group_id` = '".$chat_id."', `last_flip` = '".$time."' WHERE `fc_id` = '01'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			mysql_close($link);
 			$keyboardButton = (object) ["text" => "Girar la moneda", "callback_data" => "FLIPCOINqGq3Z6yf1guhfgFdwkzt"];

@@ -3774,8 +3774,8 @@ if (isset($update["message"])) {
 	if($callback['data'] == "FLIPCOINqGq3Z6yf1guhfgFdwkzt") {
 		error_log($logname." flipped a coin.");
 		$face = rand(1,2);
-		$loops = rand(3,5);
-		for(;$loops>0;$loops--) {
+		//$loops = rand(3,5);
+		//for(;$loops>0;$loops--) {
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌕*", 'parse_mode' => "Markdown",]);
 			usleep(100000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌖*", 'parse_mode' => "Markdown",]);
@@ -3792,7 +3792,7 @@ if (isset($update["message"])) {
 			usleep(100000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌔*", 'parse_mode' => "Markdown",]);
 			usleep(100000);
-		}
+		//}
 		if($face == 1) {
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌝 ¡Ha salido cara!*", 'parse_mode' => "Markdown",]);
 		}else {

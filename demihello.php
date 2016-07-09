@@ -1252,7 +1252,7 @@ function inlineOptions($text, $username) {
 		$hiddenText = "Mi estupidez me ha hecho enviar el mensaje en blanco.";
 	}
 	$hiddenText = mb_strimwidth($hiddenText, 0, 64);
-	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];
+	$keyboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",
@@ -1265,7 +1265,7 @@ function inlineOptions($text, $username) {
 		"thumb_height" => 100,
 		"reply_markup" => [
 			"inline_keyboard" => [[
-				$keboardButton,
+				$keyboardButton,
 			]] 
 		], 
 	];
@@ -1564,6 +1564,7 @@ function containsCommand($text) {
 						"!nick",
 						"!info",
 						"!bequer",
+						"!moneda",
 						"!becker",
 						"!becquer",
 						"!historia"
@@ -2495,7 +2496,7 @@ function getQuote($text, $chat_id) {
 		if($totalEOL < 7) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
 			usleep(250000);
-			$YPos = 250;
+			$YPos = 220;
 			if($totalEOL > 3){
 				$YPos = $YPos - (40 * ($totalEOL - 3));
 			}
@@ -2530,7 +2531,7 @@ function getQuote($text, $chat_id) {
 	} else {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(250000);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto.*"));
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
 	}
 }
 
@@ -2955,6 +2956,10 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!ping") !== false) {
 		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));
+	} else if (strpos(strtolower($text), "!moneda") !== false) {
+		error_log($logname." triggered: !moneda.");
+		$keyboardButton = (object) ["text" => "Girar la moneda", "callback_data" => "FLIPCOINqGq3Z6yf1guhfgFdwkzt"];
+		apiRequestJson("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¿Cara o cruz? ¡Piensa en un resultado y pulsa el botón para girar la moneda!*", "reply_markup" => ["inline_keyboard" => [[$keyboardButton,]] ));
 	} else if (strpos(strtolower($text), "!temazo") !== false || strpos(strtolower($text), "!cancion") !== false || strpos(strtolower($text), "!canción") !== false) {
 		error_log($logname." triggered: !cancion.");
 		$song = getSong();
@@ -3765,52 +3770,59 @@ if (isset($update["message"])) {
 	} else {
 		$logname = "ID".$update["callback_query"]['from']['id'];
 	}
-	error_log($logname." clicked on a spoiler button.");
 	$callback = $update["callback_query"];
-	$query_id = $update["callback_query"]["id"];
-	$chat_id = $callback['from']['id'];
-	//if(isset($callback['from']['username']) && strlen($callback['from']['username']) > 0) {
-	//	$senderName = $callback['from']['username'];
-	//} else if(isset($callback['from']['first_name']) && strlen($callback['from']['first_name']) > 0) {
-	//	$senderName = $callback['from']['first_name'];
-	//} else {
-	//	$senderName = "";
-	//}
-	//$start = strpos($senderName, "¡");
-	//$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
-	//$str = var_export($callback, true);
-	//error_log($str);
-	//$str2 = json_encode($callback);
-	//error_log($str2);
-	//$senderName = substr($senderName, $start, $length);
-	//$message = "Mensaje";
-	//if(strlen($senderName) > 0) {
-	//	$message = $message." de ".$senderName;
-	//}
-	$message = "Mensaje oculto para ".$logname.":".PHP_EOL.PHP_EOL;
-	$message = $message.$callback['data'];
-	//$prueba = var_dump($message);
-	//error_log($prueba);
-	//$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
-	//error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
-	//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
-	//$alert = "Desvelando spoiler...";
-	//if(strpos(strtolower($message), "spoiler:") !== false) {
-		//$start = strpos(strtolower($callback['data']), "spoiler:");
-		//$start = strpos(strtolower($callback['message']), "spoiler:");
-		//$start = $start + 8;
-		//$result = substr($callback['data'], $start);
-		//$result = substr($callback['message'], $start);
-		//$result = ltrim($result);
-	//if($message == "") {
-	//	$message = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
-	//}
-	//} else {
-	//	$result = $callback['data'];
-	//}
-	apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "show_alert" => TRUE));	
-	//usleep(500000);	
-	//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));
+	if($callback['data'] == "FLIPCOINqGq3Z6yf1guhfgFdwkzt") {
+		error_log($logname." flipped a coin.");
+		apiRequestJson("editMessageText", ["message_id" => $callback['message']['message_id'], "text" => "*Pingas*", 'parse_mode' => "Markdown",]);
+		sleep(1);
+		apiRequestJson("editMessageText", ["message_id" => $callback['message']['message_id'], "text" => "*Manolo*", 'parse_mode' => "Markdown",]);
+	} else {
+		error_log($logname." clicked on a spoiler button.");
+		$query_id = $update["callback_query"]["id"];
+		$chat_id = $callback['from']['id'];
+		//if(isset($callback['from']['username']) && strlen($callback['from']['username']) > 0) {
+		//	$senderName = $callback['from']['username'];
+		//} else if(isset($callback['from']['first_name']) && strlen($callback['from']['first_name']) > 0) {
+		//	$senderName = $callback['from']['first_name'];
+		//} else {
+		//	$senderName = "";
+		//}
+		//$start = strpos($senderName, "¡");
+		//$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
+		//$str = var_export($callback, true);
+		//error_log($str);
+		//$str2 = json_encode($callback);
+		//error_log($str2);
+		//$senderName = substr($senderName, $start, $length);
+		//$message = "Mensaje";
+		//if(strlen($senderName) > 0) {
+		//	$message = $message." de ".$senderName;
+		//}
+		$message = "Mensaje oculto para ".$logname.":".PHP_EOL.PHP_EOL;
+		$message = $message.$callback['data'];
+		//$prueba = var_dump($message);
+		//error_log($prueba);
+		//$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
+		//error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
+		//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
+		//$alert = "Desvelando spoiler...";
+		//if(strpos(strtolower($message), "spoiler:") !== false) {
+			//$start = strpos(strtolower($callback['data']), "spoiler:");
+			//$start = strpos(strtolower($callback['message']), "spoiler:");
+			//$start = $start + 8;
+			//$result = substr($callback['data'], $start);
+			//$result = substr($callback['message'], $start);
+			//$result = ltrim($result);
+		//if($message == "") {
+		//	$message = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
+		//}
+		//} else {
+		//	$result = $callback['data'];
+		//}
+		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "show_alert" => TRUE));	
+		//usleep(500000);	
+		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));
+	}
 }
 
 

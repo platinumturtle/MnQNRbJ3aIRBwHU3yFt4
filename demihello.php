@@ -2992,9 +2992,12 @@ function processMessage($message) {
 		
 	} else if (strpos(strtolower($text), "!cita") !== false) {
 		error_log($logname." triggered: !cita.");
-		$start = strpos(strtolower($text), "!cita") + 4;
+		$start = strpos(strtolower($text), "!cita") + 5;
+		error_log($text);
 		$text = substr($text, $start);
+		error_log($text);
 		$text = ltrim(rtrim($text));
+		error_log($text);
 		$userQuote = "";
 		if(strpos($text, "(") == 0) {
 			$length = strpos($text, ")");
@@ -3002,10 +3005,13 @@ function processMessage($message) {
 			$text = substr($text, $length + 1);
 			$userQuote = ltrim(rtrim($userQuote));
 		}
+		error_log($text);
 		$text = ltrim(rtrim($text));
+		error_log($text);
 		if(strlen($text) > 0) {
 			$text = wordwrap($text, 28, "\n", false);
 			$text = '“'.$text.'”';
+		error_log($text);
 			$totalEOL = substr_count($text, PHP_EOL);
 			if($totalEOL < 9) {
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
@@ -3023,7 +3029,7 @@ function processMessage($message) {
 				header('Content-type: image/png');
 				$png_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/cita.png');
 				$textColor = imagecolorallocate($png_image, 255, 255, 255);
-				$font_path = dirname(__FILE__)."/img/cambria.ttf";
+				$font_path = dirname(__FILE__)."/img/journal.ttf";
 				imagettftext($png_image, 28, 0, 100, $YPos, $textColor, $font_path, $text);
 				imagepng($png_image, $imageURL);
 				$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";

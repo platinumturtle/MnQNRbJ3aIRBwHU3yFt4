@@ -2402,6 +2402,64 @@ function tellStory($part,$name) {
 	return $story;
 }
 
+function getQuote($text, $chat_id) {
+	$start = strpos(strtolower($text), "!cita") + 5;
+	$text = substr($text, $start);
+	$text = ltrim(rtrim($text));
+	$userQuote = "";
+	if(strpos($text, "(") === 0) {
+		$length = strpos($text, ")");
+		$userQuote = substr($text, 1, $length - 1);
+		$text = substr($text, $length + 1);
+		$userQuote = ltrim(rtrim($userQuote));
+	}
+	$text = ltrim(rtrim($text));
+	if(strlen($text) > 0) {
+		$text = wordwrap($text, 45, "\n", false);
+		$text = '“'.$text.'”';
+		$totalEOL = substr_count($text, PHP_EOL);
+		if($totalEOL < 7) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$YPos = 250;
+			if($totalEOL > 3){
+				$YPos = $YPos - (30 * ($totalEOL - 3));
+			}
+			if(strlen($userQuote) > 0) {
+				$text = $text.PHP_EOL."- ".$userQuote;
+			}
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/cita_".$imageURL.".png";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/png');
+			$png_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/cita.png');
+			$textColor = imagecolorallocate($png_image, 255, 255, 255);
+			$font_path = dirname(__FILE__)."/img/journal.ttf";
+			imagettftext($png_image, 32, 0, 100, $YPos, $textColor, $font_path, $text);
+			imagepng($png_image, $imageURL);
+			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+			$file_name_with_full_path = realpath($imageURL);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			imagedestroy($png_image);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+	} else {
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto.*"));
+	}
+}
+
 function commandsList($send_id) {
 	$commands = 
 				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
@@ -2992,6 +3050,8 @@ function processMessage($message) {
 		
 	} else if (strpos(strtolower($text), "!cita") !== false) {
 		error_log($logname." triggered: !cita.");
+		getQuote($text, $chat_id);
+		/*
 		$start = strpos(strtolower($text), "!cita") + 5;
 		$text = substr($text, $start);
 		$text = ltrim(rtrim($text));
@@ -3004,10 +3064,10 @@ function processMessage($message) {
 		}
 		$text = ltrim(rtrim($text));
 		if(strlen($text) > 0) {
-			$text = wordwrap($text, 35, "\n", false);
+			$text = wordwrap($text, 45, "\n", false);
 			$text = '“'.$text.'”';
 			$totalEOL = substr_count($text, PHP_EOL);
-			if($totalEOL < 9) {
+			if($totalEOL < 7) {
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
 				usleep(250000);
 				$YPos = 250;
@@ -3047,6 +3107,7 @@ function processMessage($message) {
 			usleep(250000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto.*"));
 		}
+		*/
 	} else if (strpos($text, "%GETSONG%") !== false) {
 		$text = substr($text,9);
 		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));

@@ -1221,6 +1221,80 @@ function rollDice($id) {
 	apiRequest("sendMessage", array('chat_id' => $id, 'parse_mode' => "Markdown", "text" => "*".$result[$n]."*"));
 }
 
+function inlineOptions($text, $username) {
+	$boldText = "<b>".$text."</b>";
+	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
+	$spoilerText = "<b>¡".$username." tiene un secreto que revelarte!</b>";
+	if(strlen($text) > 10 && strpos(strtolower($text), "spoiler:") !== false) {
+		$final = strpos(strtolower($text), "spoiler:");
+		$question = substr($text, 0, $final);
+		$spoilerText = $spoilerText.PHP_EOL."<b>Además añade lo siguiente:</b>".PHP_EOL."<i>".$question."</i>";
+		//$start = strpos(strtolower($callback['message']), "spoiler:");
+		$start = $final + 8;
+		$hiddenText = substr($text, $start);
+	} else {
+		$hiddenText = $text;
+	}
+	$hiddenText = rtrim(ltrim($hiddenText));
+	//$spoilerText = $spoilerText.PHP_EOL.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
+	$descriptionText = "Se enviará el texto oculto (";
+	if(strlen($hiddenText) > 64) {
+		$descriptionText = $descriptionText."se recortará el mensaje).";
+	} else if(strlen($hiddenText) == 64) {
+		$descriptionText = $descriptionText."tamaño al máximo).";
+	} else if(strlen($hiddenText) == 63) {
+		$descriptionText = $descriptionText."1 carácter restante).";
+	} else {
+		$left = 64 - strlen($hiddenText);
+		$descriptionText = $descriptionText.$left." caracteres restantes).";
+	}
+	if($hiddenText == "") {
+		$hiddenText = "Mi estupidez me ha hecho enviar el mensaje en blanco.";
+	}
+	$hiddenText = mb_strimwidth($hiddenText, 0, 64);
+	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];
+	$buttons[] = [
+		"type" => "article",
+		"id" => "0",
+		"title" => "Enviar spoiler",
+		"description" => $descriptionText,
+		"message_text" => $spoilerText,
+		"parse_mode" => "HTML",
+		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_spoiler.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
+		"reply_markup" => [
+			"inline_keyboard" => [[
+				$keboardButton,
+			]] 
+		], 
+	];
+    $buttons[] = [
+		"type" => "article",
+		"id" => "1",
+		"title" => "Enviar en negrita",
+		"description" => "Se enviará el texto en negrita.",
+		"message_text" => $boldText,
+		"parse_mode" => "HTML",
+		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_bold.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
+    ];
+	$buttons[] = [
+		"type" => "article",
+		"id" => "2",
+		"title" => "Enviar en azul",
+		"description" => "El texto enviado parecerá un enlace.",
+		"message_text" => $blueText,
+		"parse_mode" => "HTML",
+		"disable_web_page_preview" => TRUE,
+		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_link.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
+    ];
+	return $buttons;	
+}
+
 function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
@@ -2423,7 +2497,7 @@ function getQuote($text, $chat_id) {
 			usleep(250000);
 			$YPos = 250;
 			if($totalEOL > 3){
-				$YPos = $YPos - (30 * ($totalEOL - 3));
+				$YPos = $YPos - (40 * ($totalEOL - 3));
 			}
 			if(strlen($userQuote) > 0) {
 				$text = $text.PHP_EOL."- ".$userQuote;
@@ -3740,79 +3814,6 @@ if (isset($update["message"])) {
 }
 
 
-function inlineOptions($text, $username) {
-	$boldText = "<b>".$text."</b>";
-	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
-	$spoilerText = "<b>¡".$username." tiene un secreto que revelarte!</b>";
-	if(strlen($text) > 10 && strpos(strtolower($text), "spoiler:") !== false) {
-		$final = strpos(strtolower($text), "spoiler:");
-		$question = substr($text, 0, $final);
-		$spoilerText = $spoilerText.PHP_EOL."<b>Además añade lo siguiente:</b>".PHP_EOL."<i>".$question."</i>";
-		//$start = strpos(strtolower($callback['message']), "spoiler:");
-		$start = $final + 8;
-		$hiddenText = substr($text, $start);
-	} else {
-		$hiddenText = $text;
-	}
-	$hiddenText = rtrim(ltrim($hiddenText));
-	//$spoilerText = $spoilerText.PHP_EOL.PHP_EOL."<i>Pulsa el botón 'Desvelar spoiler' para descubrir qué oculta.</i>";
-	$descriptionText = "Se enviará el texto oculto (";
-	if(strlen($hiddenText) > 64) {
-		$descriptionText = $descriptionText."se recortará el mensaje).";
-	} else if(strlen($hiddenText) == 64) {
-		$descriptionText = $descriptionText."tamaño al máximo).";
-	} else if(strlen($hiddenText) == 63) {
-		$descriptionText = $descriptionText."1 carácter restante).";
-	} else {
-		$left = 64 - strlen($hiddenText);
-		$descriptionText = $descriptionText.$left." caracteres restantes).";
-	}
-	if($hiddenText == "") {
-		$hiddenText = "Mi estupidez me ha hecho enviar el mensaje en blanco.";
-	}
-	$hiddenText = mb_strimwidth($hiddenText, 0, 64);
-	$keboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];
-	$buttons[] = [
-		"type" => "article",
-		"id" => "0",
-		"title" => "Enviar spoiler",
-		"description" => $descriptionText,
-		"message_text" => $spoilerText,
-		"parse_mode" => "HTML",
-		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_spoiler.png",
-		"thumb_width" => 100,
-		"thumb_height" => 100,
-		"reply_markup" => [
-			"inline_keyboard" => [[
-				$keboardButton,
-			]] 
-		], 
-	];
-    $buttons[] = [
-		"type" => "article",
-		"id" => "1",
-		"title" => "Enviar en negrita",
-		"description" => "Se enviará el texto en negrita.",
-		"message_text" => $boldText,
-		"parse_mode" => "HTML",
-		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_bold.png",
-		"thumb_width" => 100,
-		"thumb_height" => 100,
-    ];
-	$buttons[] = [
-		"type" => "article",
-		"id" => "2",
-		"title" => "Enviar en azul",
-		"description" => "El texto enviado parecerá un enlace.",
-		"message_text" => $blueText,
-		"parse_mode" => "HTML",
-		"disable_web_page_preview" => TRUE,
-		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_link.png",
-		"thumb_width" => 100,
-		"thumb_height" => 100,
-    ];
-	return $buttons;	
-}
 /*
 function encryptSpoiler($text) {
 	$cc = $text;

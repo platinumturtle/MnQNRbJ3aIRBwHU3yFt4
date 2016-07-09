@@ -3777,13 +3777,13 @@ if (isset($update["message"])) {
 		//$loops = rand(3,5);
 		//for(;$loops>0;$loops--) {
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌕 La moneda se lanza.*", 'parse_mode' => "Markdown",]);
-			usleep(400000);
+			usleep(800000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌖 La moneda sube.*", 'parse_mode' => "Markdown",]);
-			usleep(400000);
+			usleep(800000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌗 La moneda sube.*", 'parse_mode' => "Markdown",]);
-			usleep(400000);
+			usleep(800000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌘 La moneda baja.*", 'parse_mode' => "Markdown",]);
-			usleep(400000);
+			usleep(800000);
 			//apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌑*", 'parse_mode' => "Markdown",]);
 			//usleep(100000);
 			//apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌒*", 'parse_mode' => "Markdown",]);
@@ -3795,13 +3795,13 @@ if (isset($update["message"])) {
 		//}
 		if($face == 1) {
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌑 La moneda baja.*", 'parse_mode' => "Markdown",]);
-			usleep(400000);
+			usleep(800000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌒 La moneda rebota.*", 'parse_mode' => "Markdown",]);
-			usleep(400000);
+			usleep(800000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌓 La moneda sube.*", 'parse_mode' => "Markdown",]);
-			usleep(400000);
+			usleep(800000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌔 La moneda baja.*", 'parse_mode' => "Markdown",]);
-			usleep(400000);
+			usleep(800000);
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌝 ¡Ha salido cara!*", 'parse_mode' => "Markdown",]);
 		}else {
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌚 ¡Ha salido cruz!*", 'parse_mode' => "Markdown",]);

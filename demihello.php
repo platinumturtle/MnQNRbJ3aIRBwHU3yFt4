@@ -1555,6 +1555,8 @@ function containsCommand($text) {
 						"!cancion",
 						"!canción",
 						"!video",
+						"!boton",
+						"!botón",
 						"!mensajes",
 						"!desactivame",
 						"!activame",
@@ -2975,6 +2977,25 @@ function processMessage($message) {
 		} else {
 			mysql_close($link);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Alguien está usando mi moneda y no me quedan más. Espera un minuto y usa !moneda de nuevo.*"));
+		}
+	} else if (strpos(strtolower($text), "!boton") !== false || strpos(strtolower($text), "!botón") !== false) {
+		error_log($logname." triggered: !boton.");
+		$bombTicket = rand(1,10);
+		$username = str_replace("@", "", $logname);
+		if($bombTicket == 9) {
+			$text = "*💀 ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+			usleep(100000);
+			// cambiar ID en DemisukeBot.
+			$gif = "BQADBAADQQcAApdgXwABZVaKL-av07AC";
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		} else {
+			$text = "*✅ ¡".$username." ha pulsado el botón y se ha salvado! 🍾*";
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 		}
 	} else if (strpos(strtolower($text), "!temazo") !== false || strpos(strtolower($text), "!cancion") !== false || strpos(strtolower($text), "!canción") !== false) {
 		error_log($logname." triggered: !cancion.");

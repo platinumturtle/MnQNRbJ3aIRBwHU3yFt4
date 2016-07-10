@@ -3377,7 +3377,7 @@ function processMessage($message) {
 				$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
-				if($row['last_flag'] != $currentTime) {				
+				if($row['last_flag'] != $currentTime) {
 					if (isset($message['from']['username'])) {
 						$name = $message['from']['username'];
 					} else if (isset($message['from']['first_name'])) {

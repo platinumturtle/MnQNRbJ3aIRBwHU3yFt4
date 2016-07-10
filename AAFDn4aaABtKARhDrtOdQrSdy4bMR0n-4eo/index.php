@@ -2351,7 +2351,7 @@ function processMessage($message) {
 									$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								} else {
-									error_log("Full inventory.");
+									error_log($logname." has full inventory.");
 									$checkMax = 1;
 									$text = "<b>🏴❌ ¡".$name." ha encontrado otra bandera, ¡pero ya tiene el inventario lleno!</b> 🚫";
 								}

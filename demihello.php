@@ -3489,7 +3489,7 @@ function processMessage($message) {
 										error_log("Trigger: Polefail.");
 					
 										mysql_free_result($result);
-										$query = "SELECT group_name, user_name FROM flagcapturetest WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+										$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 										$row = mysql_fetch_array($result);
 										$row = mysql_fetch_array($result);
@@ -3499,6 +3499,8 @@ function processMessage($message) {
 										}
 										$timeEmoji = timeEmoji($hour, 0);
 										$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+										$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
+
 										apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 										mysql_free_result($result);
 										mysql_close($link);

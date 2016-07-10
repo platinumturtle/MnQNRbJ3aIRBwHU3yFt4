@@ -1459,6 +1459,68 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	return $text;
 }
 
+function timeEmoji($time, $aHalf) {
+	if($aHalf == 0){
+		switch($time) {
+			case 1: return "1 🕐";
+					break;
+			case 2: return "2 🕑";
+					break;
+			case 3: return "3 🕒";
+					break;
+			case 4: return "4 🕓";
+					break;
+			case 5: return "5 🕔";
+					break;
+			case 6: return "6 🕕";
+					break;
+			case 7: return "7 🕖";
+					break;
+			case 8: return "8 🕗";
+					break;
+			case 9: return "9 🕘";
+					break;
+			case 10: return "10 🕙";
+					break;
+			case 11: return "11 🕚";
+					break;
+			case 12: return "12 🕛";
+					break;
+			default: return $time;
+					break;
+		}
+	} else {
+		switch($time) {
+			case 1: return "1:30 🕜";
+					break;
+			case 2: return "2:30 🕝";
+					break;
+			case 3: return "3:30 🕞";
+					break;
+			case 4: return "4:30 🕟";
+					break;
+			case 5: return "5:30 🕠";
+					break;
+			case 6: return "6:30 🕡";
+					break;
+			case 7: return "7:30 🕢";
+					break;
+			case 8: return "8:30 🕣";
+					break;
+			case 9: return "9:30 🕤";
+					break;
+			case 10: return "10:30 🕥";
+					break;
+			case 11: return "11:30 🕦";
+					break;
+			case 12: return "12:30 🕧";
+					break;
+			default: return $time;
+					break;
+		}
+	}
+}
+
 function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	//HTML Parse Mode
 	if($global == 0 && $group == 0) {
@@ -2040,6 +2102,8 @@ function getSticker() {
 						"BQADBAADUQUAApdgXwABiLR3quFNtJAC",
 
 						"BQADBAADuwUAApdgXwABfdmmytVMYM8C",
+						"BQADBAADvwYAApdgXwABpYy5KdsUFfMC",
+						"BQADBAADQwcAApdgXwABY4iaIlE5MVEC"
 						);
 	$n = sizeof($stickerList) - 1;
 	$n = rand(0,$n);
@@ -2949,7 +3013,7 @@ function processMessage($message) {
 			usleep(500000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Hola, jefe</b> @".$message['from']['username']." 😊"));
 		}
-	} else if (strpos(strtolower($text), "!siono") === 0 && strlen($text) > 8) {
+	} else if (strpos(strtolower($text), "!siono") !== false && strlen($text) > 8) {
 		error_log($logname." triggered: !siono.");
 		$respuesta = yesNoQuestion();
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -3437,7 +3501,8 @@ function processMessage($message) {
 							if($hour != 1) {
 								$text = $text."s";
 							}
-							$text = $text." ".$hour."! 🎉</b>";	
+							$timeEmoji = timeEmoji($hour, 0);
+							$text = $text." ".$timeEmoji."! 🎉</b>";	
 							$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
 							mysql_free_result($result);
 							$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";
@@ -3474,7 +3539,8 @@ function processMessage($message) {
 					if($hour != 1) {
 						$text = $text."s";
 					}
-					$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					$timeEmoji = timeEmoji($hour, 0);
+					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
 				}
 			} else {
 				error_log("Trigger: Polefail.");
@@ -3487,7 +3553,8 @@ function processMessage($message) {
 				if($hour != 1) {
 					$text = $text."s";
 				}
-				$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+				$timeEmoji = timeEmoji($hour, 0);
+				$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
 			}
 			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
@@ -3523,7 +3590,7 @@ function processMessage($message) {
 		$flagTime = $currentTime - ($minutes * 60) - $seconds;
 		error_log($currentTime." tiempo actual ".date('H:i:s  d-m-Y'));
 		error_log($flagTime." tiempo en punto ".date('H:i:s  d-m-Y', $flagTime));		
-	} else if (strpos(strtolower($text), "reportado") !== false) {
+	} else if (strpos(strtolower($text), "reportad") !== false || strpos(strtolower($text), "reportadit") !== false ||strpos(strtolower($text), "reportait") !== false) {
 		error_log($logname." triggered: Reportado.");
 		$miniTicket = rand(1,10);
 		if($miniTicket > 2) {
@@ -3537,6 +3604,16 @@ function processMessage($message) {
 				apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADAgIAApdgXwABS2l3QF6lc-MC'));
 			}
 		}
+	} else if (strpos(strtolower($text), "ilitri") !== false || strpos(strtolower($text), "electrik") !== false) {
+		error_log($logname." triggered: Ilitri.");
+		usleep(400000);
+		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADQwcAApdgXwABY4iaIlE5MVEC'));
+	} else if (strpos(strtolower($text), "viva veget") !== false) {
+		error_log($logname." triggered: Viva Vegetta.");
+		usleep(400000);
+		// Cambiar en DemisukeBot
+		$gif = "AwADBAADRQcAApdgXwABqfQ693x1aVQC";
+		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 	} else if (strlen($text) > 1000) {
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADhwMAApdgXwABpjPrfVQHDkoC'));
 	} else if (strpos(strtolower($text), "pole") !== false) {

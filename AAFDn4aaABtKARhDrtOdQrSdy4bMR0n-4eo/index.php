@@ -1197,6 +1197,8 @@ function getSticker() {
 						"BQADBAADUQUAApdgXwABiLR3quFNtJAC",
 
 						"BQADBAADuwUAApdgXwABfdmmytVMYM8C",
+						"BQADBAADvwYAApdgXwABpYy5KdsUFfMC",
+						"BQADBAADQwcAApdgXwABY4iaIlE5MVEC"
 						);
 	$n = sizeof($stickerList) - 1;
 	$n = rand(0,$n);

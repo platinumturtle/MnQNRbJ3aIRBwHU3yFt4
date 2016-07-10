@@ -3481,8 +3481,9 @@ function processMessage($message) {
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 									$row = mysql_fetch_array($result);
 									if($row['epoch_time'] == $currentTime) {
+										$userTriggering = str_replace("@", "", $logname);
 										$admin_id = 6250647;
-										apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*".$logname." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
+										apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
 								
 										// funcion nueva con exit al final
 										error_log("Trigger: Polefail.");
@@ -3498,6 +3499,9 @@ function processMessage($message) {
 										}
 										$timeEmoji = timeEmoji($hour, 0);
 										$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+										apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+										mysql_free_result($result);
+										mysql_close($link);
 										exit;
 										// fin funcion polefail
 									}

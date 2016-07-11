@@ -1313,7 +1313,7 @@ function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
 	}
 }
 
-function poleFail($hour, $chat_id, $link, $logname) {
+function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	error_log($logname." triggered: Polefail.");
 
 	$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";

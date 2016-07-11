@@ -2790,7 +2790,14 @@ function processMessage($message) {
 		// Group Battle
 		$time = time();
 		$link = dbConnect();
-		$safeGroup = rankedGroup($message['chat']['id']);
+		$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$if(isset($row['mode']) && $row['mode'] < 0) {
+			$randomTicket = $row['mode'];
+		}
+		mysql_free_result($result);
+		$safeGroup = rankedGroup($chat_id);
 		if($safeGroup == 1) {
 			$query = 'SELECT total, lastpoint FROM groupbattle WHERE group_id = '.$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -2968,7 +2975,7 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}*/
-	} else if (strpos($text, "/checkflags") === 0) {
+	/*} else if (strpos($text, "/checkflags") === 0) {
 		error_log($logname." triggered: /checkflags.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			$link = dbConnect();
@@ -2981,13 +2988,17 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se han capturado un total de ".$total." banderas.*"));
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
-		}
+		}*/
 	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
-		error_log($logname." triggered: Hola.");
-		$greeting = greeting();
-		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		sleep(2);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$greeting."*"));
+		if($randomTicket > -1) {
+			error_log($logname." triggered: Hola.");
+			$greeting = greeting();
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			sleep(2);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$greeting."*"));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Hola.");
+		}
     } else if (strpos(strtolower($text), "!dados") !== false) {
 		error_log($logname." triggered: !dados.");
 		rollDice($chat_id);
@@ -2995,26 +3006,34 @@ function processMessage($message) {
       // stop now
     } else if (isset($message['forward_from']['username'])){
 		if($message['forward_from']['username'] == 'DemisukeBot' || $message['forward_from']['username'] == 'Demitest_bot') {
-			if (isset($message['from']['first_name'])) {
-				$name = $message['from']['first_name'];
-			} else if (isset($message['from']['username'])) {
-				$name = $message['from']['username'];
+			if($randomTicket > -1) {
+				if (isset($message['from']['first_name'])) {
+					$name = $message['from']['first_name'];
+				} else if (isset($message['from']['username'])) {
+					$name = $message['from']['username'];
+				} else {
+					$name = "compi";
+				}
+				error_log($logname." triggered: Forwarding (RT) bot.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				sleep(1);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Buena esa, ".$name.".* 😎"));	
 			} else {
-				$name = "compi";
+				error_log($logname." tried to trigger and failed due to group restrictions: Forwarding (RT) bot.");
 			}
-			error_log($logname." triggered: Forwarding bot.");
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			sleep(1);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Buena esa, ".$name.".* 😎"));			
 		}
 	} else if (isset($message['reply_to_message']['from']['username'])){
 		if($message['reply_to_message']['from']['username'] == 'DemisukeBot' || $message['reply_to_message']['from']['username'] == 'Demitest_bot') {
-			error_log($logname." triggered: Reply to bot.");
-			$dummy = " ";
-			$insult = insult($dummy);
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			sleep(1);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*No sé qué has dicho, pero ".$insult.".*"));			
+			if($randomTicket > -1) {
+				error_log($logname." triggered: Reply to bot.");
+				$dummy = " ";
+				$insult = insult($dummy);
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				sleep(1);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*No sé qué has dicho, pero ".$insult.".*"));			
+			} else {
+				error_log($logname." tried to trigger and failed due to group restrictions: Reply to bot.");
+			}
 		}
 	} else if (strpos(strtolower($text), "!insulta a") !== false) {
 		error_log($logname." triggered: !insulta.");
@@ -3039,24 +3058,28 @@ function processMessage($message) {
 			}
 		}
 	} else if (strpos(strtolower($text), "demisuke") !== false) {
-		error_log($logname." triggered: Bot mention.");
-		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
-			usleep(500000);
-			if(isset($message['from']['username'])) {
-				$name = "@".$message['from']['username'];
-				$text = gotMention($name,true);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
-			} else if (isset($message['from']['first_name'])) {
-				$text = gotMention($message['from']['first_name'],false);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Bot mention.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
+				usleep(500000);
+				if(isset($message['from']['username'])) {
+					$name = "@".$message['from']['username'];
+					$text = gotMention($name,true);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				} else if (isset($message['from']['first_name'])) {
+					$text = gotMention($message['from']['first_name'],false);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				} else {
+					$text = gotMention("compi de grupo",false);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				}
 			} else {
-				$text = gotMention("compi de grupo",false);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				usleep(500000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Hola, jefe</b> @".$message['from']['username']." 😊"));
 			}
 		} else {
-			usleep(500000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Hola, jefe</b> @".$message['from']['username']." 😊"));
+				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
 		}
 	} else if (strpos(strtolower($text), "!siono") !== false && strlen($text) > 8) {
 		error_log($logname." triggered: !siono.");
@@ -3068,24 +3091,28 @@ function processMessage($message) {
 		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));
 	} else if (strpos(strtolower($text), "!moneda") !== false) {
-		error_log($logname." triggered: !moneda.");
-		$link = dbConnect();
-		$query = "SELECT last_flip FROM `flipcoin` WHERE fc_id = 01";
-		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$row = mysql_fetch_array($result);
-		$flip = $row['last_flip'];
-		mysql_free_result($result);		
-		$time = time() - 60;
-		if($time >= $flip) {
-			$time = $time + 60;
-			$query = "UPDATE `flipcoin` SET `user_id` = '".$message['from']['id']."', `group_id` = '".$chat_id."', `last_flip` = '".$time."' WHERE `fc_id` = '01'";
+		if($randomTicket > -3) {
+			error_log($logname." triggered: !moneda.");
+			$link = dbConnect();
+			$query = "SELECT last_flip FROM `flipcoin` WHERE fc_id = 01";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			mysql_close($link);
-			$keyboardButton = (object) ["text" => "Girar la moneda", "callback_data" => "FLIPCOINqGq3Z6yf1guhfgFdwkzt"];
-			apiRequestJson("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¿Cara o cruz? ¡Piensa en un resultado y pulsa el botón para girar la moneda!*", "reply_markup" => ["inline_keyboard" => [[$keyboardButton,]] ]));
+			$row = mysql_fetch_array($result);
+			$flip = $row['last_flip'];
+			mysql_free_result($result);		
+			$time = time() - 60;
+			if($time >= $flip) {
+				$time = $time + 60;
+				$query = "UPDATE `flipcoin` SET `user_id` = '".$message['from']['id']."', `group_id` = '".$chat_id."', `last_flip` = '".$time."' WHERE `fc_id` = '01'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_close($link);
+				$keyboardButton = (object) ["text" => "Girar la moneda", "callback_data" => "FLIPCOINqGq3Z6yf1guhfgFdwkzt"];
+				apiRequestJson("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¿Cara o cruz? ¡Piensa en un resultado y pulsa el botón para girar la moneda!*", "reply_markup" => ["inline_keyboard" => [[$keyboardButton,]] ]));
+			} else {
+				mysql_close($link);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Alguien está usando mi moneda y no me quedan más. Espera un minuto y usa !moneda de nuevo.*"));
+			}
 		} else {
-			mysql_close($link);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Alguien está usando mi moneda y no me quedan más. Espera un minuto y usa !moneda de nuevo.*"));
+				error_log($logname." tried to trigger and failed due to group restrictions: !moneda.");
 		}
 	} else if (strpos(strtolower($text), "!boton") !== false || strpos(strtolower($text), "!botón") !== false) {
 		error_log($logname." triggered: !boton.");
@@ -3137,8 +3164,12 @@ function processMessage($message) {
 		usleep(250000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 	} else if (strpos(strtolower($text), "!info") !== false) {
-		error_log($logname." triggered: !info.");
-		//$extra = apiRequest("getChatMembersCount", array('chat_id' => '-116857426'));
+		if($randomTicket > -3) {
+			error_log($logname." triggered: !info.");
+			//$extra = apiRequest("getChatMembersCount", array('chat_id' => '-116857426'));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: !info.");
+		}
 	} else if (strpos(strtolower($text), "!becquer") !== false || strpos(strtolower($text), "!bequer") !== false || strpos(strtolower($text), "!becker") !== false || strpos(strtolower($text), "!bécquer") !== false) {
 		error_log($logname." triggered: !becquer.");
 		$text = str_replace("!bequer", "!becquer", $text);
@@ -3384,13 +3415,21 @@ function processMessage($message) {
 			default:	break;
 		}
 	} else if (strpos(strtolower($text), "roto2") !== false) {
-		error_log($logname." triggered: Roto2.");
-		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Roto2.");
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADdQMAApdgXwAB6_sV0eztbK0C'));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: roto2.");
+		}
 	} else if (strpos(strtolower($text), "!video") !== false || strpos(strtolower($text), "!vídeo") !== false) {
-		error_log($logname." found !video Easter Egg!");
-		$result = getVideo();
-		$result ="[👇](".$result.")";
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+		if($randomTicket > -3) {
+			error_log($logname." found !video Easter Egg!");
+			$result = getVideo();
+			$result ="[👇](".$result.")";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: !video Easter Egg.");
+		}
 	} else if (strpos(strtolower($text), "!mensajesgrupo") !== false) {
 		error_log($logname." triggered: !mensajesgrupo.");
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
@@ -3516,27 +3555,8 @@ function processMessage($message) {
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								$row = mysql_fetch_array($result);
 								if(($newSeekerTotal - $row['total']) < 20) {
-									
-									//checkpoint
 									mysql_free_result($result);
 									checkPoint($hour, $chat_id, $link, $logname, $currentTime);
-									/*
-									$waitTime = rand(0, 25000);
-									$waitTime = $waitTime * 2;
-									usleep($waitTime);
-									$query = "SELECT epoch_time FROM flagwinnerlog ORDER BY epoch_time DESC LIMIT 1";
-									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-									$row = mysql_fetch_array($result);
-									if($row['epoch_time'] == $currentTime) {
-										$userTriggering = str_replace("@", "", $logname);
-										$admin_id = 6250647;
-										apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
-								
-										mysql_free_result($result);
-										poleFail($hour, $chat_id, $link, $logname);
-									}*/
-									//end checkpoint
-									
 									$total = 1 + $subTotal; 
 									mysql_free_result($result);
 									$chatTitle = str_replace("'","''",$message['chat']['title']);
@@ -3551,7 +3571,6 @@ function processMessage($message) {
 								}
 							}
 						} else {
-							// checkpoint
 							mysql_free_result($result);
 							checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 							mysql_free_result($result);
@@ -3562,10 +3581,6 @@ function processMessage($message) {
 							$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						}
-						
-						
-						
-						
 						if($checkMax == 0) {
 							mysql_free_result($result);
 							$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
@@ -3596,49 +3611,16 @@ function processMessage($message) {
 								apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados probablemente de ".$cleanName." en la captura de la bandera que no se han podido corregir.*"));
 							}
 						}
-						
-						
-						
-						
 					} else if($usersGroupCount > 4) {
 						$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";
 					} else {
 						$text = "<b>🏴❌ ".$name." ha encontrado una bandera, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
 					}
 				} else {
-					/*error_log("Trigger: Polefail.");
-					
-					// funcion nueva con exit al final
-					mysql_free_result($result);
-					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					$row = mysql_fetch_array($result);
-					$row = mysql_fetch_array($result);
-					$text = "🚩 <b>La bandera de la";
-					if($hour != 1) {
-						$text = $text."s";
-					}
-					$timeEmoji = timeEmoji($hour, 0);
-					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";*/
 					mysql_free_result($result);
 					poleFail($hour, $chat_id, $link, $logname, $currentTime);
 				}
 			} else {
-				/*
-				error_log("Trigger: Polefail.");
-				
-				// funcion nueva con exit al final
-				mysql_free_result($result);
-				$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$row = mysql_fetch_array($result);
-				$row = mysql_fetch_array($result);
-				$text = "🚩 <b>La bandera de la";
-				if($hour != 1) {
-					$text = $text."s";
-				}
-				$timeEmoji = timeEmoji($hour, 0);
-				$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";*/ 
 				mysql_free_result($result);
 				poleFail($hour, $chat_id, $link, $logname, $currentTime);
 			}
@@ -3677,49 +3659,82 @@ function processMessage($message) {
 		error_log($currentTime." tiempo actual ".date('H:i:s  d-m-Y'));
 		error_log($flagTime." tiempo en punto ".date('H:i:s  d-m-Y', $flagTime));		
 	} else if (strpos(strtolower($text), "reportad") !== false || strpos(strtolower($text), "reportadit") !== false ||strpos(strtolower($text), "reportait") !== false) {
-		error_log($logname." triggered: Reportado.");
-		$miniTicket = rand(1,10);
-		if($miniTicket > 2) {
-		$gif = getReport();
-		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
-		} else {
-			$miniTicket = rand(1,2);
-			if($miniTicket == 1) {
-				apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADbQMAApdgXwABhQXAWGd763oC'));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Reportado.");
+			$miniTicket = rand(1,10);
+			if($miniTicket > 2) {
+			$gif = getReport();
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 			} else {
-				apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADAgIAApdgXwABS2l3QF6lc-MC'));
+				$miniTicket = rand(1,2);
+				if($miniTicket == 1) {
+					apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADbQMAApdgXwABhQXAWGd763oC'));
+				} else {
+					apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADAgIAApdgXwABS2l3QF6lc-MC'));
+				}
 			}
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Reportado.");
 		}
 	} else if (strpos(strtolower($text), "ilitri") !== false || strpos(strtolower($text), "electrik") !== false) {
-		error_log($logname." triggered: Ilitri.");
-		usleep(400000);
-		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADQwcAApdgXwABY4iaIlE5MVEC'));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Ilitri.");
+			usleep(400000);
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADQwcAApdgXwABY4iaIlE5MVEC'));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: ilitri.");
+		}
 	} else if (strpos(strtolower($text), "viva veget") !== false) {
-		error_log($logname." triggered: Viva Vegetta.");
-		usleep(400000);
-		// Cambiar en DemisukeBot
-		$gif = "AwADBAADRQcAApdgXwABqfQ693x1aVQC";
-		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Viva Vegetta.");
+			usleep(400000);
+			// Cambiar en DemisukeBot
+			$gif = "AwADBAADRQcAApdgXwABqfQ693x1aVQC";
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");
+		}
 	} else if (strlen($text) > 1000) {
-		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADhwMAApdgXwABpjPrfVQHDkoC'));
+		if($randomTicket > -3) {
+			error_log($logname." wrote more than 1000 characters in a same text message.");
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADhwMAApdgXwABpjPrfVQHDkoC'));
+		} else {
+			error_log($logname." wrote more than 1000 characters but trigger didn't pulled.");
+		}
 	} else if (strpos(strtolower($text), "pole") !== false) {
-		error_log($logname." triggered: Pole.");
-		usleep(500000);
-		$gif = getPole();
-		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Pole.");
+			usleep(500000);
+			$gif = getPole();
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Pole.");
+		}
     } else if (strpos(strtolower($text), "pillo sitio") !== false) {
-		error_log($logname." triggered: Pillo sitio.");
-		usleep(500000);
-		$gif = getSpot();
-		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Pillo sitio.");
+			usleep(500000);
+			$gif = getSpot();
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Pillo sitio.");
+		}
 	} else if (strpos(strtolower($text), "todas putas") !== false || strpos(strtolower($text), "tds pts") !== false || strpos(strtolower($text), "tdspts") !== false) {
-		error_log($logname." triggered: Tds Pts.");
-		launchTdsPts($chat_id);
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Tds Pts.");
+			launchTdsPts($chat_id);
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Tds Pts.");
+		}
 	} else if (strpos(strtolower($text), "melafo") !== false) {
-		error_log($logname." triggered: Melafo.");
-		usleep(500000);
-		$gif = getHitIt();
-		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Melafo.");
+			usleep(500000);
+			$gif = getHitIt();
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Melafo.");
+		}
 	} else if (strpos(strtolower($text), "!grupos") !== false) {
 		error_log($logname." triggered: !grupos.");
 		if($message['chat']['type'] == "private") {
@@ -3732,12 +3747,20 @@ function processMessage($message) {
 		usleep(100000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "mis dies") !== false) {
-		error_log($logname." triggered: Mis dies.");
-		usleep(500000);
-		$gif = getMyTen();
-		apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Mis dies.");
+			usleep(500000);
+			$gif = getMyTen();
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Mis dies.");
+		}
 	} else if (strtolower($text) === "sticker" || strpos(strtolower($text), "!sticker") !== false) {
 		error_log($logname." triggered: !sticker.");
+		$sticker = getSticker();
+		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => $sticker));
+    } else if (strtolower($text) === "sticker" && $randomTicket > -2) {
+		error_log($logname." triggered: sticker.");
 		$sticker = getSticker();
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => $sticker));
     } else if (strpos(strtolower($text), "!nick") !== false) {
@@ -3745,26 +3768,30 @@ function processMessage($message) {
 		$nick = getNickname();
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El nombre de usuario generado automáticamente es ".$nick.".*"));
     } else if (strpos(strtolower($text), "!historia") !== false) {
-		error_log($logname." triggered: !historia.");
-		if (isset($message['from']['first_name'])) {
-			$name = $message['from']['first_name'];
-		} else if (isset($message['from']['username'])) {
-			$name = $message['from']['username'];
+		if($randomTicket > -3) {
+			error_log($logname." triggered: !historia.");
+			if (isset($message['from']['first_name'])) {
+				$name = $message['from']['first_name'];
+			} else if (isset($message['from']['username'])) {
+				$name = $message['from']['username'];
+			} else {
+				$name = "un inútil";
+			}
+			$text = tellStory(1,$name);
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text."*"));
+			$text = tellStory(2,$name);
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			sleep(2);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text."*"));
+			$text = tellStory(3,$name);
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			sleep(2);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text."*"));
 		} else {
-			$name = "un inútil";
+			error_log($logname." tried to trigger and failed due to group restrictions: !historia.");
 		}
-		$text = tellStory(1,$name);
-		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		sleep(1);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text."*"));
-		$text = tellStory(2,$name);
-		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		sleep(2);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text."*"));
-		$text = tellStory(3,$name);
-		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		sleep(2);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text."*"));
     } else if ($message['chat']['type'] == "private" && $message['from']['username'] !== "Kamisuke") {
 		error_log($logname." triggered: Private chat.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

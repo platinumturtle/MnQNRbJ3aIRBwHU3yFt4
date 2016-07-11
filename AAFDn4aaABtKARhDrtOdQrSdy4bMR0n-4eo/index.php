@@ -2446,35 +2446,11 @@ function processMessage($message) {
 					} else {
 						$text = "<b>🏴❌ ".$name." ha encontrado una bandera, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
 					}
-				} else {/*
-					error_log("Trigger: Polefail.");
+				} else {
 					mysql_free_result($result);
-					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					$row = mysql_fetch_array($result);
-					$row = mysql_fetch_array($result);
-					$text = "🚩 <b>La bandera de la";
-					if($hour != 1) {
-						$text = $text."s";
-					}
-					$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
-					*/mysql_free_result($result);
 					poleFail($hour, $chat_id, $link, $logname, $currentTime);
 				}
 			} else {
-/*
-				error_log("Trigger: Polefail.");
-				mysql_free_result($result);
-				$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$row = mysql_fetch_array($result);
-				$row = mysql_fetch_array($result);
-				$text = "🚩 <b>La bandera de la";
-				if($hour != 1) {
-					$text = $text."s";
-				}
-				$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
-*/
 				mysql_free_result($result);
 				poleFail($hour, $chat_id, $link, $logname, $currentTime);
 			}

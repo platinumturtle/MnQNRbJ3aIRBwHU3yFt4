@@ -1295,6 +1295,27 @@ function inlineOptions($text, $username) {
 	return $buttons;	
 }
 
+function poleFail($hour, $chat_id, $link, $logname) {
+	error_log($logname." triggered: Polefail.");
+
+	$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	$row = mysql_fetch_array($result);
+	$text = "🚩 <b>La bandera de la";
+	if($hour != 1) {
+		$text = $text."s";
+	}
+	$timeEmoji = timeEmoji($hour, 0);
+	$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+	$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
+
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+	mysql_free_result($result);
+	mysql_close($link);
+	exit;
+}
+
 function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
@@ -3485,8 +3506,10 @@ function processMessage($message) {
 										$admin_id = 6250647;
 										apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
 								
+										mysql_free_result($result);
+										poleFail($hour, $chat_id, $link, $logname);
 										// funcion nueva con exit al final
-										error_log("Trigger: Polefail.");
+										/*error_log("Trigger: Polefail.");
 					
 										mysql_free_result($result);
 										$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
@@ -3504,7 +3527,7 @@ function processMessage($message) {
 										apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 										mysql_free_result($result);
 										mysql_close($link);
-										exit;
+										exit;*/
 										// fin funcion polefail
 									}
 									//end checkpoint
@@ -3576,7 +3599,7 @@ function processMessage($message) {
 						$text = "<b>🏴❌ ".$name." ha encontrado una bandera, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
 					}
 				} else {
-					error_log("Trigger: Polefail.");
+					/*error_log("Trigger: Polefail.");
 					
 					// funcion nueva con exit al final
 					mysql_free_result($result);
@@ -3589,7 +3612,9 @@ function processMessage($message) {
 						$text = $text."s";
 					}
 					$timeEmoji = timeEmoji($hour, 0);
-					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";*/
+					mysql_free_result($result);
+					poleFail($hour, $chat_id, $link, $logname);
 				}
 			} else {
 				error_log("Trigger: Polefail.");

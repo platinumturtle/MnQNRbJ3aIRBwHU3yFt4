@@ -463,6 +463,43 @@ function rollDice($id) {
 	apiRequest("sendMessage", array('chat_id' => $id, 'parse_mode' => "Markdown", "text" => "*".$result[$n]."*"));
 }
 
+function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
+	$waitTime = rand(0, 25000);
+	$waitTime = $waitTime * 2;
+	usleep($waitTime);
+	$query = "SELECT epoch_time FROM flagwinnerlog ORDER BY epoch_time DESC LIMIT 1";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	if($row['epoch_time'] == $currentTime) {
+		error_log($logname." tried to capture a doubleflag.");
+		$userTriggering = str_replace("@", "", $logname);
+		$admin_id = 6250647;
+		apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
+
+		mysql_free_result($result);
+		poleFail($hour, $chat_id, $link, $logname, $currentTime);
+	}
+}
+
+function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
+	error_log($logname." triggered: Polefail.");
+
+	$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	$row = mysql_fetch_array($result);
+	$text = "🚩 <b>La bandera de la";
+	if($hour != 1) {
+		$text = $text."s";
+	}
+	$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+	$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
+
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+	mysql_free_result($result);
+	mysql_close($link);
+	exit;
+}
 function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
@@ -719,6 +756,8 @@ function containsCommand($text) {
 						"!cancion",
 						"!canción",
 						"!video",
+						"!boton",
+						"!botón",
 						"!mensajes",
 						"!desactivame",
 						"!activame",
@@ -727,6 +766,10 @@ function containsCommand($text) {
 						"!grupos",
 						"!nick",
 						"!info",
+						"!bequer",
+						"!moneda",
+						"!becker",
+						"!becquer",
 						"!historia"
 					);
 					
@@ -2343,6 +2386,8 @@ function processMessage($message) {
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								$row = mysql_fetch_array($result);
 								if(($newSeekerTotal - $row['total']) < 20) {
+									mysql_free_result($result);
+									checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 									$total = 1 + $subTotal; 
 									mysql_free_result($result);
 									$chatTitle = str_replace("'","''",$message['chat']['title']);
@@ -2357,6 +2402,8 @@ function processMessage($message) {
 								}
 							}
 						} else {
+							mysql_free_result($result);
+							checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 							mysql_free_result($result);
 							$user_id = $message['from']['id'];
 							$chatTitle = str_replace("'","''",$message['chat']['title']);
@@ -2391,7 +2438,7 @@ function processMessage($message) {
 							mysql_free_result($result);
 							if($fullTotal != $disctintTotal) {
 								$admin_id = 6250647;
-								apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados probablemente de ".$cleanName." en la captura de la bandera.*"));
+								apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados probablemente de ".$cleanName." en la captura de la bandera que no se han podido corregir.*"));
 							}
 						}
 					} else if($usersGroupCount > 4) {
@@ -2399,7 +2446,7 @@ function processMessage($message) {
 					} else {
 						$text = "<b>🏴❌ ".$name." ha encontrado una bandera, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
 					}
-				} else {
+				} else {/*
 					error_log("Trigger: Polefail.");
 					mysql_free_result($result);
 					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
@@ -2411,8 +2458,11 @@ function processMessage($message) {
 						$text = $text."s";
 					}
 					$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					*/mysql_free_result($result);
+					poleFail($hour, $chat_id, $link, $logname, $currentTime);
 				}
 			} else {
+/*
 				error_log("Trigger: Polefail.");
 				mysql_free_result($result);
 				$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
@@ -2424,6 +2474,9 @@ function processMessage($message) {
 					$text = $text."s";
 				}
 				$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+*/
+				mysql_free_result($result);
+				poleFail($hour, $chat_id, $link, $logname, $currentTime);
 			}
 			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));

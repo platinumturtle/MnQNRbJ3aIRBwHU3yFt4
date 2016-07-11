@@ -1295,7 +1295,7 @@ function inlineOptions($text, $username) {
 	return $buttons;	
 }
 
-function checkPoint($hour, $chat_id, $link, $logname) {
+function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
 	$waitTime = rand(0, 25000);
 	$waitTime = $waitTime * 2;
 	usleep($waitTime);
@@ -1303,12 +1303,13 @@ function checkPoint($hour, $chat_id, $link, $logname) {
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	if($row['epoch_time'] == $currentTime) {
+		error_log($logname." tried to capture a doubleflag.");
 		$userTriggering = str_replace("@", "", $logname);
 		$admin_id = 6250647;
 		apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
 
 		mysql_free_result($result);
-		poleFail($hour, $chat_id, $link, $logname);
+		poleFail($hour, $chat_id, $link, $logname, $currentTime);
 	}
 }
 
@@ -3512,7 +3513,7 @@ function processMessage($message) {
 									
 									//checkpoint
 									mysql_free_result($result);
-									checkPoint($hour, $chat_id, $link, $logname);
+									checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 									/*
 									$waitTime = rand(0, 25000);
 									$waitTime = $waitTime * 2;
@@ -3546,7 +3547,7 @@ function processMessage($message) {
 						} else {
 							// checkpoint
 							mysql_free_result($result);
-							checkPoint($hour, $chat_id, $link, $logname);
+							checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 							mysql_free_result($result);
 							$user_id = $message['from']['id'];
 							$chatTitle = str_replace("'","''",$message['chat']['title']);
@@ -3614,7 +3615,7 @@ function processMessage($message) {
 					$timeEmoji = timeEmoji($hour, 0);
 					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";*/
 					mysql_free_result($result);
-					poleFail($hour, $chat_id, $link, $logname);
+					poleFail($hour, $chat_id, $link, $logname, $currentTime);
 				}
 			} else {
 				/*
@@ -3633,7 +3634,7 @@ function processMessage($message) {
 				$timeEmoji = timeEmoji($hour, 0);
 				$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";*/ 
 				mysql_free_result($result);
-				poleFail($hour, $chat_id, $link, $logname);
+				poleFail($hour, $chat_id, $link, $logname, $currentTime);
 			}
 			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));

@@ -2793,7 +2793,7 @@ function processMessage($message) {
 		$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		$if(isset($row['mode']) && $row['mode'] < 0) {
+		if(isset($row['mode']) && $row['mode'] < 0) {
 			$randomTicket = $row['mode'];
 		}
 		mysql_free_result($result);

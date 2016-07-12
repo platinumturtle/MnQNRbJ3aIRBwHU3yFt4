@@ -4087,6 +4087,10 @@ if (isset($update["message"])) {
 	} else {
 		$logname = "ID".$message["edited_message"]['from']['id'];
 	}
+		$str = var_export($update["edited_message"], true);
+		error_log($str);
+		$str2 = json_encode($update);
+		error_log($str2);
 	$link = dbConnect();
 	$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

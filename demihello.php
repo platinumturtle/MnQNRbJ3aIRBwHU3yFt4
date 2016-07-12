@@ -3536,12 +3536,22 @@ function processMessage($message) {
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 			$user_id = $message['from']['id'];
 			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
-			$str = var_export($adminList, true);
-			error_log($str);
-			$str2 = json_encode($adminList);
-			error_log($str2);
-			error_log(in_array($user_id, $adminList));
-			if(in_array($user_id, $adminList) || $user_id == 6250647) {
+			$isAdmin = 0;
+			//$str = var_export($adminList, true);
+			//error_log($str);
+			//$str2 = json_encode($adminList);
+			//error_log($str2);
+			//error_log(in_array($user_id, $adminList));
+			for($i=0;$i<sizeof($adminList);$i++) {
+				error_log("ENTRO"); // testmode
+				if($adminList[$i]['id'] == $user_id) {
+					$isAdmin = 1;
+				}
+			}
+			if($user_id == 6250647) {
+				$isAdmin = 1;
+			}
+			if($isAdmin == 1) {
 				//$link = dbConnect();
 				error_log($logname." triggered: !modoadmin.");
 				//showMode($chat_id);

@@ -3321,7 +3321,7 @@ function processMessage($message) {
 						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El mensaje de bienvenida se ha desactivado.*"));
 					} else {
 						error_log($logname." set a new welcome message.");
-						$text = ltrim(rtrim(substr($text, 6, 2500)));
+						$text = ltrim(rtrim(substr($text, 12, 2500)));
 						if($text == "") {
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 							usleep(250000);
@@ -4384,10 +4384,15 @@ function processMessage($message) {
 			$logname = "ID".$message['new_chat_member']['id'];
 		}
 		$link = dbConnect();
-		$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
+		$query = "SELECT mode, welcome_text FROM groupbattle WHERE group_id = '".$chat_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		if($row['mode'] > -1) {
+		$mode = $row['mode'];
+		$welcomeText = $row['welcome_text'];
+		if($welcomeText != "") {
+			$mode = 0;
+		}
+		if($mode > -1) {
 			error_log($logname." triggered: Newcomer to group.");
 			$imNewcomer = false;
 			if(isset($message['new_chat_member']['username'])) {
@@ -4404,15 +4409,19 @@ function processMessage($message) {
 				$msg = $msg." aporta algo al grupo o te echamos en 24 horas.*";
 				}
 			} else {
-				$msg = "*¿Más gente nueva?,";
-				if(isset($message['new_chat_member']['first_name'])){
-					$msg = "*".$message['new_chat_member']['first_name'];
+				if($welcomeText != "") {
+					$msg = $welcomeText;
+				} else {
+					$msg = "<b>¿Más gente nueva?,";
+					if(isset($message['new_chat_member']['first_name'])){
+						$msg = "<b>".$message['new_chat_member']['first_name'];
+					}
+					$msg = $msg." aporta algo al grupo o te echamos en 24 horas.</b>";
 				}
-				$msg = $msg." aporta algo al grupo o te echamos en 24 horas.*";
 			}
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			sleep(1);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 			if($imNewcomer) {
 				$msg = "*Me estoy instalando en este grupo con las opciones predeterminadas. En unos segundos muestro la ayuda del bot, ¡configúrame bien para no ser pesado ni aburrido!*";
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

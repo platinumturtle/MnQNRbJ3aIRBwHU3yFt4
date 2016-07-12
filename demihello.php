@@ -3888,7 +3888,7 @@ function processMessage($message) {
 			error_log($logname." tried to trigger and failed due to group restrictions: New group photo.");
 		}
 		mysql_free_result($result);
-		mysql_close($link);		
+		mysql_close($link);	
 	}else if (isset($message['new_chat_member'])) {
 		if(isset($message['new_chat_member']['username'])) {
 			$logname = "@".$message['new_chat_member']['username'];
@@ -4080,17 +4080,13 @@ if (isset($update["message"])) {
 		checkUsername($update["edited_message"]['from']['username']);
 	}
 	checkGroup($update["edited_message"]['chat']['id']);
-	if(isset($message["edited_message"]['from']['username'])) {
-		$logname = "@".$message["edited_message"]['from']['username'];
-	} else if (isset($message["edited_message"]['from']['first_name'])) {
-		$logname = $message["edited_message"]['from']['first_name'];
+	if(isset($update["edited_message"]['from']['username'])) {
+		$logname = "@".$update["edited_message"]['from']['username'];
+	} else if (isset($update["edited_message"]['from']['first_name'])) {
+		$logname = $update["edited_message"]['from']['first_name'];
 	} else {
-		$logname = "ID".$message["edited_message"]['from']['id'];
+		$logname = "ID".$update["edited_message"]['from']['id'];
 	}
-		$str = var_export($update["edited_message"], true);
-		error_log($str);
-		$str2 = json_encode($update);
-		error_log($str2);
 	$link = dbConnect();
 	$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

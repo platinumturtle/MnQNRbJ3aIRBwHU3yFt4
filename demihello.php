@@ -3203,6 +3203,23 @@ function processMessage($message) {
 		} else {
 				error_log($logname." tried to trigger and failed due to group restrictions: !moneda.");
 		}
+	} else if (strpos(strtolower($text), "!sugerencia") === 0 && strlen($text) > 15) {
+		error_log($logname." triggered: !sugerencia.");
+		$msg = "Sugerencia entrante de ";
+		if(isset($message['from']['first_name']) {
+			$msg = $msg.$message['from']['first_name'];
+		}
+		if(isset($message['from']['username']) {
+			$msg = $msg." (@".$message['from']['username'].")";
+		}
+		$msg = $msg.":".PHP_EOL;
+		$msg = $msg.substr($text, 12);
+		apiRequest("sendMessage", array('chat_id' => 6250647, "text" => $msg));
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(500000);
+		$msg = "*Se ha enviado el mensaje, será revisado por el administrador del bot lo antes posible*".PHP_EOL;
+		$msg = $msg."*Recuerda utilizar correctamente esta función ya su uso indebido añadirá tu cuenta a la lista de ignorados por la función \"!sugerencia\".*";
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 	} else if (strpos(strtolower($text), "!boton") !== false || strpos(strtolower($text), "!botón") !== false) {
 		error_log($logname." triggered: !boton.");
 		$bombTicket = rand(1,5);

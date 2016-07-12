@@ -3253,7 +3253,15 @@ function processMessage($message) {
 							usleep(250000);
 							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Has introducido un mensaje de texto vacío. El resultado no se ha guardado.*"));
 						} else {
-							// base de datos a actualizar, y avisar al chacho claro
+							$link = dbConnect();
+							$text = str_replace("'", "''", $text);
+							$query = "UPDATE `groupbattle` SET `custom_text` = '".$text."' WHERE `group_id` = ".$chat_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							mysql_close($link);
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(250000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El mensaje personalizado ha sido eliminado.*"));
 						}
 					}
 				} else {

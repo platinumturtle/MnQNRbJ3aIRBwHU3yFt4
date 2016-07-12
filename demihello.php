@@ -1691,17 +1691,15 @@ function containsCommand($text) {
 	return 0;
 }
 
-function showMode(/*$link, */$group_id, $mode=200) {
-	if($mode == 200) {
-		$query = "SELECT mode, name, flagblock, freemode FROM groupbattle WHERE group_id = '".$group_id."'";
-		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$row = mysql_fetch_array($result);
-		$mode = $row['mode'];
-		$name = $row['name'];
-		$flag = $row['flagblock'];
-		$freemode = $row['freemode'];
-		mysql_free_result($result);
-	}
+function showMode($group_id) {
+	$query = "SELECT mode, name, flagblock, freemode FROM groupbattle WHERE group_id = '".$group_id."'";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	$mode = $row['mode'];
+	$name = $row['name'];
+	$flag = $row['flagblock'];
+	$freemode = $row['freemode'];
+	mysql_free_result($result);
 	$message = "*Configuración del bot para ".$name.":*".PHP_EOL;
 	if($mode > -1) {
 		$message = $message."✅";
@@ -1733,7 +1731,7 @@ function showMode(/*$link, */$group_id, $mode=200) {
 		$message = $message."❌";
 	}
 	$message = $message." Cualquier usuario puede cambiar la configuración anterior".PHP_EOL;
-	if($flagblock == 0) {
+	if($flag == 0) {
 		$message = $message."✅";
 	} else {
 		$message = $message."❌";

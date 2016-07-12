@@ -3261,7 +3261,7 @@ function processMessage($message) {
 							mysql_close($link);
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 							usleep(250000);
-							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El mensaje personalizado ha sido eliminado.*"));
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha guardado el mensaje personalizado.*"));
 						}
 					}
 				} else {
@@ -3292,6 +3292,80 @@ function processMessage($message) {
 			}
 		} else {
 			error_log($logname." tried to trigger and failed: !texto.");
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!bienvenida") === 0) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			if(strlen($text) > 12) {
+				$user_id = $message['from']['id'];
+				$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+				$isAdmin = 0;
+				for($i=0;$i<sizeof($adminList);$i++) {
+					if($adminList[$i]['user']['id'] == $user_id) {
+						$isAdmin = 1;
+					}
+				}
+				if($user_id == 6250647) {
+					$isAdmin = 1;
+				}
+				if($isAdmin == 1) {
+					if($text == "!bienvenida off") {
+						error_log($logname." deleted welcome group text.");
+						$link = dbConnect();
+						$query = "UPDATE `groupbattle` SET `welcome_text` = NULL WHERE `group_id` = ".$chat_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						mysql_close($link);
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(250000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El mensaje de bienvenida se ha desactivado.*"));
+					} else {
+						error_log($logname." set a new welcome message.");
+						$text = ltrim(rtrim(substr($text, 6, 2500)));
+						if($text == "") {
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(250000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Has introducido un mensaje de texto vacío. El resultado no se ha guardado.*"));
+						} else {
+							$link = dbConnect();
+							$text = str_replace("'", "''", $text);
+							$query = "UPDATE `groupbattle` SET `welcome_text` = '".$text."' WHERE `group_id` = ".$chat_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							mysql_close($link);
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(250000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha guardado el mensaje de bienvenida personalizado.*"));
+						}
+					}
+				} else {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					error_log($logname." tried to edit or delete a welcome text not being admin.");
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Solo los administradores del grupo pueden editar o eliminar el mensaje de bienvenida.*"));
+				}
+			} else {
+				error_log($logname." triggered: !bienvenida.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				$link = dbConnect();
+				$query = "SELECT welcome_text FROM groupbattle WHERE group_id = '".$chat_id."'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if($row['welcome_text'] == "") {
+					$result = "<b>No se ha establecido ningún texto de bienvenida para este grupo.</b>".PHP_EOL.
+								"Puedes crear uno si eres administrador del grupo escribiendo \"!bienvenida mensaje_a_enviar\".".PHP_EOL.
+								"El mensaje será formateado como texto HTML, por lo que puedes escribir en negrita, cursiva, o crear enlaces.".PHP_EOL.
+								"<i>Nota: En caso de utilizar etiquetas HTML recuerda cerrarlas todas correctamente, de lo contrario, el mensaje no se mostrará.</i>";
+				} else {
+					$result = $row['welcome_text'];
+				}
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+				mysql_free_result($result);
+				mysql_close($link);
+			}
+		} else {
+			error_log($logname." tried to trigger and failed: !bienvenida.");
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
 		}
 	} else if (strpos(strtolower($text), "!boton") !== false || strpos(strtolower($text), "!botón") !== false) {

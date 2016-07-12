@@ -3536,7 +3536,7 @@ function processMessage($message) {
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 			$user_id = $message['from']['id'];
 			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
-			if(in_array($user_id, $adminList) || $user_id == 6250647)) {
+			if(in_array($user_id, $adminList) || $user_id == 6250647) {
 				//$link = dbConnect();
 				error_log($logname." triggered: !modoadmin.");
 				//showMode($chat_id);

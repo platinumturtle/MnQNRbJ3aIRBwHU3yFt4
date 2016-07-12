@@ -3206,10 +3206,10 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!sugerencia") === 0 && strlen($text) > 15) {
 		error_log($logname." triggered: !sugerencia.");
 		$msg = "Sugerencia entrante de ";
-		if(isset($message['from']['first_name']) {
+		if(isset($message['from']['first_name'])) {
 			$msg = $msg.$message['from']['first_name'];
 		}
-		if(isset($message['from']['username']) {
+		if(isset($message['from']['username'])) {
 			$msg = $msg." (@".$message['from']['username'].")";
 		}
 		$msg = $msg.":".PHP_EOL;

@@ -3238,8 +3238,7 @@ function processMessage($message) {
 					if($text == "!texto off") {
 						error_log($logname." deleted custom group text.");
 						$link = dbConnect();
-						$query = "UPDATE groupbattle SET custom_text = NULL WHERE group_id = ".$chat_id;
-						$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
+						$query = "UPDATE `groupbattle` SET `custom_text` = NULL WHERE `group_id` = ".$chat_id;
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						mysql_free_result($result);
 						mysql_close($link);

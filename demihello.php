@@ -3537,13 +3537,7 @@ function processMessage($message) {
 			$user_id = $message['from']['id'];
 			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
 			$isAdmin = 0;
-			//$str = var_export($adminList, true);
-			//error_log($str);
-			//$str2 = json_encode($adminList);
-			//error_log($str2);
-			//error_log(in_array($user_id, $adminList));
 			for($i=0;$i<sizeof($adminList);$i++) {
-				//error_log("ENTRO");  testmode
 				if($adminList[$i]['user']['id'] == $user_id) {
 					$isAdmin = 1;
 				}
@@ -3552,10 +3546,41 @@ function processMessage($message) {
 				$isAdmin = 1;
 			}
 			if($isAdmin == 1) {
-				//$link = dbConnect();
+				$link = dbConnect();
 				error_log($logname." triggered: !modoadmin.");
-				//showMode($chat_id);
-				//mysql_close($link);
+				$query = 'UPDATE groupbattle SET freemode = 0 WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				mysql_close($link);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 La configuración del bot será editable solo por administradores del grupo.*"));
+			}
+		} else {
+			error_log($logname." tried to trigger in private: !modoadmin.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!modolibre") !== false) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$user_id = $message['from']['id'];
+			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+			$isAdmin = 0;
+			for($i=0;$i<sizeof($adminList);$i++) {
+				if($adminList[$i]['user']['id'] == $user_id) {
+					$isAdmin = 1;
+				}
+			}
+			if($user_id == 6250647) {
+				$isAdmin = 1;
+			}
+			if($isAdmin == 1) {
+				$link = dbConnect();
+				error_log($logname." triggered: !modoalibre.");
+				$query = 'UPDATE groupbattle SET freemode = 1 WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				mysql_close($link);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 La configuración del bot será editable todos los usuarios del grupo.*"));
 			}
 		} else {
 			error_log($logname." tried to trigger in private: !modoadmin.");

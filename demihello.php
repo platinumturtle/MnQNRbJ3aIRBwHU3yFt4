@@ -3533,10 +3533,17 @@ function processMessage($message) {
 		mysql_free_result($result);
 		mysql_close($link);
 	} else if (strpos(strtolower($text), "!modo") !== false) {
-		error_log($logname." triggered: !modo.");
-		$link = dbConnect();
-		showMode($chat_id);
-		mysql_close($link);
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			error_log($logname." triggered: !modo.");
+			$link = dbConnect();
+			showMode($chat_id);
+			mysql_close($link);
+		} else {
+			error_log($logname." tried to trigger in private: !modo.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
 	} else if (strpos(strtolower($text), "!banderasgrupo") !== false) {
 		error_log($logname." triggered: !banderasgrupo.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -3617,6 +3624,7 @@ function processMessage($message) {
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								$row = mysql_fetch_array($result);
 								if(($newSeekerTotal - $row['total']) < 20) {
+									error_log($logname." got a new flag!");
 									mysql_free_result($result);
 									checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 									$total = 1 + $subTotal; 
@@ -3636,6 +3644,7 @@ function processMessage($message) {
 							mysql_free_result($result);
 							checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 							mysql_free_result($result);
+							error_log($logname." got a flag for the first time!");
 							$user_id = $message['from']['id'];
 							$chatTitle = str_replace("'","''",$message['chat']['title']);
 							$query = "SET NAMES utf8mb4;";

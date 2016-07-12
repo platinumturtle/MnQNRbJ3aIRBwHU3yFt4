@@ -3212,14 +3212,53 @@ function processMessage($message) {
 		if(isset($message['from']['username'])) {
 			$msg = $msg." (@".$message['from']['username'].")";
 		}
-		$msg = $msg.":".PHP_EOL;
+		$msg = $msg.":".PHP_EOL.PHP_EOL;
 		$msg = $msg.substr($text, 12);
 		apiRequest("sendMessage", array('chat_id' => 6250647, "text" => $msg));
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(500000);
-		$msg = "*Se ha enviado el mensaje, será revisado por el administrador del bot lo antes posible*".PHP_EOL;
-		$msg = $msg."*Recuerda utilizar correctamente esta función ya su uso indebido añadirá tu cuenta a la lista de ignorados por la función \"!sugerencia\".*";
+		$msg = "*El mensaje ha sido enviado correctamente y será revisado por el administrador del bot lo antes posible.*".PHP_EOL;
+		$msg = $msg."_Recuerda utilizar correctamente esta función ya su uso indebido añadirá tu cuenta a la lista de ignorados por la función \"!sugerencia\"._";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+	} else if (strpos(strtolower($text), "!texto") === 0) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			if(strlen($text) > 6) {
+				if($text == "!texto off") {
+					error_log($logname." deleted custom group text.");
+					// update de mensaje a null y avisar al pavo
+				} else {
+					error_log($logname." set a new text message.");
+					$text = ltrim(rtrim(substr($text, 6, 2500)));
+					if($text == "") {
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Has introducido un mensaje de texto vacío. El resultado no se ha guardado.*"));
+					} else {
+						// base de datos a actualizar, y avisar al chacho claro
+					}
+				}
+			} else {
+				error_log($logname." triggered: !texto.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				$link = dbConnect();
+				$query = "SELECT custom_text FROM groupbattle WHERE group_id = '".$chat_id."'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result)
+				if($row['custom_text'] == "") {
+					$result = "<b>No se ha establecido ningún texto personalizado para este grupo.</b>".PHP_EOL.
+								"Puedes crear uno si eres administrador del grupo escribiendo \"!texto mensaje_a_enviar\".".PHP_EOL.
+								"El mensaje será formateado como texto HTML, por lo que puedes escribir en negrita, cursiva, o crear enlaces.".PHP_EOL.
+								"<i>Nota: En caso de utilizar etiquetas HTML recuerda cerrarlas todas correctamente, de lo contrario, el mensaje no se mostrará.</i>";
+				} else {
+					$result = $row['custom_text'];
+				}
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+				mysql_free_result($result);
+				mysql_close($link);
+			}
+		} else {
+			error_log($logname." tried to trigger and failed: !texto.");
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
+		}
 	} else if (strpos(strtolower($text), "!boton") !== false || strpos(strtolower($text), "!botón") !== false) {
 		error_log($logname." triggered: !boton.");
 		$bombTicket = rand(1,5);

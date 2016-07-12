@@ -656,6 +656,13 @@ function gotMention($nickname,$usercheck) {
 	return $storedReply[$n];
 }
 
+function explodeArray($dump) {
+	$str = var_export($dump, true);
+	error_log($str);
+	$str = json_encode($dump);
+	error_log($str);
+}
+
 function probability($percent) {
 	$n = rand(0,100);
 	if($n>$percent) {
@@ -3184,7 +3191,7 @@ function processMessage($message) {
 			$time = time() - 60;
 			if($time >= $flip) {
 				$time = $time + 60;
-				$query = "UPDATE `flipcoin` SET `user_id` = '".$message['from']['id']."', `group_id` = '".$chat_id."', `last_flip` = '".$time."' WHERE `fc_id` = '01'";
+				$query = "UPDATE `flipcoin` SET `user_id` = '".$message['from']['id']."', `group_id` = '".$chat_id."', `last_flip` = '".$time."', `times_flipped` = `times_flipped` + 1 WHERE `fc_id` = '01'";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				mysql_close($link);
 				$keyboardButton = (object) ["text" => "Girar la moneda", "callback_data" => "FLIPCOINqGq3Z6yf1guhfgFdwkzt"];
@@ -4241,16 +4248,13 @@ function processMessage($message) {
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 			if($imNewcomer) {
-				$msg = "*Dadme unos segundillos que me instalo en vuestro habitáculo...*";
+				$msg = "*Me estoy instalando en este grupo con las opciones predeterminadas. En unos segundos muestro la ayuda del bot, ¡configúrame bien para no ser pesado ni aburrido!*";
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				sleep(2);
+				sleep(1);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
-				$msg = "*Venga, todo listo, os dejo el menú y me piro a dormir.*";
+				sleep(4);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				sleep(3);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				sleep(2);
 				//$msg = commandsList();
 				//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 				commandsList($chat_id);

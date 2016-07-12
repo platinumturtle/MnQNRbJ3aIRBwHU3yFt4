@@ -2065,7 +2065,7 @@ function processMessage($message) {
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
 			$link = dbConnect();
-			$query = "SELECT DISTINCT group_id, name FROM groupbattle WHERE lastpoint > 0";
+			$query = "SELECT DISTINCT group_id, name FROM groupbattle WHERE lastpoint > 0 AND mode > -4";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$totalGroups = 0;
 			$notificationMessage = substr($text,18);

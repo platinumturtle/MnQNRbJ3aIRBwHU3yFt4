@@ -3733,144 +3733,145 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!pole") !== false) {
 		error_log($logname." triggered: !pole.");
 		$currentTime = time();
-		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
-			$from_id = $message['from']['id'];
-			$minutes = date('i');
-			$seconds = date('s');
-			$hour = date('g');
-			$currentTime = $currentTime - ($minutes * 60) - $seconds;
+		$from_id = $message['from']['id'];
+		$minutes = date('i');
+		$seconds = date('s');
+		$hour = date('g');
+		$currentTime = $currentTime - ($minutes * 60) - $seconds;
+		$randomizer = rand(5000, 20000);
+		$randMultiplier = rand(3,6);
+		$randomizer = $randomizer * $randMultiplier;
+		usleep($randomizer);
+		$link = dbConnect();
+		$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if($row['last_flag'] != $currentTime) {
+			mysql_free_result($result);
 			$randomizer = rand(5000, 20000);
 			$randMultiplier = rand(3,6);
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
-			$link = dbConnect();
-			/* 
-			START
-			
-			
-			
-			
-			*/
 			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if($row['last_flag'] != $currentTime) {
-				mysql_free_result($result);
-				$randomizer = rand(5000, 20000);
-				$randMultiplier = rand(3,6);
-				$randomizer = $randomizer * $randMultiplier;
-				usleep($randomizer);
-				$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$row = mysql_fetch_array($result);
-				if($row['last_flag'] != $currentTime) {
-					if (isset($message['from']['username'])) {
-						$name = $message['from']['username'];
-					} else if (isset($message['from']['first_name'])) {
-						$name = $message['from']['first_name'];
-					} else {
-						$name = "Desconocido";
-					}
-					$checkMax = 0;
+				if (isset($message['from']['username'])) {
+					$name = $message['from']['username'];
+				} else if (isset($message['from']['first_name'])) {
+					$name = $message['from']['first_name'];
+				} else {
+					$name = "Desconocido";
+				}
+				$checkMax = 0;
+				if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 					$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
-					if($from_id != $row['user_id'] && $usersGroupCount > 4) {
-						$total = 1;
-						$cleanName = str_replace("'","''",$name);
+				} else {
+					$usersGroupCount = 17025;
+				}
+				if($from_id != $row['user_id'] && $usersGroupCount > 4) {
+					$total = 1;
+					$cleanName = str_replace("'","''",$name);
+					mysql_free_result($result);
+					$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					if(isset($row['fc_id'])) {
+						if($row['fc_id'] > 1) {
+							$subTotal = $row['total'];
+							mysql_free_result($result);
+							$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$from_id."' GROUP BY user_id";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$row = mysql_fetch_array($result);
+							$newSeekerTotal = $row['total'];
+							mysql_free_result($result);
+							$query = "SELECT SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$row = mysql_fetch_array($result);
+							if(($newSeekerTotal - $row['total']) < 20) {
+								error_log($logname." got a new flag!");
+								mysql_free_result($result);
+								checkPoint($hour, $chat_id, $link, $logname, $currentTime);
+								$total = 1 + $subTotal; 
+								mysql_free_result($result);
+								if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+									$chatTitle = str_replace("'","''",$message['chat']['title']);
+								} else {
+									$chatTitle = "su homocueva";
+								}
+								$query = "SET NAMES utf8mb4;";
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+								$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							} else {
+								error_log($logname." has full inventory.");
+								$checkMax = 1;
+								$text = "<b>🏴❌ ¡".$name." ha encontrado otra bandera, ¡pero ya tiene el inventario lleno!</b> 🚫";
+							}
+						}
+					} else {
 						mysql_free_result($result);
-						$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
+						checkPoint($hour, $chat_id, $link, $logname, $currentTime);
+						mysql_free_result($result);
+						error_log($logname." got a flag for the first time!");
+						$user_id = $message['from']['id'];
+						if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+							$chatTitle = str_replace("'","''",$message['chat']['title']);
+						} else {
+							$chatTitle = "su homocueva";
+						}
+						$query = "SET NAMES utf8mb4;";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					}
+					if($checkMax == 0) {
+						mysql_free_result($result);
+						$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
+						if($hour != 1) {
+							$text = $text."s";
+						}
+						$timeEmoji = timeEmoji($hour, 0);
+						$text = $text." ".$timeEmoji."! 🎉</b>";	
+						$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
+						mysql_free_result($result);
+						$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT DISTINCT epoch_time FROM flagwinnerlog )dt";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
-						if(isset($row['fc_id'])) {
-							if($row['fc_id'] > 1) {
-								$subTotal = $row['total'];
-								mysql_free_result($result);
-								$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$from_id."' GROUP BY user_id";
-								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-								$row = mysql_fetch_array($result);
-								$newSeekerTotal = $row['total'];
-								mysql_free_result($result);
-								$query = "SELECT SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
-								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-								$row = mysql_fetch_array($result);
-								if(($newSeekerTotal - $row['total']) < 20) {
-									error_log($logname." got a new flag!");
-									mysql_free_result($result);
-									checkPoint($hour, $chat_id, $link, $logname, $currentTime);
-									$total = 1 + $subTotal; 
-									mysql_free_result($result);
-									$chatTitle = str_replace("'","''",$message['chat']['title']);
-									$query = "SET NAMES utf8mb4;";
-									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-									$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
-									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-								} else {
-									error_log($logname." has full inventory.");
-									$checkMax = 1;
-									$text = "<b>🏴❌ ¡".$name." ha encontrado otra bandera, ¡pero ya tiene el inventario lleno!</b> 🚫";
-								}
-							}
-						} else {
-							mysql_free_result($result);
-							checkPoint($hour, $chat_id, $link, $logname, $currentTime);
-							mysql_free_result($result);
-							error_log($logname." got a flag for the first time!");
-							$user_id = $message['from']['id'];
-							$chatTitle = str_replace("'","''",$message['chat']['title']);
-							$query = "SET NAMES utf8mb4;";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-							$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$disctintTotal = $row['total'];
+						mysql_free_result($result);
+						$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT epoch_time FROM flagwinnerlog )dt";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						$fullTotal = $row['total'];
+						mysql_free_result($result);
+						if($fullTotal != $disctintTotal) {
+							$admin_id = 6250647;
+							apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados probablemente de ".$cleanName." en la captura de la bandera que no se han podido corregir.*"));
 						}
-						if($checkMax == 0) {
-							mysql_free_result($result);
-							$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-							$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
-							if($hour != 1) {
-								$text = $text."s";
-							}
-							$timeEmoji = timeEmoji($hour, 0);
-							$text = $text." ".$timeEmoji."! 🎉</b>";	
-							$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
-							mysql_free_result($result);
-							$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-							mysql_free_result($result);
-							$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT DISTINCT epoch_time FROM flagwinnerlog )dt";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-							$row = mysql_fetch_array($result);
-							$disctintTotal = $row['total'];
-							mysql_free_result($result);
-							$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT epoch_time FROM flagwinnerlog )dt";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-							$row = mysql_fetch_array($result);
-							$fullTotal = $row['total'];
-							mysql_free_result($result);
-							if($fullTotal != $disctintTotal) {
-								$admin_id = 6250647;
-								apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*Se han producido duplicados probablemente de ".$cleanName." en la captura de la bandera que no se han podido corregir.*"));
-							}
-						}
-					} else if($usersGroupCount > 4) {
-						$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";
-					} else {
-						$text = "<b>🏴❌ ".$name." ha encontrado una bandera, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
 					}
+				} else if($usersGroupCount > 4) {
+					$text = "<b>🏴❌ ".$name." ha encontrado otra bandera, ¡pero no puede capturar dos seguidas!</b> 🚫";
 				} else {
-					mysql_free_result($result);
-					poleFail($hour, $chat_id, $link, $logname, $currentTime);
+					$text = "<b>🏴❌ ".$name." ha encontrado una bandera, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
 				}
 			} else {
 				mysql_free_result($result);
 				poleFail($hour, $chat_id, $link, $logname, $currentTime);
 			}
-			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
-			mysql_free_result($result);
-			mysql_close($link);
 		} else {
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La pole solo está disponible para grupos y supergrupos, ¡añádeme a alguno!*"));
+			mysql_free_result($result);
+			poleFail($hour, $chat_id, $link, $logname, $currentTime);
 		}
+		$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+		mysql_free_result($result);
+		mysql_close($link);
 	} else if (strpos($text, "%%CONNTRY%%") !== false) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "VOY"));
 		/*$con = dbConnect();

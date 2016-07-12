@@ -3532,6 +3532,22 @@ function processMessage($message) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 		mysql_free_result($result);
 		mysql_close($link);
+	} else if (strpos(strtolower($text), "!modoadmin") !== false) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$user_id = $message['from']['id'];
+			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+			if(in_array($user_id, $adminList) || $user_id == 6250647)) {
+				//$link = dbConnect();
+				error_log($logname." triggered: !modoadmin.");
+				//showMode($chat_id);
+				//mysql_close($link);
+			}
+		} else {
+			error_log($logname." tried to trigger in private: !modoadmin.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
 	} else if (strpos(strtolower($text), "!modo") !== false) {
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 			error_log($logname." triggered: !modo.");

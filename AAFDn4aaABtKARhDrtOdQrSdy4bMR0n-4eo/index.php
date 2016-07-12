@@ -1400,6 +1400,7 @@ function getReport() {
 						"BQADBAADoQYAApdgXwABwBIozn6az90C",
 						"BQADBAADpwYAApdgXwABl9sevoccTP0C",
 						"BQADBAADogYAApdgXwABLf6xoKIELRUC",
+						"BQADBAAD7QQAAjIcZAcGUulut5ihyQI",
 						"BQADBAADowYAApdgXwABwdfqlc0asqAC",
 						"BQADBAADKAcAApdgXwABqNEAATF_JhG1Ag",
 						"BQADBAADHwcAApdgXwABZ598XqMBqVAC",
@@ -2581,7 +2582,7 @@ function processMessage($message) {
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Mis dies.");
 		}
-	} else if (strtolower($text) === "sticker" || strpos(strtolower($text), "!sticker") !== false) {
+	} else if (strpos(strtolower($text), "!sticker") !== false) {
 		error_log($logname." triggered: !sticker.");
 		$sticker = getSticker();
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => $sticker));

@@ -1675,6 +1675,9 @@ function containsCommand($text) {
 						"!bequer",
 						"!moneda",
 						"!becker",
+						"!texto",
+						"!bienvenida",
+						"!sugerencia",
 						"!becquer",
 						"!historia"
 					);
@@ -1686,6 +1689,58 @@ function containsCommand($text) {
 		}
 	}
 	return 0;
+}
+
+function showMode(/*$link, */$group_id, $mode=200) {
+	if($mode == 200) {
+		$query = "SELECT mode, name, flagblock, freemode FROM groupbattle WHERE group_id = '".$group_id."'";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$mode = $row['mode'];
+		$name = $row['name'];
+		$flag = $row['flagblock'];
+		$freemode = $row['freemode'];
+		mysql_free_result($result);
+	}
+	$message = "*Configuración del bot para ".$name.":*".PHP_EOL;
+	if($mode > -1) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Participación activa del bot en la conversación".PHP_EOL;
+	if($mode > -2) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Respuestas con gifs o audios a palabras clave concretas".PHP_EOL;
+	if($mode > -3) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Huevos de pascua y funciones extensas".PHP_EOL;
+	if($mode > -4) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Notificaciones de actualizaciones importantes del bot".PHP_EOL;
+	if($freemode == 1) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Cualquier usuario puede cambiar la configuración anterior".PHP_EOL;
+	if($flagblock == 0) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Minijuegos 'Captura la bandera' y 'Reclama el mástil'".PHP_EOL;
+	$message = $message."_Consulta la \"!ayuda\" para saber cómo cambiar la configuración._";
+	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "Markdown", "text" => $message));			
 }
 
 function getSticker() {
@@ -3475,6 +3530,11 @@ function processMessage($message) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 		mysql_free_result($result);
 		mysql_close($link);
+	} else if (strpos(strtolower($text), "!modo") !== false) {
+		error_log($logname." triggered: !modo.");
+		$link = dbConnect();
+		showMode($chat_id);
+		mysql_close($link);
 	} else if (strpos(strtolower($text), "!banderasgrupo") !== false) {
 		error_log($logname." triggered: !banderasgrupo.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -3755,7 +3815,7 @@ function processMessage($message) {
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Mis dies.");
 		}
-	} else if (strtolower($text) === "sticker" || strpos(strtolower($text), "!sticker") !== false) {
+	} else if (strpos(strtolower($text), "!sticker") !== false) {
 		error_log($logname." triggered: !sticker.");
 		$sticker = getSticker();
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => $sticker));

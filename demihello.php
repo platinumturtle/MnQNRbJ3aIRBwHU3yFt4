@@ -3543,8 +3543,8 @@ function processMessage($message) {
 			//error_log($str2);
 			//error_log(in_array($user_id, $adminList));
 			for($i=0;$i<sizeof($adminList);$i++) {
-				error_log("ENTRO"); // testmode
-				if($adminList[$i]['id'] == $user_id) {
+				//error_log("ENTRO");  testmode
+				if($adminList[$i]['user']['id'] == $user_id) {
 					$isAdmin = 1;
 				}
 			}

@@ -3242,7 +3242,7 @@ function processMessage($message) {
 				$link = dbConnect();
 				$query = "SELECT custom_text FROM groupbattle WHERE group_id = '".$chat_id."'";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$row = mysql_fetch_array($result)
+				$row = mysql_fetch_array($result);
 				if($row['custom_text'] == "") {
 					$result = "<b>No se ha establecido ningún texto personalizado para este grupo.</b>".PHP_EOL.
 								"Puedes crear uno si eres administrador del grupo escribiendo \"!texto mensaje_a_enviar\".".PHP_EOL.

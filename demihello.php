@@ -3684,7 +3684,7 @@ function processMessage($message) {
 			if($user_id == 6250647) {
 				$isAdmin = 1;
 			}
-			if($isAdmin == 1 || $freeMode = 1) {
+			if($isAdmin == 1 || $freeMode == 1) {
 				$link = dbConnect();
 				error_log($logname." triggered: !cambiarmodo.");
 				switch($currMode) {

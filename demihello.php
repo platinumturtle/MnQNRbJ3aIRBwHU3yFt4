@@ -4398,15 +4398,19 @@ function processMessage($message) {
 			if(isset($message['new_chat_member']['username'])) {
 				if($message['new_chat_member']['username'] == "DemisukeBot" || $message['new_chat_member']['username'] == "Demitest_bot") {
 					$imNewcomer = true;
-					$msg = "*Hora de portarse bien, aquí llega el menda.* 😎";
+					$msg = "<b>Hora de portarse bien, aquí llega el menda.</b> 😎";
 				} else {
-				$msg = "*¿Más gente nueva?,";
-				if(isset($message['new_chat_member']['first_name'])){
-					$msg = "*".$message['new_chat_member']['first_name'];
-				} else if(isset($message['new_chat_member']['username'])) {
-					$msg = $message['new_chat_member']['username']."*";
-				}
-				$msg = $msg." aporta algo al grupo o te echamos en 24 horas.*";
+					if($welcomeText != "") {
+						$msg = $welcomeText;
+					} else {
+						$msg = "<b>¿Más gente nueva?,";
+						if(isset($message['new_chat_member']['first_name'])){
+							$msg = "<b>".$message['new_chat_member']['first_name'];
+						} else if(isset($message['new_chat_member']['username'])) {
+							$msg = "@".$message['new_chat_member']['username']."<b>";
+						}
+						$msg = $msg." aporta algo al grupo o te echamos en 24 horas.</b>";
+					}
 				}
 			} else {
 				if($welcomeText != "") {

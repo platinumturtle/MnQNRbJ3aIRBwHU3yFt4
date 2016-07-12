@@ -3223,17 +3223,45 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!texto") === 0) {
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 			if(strlen($text) > 6) {
-				if($text == "!texto off") {
-					error_log($logname." deleted custom group text.");
-					// update de mensaje a null y avisar al pavo
-				} else {
-					error_log($logname." set a new text message.");
-					$text = ltrim(rtrim(substr($text, 6, 2500)));
-					if($text == "") {
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Has introducido un mensaje de texto vacío. El resultado no se ha guardado.*"));
-					} else {
-						// base de datos a actualizar, y avisar al chacho claro
+				$user_id = $message['from']['id'];
+				$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+				$isAdmin = 0;
+				for($i=0;$i<sizeof($adminList);$i++) {
+					if($adminList[$i]['user']['id'] == $user_id) {
+						$isAdmin = 1;
 					}
+				}
+				if($user_id == 6250647) {
+					$isAdmin = 1;
+				}
+				if($isAdmin == 1) {
+					if($text == "!texto off") {
+						error_log($logname." deleted custom group text.");
+						$link = dbConnect();
+						$query = "UPDATE groupbattle SET custom_text = NULL WHERE group_id = ".$chat_id;
+						$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						mysql_close($link);
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(250000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El mensaje personalizado ha sido eliminado.*"));
+					} else {
+						error_log($logname." set a new text message.");
+						$text = ltrim(rtrim(substr($text, 6, 2500)));
+						if($text == "") {
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(250000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Has introducido un mensaje de texto vacío. El resultado no se ha guardado.*"));
+						} else {
+							// base de datos a actualizar, y avisar al chacho claro
+						}
+					}
+				} else {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					error_log($logname." tried to edit or delete a group text not being admin.");
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Solo los administradores del grupo pueden editar o eliminar el mensaje personalizado.*"));
 				}
 			} else {
 				error_log($logname." triggered: !texto.");
@@ -4061,10 +4089,11 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "viva veget") !== false) {
 		if($randomTicket > -2) {
 			error_log($logname." triggered: Viva Vegetta.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
 			usleep(400000);
 			// Cambiar en DemisukeBot
 			$gif = "AwADBAADRQcAApdgXwABqfQ693x1aVQC";
-			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+			apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $gif));
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");
 		}

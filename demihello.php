@@ -1700,7 +1700,9 @@ function showMode($group_id) {
 	$flag = $row['flagblock'];
 	$freemode = $row['freemode'];
 	mysql_free_result($result);
-	$message = "*Configuración del bot para ".$name.":*".PHP_EOL;
+	apiRequest("sendChatAction", array('chat_id' => $group_id, 'action' => "typing"));
+	usleep(100000);
+	$message = "<b>Configuración del bot para ".$name.":</b>".PHP_EOL;
 	if($mode > -1) {
 		$message = $message."✅";
 	} else {
@@ -1737,8 +1739,8 @@ function showMode($group_id) {
 		$message = $message."❌";
 	}
 	$message = $message." Minijuegos 'Captura la bandera' y 'Reclama el mástil'".PHP_EOL;
-	$message = $message."_Consulta la \"!ayuda\" para saber cómo cambiar la configuración._";
-	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "Markdown", "text" => $message));			
+	$message = $message."<i>Consulta la \"!ayuda\" para saber cómo cambiar la configuración.</i>";
+	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "HTML", "text" => $message));			
 }
 
 function getSticker() {
@@ -2866,6 +2868,8 @@ function processMessage($message) {
 				mysql_free_result($result);
 				$grouptitle = $message['chat']['title'];
 				$grouptitle = str_replace("'","''",$grouptitle);
+				$grouptitle = str_replace("<","",$grouptitle);
+				$grouptitle = str_replace(">","",$grouptitle);
 				$query = "SET NAMES utf8mb4;";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
@@ -3900,23 +3904,25 @@ function processMessage($message) {
 		$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		if($row['mode'] > -1) {
-			mysql_free_result($result);
-			error_log($logname." triggered: New group title.");
-			$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
-			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$row = mysql_fetch_array($result);
-			if(isset($row['total'])) {
-				if($row['total'] > 0) {
-					mysql_free_result($result);
-					$newtitle = $message['new_chat_title'];
-					$newtitle = str_replace("'","''",$newtitle);
-					$query = "SET NAMES utf8mb4;";
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				}
+		mysql_free_result($result);
+		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				mysql_free_result($result);
+				$newtitle = $message['new_chat_title'];
+				$newtitle = str_replace("'","''",$newtitle);
+				$newtitle = str_replace("<","",$newtitle);
+				$newtitle = str_replace(">","",$newtitle);
+				$query = "SET NAMES utf8mb4;";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			}
+		}
+		if($row['mode'] > -1) {
+			error_log($logname." triggered: New group title.");
 			$msg = "*¿".$message['new_chat_title']."?*";
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(500000);

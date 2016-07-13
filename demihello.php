@@ -4207,8 +4207,10 @@ function processMessage($message) {
 			if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 				if($minutes < 30) {
 					$halfTime = $currentTime - 1800;
+					$halfHour = $hour - 1;
 				} else {
 					$halfTime = $currentTime + 1800;
+					$halfHour = $hour;
 				}
 				$query = 'SELECT user_id, lastpole FROM userbattle WHERE group_id = '.$chat_id.' AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -4248,18 +4250,18 @@ function processMessage($message) {
 									$query = "UPDATE `userbattle` SET `lastpole` = '".$halfTime."', `totalpole` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$from_id;
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 									mysql_free_result($result);
-									$text = "<b>📍🙋🏻 ¡".$name." ha reclamado el mástil de la";
-									if($hour != 1) {
+									$text = $text.PHP_EOL."<b>📍🙋🏻 ¡".$name." ha reclamado el mástil de la";
+									if($halfHour != 1) {
 										$text = $text."s";
 									}
-									$timeEmoji = timeEmoji($hour, 1);
+									$timeEmoji = timeEmoji($halfHour, 1);
 									$text = $text." ".$timeEmoji."! 🎉</b>";
 								} else {
 									error_log($logname." has full pole inventory.");
-									$text = "<b>📍❌ ¡".$name." ha encontrado otro mástil, ¡pero ya tiene el inventario lleno!</b> 🚫";
+									$text = $text.PHP_EOL."<b>📍❌ ¡".$name." ha encontrado otro mástil, ¡pero ya tiene el inventario lleno!</b> 🚫";
 								}
 						} else {
-							$text = $text."<b>📍❌ ¡".$name." necesita participar más en el grupo para poder reclamar su primer mástil!</b> 🚫";
+							$text = $text.PHP_EOL."<b>📍❌ ¡".$name." necesita participar más en el grupo para poder reclamar su primer mástil!</b> 🚫";
 						}
 					} else if($usersGroupCount > 4) {
 						$text = $text.PHP_EOL."<b>📍❌ ".$name." se ha topado con otro mástil, ¡pero no puede reclamar dos seguidos!</b> 🚫";
@@ -4275,10 +4277,10 @@ function processMessage($message) {
 					$row = mysql_fetch_array($result);
 					$row = mysql_fetch_array($result);
 					$text = $text.PHP_EOL."📍 <b>El mástil de la";
-					if($hour != 1) {
+					if($halfHour != 1) {
 						$text = $text."s";
 					}
-					$timeEmoji = timeEmoji($hour, 1);
+					$timeEmoji = timeEmoji($halfHour, 1);
 					$text = $text." ".$timeEmoji." fue reclamado por ".$row['user_name'].".</b>";
 					mysql_free_result($result);
 				}

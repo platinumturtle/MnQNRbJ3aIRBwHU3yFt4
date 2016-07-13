@@ -3959,11 +3959,73 @@ function processMessage($message) {
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 				} else {
 					// liada... se guarda el tiempo en la tabla, se le añade un penalty mayor, se avisa de inutil y se cierra todo
+					$penalty = $row['penalty'];
+					mysql_free_result($result);
+					switch($penalty){
+						case 1: $newPenalty = 3;
+								break;
+						case 3: $newPenalty = 6;
+								break;
+						case 6: $newPenalty = 15;
+								break;
+						case 15: $newPenalty = 45;
+								break;
+						case 45: $newPenalty = 90;
+								break;
+						case 90: $newPenalty = 180;
+								break;
+						case 180: $newPenalty = 540;
+								break;
+						case 540: $newPenalty = 2160;
+								break;
+						case 2160: $newPenalty = 4320;
+								break;
+						case 4320: $newPenalty = 4320;
+								break;
+						default: $newPenalty = 4320;
+								break;
+					}
+					$query = 'UPDATE lastpolecheck SET last_check = '.$currentTime.', penalty = '.$newPenalty.' WHERE user_id = '.$from_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
+					$logname = str_replace("@","",$logname);
+					$penaltyMsg = "💀 *".$logname." ha sido penalizado con ";
+					switch($newPenalty){
+						case 1: $penaltyMsg = $penaltyMsg."veinte segundos";
+								break;
+						case 3: $penaltyMsg = $penaltyMsg."un minuto";
+								break;
+						case 6: $penaltyMsg = $penaltyMsg."dos minutos";
+								break;
+						case 15: $penaltyMsg = $penaltyMsg."cinco minutos";
+								break;
+						case 45: $penaltyMsg = $penaltyMsg."quince minutos";
+								break;
+						case 90: $penaltyMsg = $penaltyMsg."treinta minutos";
+								break;
+						case 180: $penaltyMsg = $penaltyMsg."una hora";
+								break;
+						case 540: $penaltyMsg = $penaltyMsg."tres horas";
+								break;
+						case 2160: $penaltyMsg = $penaltyMsg."doce horas";
+								break;
+						case 4320: $penaltyMsg = $penaltyMsg."un día";
+								break;
+						default: $penaltyMsg = $penaltyMsg."un día";
+								break;
+					}
+					$penaltyMsg = $penaltyMsg." de penalización por uso reiterado de la función \"!pole\".*";
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $penaltyMsg));
+					mysql_free_result($result);
+					mysql_close($link);
+					exit;
 				}
+			} else {
+				mysql_free_result($result);	
+				$query = "INSERT INTO `lastpolecheck` (`user_id`, `last_check`, `penalty`) VALUES ('".$from_id."', '".$currentTime."', '1');";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 			}
-			mysql_free_result($result);	
-			$query = "INSERT INTO `lastpolecheck` (`user_id`, `last_check`, `penalty`) VALUES ('".$from_id."', '".$currentTime."', '1');";
-			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 			mysql_free_result($result);				
 			$minutes = date('i');
 			$seconds = date('s');

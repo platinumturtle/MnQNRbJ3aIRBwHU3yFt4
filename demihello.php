@@ -2826,7 +2826,7 @@ function getQuote($text, $chat_id) {
 	}
 }
 
-function commandsList($send_id, $mode="main") {
+function commandsList($send_id, $mode) {
 	/*
 	$commands = 
 				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
@@ -3118,7 +3118,7 @@ function processMessage($message) {
 	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke para saber qué hace este bot."));
     } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
 		error_log($logname." triggered: !ayuda.");
-		commandsList($chat_id);
+		commandsList($chat_id, "main");
     } else if (strpos($text, "/ayuda_modo") === 0 || strpos($text, "/ayuda_modo@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
 		commandsList($chat_id, $text);
@@ -4760,7 +4760,7 @@ function processMessage($message) {
 				sleep(3);
 				//$msg = commandsList();
 				//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
-				commandsList($chat_id);
+				commandsList($chat_id, "main");
 			}
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Newcomer to group.");

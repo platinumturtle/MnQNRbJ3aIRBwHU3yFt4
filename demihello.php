@@ -1691,7 +1691,7 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 							"<b>".$row['user_name']."</b>"
 							.PHP_EOL.
 							"<i>".$row['totalpole']." m";
-					if($row['total'] > 1) {
+					if($row['totalpole'] > 1) {
 						$text = $text."ástiles";
 					} else {
 						$text = $text."ástil";
@@ -3068,9 +3068,20 @@ function commandsList($send_id, $mode) {
 				"https://telegram.me/storebot?start=DemisukeBot"
 				;
 	} else if($mode == "modo") {
-		$text = "modomodmo";
+		$text = "🔧 <b>Configuración del bot</b> ⚙"
+				.PHP_EOL.PHP_EOL.
+				"Con la función <b>!modo</b> podrás controlar qué puede hacer el bot en el grupo."
+				.PHP_EOL.
+				"Para cambiar la configuración basta con usar <b>!cambiarmodo</b> y los ajustes pasarán al siguiente estado."
+				.PHP_EOL.
+				"la función <b>!cambiarmodo</b> por defecto puede ser utilizada por cualquier miembro del grupo, sin embargo un administrador de grupo puede restringir este privilegio escribiendo <b>!modoadmin</b> y volver a darlo con <b>!modolibre</b>."
+				.PHP_EOL.
+				"Los minijuegos 'Captura la bandera' y 'Reclama el mástil' también se pueden prohibir mediante la función <b>!prohibirpole</b> o permitir escribiendo <b>!permitirpole</b>."
+				.PHP_EOL.
+				"Además, también se visualizará el estado de la función personalizada y el mensaje de bienvenida personalizado del grupo. Consulta en la <b>!ayuda</b> cómo configurar estas funciones en sus apartados correspondientes."
+				;
 	} else if($mode == "inline") {
-		$text = "inline y cosaitas";
+		$text = "🔎 inline y cosaitas 📝";
 	} else if($mode == "moneda") {
 		$text = "moneduquis";
 	} else if($mode == "bienvenida") {

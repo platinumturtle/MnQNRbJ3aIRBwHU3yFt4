@@ -2954,7 +2954,7 @@ function commandsList($send_id, $mode) {
 				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
 				.PHP_EOL.
 				"Utilízalo siempre que quieras repasar cuáles son los comandos que se pueden utilizar con el bot escribiendo \"/demisuke\" o \"!ayuda\" sin las comillas."
-				.PHP_EOL.PHP_EOL.
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"⚠️ <b>¡Importante!</b>"
@@ -2962,13 +2962,13 @@ function commandsList($send_id, $mode) {
 				"Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para el grupo."
 				.PHP_EOL.
 				"Más información: /ayuda_modo"
-				.PHP_EOL.PHP_EOL.
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"🗣 <b>Interactividad:</b>"
 				.PHP_EOL.
 				"Si está activado en la función \"!modo\", el bot intentará participar en la conversación activa en alguna que otra ocasión, y responderá a palabras clave con respues, gifs, sonidos, stickers... ¡y huevos de pascua!"
-				.PHP_EOL.PHP_EOL.
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"🌐 <b>Funciones Inline:</b>"
@@ -2982,10 +2982,59 @@ function commandsList($send_id, $mode) {
 				"–<b>Enlace</b>: <i>Permite enviar un mensaje de color azul a cualquier chat.</i>"
 				.PHP_EOL.
 				"Más información: /ayuda_inline"
-				.PHP_EOL.PHP_EOL.
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"📎 <b>Utilidades:</b>"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"–<b>Insultos</b>: <i>Insulta a alguien mediante \"!insulta a nombre\".</i>"
+				.PHP_EOL.
+				"–<b>Sticker</b>: <i>Envía un sticker al azar con \"!sticker\".</i>"
+				.PHP_EOL.
+				"–<b>Historia</b>: <i>Cuenta una larga historia al escribir \"!historia\".</i>"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_siono"
+				.PHP_EOL.
 				;
 	} else if($mode == "modo") {
 		$text = "caca";

@@ -3081,7 +3081,7 @@ function commandsList($send_id, $mode) {
 				"<i>Además, también se visualizará el estado de la función personalizada y el mensaje de bienvenida personalizado del grupo. Consulta en la </i><b>!ayuda</b><i> cómo configurar estas funciones en sus apartados correspondientes.</i>"
 				;
 	} else if($mode == "inline") {
-		$text = "🔎 <b>Funciones inline del bot</b> 📝";
+		$text = "🔎 <b>Funciones inline del bot</b> 📝"
 				.PHP_EOL.PHP_EOL.
 				"<i>Las funciones inline son aquellas que puedes utilizar en cualquier chat, sea privado o grupal, sin necesidad de que el bot sea uno de los miembros de la conversación.</i>"
 				.PHP_EOL.PHP_EOL.

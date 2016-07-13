@@ -3096,7 +3096,14 @@ function commandsList($send_id, $mode) {
 				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
 				;
 	} else if($mode == "moneda") {
-		$text = "moneduquis";
+		$text = "🔎 <b>Función Moneda</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Utilizando </i><b>!moneda</b><i> aparecerá un botón para hacerla girar."
+				.PHP_EOL.
+				"¿Cara o cruz? ¡Elige antes de que salga una de las dos opciones!"
+				.PHP_EOL.PHP_EOL.
+				"La función de girar la moneda requiere un gran uso de la API de Telegram, por lo que solo hay una moneda general para todos los usuarios del bot, y se podrá girar una vez por minuto como máximo.</i>"
+				;
 	} else if($mode == "bienvenida") {
 		$text = "bienvenida";
 	} else if($mode == "texto") {

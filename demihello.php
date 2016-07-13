@@ -2948,14 +2948,53 @@ function commandsList($send_id, $mode) {
 	*/
 	$mode = str_replace("/ayuda_", "", strtolower($mode));
 	$mode = str_replace("@demisukebot", "", strtolower($mode));
+	$mode = str_replace("@demitest_bot", "", strtolower($mode));
 	if($mode == "main") {
-		$text = "principal /ayuda_modo";
+		$text = 
+				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
+				.PHP_EOL.
+				"Utilízalo siempre que quieras repasar cuáles son los comandos que se pueden utilizar con el bot escribiendo \"/demisuke\" o \"!ayuda\" sin las comillas."
+				.PHP_EOL.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"⚠️ <b>¡Importante!</b>"
+				.PHP_EOL.
+				"Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para el grupo."
+				.PHP_EOL.
+				"Más información: /ayuda_modo"
+				.PHP_EOL.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"🗣 <b>Interactividad:</b>"
+				.PHP_EOL.
+				"Si está activado en la función \"!modo\", el bot intentará participar en la conversación activa en alguna que otra ocasión, y responderá a palabras clave con respues, gifs, sonidos, stickers... ¡y huevos de pascua!"
+				.PHP_EOL.PHP_EOL..
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"🌐 <b>Funciones Inline:</b>"
+				.PHP_EOL.
+				"Estas funciones se lanzan iniciando un mensaje con @DemisukeBot seguido del texto."
+				.PHP_EOL.
+				"–<b>Spoiler</b>: <i>Permite enviar un mensaje oculto en cualquier chat.</i>"
+				.PHP_EOL.
+				"–<b>Negrita</b>: <i>Permite enviar un mensaje en negrita a cualquier chat.</i>"
+				.PHP_EOL.
+				"–<b>Enlace</b>: <i>Permite enviar un mensaje de color azul a cualquier chat.</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_inline"
+				.PHP_EOL.PHP_EOL..
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"📎 <b>Utilidades:</b>"
+				;
 	} else if($mode == "modo") {
 		$text = "caca";
 	}
-	apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
-	usleep(100000);
-	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", "text" => $text));
+	if(strlen($text) > 5){
+		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
+		usleep(100000);
+		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", "text" => $text));
+	}
 }
 
 function processMessage($message) {

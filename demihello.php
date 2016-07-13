@@ -3070,7 +3070,7 @@ function commandsList($send_id, $mode) {
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot</b> ⚙"
 				.PHP_EOL.PHP_EOL.
-				"<i>Con la función </i><b>!modo</b><i> podrás controlar qué puede hacer el bot en el grupo.</i>"
+				"<i>Con la función </i><b>!modo</b><i> podrás visualizar qué puede hacer el bot en el grupo.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>Para cambiar la configuración basta con usar </i><b>!cambiarmodo</b><i> y los ajustes pasarán al siguiente estado.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -3081,7 +3081,20 @@ function commandsList($send_id, $mode) {
 				"<i>Además, también se visualizará el estado de la función personalizada y el mensaje de bienvenida personalizado del grupo. Consulta en la </i><b>!ayuda</b><i> cómo configurar estas funciones en sus apartados correspondientes.</i>"
 				;
 	} else if($mode == "inline") {
-		$text = "🔎 inline y cosaitas 📝";
+		$text = "🔎 <b>Funciones inline del bot</b> 📝";
+				.PHP_EOL.PHP_EOL.
+				"<i>Las funciones inline son aquellas que puedes utilizar en cualquier chat, sea privado o grupal, sin necesidad de que el bot sea uno de los miembros de la conversación.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Para poder utilizar estas opciones basta con escribir</i><b>@DemisukeBot mensaje</b><i> y aparecerá un menú desplegable con las siguientes opciones:</i>"
+				.PHP_EOL.PHP_EOL.
+				"–<b>Spoiler</b>: <i>El mensaje que escribas se enviará oculto y el receptor no verá su contenido hasta que pulse el botón \"Desvelar spoiler\".</i>"
+				.PHP_EOL.
+				"<i>Si el mensaje se envía como </i><b>@DemisukeBot mensaje1 spoiler: mensaje2</b> <i>el mensaje1 aparecerá públicamente justo encima del botón, a modo de alerta adicional, y el mensaje2 será el que permanezca oculto tras el botón.</i>"
+				.PHP_EOL.PHP_EOL.
+				"–<b>Negrita</b>: <i>El mensaje que escribas se enviará en negrita, sin configuración adicional</i>"
+				.PHP_EOL.PHP_EOL.
+				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
+				;
 	} else if($mode == "moneda") {
 		$text = "moneduquis";
 	} else if($mode == "bienvenida") {
@@ -5419,4 +5432,4 @@ class Image
 
 
 
-?>
+?>>

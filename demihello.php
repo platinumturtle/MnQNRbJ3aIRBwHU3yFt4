@@ -3025,25 +3025,25 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"👾 <b>Minijuegos:</b>"
 				.PHP_EOL.
-				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				"–<b>Batalla de mensajes</b>: <i>Compite por ser el más activo de Telegram con \"!mensajes\".</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_moneda"
+				"Más información: /ayuda_mensajes"
 				.PHP_EOL.
-				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				"–<b>Grupos</b>: <i>Lleva a tu grupo a lo más alto con \"!grupos\".</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_moneda"
+				"Más información: /ayuda_grupos"
 				.PHP_EOL.
-				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				"–<b>Captura la bandera</b>: <i>¡Sé el más rápido de Telegram haciendo la \"!pole\"!</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_moneda"
+				"Más información: /ayuda_bandera"
 				.PHP_EOL.
-				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				"–<b>Reclama el mástil</b>: <i>Usa \"!pole\" para enviar un mástil a tu grupo!</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_moneda"
+				"Más información: /ayuda_mastil"
 				.PHP_EOL.
-				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				"–<b>Aprende a volar</b>: <i>¡Evita detonar la bomba con \"!boton\"!</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_moneda"
+				"Más información: /ayuda_boton"
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
@@ -3057,7 +3057,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"<i>¿Tienes alguna sugerencia para el bot?, ¿le encuentras algún fallo? Puedes utilizar la función \"!sugerencia\" para dejar un mensaje en el bot.</i>"
 				.PHP_EOL.
-				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
+				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
 				.PHP_EOL.
 				"@DemisukeBot v2.0 creado por @Kamisuke."
 				.PHP_EOL.
@@ -3068,7 +3068,29 @@ function commandsList($send_id, $mode) {
 				"https://telegram.me/storebot?start=DemisukeBot"
 				;
 	} else if($mode == "modo") {
-		$text = "cacas!";
+		$text = "modomodmo";
+	} else if($mode == "inline") {
+		$text = "inline y cosaitas";
+	} else if($mode == "moneda") {
+		$text = "moneduquis";
+	} else if($mode == "bienvenida") {
+		$text = "bienvenida";
+	} else if($mode == "texto") {
+		$text = "textosssss";
+	} else if($mode == "info") {
+		$text = "informacion";
+	} else if($mode == "cita") {
+		$text = "citasssss";
+	} else if($mode == "mensajes") {
+		$text = "mensajesssss";
+	} else if($mode == "grupos") {
+		$text = "gruposssss";
+	} else if($mode == "bandera") {
+		$text = "banderitas";
+	} else if($mode == "mastil") {
+		$text = "mastil mio";
+	} else if($mode == "boton") {
+		$text = "bombaaaaa";
 	}
 	if(strlen($text) > 5){
 		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
@@ -3238,9 +3260,20 @@ function processMessage($message) {
     } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
 		error_log($logname." triggered: !ayuda.");
 		commandsList($chat_id, "main");
-    } else if (strpos($text, "/ayuda_modo") === 0 || strpos($text, "/ayuda_modo@DemisukeBot") === 0) {
+    } else if (strpos($text, "/ayuda_modo") === 0 || strpos($text, "/ayuda_modo@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_inline") === 0 || strpos($text, "/ayuda_inline@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_moneda") === 0 || strpos($text, "/ayuda_moneda@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_bienvenida") === 0 || strpos($text, "/ayuda_bienvenida@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_texto") === 0 || strpos($text, "/ayuda_texto@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_info") === 0 || strpos($text, "/ayuda_info@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_cita") === 0 || strpos($text, "/ayuda_cita@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_mensajes") === 0 || strpos($text, "/ayuda_mensajes@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_grupos") === 0 || strpos($text, "/ayuda_grupos@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_bandera") === 0 || strpos($text, "/ayuda_bandera@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_mastil") === 0 || strpos($text, "/ayuda_mastil@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_boton") === 0 || strpos($text, "/ayuda_boton@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
-		commandsList($chat_id, $text);
+		commandsList($chat_id, $text);		
     } else if (strpos($text, "/sendNotification") === 0) {
 		error_log($logname." triggered: New Notification.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {

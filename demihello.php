@@ -6,9 +6,6 @@ include 'api.php';
 
 
 
-
-
-
 function debugMode($message) {
 	$debugFile = fopen("debug.log", "a");
 	$debugText = "Message Type: Message";
@@ -1333,7 +1330,8 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	}
 	$timeEmoji = timeEmoji($hour, 0);
 	$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
-	$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
+	$text = $text.PHP_EOL."📍 <b>Justo en esta décima de segundo el mástil no se puede consultar.</b>";
+	$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con !banderas el ránking global de banderas, con !banderasgrupo el ránking local y con !mastiles quién ha reclamado más veces un mástil en tu grupo.</i>";
 
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 	mysql_free_result($result);
@@ -4177,13 +4175,116 @@ function processMessage($message) {
 					}
 				} else {
 					mysql_free_result($result);
-					poleFail($hour, $chat_id, $link, $logname, $currentTime);
+					error_log($logname." triggered: Polefail (flag).");
+					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$row = mysql_fetch_array($result);
+					$text = "🚩 <b>La bandera de la";
+					if($hour != 1) {
+						$text = $text."s";
+					}
+					$timeEmoji = timeEmoji($hour, 0);
+					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					mysql_free_result($result);
 				}
 			} else {
-				mysql_free_result($result);
-				poleFail($hour, $chat_id, $link, $logname, $currentTime);
+					mysql_free_result($result);
+					error_log($logname." triggered: Polefail (flag).");
+					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$row = mysql_fetch_array($result);
+					$text = "🚩 <b>La bandera de la";
+					if($hour != 1) {
+						$text = $text."s";
+					}
+					$timeEmoji = timeEmoji($hour, 0);
+					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					mysql_free_result($result);
 			}
-			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
+			// Changing Flag to Pole
+			if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+				if($minutes < 30) {
+					$halfTime = $currentTime - 1800;
+				} else {
+					$halfTime = $currentTime + 1800;
+				}
+				$query = 'SELECT user_id, lastpole FROM userbattle WHERE group_id = '.$chat_id.' ORDER BY lastpole DESC LIMIT 1';
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if($row['lastpole'] != $halfTime) {
+					if (isset($message['from']['username'])) {
+						$name = $message['from']['username'];
+					} else if (isset($message['from']['first_name'])) {
+						$name = $message['from']['first_name'];
+					} else {
+						$name = "Desconocido";
+					}
+					$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
+					if($from_id != $row['user_id'] && $usersGroupCount > 4) {
+						$total = 1;
+						$cleanName = str_replace("'","''",$name);
+						mysql_free_result($result);
+						$query = "SELECT totalpole FROM userbattle WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						if(isset($row['totalpole'])) {
+								$subTotal = $row['totalpole'];
+								mysql_free_result($result);
+								mysql_free_result($result);
+								$query = "SELECT totalpole FROM userbattle WHERE group_id = '".$chat_id."' ORDER BY totalpole DESC , lastpole LIMIT 9, 1";
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+								$row = mysql_fetch_array($result);
+								if(!isset($row['totalpole'])) {
+									$poleInventory = 0;
+								} else {
+									$poleInventory = $row['totalpole'];
+								}
+								if(($subTotal - $poleInventory) < 20) {
+									error_log($logname." got a new pole!");
+									mysql_free_result($result);
+									$total = 1 + $subTotal;
+									$query = "UPDATE `userbattle` SET `lastpole` = '".$halfTime."', `totalpole` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$from_id;
+									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+									mysql_free_result($result);
+									$text = "<b>📍🙋🏻 ¡".$name." ha reclamado el mástil de la";
+									if($hour != 1) {
+										$text = $text."s";
+									}
+									$timeEmoji = timeEmoji($hour, 1);
+									$text = $text." ".$timeEmoji."! 🎉</b>";
+								} else {
+									error_log($logname." has full pole inventory.");
+									$text = "<b>📍❌ ¡".$name." ha encontrado otro mástil, ¡pero ya tiene el inventario lleno!</b> 🚫";
+								}
+						} else {
+							$text = $text."<b>📍❌ ¡".$name." necesita participar más en el grupo para poder reclamar su primer mástil!</b> 🚫";
+						}
+					} else if($usersGroupCount > 4) {
+						$text = $text.PHP_EOL."<b>📍❌ ".$name." se ha topado con otro mástil, ¡pero no puede reclamar dos seguidos!</b> 🚫";
+					} else {
+						$text = $text.PHP_EOL."<b>📍❌ ".$name." se encuentra ante un mástil, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
+					}
+
+				} else {
+					mysql_free_result($result);
+					error_log($logname." triggered: Polefail.");
+					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$row = mysql_fetch_array($result);
+					$text = $text.PHP_EOL."📍 <b>El mástil de la";
+					if($hour != 1) {
+						$text = $text."s";
+					}
+					$timeEmoji = timeEmoji($hour, 1);
+					$text = $text." ".$timeEmoji." fue reclamado por ".$row['user_name'].".</b>";
+					mysql_free_result($result);
+				}
+			}
+			// Result
+			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con !banderas el ránking global de banderas, con !banderasgrupo el ránking local y con !mastiles quién ha reclamado más veces un mástil en tu grupo.</i>";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 			mysql_free_result($result);
 		} else {

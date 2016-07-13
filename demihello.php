@@ -1649,6 +1649,87 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	return $text;
 }
 
+function getPoleBattle($myself, $group, $groupName = "grupo") {
+	//HTML Parse Mode
+	if($group == 0) {
+		$text = "<b>La función !mastiles es exclusiva para grupos y supergrupos, ¡añádeme a alguno y utilízala allí!</b>";
+	}
+	else {
+		$link = dbConnect();
+		$text = "<b>🏁 Ránking de ".$groupName." de Banderas capturadas:</b>";
+		$query = "SELECT user_name, totalpole FROM userbattle WHERE totalpole > 0 AND group_id = '".$group."' ORDER BY totalpole DESC , lastpole";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$text = $text.PHP_EOL.PHP_EOL.
+				"<b>🏆 POLE ABSOLUTA 🏆</b>"
+				.PHP_EOL;
+		for($i=0;$i<10;$i++) {
+			$row = mysql_fetch_array($result);
+			if(isset($row['totalpole'])) {
+				if($row['totalpole'] > 0) {
+					switch($i) {
+						case 1: $text = $text."<b>🎖2º </b>";
+								break;
+						case 2: $text = $text."<b>🏅3º </b>";
+								break;
+						case 3: $text = $text."4⃣ ";
+								break;
+						case 4: $text = $text."5⃣ ";
+								break;
+						case 5: $text = $text."6⃣ ";
+								break;
+						case 6: $text = $text."7⃣ ";
+								break;
+						case 7: $text = $text."8⃣ ";
+								break;
+						case 8: $text = $text."9⃣ ";
+								break;
+						case 9: $text = $text."🔟 ";
+								break;
+						default: break;
+					}
+					$text = $text.
+							"<b>".$row['user_name']."</b>"
+							.PHP_EOL.
+							"<i>".$row['totalpole']." m";
+					if($row['total'] > 1) {
+						$text = $text."ástiles";
+					} else {
+						$text = $text."astil";
+					}
+					$text = $text.".</i>".PHP_EOL.PHP_EOL;
+				}
+			} else if($i==0) {
+				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
+			}
+		}
+		mysql_free_result($result);
+		$query = "SELECT user_id, first_name, user_name, totalpole FROM userbattle WHERE user_id = '".$myself."' AND group_id = '".$group."'";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['user_id'])) {
+			$text = $text."<b>";
+			if($row['user_name'] == "") {
+				$checkName = $row['first_name'];
+			} else {
+				$checkName = $row['user_name'];
+			}				
+			$text = $text.$checkName." ha capturado ".$row['totalpole']." m";
+			if($row['totalpole'] > 1) {
+				$text = $text."ástiles";
+			} else {
+				$text = $text."astil";
+			}
+			$text = $text." desde ".$groupName.".</b>".PHP_EOL.PHP_EOL;
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		$text = $text.
+				"<i>Cada sesenta minutos aparece un nuevo mástil en cada uno de los grupos del bot.".PHP_EOL.
+				"Recuerda que los puedes reclamar con la función \"!pole\".</i>";
+	}
+	return $text;
+}
+
 function containsCommand($text) {
 	$commandsList = array(
 						"/start",
@@ -3933,6 +4014,17 @@ function processMessage($message) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!mastil") !== false || strpos(strtolower($text), "!mástil")) {
+		error_log($logname." triggered: !mastil.");
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(100000);
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$result = getPoleBattle($message['from']['id'], $chat_id, $message['chat']['title']);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+		} else {
+			$result = "*Para usar esta función necesitas ejecutarla desde algún grupo, ¡añademe a tu grupo favorito y compite con tus amigos!*";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 		}
 	} else if (strpos(strtolower($text), "!banderasgrupo") !== false) {
 		error_log($logname." triggered: !banderasgrupo.");

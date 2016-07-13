@@ -2995,13 +2995,9 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"–<b>Historia</b>: <i>Cuenta una larga historia al escribir \"!historia\".</i>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"–<b>Nick</b>: <i>Genera un nombre de usuario aleatorio con \"!nick\".</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
-				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
-				.PHP_EOL.
-				"Más información: /ayuda_siono"
+				"–<b>Dados</b>: <i>Lanza dos dados y obtendrás un resultado entre dos y doce usando \"!dados\".</i>"
 				.PHP_EOL.
 				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
 				.PHP_EOL.
@@ -3034,7 +3030,7 @@ function commandsList($send_id, $mode) {
 				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
 				.PHP_EOL.
 				"Más información: /ayuda_siono"
-				.PHP_EOL.
+				
 				;
 	} else if($mode == "modo") {
 		$text = "caca";

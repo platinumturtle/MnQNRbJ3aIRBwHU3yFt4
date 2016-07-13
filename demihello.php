@@ -2959,7 +2959,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"⚠️ <b>¡Importante!</b>"
 				.PHP_EOL.
-				"Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para el grupo."
+				"<i>Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para el grupo.</i>"
 				.PHP_EOL.
 				"Más información: /ayuda_modo"
 				.PHP_EOL.
@@ -2967,13 +2967,11 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"🗣 <b>Interactividad:</b>"
 				.PHP_EOL.
-				"Si está activado en la función \"!modo\", el bot intentará participar en la conversación activa en alguna que otra ocasión, y responderá a palabras clave con respues, gifs, sonidos, stickers... ¡y huevos de pascua!"
+				"<i>Si está activado en la función \"!modo\", el bot intentará participar en la conversación activa en alguna que otra ocasión, y responderá a palabras clave con respues, gifs, sonidos, stickers... ¡y huevos de pascua!</i>"
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"🌐 <b>Funciones Inline:</b>"
-				.PHP_EOL.
-				"Estas funciones se lanzan iniciando un mensaje con @DemisukeBot seguido del texto."
 				.PHP_EOL.
 				"–<b>Spoiler</b>: <i>Permite enviar un mensaje oculto en cualquier chat.</i>"
 				.PHP_EOL.
@@ -2999,41 +2997,78 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"–<b>Dados</b>: <i>Lanza dos dados y obtendrás un resultado entre dos y doce usando \"!dados\".</i>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"–<b>Ping</b>: <i>Comprueba la conexión entre cliente y bot con \"!ping\".</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
+				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"Más información: /ayuda_moneda"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
+				"–<b>Bienvenida</b>: <i>Establece un mensaje personal de bienvenida con \"!bienvenida\".</i>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"Más información: /ayuda_bienvenida"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
+				"–<b>Función personal</b>: <i>Guarda tu texto personalizado y lánzalo con \"!texto\".</i>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"Más información: /ayuda_texto"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
+				"–<b>Información</b>: <i>Muestra información del bot con \"!info\".</i>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"Más información: /ayuda_info"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
+				"–<b>Cita</b>: <i>Crea una cita como imagen con \"!cita mensaje\".</i>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"Más información: /ayuda_cita"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
+				"–<b>Bécquer</b>: <i>Crea una imagen con texto de Bécquer usando \"!becquer mensaje\".</i>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
+				"👾 <b>Minijuegos:</b>"
 				.PHP_EOL.
-				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_siono"
-				
+				"Más información: /ayuda_moneda"
+				.PHP_EOL.
+				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_moneda"
+				.PHP_EOL.
+				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_moneda"
+				.PHP_EOL.
+				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_moneda"
+				.PHP_EOL.
+				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_moneda"
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"🤖 <b>Otros bots:</b>"
+				.PHP_EOL.
+				"@KamisukeBot: <i>Envía sonidos cortos como con el antiguo \"Messenger Plus!\".</i>"
+				.PHP_EOL.
+				"@DemigranciasBot: <i>Los mejores textos y audios de ForoCoches se reúnen en este bot.</i>"
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"<i>¿Tienes alguna sugerencia para el bot?, ¿le encuentras algún fallo? Puedes utilizar la función \"!sugerencia\" para dejar un mensaje en el bot.</i>"
+				.PHP_EOL.
+				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
+				.PHP_EOL.
+				"@DemisukeBot v2.0 creado por @Kamisuke."
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"¿Te gusta el bot? ¡Puntúalo ⭐️⭐️⭐️⭐️⭐️!"
+				.PHP_EOL.
+				"https://telegram.me/storebot?start=DemisukeBot"
 				;
 	} else if($mode == "modo") {
-		$text = "caca";
+		$text = "cacas!";
 	}
 	if(strlen($text) > 5){
 		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			

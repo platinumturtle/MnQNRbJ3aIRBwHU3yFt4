@@ -4210,7 +4210,7 @@ function processMessage($message) {
 				} else {
 					$halfTime = $currentTime + 1800;
 				}
-				$query = 'SELECT user_id, lastpole FROM userbattle WHERE group_id = '.$chat_id.' ORDER BY lastpole DESC LIMIT 1';
+				$query = 'SELECT user_id, lastpole FROM userbattle WHERE group_id = '.$chat_id.' AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				if($row['lastpole'] != $halfTime) {

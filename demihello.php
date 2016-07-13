@@ -3255,6 +3255,8 @@ function processMessage($message) {
 						} else {
 							$link = dbConnect();
 							$text = str_replace("'", "''", $text);
+							$query = "SET NAMES utf8mb4;";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$query = "UPDATE `groupbattle` SET `custom_text` = '".$text."' WHERE `group_id` = ".$chat_id;
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							mysql_free_result($result);
@@ -3329,6 +3331,8 @@ function processMessage($message) {
 						} else {
 							$link = dbConnect();
 							$text = str_replace("'", "''", $text);
+							$query = "SET NAMES utf8mb4;";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$query = "UPDATE `groupbattle` SET `welcome_text` = '".$text."' WHERE `group_id` = ".$chat_id;
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							mysql_free_result($result);
@@ -3929,18 +3933,38 @@ function processMessage($message) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "!pole") !== false) {
 		$link = dbConnect();
+		$from_id = $message['from']['id'];
+		$currentTime = time();
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 			$query = 'SELECT flagblock FROM groupbattle WHERE group_id = '.$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			$flagIsBlocked = $row['flagblock'];
+			mysql_free_result($result);	
 		} else {
 			$flagIsBlocked = 0;
 		}
 		if($flagIsBlocked == 0) {
 			error_log($logname." triggered: !pole.");
-			$currentTime = time();
-			$from_id = $message['from']['id'];
+			$query = 'SELECT last_check, penalty FROM lastpolecheck WHERE user_id = '.$from_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['last_check'])) {
+				$lastCheck = $row['last_check'];
+				$penalty = 20 * $row['penalty'];
+				$lastCheck = $lastCheck + $penalty;
+				if($currentTime > $lastCheck) {
+					mysql_free_result($result);	
+					$query = 'UPDATE lastpolecheck SET last_check = '.$currentTime.', penalty = 1 WHERE user_id = '.$from_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
+				} else {
+					// liada... se guarda el tiempo en la tabla, se le añade un penalty mayor, se avisa de inutil y se cierra todo
+				}
+			}
+			mysql_free_result($result);	
+			$query = "INSERT INTO `lastpolecheck` (`user_id`, `last_check`, `penalty`) VALUES ('".$from_id."', '".$currentTime."', '1');";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
+			mysql_free_result($result);				
 			$minutes = date('i');
 			$seconds = date('s');
 			$hour = date('g');

@@ -2826,7 +2826,7 @@ function getQuote($text, $chat_id) {
 	}
 }
 
-function commandsList($send_id,, $menu="main") {
+function commandsList($send_id, $menu="main") {
 	/*
 	$commands = 
 				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."

@@ -3072,7 +3072,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<i>Con la función </i><b>!modo</b><i> podrás controlar qué puede hacer el bot en el grupo.</i>"
 				.PHP_EOL.PHP_EOL.
-				"<i>Para cambiar la configuración basta con usar <b>!cambiarmodo</b><i> y los ajustes pasarán al siguiente estado.</i>"
+				"<i>Para cambiar la configuración basta con usar </i><b>!cambiarmodo</b><i> y los ajustes pasarán al siguiente estado.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>La función </i><b>!cambiarmodo</b><i> por defecto puede ser utilizada por cualquier miembro del grupo, sin embargo un administrador de grupo puede restringir este privilegio escribiendo</i> <b>!modoadmin</b><i> y volver a darlo con</i> <b>!modolibre</b><i>.</i>"
 				.PHP_EOL.PHP_EOL.

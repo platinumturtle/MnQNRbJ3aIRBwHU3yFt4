@@ -1699,13 +1699,23 @@ function containsCommand($text) {
 }
 
 function showMode($group_id) {
-	$query = "SELECT mode, name, flagblock, freemode FROM groupbattle WHERE group_id = '".$group_id."'";
+	$query = "SELECT mode, name, flagblock, freemode, custom_text, welcome_text FROM groupbattle WHERE group_id = '".$group_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	$mode = $row['mode'];
 	$name = $row['name'];
 	$flag = $row['flagblock'];
 	$freemode = $row['freemode'];
+	if($row['custom_text'] == "") {
+		$hasCustomText = 0;
+	} else {
+		$hasCustomText = 1;
+	}
+	if($row['welcome_text'] == "") {
+		$hasWelcomeText = 0;
+	} else {
+		$hasWelcomeText = 1;
+	}
 	mysql_free_result($result);
 	apiRequest("sendChatAction", array('chat_id' => $group_id, 'action' => "typing"));
 	usleep(100000);
@@ -1746,6 +1756,18 @@ function showMode($group_id) {
 		$message = $message."❌";
 	}
 	$message = $message." Minijuegos 'Captura la bandera' y 'Reclama el mástil'".PHP_EOL;
+	if($hasCustomText == 1) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Función de texto personalizada".PHP_EOL;
+	if($hasWelcomeText == 1) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Mensaje de bienvenida personalizado".PHP_EOL;
 	$message = $message."<i>Consulta la \"!ayuda\" para saber cómo cambiar la configuración.</i>";
 	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "HTML", "text" => $message));			
 }
@@ -3218,7 +3240,7 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(500000);
 		$msg = "*El mensaje ha sido enviado correctamente y será revisado por el administrador del bot lo antes posible.*".PHP_EOL;
-		$msg = $msg."_Recuerda utilizar correctamente esta función ya su uso indebido añadirá tu cuenta a la lista de ignorados por la función \"!sugerencia\"._";
+		$msg = $msg."_Recuerda utilizar correctamente esta función ya que su uso indebido añadirá tu cuenta a la lista de ignorados por la función \"!sugerencia\"._";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 	} else if (strpos(strtolower($text), "!texto") === 0) {
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
@@ -3988,7 +4010,7 @@ function processMessage($message) {
 					$query = 'UPDATE lastpolecheck SET last_check = '.$currentTime.', penalty = '.$newPenalty.' WHERE user_id = '.$from_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 					$logname = str_replace("@","",$logname);
-					$penaltyMsg = "💀 *".$logname." ha sido penalizado con ";
+					$penaltyMsg = "💀 *".$logname." ha sido sancionado con ";
 					switch($newPenalty){
 						case 1: $penaltyMsg = $penaltyMsg."veinte segundos";
 								break;
@@ -4781,7 +4803,7 @@ if (isset($update["message"])) {
 		//	$message = $message." de ".$senderName;
 		//}
 		$message = "Mensaje oculto para ".$logname.":".PHP_EOL.PHP_EOL;
-		$message = $message.$callback['data'];
+		$message = $message.$callback['data'].PHP_EOL;
 		//$prueba = var_dump($message);
 		//error_log($prueba);
 		//$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];

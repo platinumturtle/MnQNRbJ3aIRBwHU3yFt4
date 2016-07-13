@@ -1694,7 +1694,7 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 					if($row['total'] > 1) {
 						$text = $text."ástiles";
 					} else {
-						$text = $text."astil";
+						$text = $text."ástil";
 					}
 					$text = $text.".</i>".PHP_EOL.PHP_EOL;
 				}
@@ -1707,19 +1707,21 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		if(isset($row['user_id'])) {
-			$text = $text."<b>";
-			if($row['user_name'] == "") {
-				$checkName = $row['first_name'];
-			} else {
-				$checkName = $row['user_name'];
-			}				
-			$text = $text.$checkName." ha capturado ".$row['totalpole']." m";
-			if($row['totalpole'] > 1) {
-				$text = $text."ástiles";
-			} else {
-				$text = $text."astil";
+			if($row['totalpole'] > 0) {
+				$text = $text."<b>";
+				if($row['user_name'] == "") {
+					$checkName = $row['first_name'];
+				} else {
+					$checkName = $row['user_name'];
+				}				
+				$text = $text.$checkName." ha reclamado ".$row['totalpole']." m";
+				if($row['totalpole'] > 1) {
+					$text = $text."ástiles";
+				} else {
+					$text = $text."ástil";
+				}
+				$text = $text." desde ".$groupName.".</b>".PHP_EOL.PHP_EOL;
 			}
-			$text = $text." desde ".$groupName.".</b>".PHP_EOL.PHP_EOL;
 		}
 		mysql_free_result($result);
 		mysql_close($link);

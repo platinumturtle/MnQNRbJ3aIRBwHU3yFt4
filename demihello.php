@@ -2968,7 +2968,7 @@ function commandsList($send_id, $mode) {
 				"🗣 <b>Interactividad:</b>"
 				.PHP_EOL.
 				"Si está activado en la función \"!modo\", el bot intentará participar en la conversación activa en alguna que otra ocasión, y responderá a palabras clave con respues, gifs, sonidos, stickers... ¡y huevos de pascua!"
-				.PHP_EOL.PHP_EOL..
+				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"🌐 <b>Funciones Inline:</b>"
@@ -2982,7 +2982,7 @@ function commandsList($send_id, $mode) {
 				"–<b>Enlace</b>: <i>Permite enviar un mensaje de color azul a cualquier chat.</i>"
 				.PHP_EOL.
 				"Más información: /ayuda_inline"
-				.PHP_EOL.PHP_EOL..
+				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"📎 <b>Utilidades:</b>"

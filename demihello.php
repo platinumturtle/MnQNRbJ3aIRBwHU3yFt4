@@ -4272,7 +4272,7 @@ function processMessage($message) {
 				} else {
 					mysql_free_result($result);
 					error_log($logname." triggered: Polefail.");
-					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+					$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = ".$chat_id." AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
 					$row = mysql_fetch_array($result);
@@ -4281,9 +4281,16 @@ function processMessage($message) {
 						$text = $text."s";
 					}
 					$timeEmoji = timeEmoji($halfHour, 1);
-					$text = $text." ".$timeEmoji." fue reclamado por ".$row['user_name'].".</b>";
+					if($row['user_name'] == "") {
+						$shownName = $row['first_name'];
+					} else {
+						$shownName = $row['user_name'];
+					}
+					$text = $text." ".$timeEmoji." fue reclamado por ".$shownName.".</b>";
 					mysql_free_result($result);
 				}
+			} else {
+				$text = $text.PHP_EOL."<b>📍❌ El minijuego 'Reclama el mástil' está disponible solo para grupos.</b> 🚫";
 			}
 			// Result
 			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con !banderas el ránking global de banderas, con !banderasgrupo el ránking local y con !mastiles quién ha reclamado más veces un mástil en tu grupo.</i>";

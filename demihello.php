@@ -4275,7 +4275,6 @@ function processMessage($message) {
 					$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = ".$chat_id." AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
-					$row = mysql_fetch_array($result);
 					$text = $text.PHP_EOL."📍 <b>El mástil de la";
 					if($halfHour != 1) {
 						$text = $text."s";

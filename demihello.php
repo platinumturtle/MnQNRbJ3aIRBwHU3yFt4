@@ -2826,7 +2826,8 @@ function getQuote($text, $chat_id) {
 	}
 }
 
-function commandsList($send_id) {
+function commandsList($send_id,, $menu="main") {
+	/*
 	$commands = 
 				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
 				.PHP_EOL.
@@ -2944,6 +2945,17 @@ function commandsList($send_id) {
 				;
 	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
 	//return $commands;
+	*/
+	$mode = str_replace("/ayuda_", "", strtolower($mode));
+	$mode = str_replace("@demisukebot", "", strtolower($mode));
+	if($mode == "main") {
+		$text = "principal /ayuda_modo";
+	} else if($mode == "modo") {
+		$text = "caca";
+	}
+	apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
+	usleep(100000);
+	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $text));
 }
 
 function processMessage($message) {
@@ -3106,9 +3118,10 @@ function processMessage($message) {
 	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke para saber qué hace este bot."));
     } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
 		error_log($logname." triggered: !ayuda.");
-		//$help = commandsList();
-		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $help));
 		commandsList($chat_id);
+    } else if (strpos($text, "/ayuda_modo") === 0 || strpos($text, "/ayuda_modo@DemisukeBot") === 0) {
+		error_log($logname." triggered: ".$text.".");
+		commandsList($chat_id, $text);
     } else if (strpos($text, "/sendNotification") === 0) {
 		error_log($logname." triggered: New Notification.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {

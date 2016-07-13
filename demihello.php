@@ -2955,7 +2955,7 @@ function commandsList($send_id, $mode) {
 	}
 	apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
 	usleep(100000);
-	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $text));
+	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", "text" => $text));
 }
 
 function processMessage($message) {

@@ -3893,8 +3893,7 @@ function processMessage($message) {
 			error_log($logname." triggered: Viva Vegetta.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
 			usleep(400000);
-			// Cambiar en DemisukeBot
-			$gif = "AwADBAADRQcAApdgXwABqfQ693x1aVQC";
+			$gif = "AwADBAADRAcAApdgXwABd8d_ymKOze0C";
 			apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $gif));
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");

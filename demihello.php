@@ -3111,7 +3111,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				//"<i>Para mostrar el mensaje puedes escribir simplemente </i><b>!bienvenida</b><i> sin especificar ningún texto adicional, y aparecerá el texto guardado para el grupo.</i>"
 				//.PHP_EOL.
-				"<i>El mensaje guardado se almacena formateado en HTML, por lo que puedes usar algunas etiquetas como \<b\>\</b\> para escribir en negrita.</i>"
+				"<i>El mensaje guardado se almacena formateado en HTML, por lo que puedes usar algunas etiquetas para, por ejemplo, escribir en negrita.</i>"
 				.PHP_EOL.
 				"<i>Si el mensaje no aparece es posible que el mensaje ocupe más de 2500 carácteres, que te hayas dejado alguna etiqueta abierta o que hayas intentado encadenar más de una para una misma palabra, algo que actualmente Telegram no permite.</i>"
 				//.PHP_EOL.PHP_EOL.

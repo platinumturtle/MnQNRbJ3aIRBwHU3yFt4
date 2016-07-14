@@ -3156,7 +3156,7 @@ function commandsList($send_id, $mode) {
 				"<b>Reglas:</b>"
 				.PHP_EOL.
 				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
-				.PHP_EOL.PHP_EOL.
+				//.PHP_EOL.PHP_EOL.
 				
 				; // cambio de grupo a super = reinicio
 	} else if($mode == "grupos") {

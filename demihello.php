@@ -3178,17 +3178,26 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
 				.PHP_EOL.
-				"–<b>!mensajes</b>: <i>Muestra la clasificación global de Telegram de los usuarios más activos. Necesitas habilitar tu participación para aparecer aquí.</i>"
-				.PHP_EOL.
-				"–<b>!mensajesgrupo</b>: <i>Ránking exclusivo del grupo de los usuarios que más aportan. ¡Conoce quién mantiene con vida tu grupo! Todos los miembros que hayan escrito al menos un mensaje podrán aparecer en la clasificación.</i>"
+				"–<b>!grupos</b>: <i>Muestra la clasificación global de los grupos más activos de Telegram. Si no estás en el ránking de los mejores, la puntuación de tu grupo aparecerá al final.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas:</b>"
 				.PHP_EOL.
-				"–<i>Por cada mensaje que escribas en el grupo se te sumará un punto al marcador.</i>"
+				"–<i>Por cada mensaje que escribas en el grupo se añadirá un punto al marcador.</i>"
 				.PHP_EOL.
-				"–<i>Las diez personas que más puntos obtengan aparecerán en el ránking con su nombre y puntuación.</i>"
-		
-				; // cambio de grupo a super = reinicio
+				"–<i>No se podrán conseguir más de sesenta puntos por minutos para evitar el 'floodeo'.</i>"
+				.PHP_EOL.
+				"–<i>Si el bot detecta una mala práctica de esta competición, los puntos del grupo se reiniciarán automáticamente y se enviará una notificación al grupo. ¡Aporta conversaciones interesantes a tus amigos!</i>"
+				.PHP_EOL.
+				"–<i>Solo los grupos con un número considerable de miembros podrá participar en la competición.</i>"
+				.PHP_EOL.
+				"–<i>Los grupos que permanecen inactivos durante más de quince días quedan descalificados de la competición hasta que alguno de sus miembros que no sea bot vuelva a participar en el grupo.</i>"
+				.PHP_EOL.
+				"–<i>Si el grupo se convierte en supergrupo, las estadísticas se reiniciarán. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
+				.PHP_EOL.
+				"–<i>Los grupos que eliminen al bot de sus miembros serán descalificados de la competición hasta que lo vuelvan a añadir. Si crees que el bot habla demasiado puedes utilizar !cambiarmodo para que participe menos. Si por el contrario lo encuentras aburrido puedes enviar aportes para mejorar el bot con la función !sugerencia.</i>"
+				.PHP_EOL.
+				"–<i>Solo los diez grupos con la puntuación más alta y el grupo donde se consulte el ránking aparecerán en la clasificación.</i>"
+				;
 	} else if($mode == "bandera") {
 		$text = "banderitas"; // cambio de grupo a super = reinicio
 	} else if($mode == "mastil") {

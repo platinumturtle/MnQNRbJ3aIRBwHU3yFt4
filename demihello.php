@@ -3131,7 +3131,7 @@ function commandsList($send_id, $mode) {
 	} else if($mode == "info") {
 		$text = "🔎 <b>Información y estadísticas del bot</b> 📝"
 				.PHP_EOL.PHP_EOL.
-				"<i>Con la función </i><b>!info</b><i> el bot relatará su historia y podrás saber de<pre>asd<b>a</b>asd</pre> dónde procede y más datos sobre su vida, tanto en Telegram como fuera.</i>"
+				"<i>Con la función </i><b>!info</b><i> el bot relatará su historia y podrás saber de dónde procede y más datos sobre su vida, tanto en Telegram como fuera.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>Además contará de manera indirecta en cuántos grupos está instalado y te dará pistas sobre funciones ocultas como huevos de pascua o palabras clave.</i>"
 				.PHP_EOL.PHP_EOL.

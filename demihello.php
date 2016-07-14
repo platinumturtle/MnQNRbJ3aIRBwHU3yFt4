@@ -3166,7 +3166,7 @@ function commandsList($send_id, $mode) {
 	} else if($mode == "mastil") {
 		$text = "mastil mio"; // cambio de grupo a super = reinicio
 	} else if($mode == "boton") {
-		$text = "🔎 <b>Aprende a volar</b> 📝";
+		$text = "🔎 <b>Aprende a volar</b> 📝"
 				.PHP_EOL.PHP_EOL.
 				"<i>¿Será hoy tu día de suerte? Comprúebalo pulsando el botón que lo decide. Si utilizas la función </i><b>!boton</b><i> tienes un 20% de posibilidades de detonar una bomba en el chat y 'salir por los aires', de lo contrario aparecerá un mensaje confirmando que te has salvado de la explosión."
 				.PHP_EOL.

@@ -3138,15 +3138,22 @@ function commandsList($send_id, $mode) {
 				"<i>Si utilizas la función </i><b>!infomini</b><i> el bot se limitará a responder cuántos usuarios usan a</i> @DemisukeBot<i>, en cuántos grupos ha estado y en cuántos sigue activo.</i>"
 				;
 	} else if($mode == "cita") {
-		$text = "citasssss";
+		$text = "🔎 <b>Imágenes con citas personalizadas</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Escribiendo </i><b>!cita mensaje</b><i> podrás crear una imagen con el texto introducido a modo de cita y compartirla con tus amigos."
+				.PHP_EOL.PHP_EOL.
+				"<i>El tamaño máximo no es fijo sino que depende del espacio libre que quede en la imagen. Aun así, si el texto es muy largo o está vacío la propia función te avisará de ello.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>También puedes incluir una firma para la cita introducida si escribes </i><b>!cita (mensaje1) mensaje2</b><i>. El mensaje2 escrito al final será la cita en sí, mientras que el mensaje1 escrito entre paréntesis será la firma con la que terminará la cita.</i>"
+				;
 	} else if($mode == "mensajes") {
-		$text = "mensajesssss";
+		$text = "mensajesssss"; // cambio de grupo a super = reinicio
 	} else if($mode == "grupos") {
-		$text = "gruposssss";
+		$text = "gruposssss"; // cambio de grupo a super = reinicio
 	} else if($mode == "bandera") {
-		$text = "banderitas";
+		$text = "banderitas"; // cambio de grupo a super = reinicio
 	} else if($mode == "mastil") {
-		$text = "mastil mio";
+		$text = "mastil mio"; // cambio de grupo a super = reinicio
 	} else if($mode == "boton") {
 		$text = "bombaaaaa";
 	}

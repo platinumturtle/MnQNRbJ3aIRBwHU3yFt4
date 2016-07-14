@@ -3874,7 +3874,7 @@ function processMessage($message) {
 		mysql_close($link);
 		$text = "*".$totalUsers." personas están usando el bot.".PHP_EOL;
 		$text = $text.$totalGroups." grupos han probado ya el bot.".PHP_EOL;
-		$text = $text.$totalActive." grupos siguen utilizando el bot.*";
+		$text = $text.$totalActive." grupos participan en los minijuegos.*";
 		usleep(250000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 	} else if (strpos(strtolower($text), "!info") !== false) {
@@ -4425,7 +4425,6 @@ function processMessage($message) {
 					$query = 'UPDATE lastpolecheck SET last_check = '.$currentTime.', penalty = 1 WHERE user_id = '.$from_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 				} else {
-					// liada... se guarda el tiempo en la tabla, se le añade un penalty mayor, se avisa de inutil y se cierra todo
 					$penalty = $row['penalty'];
 					mysql_free_result($result);
 					switch($penalty){
@@ -4940,7 +4939,7 @@ function processMessage($message) {
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: !historia.");
 		}
-    } else if ($message['chat']['type'] == "private" && $message['from']['username'] !== "Kamisuke") {
+	} else if ($message['chat']['type'] == "private" && $message['from']['username'] !== "Kamisuke") {
 		error_log($logname." triggered: Private chat.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(250000);
@@ -5038,7 +5037,7 @@ function processMessage($message) {
 			error_log($logname." tried to trigger and failed due to group restrictions: New group photo.");
 		}
 		mysql_free_result($result);
-		mysql_close($link);	
+		mysql_close($link);
 	}else if (isset($message['new_chat_member'])) {
 		if(isset($message['new_chat_member']['username'])) {
 			$logname = "@".$message['new_chat_member']['username'];
@@ -5264,7 +5263,7 @@ if (isset($update["message"])) {
 		error_log($logname." tried to trigger and failed due to group restrictions: Edited message.");
 	}
 	mysql_free_result($result);
-	mysql_close($link);		
+	mysql_close($link);
 } else if (isset($update["inline_query"])) {
 	checkUserID($update["inline_query"]['from']['id']);
 	if(isset($update["inline_query"]['from']['username'])) {

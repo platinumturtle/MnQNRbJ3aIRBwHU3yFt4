@@ -166,6 +166,17 @@ function rankedGroup($group) {
 	return 1;
 }
 
+function cleanHTML ($message) {
+	$message = str_replace("<b>", "", $message);
+	$message = str_replace("<i>", "", $message);
+	$message = str_replace("<code>", "", $message);
+	$message = str_replace("<pre>", "", $message);
+	$message = str_replace("</b>", "", $message);
+	$message = str_replace("</i>", "", $message);
+	$message = str_replace("</code>", "", $message);
+	$message = str_replace("</pre>", "", $message);
+	return $message;
+}
 function failInsult() {
 	$storedInsult = array(
 						"No quiero, subnormal",
@@ -463,6 +474,77 @@ function rollDice($id) {
 	apiRequest("sendMessage", array('chat_id' => $id, 'parse_mode' => "Markdown", "text" => "*".$result[$n]."*"));
 }
 
+function inlineOptions($text, $username) {
+	$boldText = "<b>".$text."</b>";
+	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
+	$spoilerText = "<b>¡".$username." tiene un secreto que revelarte!</b>";
+	if(strlen($text) > 10 && strpos(strtolower($text), "spoiler:") !== false) {
+		$final = strpos(strtolower($text), "spoiler:");
+		$question = substr($text, 0, $final);
+		$spoilerText = $spoilerText.PHP_EOL."<b>Además añade lo siguiente:</b>".PHP_EOL."<i>".$question."</i>";
+		$start = $final + 8;
+		$hiddenText = substr($text, $start);
+	} else {
+		$hiddenText = $text;
+	}
+	$hiddenText = rtrim(ltrim($hiddenText));
+	$descriptionText = "Se enviará el texto oculto (";
+	if(strlen($hiddenText) > 64) {
+		$descriptionText = $descriptionText."se recortará el mensaje).";
+	} else if(strlen($hiddenText) == 64) {
+		$descriptionText = $descriptionText."tamaño al máximo).";
+	} else if(strlen($hiddenText) == 63) {
+		$descriptionText = $descriptionText."1 carácter restante).";
+	} else {
+		$left = 64 - strlen($hiddenText);
+		$descriptionText = $descriptionText.$left." caracteres restantes).";
+	}
+	if($hiddenText == "") {
+		$hiddenText = "Mi estupidez me ha hecho enviar el mensaje en blanco.";
+	}
+	$hiddenText = mb_strimwidth($hiddenText, 0, 64);
+	$keyboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];
+	$buttons[] = [
+		"type" => "article",
+		"id" => "0",
+		"title" => "Enviar spoiler",
+		"description" => $descriptionText,
+		"message_text" => $spoilerText,
+		"parse_mode" => "HTML",
+		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_spoiler.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
+		"reply_markup" => [
+			"inline_keyboard" => [[
+				$keyboardButton,
+			]] 
+		], 
+	];
+    $buttons[] = [
+		"type" => "article",
+		"id" => "1",
+		"title" => "Enviar en negrita",
+		"description" => "Se enviará el texto en negrita.",
+		"message_text" => $boldText,
+		"parse_mode" => "HTML",
+		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_bold.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
+    ];
+	$buttons[] = [
+		"type" => "article",
+		"id" => "2",
+		"title" => "Enviar en azul",
+		"description" => "El texto enviado parecerá un enlace.",
+		"message_text" => $blueText,
+		"parse_mode" => "HTML",
+		"disable_web_page_preview" => TRUE,
+		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_link.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
+    ];
+	return $buttons;	
+}
 function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
 	$waitTime = rand(0, 25000);
 	$waitTime = $waitTime * 2;
@@ -492,9 +574,10 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	if($hour != 1) {
 		$text = $text."s";
 	}
-	$text = $text." ".$hour." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
-	$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
-
+	$timeEmoji = timeEmoji($hour, 0);
+	$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+	$text = $text.PHP_EOL."📍 <b>Justo en esta décima de segundo el mástil no se puede consultar.</b>";
+	$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con !banderas el ránking global de banderas, con !banderasgrupo el ránking local y con !mastiles quién ha reclamado más veces un mástil en tu grupo.</i>";
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 	mysql_free_result($result);
 	mysql_close($link);
@@ -660,6 +743,68 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 }
 	return $text;
 }
+
+function timeEmoji($time, $aHalf) {
+	if($aHalf == 0){
+		switch($time) {
+			case 1: return "1 🕐";
+					break;
+			case 2: return "2 🕑";
+					break;
+			case 3: return "3 🕒";
+					break;
+			case 4: return "4 🕓";
+					break;
+			case 5: return "5 🕔";
+					break;
+			case 6: return "6 🕕";
+					break;
+			case 7: return "7 🕖";
+					break;
+			case 8: return "8 🕗";
+					break;
+			case 9: return "9 🕘";
+					break;
+			case 10: return "10 🕙";
+					break;
+			case 11: return "11 🕚";
+					break;
+			case 12: return "12 🕛";
+					break;
+			default: return $time;
+					break;
+		}
+	} else {
+		switch($time) {
+			case 1: return "1:30 🕜";
+					break;
+			case 2: return "2:30 🕝";
+					break;
+			case 3: return "3:30 🕞";
+					break;
+			case 4: return "4:30 🕟";
+					break;
+			case 5: return "5:30 🕠";
+					break;
+			case 6: return "6:30 🕡";
+					break;
+			case 7: return "7:30 🕢";
+					break;
+			case 8: return "8:30 🕣";
+					break;
+			case 9: return "9:30 🕤";
+					break;
+			case 10: return "10:30 🕥";
+					break;
+			case 11: return "11:30 🕦";
+					break;
+			case 12: return "12:30 🕧";
+					break;
+			default: return $time;
+					break;
+		}
+	}
+}
 function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	//HTML Parse Mode
 	if($global == 0 && $group == 0) {
@@ -744,6 +889,88 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	return $text;
 }
 
+function getPoleBattle($myself, $group, $groupName = "grupo") {
+	//HTML Parse Mode
+	if($group == 0) {
+		$text = "<b>La función !mastiles es exclusiva para grupos y supergrupos, ¡añádeme a alguno y utilízala allí!</b>";
+	}
+	else {
+		$link = dbConnect();
+		$text = "<b>🏁 Ránking de ".$groupName." de Banderas capturadas:</b>";
+		$query = "SELECT user_name, totalpole FROM userbattle WHERE totalpole > 0 AND group_id = '".$group."' ORDER BY totalpole DESC , lastpole";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$text = $text.PHP_EOL.PHP_EOL.
+				"<b>🏆 POLE ABSOLUTA 🏆</b>"
+				.PHP_EOL;
+		for($i=0;$i<10;$i++) {
+			$row = mysql_fetch_array($result);
+			if(isset($row['totalpole'])) {
+				if($row['totalpole'] > 0) {
+					switch($i) {
+						case 1: $text = $text."<b>🎖2º </b>";
+								break;
+						case 2: $text = $text."<b>🏅3º </b>";
+								break;
+						case 3: $text = $text."4⃣ ";
+								break;
+						case 4: $text = $text."5⃣ ";
+								break;
+						case 5: $text = $text."6⃣ ";
+								break;
+						case 6: $text = $text."7⃣ ";
+								break;
+						case 7: $text = $text."8⃣ ";
+								break;
+						case 8: $text = $text."9⃣ ";
+								break;
+						case 9: $text = $text."🔟 ";
+								break;
+						default: break;
+					}
+					$text = $text.
+							"<b>".$row['user_name']."</b>"
+							.PHP_EOL.
+							"<i>".$row['totalpole']." m";
+					if($row['totalpole'] > 1) {
+						$text = $text."ástiles";
+					} else {
+						$text = $text."ástil";
+					}
+					$text = $text.".</i>".PHP_EOL.PHP_EOL;
+				}
+			} else if($i==0) {
+				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
+			}
+		}
+		mysql_free_result($result);
+		$query = "SELECT user_id, first_name, user_name, totalpole FROM userbattle WHERE user_id = '".$myself."' AND group_id = '".$group."'";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['user_id'])) {
+			if($row['totalpole'] > 0) {
+				$text = $text."<b>";
+				if($row['user_name'] == "") {
+					$checkName = $row['first_name'];
+				} else {
+					$checkName = $row['user_name'];
+				}				
+				$text = $text.$checkName." ha reclamado ".$row['totalpole']." m";
+				if($row['totalpole'] > 1) {
+					$text = $text."ástiles";
+				} else {
+					$text = $text."ástil";
+				}
+				$text = $text." desde ".$groupName.".</b>".PHP_EOL.PHP_EOL;
+			}
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		$text = $text.
+				"<i>Cada sesenta minutos aparece un nuevo mástil en cada uno de los grupos del bot.".PHP_EOL.
+				"Recuerda que los puedes reclamar con la función \"!pole\".</i>";
+	}
+	return $text;
+}
 function containsCommand($text) {
 	$commandsList = array(
 						"/start",
@@ -775,6 +1002,9 @@ function containsCommand($text) {
 						"!bequer",
 						"!moneda",
 						"!becker",
+						"!texto",
+						"!bienvenida",
+						"!sugerencia",
 						"!becquer",
 						"!historia"
 					);
@@ -786,6 +1016,79 @@ function containsCommand($text) {
 		}
 	}
 	return 0;
+}
+function showMode($group_id) {
+	$query = "SELECT mode, name, flagblock, freemode, custom_text, welcome_text FROM groupbattle WHERE group_id = '".$group_id."'";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	$mode = $row['mode'];
+	$name = $row['name'];
+	$flag = $row['flagblock'];
+	$freemode = $row['freemode'];
+	if($row['custom_text'] == "") {
+		$hasCustomText = 0;
+	} else {
+		$hasCustomText = 1;
+	}
+	if($row['welcome_text'] == "") {
+		$hasWelcomeText = 0;
+	} else {
+		$hasWelcomeText = 1;
+	}
+	mysql_free_result($result);
+	apiRequest("sendChatAction", array('chat_id' => $group_id, 'action' => "typing"));
+	usleep(100000);
+	$message = "<b>Configuración del bot para ".$name.":</b>".PHP_EOL;
+	if($mode > -1) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Participación activa del bot en la conversación".PHP_EOL;
+	if($mode > -2) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Respuestas con gifs o audios a palabras clave concretas".PHP_EOL;
+	if($mode > -3) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Huevos de pascua y funciones extensas".PHP_EOL;
+	if($mode > -4) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Notificaciones de actualizaciones importantes del bot".PHP_EOL;
+	if($freemode == 1) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Cualquier usuario puede cambiar la configuración anterior".PHP_EOL;
+	if($flag == 0) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Minijuegos 'Captura la bandera' y 'Reclama el mástil'".PHP_EOL;
+	if($hasCustomText == 1) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Función de texto personalizada".PHP_EOL;
+	if($hasWelcomeText == 1) {
+		$message = $message."✅";
+	} else {
+		$message = $message."❌";
+	}
+	$message = $message." Mensaje de bienvenida personalizado".PHP_EOL;
+	$message = $message."<i>Consulta la \"!ayuda\" para saber cómo cambiar la configuración.</i>";
+	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "HTML", "text" => $message));			
 }
 function getSticker() {
 	$stickerList = array(
@@ -1308,6 +1611,20 @@ function greeting() {
 	return $storedGreeting[$n];
 }
 
+function goodbye() {
+	$storedGreeting = array(
+						"¡Adiós!",
+						"¡Qué vaya bien!",
+						"¡Hasta luego!",
+						"¡Hasta otra!",
+						"No vuelvas.",
+						"Ya era hora.",
+						"¡Venga!"
+						);
+	$n = sizeof($storedGreeting) - 1;
+	$n = rand(0,$n);
+	return $storedGreeting[$n];
+}
 function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
@@ -1743,124 +2060,403 @@ function tellStory($part,$name) {
 	return $story;
 }
 
-function commandsList($send_id) {
-	$commands = 
+function getQuote($text, $chat_id) {
+	$start = strpos(strtolower($text), "!cita") + 5;
+	$text = substr($text, $start);
+	$text = ltrim(rtrim($text));
+	$userQuote = "";
+	if(strpos($text, "(") === 0) {
+		$length = strpos($text, ")");
+		$userQuote = substr($text, 1, $length - 1);
+		$text = substr($text, $length + 1);
+		$userQuote = ltrim(rtrim($userQuote));
+	}
+	$text = ltrim(rtrim($text));
+	if(strlen($text) > 0) {
+		$text = wordwrap($text, 45, "\n", false);
+		$text = '“'.$text.'”';
+		$totalEOL = substr_count($text, PHP_EOL);
+		if($totalEOL < 7) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$YPos = 220;
+			if($totalEOL > 3){
+				$YPos = $YPos - (40 * ($totalEOL - 3));
+			}
+			if(strlen($userQuote) > 0) {
+				$text = $text.PHP_EOL."- ".$userQuote;
+			}
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/cita_".$imageURL.".png";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/png');
+			$png_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/cita.png');
+			$textColor = imagecolorallocate($png_image, 255, 255, 255);
+			$font_path = dirname(__FILE__)."/img/journal.ttf";
+			imagettftext($png_image, 32, 0, 100, $YPos, $textColor, $font_path, $text);
+			imagepng($png_image, $imageURL);
+			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+			$file_name_with_full_path = realpath($imageURL);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			imagedestroy($png_image);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+	} else {
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
+	}
+}
+function commandsList($send_id, $mode) {
+	$mode = str_replace("/ayuda_", "", strtolower($mode));
+	$mode = str_replace("@demisukebot", "", strtolower($mode));
+	$mode = str_replace("@demitest_bot", "", strtolower($mode));
+	if($mode == "main") {
+		$text = 
 				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
 				.PHP_EOL.
 				"Utilízalo siempre que quieras repasar cuáles son los comandos que se pueden utilizar con el bot escribiendo \"/demisuke\" o \"!ayuda\" sin las comillas."
-				.PHP_EOL.PHP_EOL.
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
-				.PHP_EOL.PHP_EOL.
-				"*Saludo*:"
 				.PHP_EOL.
-				"_Escribe \"hola\" para que el bot te devuelva el saludo._"
-				.PHP_EOL.PHP_EOL.
-				"*Preguntas Sí/No*:"
+				"⚠️ <b>¡Importante!</b>"
 				.PHP_EOL.
-				"_Escribe \"!siono\" seguido de una pregunta para que el bot te resuelva la duda._"
+				"<i>Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para el grupo.</i>"
 				.PHP_EOL.
-				"Ejemplo:"
+				"Más información: /ayuda_modo"
 				.PHP_EOL.
-				"`!siono ¿Te gusta este bot?`"
-				.PHP_EOL.PHP_EOL.
-				"*Insulto*:"
-				.PHP_EOL.
-				"_Escribe \"!insulta a\" seguido de un nombre o un usuario para que el bot le insulte. ¡Ojo! No siempre tendrá ganas de insultar a la persona en cuestión..._"
-				.PHP_EOL.
-				"Ejemplo:"
-				.PHP_EOL.
-				"`!insulta a @Kamisuke`"
-				.PHP_EOL.PHP_EOL.
-				"*Stickers*:"
-				.PHP_EOL.
-				"_Escribe \"!sticker\" para que el bot responda enviando un sticker escogido al azar._"
-				.PHP_EOL.PHP_EOL.
-				"*Historia*:"
-				.PHP_EOL.
-				"_Escribe \"!historia\" para que el bot se invente una historia basada en momentos aleatorios de la vida, con un mínimo de sentido._"
-				.PHP_EOL.PHP_EOL.
-				"*Música*:"
-				.PHP_EOL.
-				"_Escribe \"!cancion\" o \"!temazo\" para que el bot envíe una canción de éxito y anime el ambiente hasta en los grupos más decaídos._"
-				.PHP_EOL.PHP_EOL.
-				"*Generador de nombres de usuario*:"
-				.PHP_EOL.
-				"_Escribe \"!nick\" para que el bot genere automáticamente un nombre de usuario que poder utilizar en internet. Si el resultado no es del agrado de quien lo pide siempre puede volver a intentarlo._"
-				.PHP_EOL.PHP_EOL.
-				"*Dados de la suerte*:"
-				.PHP_EOL.
-				"_Escribe \"!dados\" para que el bot lance dos dados y muestre el resultado, una solución muy útil para resolver dudas o debates en grupo al azar, o para inventarse cualquier minijuego entretenido._"
-				.PHP_EOL.PHP_EOL.
-				"*Test de conexión*:"
-				.PHP_EOL.
-				"_Escribe \"!ping\" para que el bot te responda. Función útil para comprobar que tu dispositivo tiene conexión a internet y el bot está activo._"
-				.PHP_EOL.PHP_EOL.
-				"*Palabras y acciones clave*:"
-				.PHP_EOL.
-				"_El bot reaccionará ante diversas palabras clave y momentos puntuales en una conversación para dar su opinión, siempre que éstas se produzcan dentro de un grupo o supergrupo (¡contiene incluso Easter Eggs!)."
-				.PHP_EOL.
-				"En caso de ser usuario de ForoCoches darás con la mayoría de estas palabras fácilmente. ¡Encuéntralas todas!_"
-				;
-	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
-	
-	$commands = "*Historia del bot*:"
-				.PHP_EOL.
-				"_Con la función \"!info\" el bot relatará su historia y podrás saber de dónde procede y más datos sobre su vida, tanto en Telegram como fuera._"
-				.PHP_EOL.PHP_EOL.
-				"_Además contará en cuántos grupos está instalado y te dará pistas sobre funciones ocultas como huevos de pascua o palabras clave._"
-				.PHP_EOL.PHP_EOL.
-				"*Ránking de usuarios*:"
-				.PHP_EOL.
-				"_¡Con este ránking sabrás quiénes son los usuarios más activos de Telegram!_"
-				.PHP_EOL.
-				"_Utiliza \"!mensajesgrupo\" para ver la lista de usuarios más activos de tu grupo, o utiliza \"!mensajes\" para ver la lista global entre todos los grupos._"
-				.PHP_EOL.PHP_EOL.
-				"_Para mantener la privacidad, por defecto no aparecerás en la lista global de usuarios. Si quieres participar en ella usa la función \"!activame\" y tus puntos serán visibles en el ránking. Siempre podrás volver a ocultarte con \"!desactivame\"._"
-				.PHP_EOL.PHP_EOL.
-				"_Hay un máximo de diez puntos por minuto posibles. Usar masivamente funciones del bot, realizar 'flood' o enviar varios mensajes seguidos no añadirán más puntos a tu marcador._"
-				.PHP_EOL.PHP_EOL.
-				"*Ránking de grupos*:"
-				.PHP_EOL.
-				"_¡Compite contra otros grupos con la ayuda de tus amigos a ser el grupo más activo!_"
-				.PHP_EOL.
-				"_Por cada mensaje de texto escrito en un grupo se conseguirá un punto para el mismo, siempre que el mensaje enviado no sea ningún archivo, gif o sticker y no se obra de un bot._"
-				.PHP_EOL.PHP_EOL.
-				"_Escribe \"!grupos\" para ver la clasificación global de los mejores grupos._"
-				.PHP_EOL.PHP_EOL.
-				"*Captura la bandera*:"
-				.PHP_EOL.
-				"_Cada hora se planta una nueva bandera en el bot._"
-				.PHP_EOL.
-				"_El primer usuario que la capture con la función !pole la tendrá en su posesión y su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, hasta que se plante la siguiente bandera, además de sumar una bandera a su colección._"
-				.PHP_EOL.PHP_EOL.
-				"_El usuario que tenga la bandera actual en su poder no podrá capturar la siguiente, y tampoco podrá hacerlo todo aquel usuario que tenga el inventario lleno o trate de capturarla desde un grupo muy pequeño._"
-				.PHP_EOL.
-				"_El tamaño total del inventario es de veinte ranuras para banderas además de una ranura extra por cada bandera que haya capturado el usuario que aparece en la décima posición del ránking._"
-				.PHP_EOL.
-				"_Puedes consultar el ránking global de banderas con la función \"!banderas\" o el ránking de tu grupo en concreto con \"!banderas\"._"
-				.PHP_EOL.
-				"¡Captúralas todas desde un grupo o un supergrupo para aparecer en los puestos más altos!"
-				.PHP_EOL.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
-				.PHP_EOL.PHP_EOL.
-				"Además de las funciones disponibles, @DemisukeBot tratará de aportar vida con frecuencia a los grupos activos que lo tengan en su lista de miembros."
-				.PHP_EOL.PHP_EOL.
-				"¿Alguna sugerencia que aportar para mejorar al bot? en @KamisukeBot existe el comando /sugerencias con una opción habilitada para registrar las sugerencias para @DemisukeBot donde puedes enviar tus ideas de la manera más rápida y cómoda."
-				.PHP_EOL.PHP_EOL.
-				"Este bot anunciará automáticamente las actualizaciones más importantes que se realizan, sin embargo hay otras actualizaciones menores que se realizan con frecuencia."
 				.PHP_EOL.
-				"Si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
-				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.5.2 creado por @Kamisuke."
-				.PHP_EOL.PHP_EOL.
+				"🗣 <b>Interactividad:</b>"
+				.PHP_EOL.
+				"<i>Si está activado en la función \"!modo\", el bot intentará participar en la conversación activa en alguna que otra ocasión, y responderá a palabras clave con respues, gifs, sonidos, stickers... ¡y huevos de pascua!</i>"
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
-				.PHP_EOL.PHP_EOL.
+				.PHP_EOL.
+				"🌐 <b>Funciones Inline:</b>"
+				.PHP_EOL.
+				"–<b>Spoiler</b>: <i>Permite enviar un mensaje oculto en cualquier chat.</i>"
+				.PHP_EOL.
+				"–<b>Negrita</b>: <i>Permite enviar un mensaje en negrita a cualquier chat.</i>"
+				.PHP_EOL.
+				"–<b>Enlace</b>: <i>Permite enviar un mensaje de color azul a cualquier chat.</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_inline"
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"📎 <b>Utilidades:</b>"
+				.PHP_EOL.
+				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"–<b>Insultos</b>: <i>Insulta a alguien mediante \"!insulta a nombre\".</i>"
+				.PHP_EOL.
+				"–<b>Sticker</b>: <i>Envía un sticker al azar con \"!sticker\".</i>"
+				.PHP_EOL.
+				"–<b>Historia</b>: <i>Cuenta una larga historia al escribir \"!historia\".</i>"
+				.PHP_EOL.
+				"–<b>Nick</b>: <i>Genera un nombre de usuario aleatorio con \"!nick\".</i>"
+				.PHP_EOL.
+				"–<b>Dados</b>: <i>Lanza dos dados y obtendrás un resultado entre dos y doce usando \"!dados\".</i>"
+				.PHP_EOL.
+				"–<b>Ping</b>: <i>Comprueba la conexión entre cliente y bot con \"!ping\".</i>"
+				.PHP_EOL.
+				"–<b>Moneda</b>: <i>Lanza una moneda al aire con \"!moneda\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_moneda"
+				.PHP_EOL.
+				"–<b>Bienvenida</b>: <i>Establece un mensaje personal de bienvenida con \"!bienvenida\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_bienvenida"
+				.PHP_EOL.
+				"–<b>Función personal</b>: <i>Guarda tu texto personalizado y lánzalo con \"!texto\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_texto"
+				.PHP_EOL.
+				"–<b>Información</b>: <i>Muestra información del bot con \"!info\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_info"
+				.PHP_EOL.
+				"–<b>Cita</b>: <i>Crea una cita como imagen con \"!cita mensaje\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_cita"
+				.PHP_EOL.
+				"–<b>Bécquer</b>: <i>Crea una imagen con texto de Bécquer usando \"!becquer mensaje\".</i>"
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"👾 <b>Minijuegos:</b>"
+				.PHP_EOL.
+				"–<b>Batalla de mensajes</b>: <i>Compite por ser el más activo de Telegram con \"!mensajes\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_mensajes"
+				.PHP_EOL.
+				"–<b>Grupos</b>: <i>Lleva a tu grupo a lo más alto con \"!grupos\".</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_grupos"
+				.PHP_EOL.
+				"–<b>Captura la bandera</b>: <i>¡Sé el más rápido de Telegram haciendo la \"!pole\"!</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_bandera"
+				.PHP_EOL.
+				"–<b>Reclama el mástil</b>: <i>Usa \"!pole\" para enviar un mástil a tu grupo!</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_mastil"
+				.PHP_EOL.
+				"–<b>Aprende a volar</b>: <i>¡Evita detonar la bomba con \"!boton\"!</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_boton"
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"🤖 <b>Otros bots:</b>"
+				.PHP_EOL.
+				"@KamisukeBot: <i>Envía sonidos cortos como con el antiguo \"Messenger Plus!\".</i>"
+				.PHP_EOL.
+				"@DemigranciasBot: <i>Los mejores textos y audios de ForoCoches se reúnen en este bot.</i>"
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"<i>¿Tienes alguna sugerencia para el bot?, ¿le encuentras algún fallo? Puedes utilizar la función \"!sugerencia\" para dejar un mensaje en el bot.</i>"
+				.PHP_EOL.
+				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
+				.PHP_EOL.
+				"@DemisukeBot v2.0 creado por @Kamisuke."
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
 				"¿Te gusta el bot? ¡Puntúalo ⭐️⭐️⭐️⭐️⭐️!"
 				.PHP_EOL.
 				"https://telegram.me/storebot?start=DemisukeBot"
 				;
-
-	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
+	} else if($mode == "modo") {
+		$text = "🔧 <b>Configuración del bot</b> ⚙"
+				.PHP_EOL.PHP_EOL.
+				"<i>Con la función </i><b>!modo</b><i> podrás visualizar qué puede hacer el bot en el grupo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Para cambiar la configuración basta con usar </i><b>!cambiarmodo</b><i> y los ajustes pasarán al siguiente estado.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>La función </i><b>!cambiarmodo</b><i> por defecto puede ser utilizada por cualquier miembro del grupo, sin embargo un administrador de grupo puede restringir este privilegio escribiendo</i> <b>!modoadmin</b><i> y volver a darlo con</i> <b>!modolibre</b><i>.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Los minijuegos 'Captura la bandera' y 'Reclama el mástil' también se pueden prohibir mediante la función</i> <b>!prohibirpole</b><i> o permitir escribiendo</i> <b>!permitirpole</b><i>.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Además, también se visualizará el estado de la función personalizada y el mensaje de bienvenida personalizado del grupo. Consulta en la </i><b>!ayuda</b><i> cómo configurar estas funciones en sus apartados correspondientes.</i>"
+				;
+	} else if($mode == "inline") {
+		$text = "🔎 <b>Funciones inline del bot</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Las funciones inline son aquellas que puedes utilizar en cualquier chat, sea privado o grupal, sin necesidad de que el bot sea uno de los miembros de la conversación.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Para poder utilizar estas opciones basta con escribir</i><b>@DemisukeBot mensaje</b><i> y aparecerá un menú desplegable con las siguientes opciones:</i>"
+				.PHP_EOL.PHP_EOL.
+				"–<b>Spoiler</b>: <i>El mensaje que escribas se enviará oculto y el receptor no verá su contenido hasta que pulse el botón \"Desvelar spoiler\".</i>"
+				.PHP_EOL.
+				"<i>Si el mensaje se envía como </i><b>@DemisukeBot mensaje1 spoiler: mensaje2</b> <i>el mensaje1 aparecerá públicamente justo encima del botón, a modo de alerta adicional, y el mensaje2 será el que permanezca oculto tras el botón.</i>"
+				.PHP_EOL.PHP_EOL.
+				"–<b>Negrita</b>: <i>El mensaje que escribas se enviará en negrita, sin configuración adicional</i>"
+				.PHP_EOL.PHP_EOL.
+				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
+				;
+	} else if($mode == "moneda") {
+		$text = "🔎 <b>Función Moneda</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Utilizando </i><b>!moneda</b><i> aparecerá un botón para hacerla girar."
+				.PHP_EOL.
+				"¿Cara o cruz? ¡Elige antes de que salga una de las dos opciones!"
+				.PHP_EOL.PHP_EOL.
+				"La función de girar la moneda requiere un gran uso de la API de Telegram, por lo que solo hay una moneda general para todos los usuarios del bot, y se podrá girar una vez por minuto como máximo.</i>"
+				;
+	} else if($mode == "bienvenida") {
+		$text = "🔎 <b>Mensaje de bienvenida personalizado</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Si escribes </i><b>!bienvenida mensaje</b><i> en un grupo donde seas administrador/a y esté presente el bot, podrás guardar un mensaje de bienvenida que se mostrará autoáticamente cada vez que un nuevo usuario se añada al grupo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Para mostrar el mensaje puedes escribir simplemente </i><b>!bienvenida</b><i> sin especificar ningún texto adicional, y aparecerá el texto guardado para el grupo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>El mensaje guardado se almacena formateado en HTML, por lo que puedes usar algunas etiquetas para, por ejemplo, escribir en negrita.</i>"
+				.PHP_EOL.
+				"<i>Si el mensaje no aparece es posible que sea porque ocupe más de 2500 carácteres, que te hayas dejado alguna etiqueta abierta o que hayas intentado encadenar más de una para una misma palabra, algo que actualmente Telegram no permite.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Para eliminar el mensaje guardado bastará con escribir </i><b>!bienvenida off</b>."
+				;
+	} else if($mode == "texto") {
+		$text = "🔎 <b>Mensaje personalizado para grupos</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Si escribes </i><b>!texto mensaje</b><i> en un grupo donde seas administrador/a y esté presente el bot, podrás guardar un mensaje de texto que se mostrará cada vez que alguien escriba</i> <b>!texto</b>."
+				.PHP_EOL.PHP_EOL.
+				"<i>El mensaje guardado se almacena formateado en HTML, por lo que puedes usar algunas etiquetas para, por ejemplo, escribir en negrita.</i>"
+				.PHP_EOL.
+				"<i>Si el mensaje no aparece es posible que sea porque ocupe más de 2500 carácteres, que te hayas dejado alguna etiqueta abierta o que hayas intentado encadenar más de una para una misma palabra, algo que actualmente Telegram no permite.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Para eliminar el mensaje guardado bastará con escribir </i><b>!texto off</b>."
+				;
+	} else if($mode == "info") {
+		$text = "🔎 <b>Información y estadísticas del bot</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Con la función </i><b>!info</b><i> el bot relatará su historia y podrás saber de dónde procede y más datos sobre su vida, tanto en Telegram como fuera.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Además contará de manera indirecta en cuántos grupos está instalado y te dará pistas sobre funciones ocultas como huevos de pascua o palabras clave.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Si utilizas la función </i><b>!infomini</b><i> el bot se limitará a responder cuántos usuarios usan a</i> @DemisukeBot<i>, en cuántos grupos ha estado y en cuántos sigue activo.</i>"
+				;
+	} else if($mode == "cita") {
+		$text = "🔎 <b>Imágenes con citas personalizadas</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Escribiendo </i><b>!cita mensaje</b><i> podrás crear una imagen con el texto introducido a modo de cita y compartirla con tus amigos.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>El tamaño máximo no es fijo sino que depende del espacio libre que quede en la imagen. Aun así, si el texto es muy largo o está vacío la propia función te avisará de ello.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>También puedes incluir una firma para la cita introducida si escribes </i><b>!cita (mensaje1) mensaje2</b><i>. El mensaje2 escrito al final será la cita en sí, mientras que el mensaje1 escrito entre paréntesis será la firma con la que terminará la cita.</i>"
+				;
+	} else if($mode == "mensajes") {
+		$text = "🔎 <b>Los usuarios más activos de Telegram</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"<b>!mensajes</b>: <i>Muestra la clasificación global de Telegram de los usuarios más activos. Necesitas habilitar tu participación para aparecer aquí.</i>"
+				.PHP_EOL.
+				"<b>!mensajesgrupo</b>: <i>Ránking exclusivo del grupo de los usuarios que más aportan. ¡Conoce quién mantiene con vida tu grupo! Todos los miembros que hayan escrito al menos un mensaje podrán aparecer en la clasificación.</i>"
+				.PHP_EOL.
+				"<b>!activame</b>: <i>Habilita la participación en el ránking global. Para mantener la privacidad, todos los usuarios están desactivados por defecto hasta que usan esta función.</i>"
+				.PHP_EOL.
+				"<b>!desactivame</b>: <i>Oculta tu nombre en el ránking global de los más activos.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"–<i>Por cada mensaje que escribas en el grupo se te sumará un punto al marcador.</i>"
+				.PHP_EOL.
+				"–<i>Las diez personas que más puntos obtengan aparecerán en el ránking con su nombre y puntuación.</i>"
+				.PHP_EOL.
+				"–<i>La persona que consulte el ránking aparecerá como extra al final del TOP 10 y conocerá su puntuación actual.</i>"
+				.PHP_EOL.
+				"–<i>La utilización de funciones del bot no contará como mensaje escrito, por lo que no añadirá puntos al marcador.</i>"
+				.PHP_EOL.
+				"–<i>El 'floodeo' será ignorado y no puntuará, ningún usuario podrá obtener más de diez puntos en un minuto.</i>"
+				.PHP_EOL.
+				"–<i>Si el grupo se convierte en supergrupo, las estadísticas se reiniciarán. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
+				;
+	} else if($mode == "grupos") {
+		$text = "🔎 <b>Los mejores grupos de Telegram</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"<b>!grupos</b>: <i>Muestra la clasificación global de los grupos más activos de Telegram. Si no estás en el ránking de los mejores, la puntuación de tu grupo aparecerá al final.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"–<i>Por cada mensaje que escribas en el grupo se añadirá un punto al marcador.</i>"
+				.PHP_EOL.
+				"–<i>No se podrán conseguir más de sesenta puntos por minutos para evitar el 'floodeo'.</i>"
+				.PHP_EOL.
+				"–<i>Si el bot detecta una mala práctica de esta competición, los puntos del grupo se reiniciarán automáticamente y se enviará una notificación al grupo. ¡Aporta conversaciones interesantes a tus amigos!</i>"
+				.PHP_EOL.
+				"–<i>Solo los grupos con un número considerable de miembros podrá participar en la competición.</i>"
+				.PHP_EOL.
+				"–<i>Los grupos que permanecen inactivos durante más de quince días quedan descalificados de la competición hasta que alguno de sus miembros que no sea bot vuelva a participar en el grupo.</i>"
+				.PHP_EOL.
+				"–<i>Si el grupo se convierte en supergrupo, las estadísticas se reiniciarán. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
+				.PHP_EOL.
+				"–<i>Los grupos que eliminen al bot de sus miembros serán descalificados de la competición hasta que lo vuelvan a añadir. Si crees que el bot habla demasiado puedes utilizar !cambiarmodo para que participe menos. Si por el contrario lo encuentras aburrido puedes enviar aportes para mejorar el bot con la función !sugerencia.</i>"
+				.PHP_EOL.
+				"–<i>Solo los diez grupos con la puntuación más alta y el grupo donde se consulte el ránking aparecerán en la clasificación.</i>"
+				;
+	} else if($mode == "bandera") {
+		$text = "🔎 <b>Captura la bandera</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"<b>!banderas</b>: <i>Muestra la clasificación global de todas las banderas capturadas, además de las que tiene el usuario que utiliza la función si tiene al menos una.</i>"
+				.PHP_EOL.
+				"<b>!banderasgrupo</b>: <i>Muestra la clasificación del grupo de los usuarios con más banderas capturadas, además de las que tiene el usuario que utiliza la función si tiene al menos una.</i>"
+				.PHP_EOL.
+				"<b>!pole</b>: <i>Permite capturar una nueva bandera si está disponible, ¡utiliza esta función antes que los demás! En caso de estar capturada la bandera mostrará a quién pertenece y desde dónde la consiguió.</i>"
+				.PHP_EOL.
+				"<b>!bloquearpole</b>: <i>Permite a los administradores de un grupo impedir que sus miembros puedan capturar banderas. Si eres miembro de un grupo con la captura de banderas bloqueada puedes abrir un chat privado con el bot e intentarlo desde ahí.</i>"
+				.PHP_EOL.
+				"<b>!permitirpole</b>: <i>Levanta la prohibición de capturar banderas en un grupo. Puedes comprobar la disponibilidad del juego en tu grupo con la función !modo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"–<i>Cada hora se planta una nueva bandera en el bot.</i>"
+				.PHP_EOL.
+				"–<i>El primer usuario que la capture con la función !pole la tendrá en su posesión y su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, hasta que se plante la siguiente bandera, además de sumar una bandera a su colección.</i>"
+				.PHP_EOL.
+				"–<i>El actual poseedor de la última bandera capturada no podrá capturar la siguiente.</i>"
+				.PHP_EOL.
+				"–<i>Cada participante tendrá un inventario inicial para veinte banderas, y un inventario adicional con un hueco extra por cada una de las banderas que haya capturado el usuario que aparece en la posición 10 del ránking global.</i>"
+				.PHP_EOL.
+				"–<i>El uso de la función !pole para capturar la bandera es compatible con grupos y chats privados, siempre que los grupos tengan un número considerable de participantes.</i>"
+				.PHP_EOL.
+				"–<i>La función !pole estará disponible cada veinte segundos. Su uso reiterado sancionará al usuario.</i>"
+				.PHP_EOL.
+				"–<i>Si un usuario sancionado continúa tratando de capturar una bandera con la penalización activa, su sanción aumentará.</i>"
+				.PHP_EOL.
+				"–<i>Un usuario sancionado no podrá conocer su tiempo restante de sanción, simplemente podrá volver a participar una vez la haya cumplido.</i>"
+				.PHP_EOL.
+				"–<i>Si el grupo se convierte en supergrupo, las estadísticas de !banderasgrupo se reiniciarán. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
+				;
+	} else if($mode == "mastil") {
+		$text = "🔎 <b>Reclama el mástil</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"<b>!mastiles</b>: <i>Muestra la clasificación de todos los mástiles del grupo reclamados, además de los que tiene el usuario que utiliza la función si lo ha reclamado al menos una vez.</i>"
+				.PHP_EOL.
+				"<b>!pole</b>: <i>Permite reclamar un nuevo mástil si está disponible, ¡utiliza esta función antes que los demás! En caso de estar reclamado el mástil mostrará quién lo hizo.</i>"
+				.PHP_EOL.
+				"<b>!bloquearpole</b>: <i>Permite a los administradores de un grupo impedir que sus miembros puedan reclamar mástiles.</i>"
+				.PHP_EOL.
+				"<b>!permitirpole</b>: <i>Levanta la prohibición de reclamar mástiles en un grupo. Puedes comprobar la disponibilidad del juego en tu grupo con la función !modo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"–<i>Cada hora se planta un nuevo mástil en el bot, media hora después de que aparezca una bandera nueva.</i>"
+				.PHP_EOL.
+				"–<i>El primer usuario que lo reclame con la función !mastil lo tendrá en su posesión y su nombre aparecerá justo debajo del propietario de la bandera.</i>"
+				.PHP_EOL.
+				"–<i>Más de una persona puede reclamar un mismo mástil si lo hacen al mismo tiempo. Los puntos se sumarán a todos los que lo consiguieron, sin embargo en la función !pole solo aparecerá reclamado por uno de ellos.</i>"
+				.PHP_EOL.
+				"–<i>'Reclama el mástil' es un juego exclusivo para grupos, no podrás participar desde chat privado.</i>"
+				.PHP_EOL.
+				"–<i>No hay ránking global de mástiles de Telegram, cada clasificación es exclusiva de su grupo. Si quieres competir contra otros grupos, intenta capturar la bandera en hora punta.</i>"
+				.PHP_EOL.
+				"–<i>El actual poseedor del último mástil reclamado no podrá reclamar el siguiente.</i>"
+				.PHP_EOL.
+				"–<i>Cada participante tendrá un inventario inicial para veinte mástiles, y un inventario adicional con un hueco extra por cada uno de los mástiles que haya capturado el usuario que aparece en la posición 10 de la clasificación del grupo.</i>"
+				.PHP_EOL.
+				"–<i>El uso de la función !pole es compatible con los grupos que tengan un número considerable de participantes.</i>"
+				.PHP_EOL.
+				"–<i>La función !pole estará disponible cada veinte segundos. Su uso reiterado sancionará al usuario.</i>"
+				.PHP_EOL.
+				"–<i>Si un usuario sancionado continúa tratando de reclamar un mástil con la penalización activa, su sanción aumentará.</i>"
+				.PHP_EOL.
+				"–<i>Un usuario sancionado no podrá conocer su tiempo restante de sanción, simplemente podrá volver a participar una vez la haya cumplido.</i>"
+				.PHP_EOL.
+				"–<i>Si el grupo se convierte en supergrupo, las clasificación se reiniciará. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
+				;
+	} else if($mode == "boton") {
+		$text = "🔎 <b>Aprende a volar</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>¿Será hoy tu día de suerte? Comprúebalo pulsando el botón que lo decide. Si utilizas la función </i><b>!boton</b><i> tienes un 20% de posibilidades de detonar una bomba en el chat y 'salir por los aires', de lo contrario aparecerá un mensaje confirmando que te has salvado de la explosión.</i>"
+				.PHP_EOL.
+				"<i>Es un minijuego muy útil para decidir a la suerte a un jugador de entre todos los participantes, como si fuera una ruleta o una botella que gira.</i>"
+				;
+	}
+	if(strlen($text) > 5){
+		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
+		usleep(100000);
+		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", "text" => $text));
+	}
 }
 
 function processMessage($message) {
@@ -1906,6 +2502,8 @@ function processMessage($message) {
 				mysql_free_result($result);
 				$grouptitle = $message['chat']['title'];
 				$grouptitle = str_replace("'","''",$grouptitle);
+				$grouptitle = str_replace("<","",$grouptitle);
+				$grouptitle = str_replace(">","",$grouptitle);
 				$query = "SET NAMES utf8mb4;";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$query = "INSERT INTO `groupbattle` (`group_id`, `name`, `total`, `lastpoint`) VALUES ('".$chat_id."', '".$grouptitle."', '1', '".$time."');";
@@ -2062,7 +2660,21 @@ function processMessage($message) {
 	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke para saber qué hace este bot."));
     } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
 		error_log($logname." triggered: !ayuda.");
-		commandsList($chat_id);
+		commandsList($chat_id, "main");
+    } else if (strpos($text, "/ayuda_modo") === 0 || strpos($text, "/ayuda_modo@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_inline") === 0 || strpos($text, "/ayuda_inline@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_moneda") === 0 || strpos($text, "/ayuda_moneda@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_bienvenida") === 0 || strpos($text, "/ayuda_bienvenida@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_texto") === 0 || strpos($text, "/ayuda_texto@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_info") === 0 || strpos($text, "/ayuda_info@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_cita") === 0 || strpos($text, "/ayuda_cita@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_mensajes") === 0 || strpos($text, "/ayuda_mensajes@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_grupos") === 0 || strpos($text, "/ayuda_grupos@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_bandera") === 0 || strpos($text, "/ayuda_bandera@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_mastil") === 0 || strpos($text, "/ayuda_mastil@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_boton") === 0 || strpos($text, "/ayuda_boton@DemisukeBot") === 0) {
+		error_log($logname." triggered: ".$text.".");
+		commandsList($chat_id, $text);	
     } else if (strpos($text, "/sendNotification") === 0) {
 		error_log($logname." triggered: New Notification.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {
@@ -2100,7 +2712,7 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
-	} else if (strpos($text, "/checkflags") === 0) {
+/*	} else if (strpos($text, "/checkflags") === 0) {
 		error_log($logname." triggered: /checkflags.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			$link = dbConnect();
@@ -2114,6 +2726,7 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
+*/
 	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
 		if($randomTicket > -1) {
 			error_log($logname." triggered: Hola.");
@@ -2123,6 +2736,16 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$greeting."*"));
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Hola.");
+		}
+    } else if (strtolower($text) === "adios" || strtolower($text) === "adiós" || strtolower($text) === "chao" || strtolower($text) === "adeu" || strtolower($text) === "buenas noches" || strtolower($text) === "bona nit" || strtolower($text) === "hasta luego" || strtolower($text) === "me piro") {
+		if($randomTicket > -1) {
+			error_log($logname." triggered: Adios.");
+			$message = goodbye();
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$message."*"));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Adios.");
 		}
     } else if (strpos(strtolower($text), "!dados") !== false) {
 		error_log($logname." triggered: !dados.");
@@ -2139,10 +2762,10 @@ function processMessage($message) {
 				} else {
 					$name = "compi";
 				}
-				error_log($logname." triggered: Forwarding bot.");
+				error_log($logname." triggered: Forwarding (RT) bot.");
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				sleep(1);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Buena esa, ".$name.".* 😎"));			
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Buena esa, ".$name.".* 😎"));	
 			} else {
 				error_log($logname." tried to trigger and failed due to group restrictions: Forwarding (RT) bot.");
 			}
@@ -2204,7 +2827,7 @@ function processMessage($message) {
 		} else {
 				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
 		}
-	} else if (strpos(strtolower($text), "!siono") === 0 && strlen($text) > 8) {
+	} else if (strpos(strtolower($text), "!siono") !== false && strlen($text) > 8) {
 		error_log($logname." triggered: !siono.");
 		$respuesta = yesNoQuestion();
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -2213,12 +2836,247 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!ping") !== false) {
 		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));
+	} else if (strpos(strtolower($text), "!moneda") !== false) {
+		if($randomTicket > -3) {
+			error_log($logname." triggered: !moneda.");
+			$link = dbConnect();
+			$query = "SELECT last_flip FROM `flipcoin` WHERE fc_id = 01";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			$flip = $row['last_flip'];
+			mysql_free_result($result);		
+			$time = time() - 60;
+			if($time >= $flip) {
+				$time = $time + 60;
+				$query = "UPDATE `flipcoin` SET `user_id` = '".$message['from']['id']."', `group_id` = '".$chat_id."', `last_flip` = '".$time."', `times_flipped` = `times_flipped` + 1 WHERE `fc_id` = '01'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_close($link);
+				$keyboardButton = (object) ["text" => "Girar la moneda", "callback_data" => "FLIPCOINqGq3Z6yf1guhfgFdwkzt"];
+				apiRequestJson("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¿Cara o cruz? ¡Piensa en un resultado y pulsa el botón para girar la moneda!*", "reply_markup" => ["inline_keyboard" => [[$keyboardButton,]] ]));
+			} else {
+				mysql_close($link);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Alguien está usando mi moneda y no me quedan más. Espera un minuto y usa !moneda de nuevo.*"));
+			}
+		} else {
+				error_log($logname." tried to trigger and failed due to group restrictions: !moneda.");
+		}
+	} else if (strpos(strtolower($text), "!sugerencia") === 0 && strlen($text) > 15) {
+		error_log($logname." triggered: !sugerencia.");
+		$msg = "Sugerencia entrante de ";
+		if(isset($message['from']['first_name'])) {
+			$msg = $msg.$message['from']['first_name'];
+		}
+		if(isset($message['from']['username'])) {
+			$msg = $msg." (@".$message['from']['username'].")";
+		}
+		$msg = $msg.":".PHP_EOL.PHP_EOL;
+		$msg = $msg.substr($text, 12);
+		apiRequest("sendMessage", array('chat_id' => 6250647, "text" => $msg));
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(500000);
+		$msg = "*El mensaje ha sido enviado correctamente y será revisado por el administrador del bot lo antes posible.*".PHP_EOL;
+		$msg = $msg."_Recuerda utilizar correctamente esta función ya que su uso indebido añadirá tu cuenta a la lista de ignorados por la función \"!sugerencia\"._";
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+	} else if (strpos(strtolower($text), "!texto") === 0) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			if(strlen($text) > 6) {
+				$user_id = $message['from']['id'];
+				$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+				$isAdmin = 0;
+				for($i=0;$i<sizeof($adminList);$i++) {
+					if($adminList[$i]['user']['id'] == $user_id) {
+						$isAdmin = 1;
+					}
+				}
+				if($user_id == 6250647) {
+					$isAdmin = 1;
+				}
+				if($isAdmin == 1) {
+					if($text == "!texto off") {
+						error_log($logname." deleted custom group text.");
+						$link = dbConnect();
+						$query = "UPDATE `groupbattle` SET `custom_text` = NULL WHERE `group_id` = ".$chat_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						mysql_close($link);
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(250000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El mensaje personalizado ha sido eliminado.*"));
+					} else {
+						error_log($logname." set a new text message.");
+						$text = ltrim(rtrim(substr($text, 6, 2500)));
+						if($text == "") {
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(250000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Has introducido un mensaje de texto vacío. El resultado no se ha guardado.*"));
+						} else {
+							$link = dbConnect();
+							$text = str_replace("'", "''", $text);
+							$query = "SET NAMES utf8mb4;";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$query = "UPDATE `groupbattle` SET `custom_text` = '".$text."' WHERE `group_id` = ".$chat_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							mysql_close($link);
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(250000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha guardado el mensaje personalizado.*"));
+						}
+					}
+				} else {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					error_log($logname." tried to edit or delete a group text not being admin.");
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Solo los administradores del grupo pueden editar o eliminar el mensaje personalizado.*"));
+				}
+			} else {
+				error_log($logname." triggered: !texto.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				$link = dbConnect();
+				$query = "SELECT custom_text FROM groupbattle WHERE group_id = '".$chat_id."'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if($row['custom_text'] == "") {
+					$result = "<b>No se ha establecido ningún texto personalizado para este grupo.</b>".PHP_EOL.
+								"Puedes crear uno si eres administrador del grupo escribiendo \"!texto mensaje_a_enviar\".".PHP_EOL.
+								"El mensaje será formateado como texto HTML, por lo que puedes escribir en negrita, cursiva, o crear enlaces.".PHP_EOL.
+								"<i>Nota: En caso de utilizar etiquetas HTML recuerda cerrarlas todas correctamente, de lo contrario, el mensaje no se mostrará.</i>";
+				} else {
+					$result = $row['custom_text'];
+				}
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+				mysql_free_result($result);
+				mysql_close($link);
+			}
+		} else {
+			error_log($logname." tried to trigger and failed: !texto.");
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!bienvenida") === 0) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			if(strlen($text) > 12) {
+				$user_id = $message['from']['id'];
+				$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+				$isAdmin = 0;
+				for($i=0;$i<sizeof($adminList);$i++) {
+					if($adminList[$i]['user']['id'] == $user_id) {
+						$isAdmin = 1;
+					}
+				}
+				if($user_id == 6250647) {
+					$isAdmin = 1;
+				}
+				if($isAdmin == 1) {
+					if($text == "!bienvenida off") {
+						error_log($logname." deleted welcome group text.");
+						$link = dbConnect();
+						$query = "UPDATE `groupbattle` SET `welcome_text` = NULL WHERE `group_id` = ".$chat_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						mysql_close($link);
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(250000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El mensaje de bienvenida se ha desactivado.*"));
+					} else {
+						error_log($logname." set a new welcome message.");
+						$text = ltrim(rtrim(substr($text, 12, 2500)));
+						if($text == "") {
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(250000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Has introducido un mensaje de texto vacío. El resultado no se ha guardado.*"));
+						} else {
+							$link = dbConnect();
+							$text = str_replace("'", "''", $text);
+							$query = "SET NAMES utf8mb4;";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$query = "UPDATE `groupbattle` SET `welcome_text` = '".$text."' WHERE `group_id` = ".$chat_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							mysql_close($link);
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(250000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha guardado el mensaje de bienvenida personalizado.*"));
+						}
+					}
+				} else {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					error_log($logname." tried to edit or delete a welcome text not being admin.");
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Solo los administradores del grupo pueden editar o eliminar el mensaje de bienvenida.*"));
+				}
+			} else {
+				error_log($logname." triggered: !bienvenida.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				$link = dbConnect();
+				$query = "SELECT welcome_text FROM groupbattle WHERE group_id = '".$chat_id."'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if($row['welcome_text'] == "") {
+					$result = "<b>No se ha establecido ningún texto de bienvenida para este grupo.</b>".PHP_EOL.
+								"Puedes crear uno si eres administrador del grupo escribiendo \"!bienvenida mensaje_a_enviar\".".PHP_EOL.
+								"El mensaje será formateado como texto HTML, por lo que puedes escribir en negrita, cursiva, o crear enlaces.".PHP_EOL.
+								"<i>Nota: En caso de utilizar etiquetas HTML recuerda cerrarlas todas correctamente, de lo contrario, el mensaje no se mostrará.</i>";
+				} else {
+					$result = $row['welcome_text'];
+				}
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+				mysql_free_result($result);
+				mysql_close($link);
+			}
+		} else {
+			error_log($logname." tried to trigger and failed: !bienvenida.");
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!boton") !== false || strpos(strtolower($text), "!botón") !== false) {
+		error_log($logname." triggered: !boton.");
+		$bombTicket = rand(1,5);
+		$username = str_replace("@", "", $logname);
+		if($bombTicket == 4) {
+			$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+			usleep(100000);
+			$gif = "BQADBAADQAcAApdgXwABCn7szqh0E84C";
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		} else {
+			$text = "*✅ ¡".$username." ha pulsado el botón y se ha salvado! 🍾*";
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+		}
 	} else if (strpos(strtolower($text), "!temazo") !== false || strpos(strtolower($text), "!cancion") !== false || strpos(strtolower($text), "!canción") !== false) {
 		error_log($logname." triggered: !cancion.");
 		$song = getSong();
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_audio"));
 		usleep(250000);
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $song));
+	} else if (strpos(strtolower($text), "!infomini") !== false) {
+		error_log($logname." triggered: !infomini.");
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		$link = dbConnect();
+		$query = "SELECT COUNT( * ) AS  'total_groups' FROM ( SELECT DISTINCT gb_id FROM groupbattle )dt";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$totalGroups = $row['total_groups'];
+		mysql_free_result($result);
+		$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$totalActive = $row['total_active'];
+		mysql_free_result($result);
+		$query = "SELECT COUNT( * ) AS  'total_users' FROM ( SELECT DISTINCT user_name FROM userbattle )dt";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$totalUsers = $row['total_users'];
+		mysql_close($link);
+		$text = "*".$totalUsers." personas están usando el bot.".PHP_EOL;
+		$text = $text.$totalGroups." grupos han probado ya el bot.".PHP_EOL;
+		$text = $text.$totalActive." grupos participan en los minijuegos.*";
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 	} else if (strpos(strtolower($text), "!info") !== false) {
 		if($randomTicket > -3) {
 			error_log($logname." triggered: !info.");
@@ -2297,6 +3155,57 @@ function processMessage($message) {
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: !info.");
 		}
+	} else if (strpos(strtolower($text), "!becquer") !== false || strpos(strtolower($text), "!bequer") !== false || strpos(strtolower($text), "!becker") !== false || strpos(strtolower($text), "!bécquer") !== false) {
+		error_log($logname." triggered: !becquer.");
+		$text = str_replace("!bequer", "!becquer", $text);
+		$text = str_replace("!becker", "!becquer", $text);
+		$start = strpos(strtolower($text), "!becquer") + 9;
+		$text = substr($text, $start);
+		$text = wordwrap($text, 26, "\n", false);
+		$totalEOL = substr_count($text, PHP_EOL);
+		if($totalEOL < 7) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$text = $text.PHP_EOL.PHP_EOL."-Gustavo Adolfo Bécquer";
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/becquer_".$imageURL.".jpg";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/jpeg');
+			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
+
+			$textColor = imagecolorallocate($jpg_image, 63,63, 63);
+
+			$font_path = dirname(__FILE__)."/img/handwritting.ttf";
+
+			imagettftext($jpg_image, 28, 0, 475, 125, $textColor, $font_path, $text);
+
+			imagejpeg($jpg_image, $imageURL);
+
+			$target_url    = "https://api.telegram.org/bot233309633:AAFDn4aaABtKARhDrtOdQrSdy4bMR0n-4eo/sendPhoto";
+		
+			$file_name_with_full_path = realpath($imageURL);
+
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+ 
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+
+			imagedestroy($jpg_image);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+  
+		
+	} else if (strpos(strtolower($text), "!cita") !== false) {
+		error_log($logname." triggered: !cita.");
+		getQuote($text, $chat_id);
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		if($randomTicket > -2) {
 			error_log($logname." triggered: Roto2.");
@@ -2358,6 +3267,198 @@ function processMessage($message) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 		mysql_free_result($result);
 		mysql_close($link);
+	} else if (strpos(strtolower($text), "!modoadmin") !== false) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$user_id = $message['from']['id'];
+			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+			$isAdmin = 0;
+			for($i=0;$i<sizeof($adminList);$i++) {
+				if($adminList[$i]['user']['id'] == $user_id) {
+					$isAdmin = 1;
+				}
+			}
+			if($user_id == 6250647) {
+				$isAdmin = 1;
+			}
+			if($isAdmin == 1) {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$link = dbConnect();
+				error_log($logname." triggered: !modoadmin.");
+				$query = 'UPDATE groupbattle SET freemode = 0 WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				mysql_close($link);
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 La configuración del bot será editable solo por administradores del grupo.*"));
+			}
+		} else {
+			error_log($logname." tried to trigger in private: !modoadmin.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!modolibre") !== false) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$user_id = $message['from']['id'];
+			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+			$isAdmin = 0;
+			for($i=0;$i<sizeof($adminList);$i++) {
+				if($adminList[$i]['user']['id'] == $user_id) {
+					$isAdmin = 1;
+				}
+			}
+			if($user_id == 6250647) {
+				$isAdmin = 1;
+			}
+			if($isAdmin == 1) {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$link = dbConnect();
+				error_log($logname." triggered: !modolibre.");
+				$query = 'UPDATE groupbattle SET freemode = 1 WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				mysql_close($link);
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 La configuración del bot será editable todos los usuarios del grupo.*"));
+			}
+		} else {
+			error_log($logname." tried to trigger in private: !modoadmin.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!modo") !== false) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			error_log($logname." triggered: !modo.");
+			$link = dbConnect();
+			showMode($chat_id);
+			mysql_close($link);
+		} else {
+			error_log($logname." tried to trigger in private: !modo.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!bloquearpole") !== false) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$user_id = $message['from']['id'];
+			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+			$isAdmin = 0;
+			for($i=0;$i<sizeof($adminList);$i++) {
+				if($adminList[$i]['user']['id'] == $user_id) {
+					$isAdmin = 1;
+				}
+			}
+			if($user_id == 6250647) {
+				$isAdmin = 1;
+			}
+			if($isAdmin == 1) {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$link = dbConnect();
+				error_log($logname." triggered: !bloquearpole.");
+				$query = 'UPDATE groupbattle SET flagblock = 1 WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				mysql_close($link);
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 Los minijuegos 'Captura la bandera' y 'Reclama el mástil' no estarán disponibles en este grupo.*"));
+			}
+		} else {
+			error_log($logname." tried to trigger in private: !modoadmin.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!permitirpole") !== false) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$user_id = $message['from']['id'];
+			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+			$isAdmin = 0;
+			for($i=0;$i<sizeof($adminList);$i++) {
+				if($adminList[$i]['user']['id'] == $user_id) {
+					$isAdmin = 1;
+				}
+			}
+			if($user_id == 6250647) {
+				$isAdmin = 1;
+			}
+			if($isAdmin == 1) {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$link = dbConnect();
+				error_log($logname." triggered: !permitirpole.");
+				$query = 'UPDATE groupbattle SET flagblock = 0 WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				mysql_close($link);
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 Los minijuegos 'Captura la bandera' y 'Reclama el mástil' han sido habilitados para este grupo. ¡Buena suerte!*"));
+			}
+		} else {
+			error_log($logname." tried to trigger in private: !modoadmin.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!cambiarmodo") !== false) {
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$isAdmin = 0;
+			$link = dbConnect();
+			$query = 'SELECT mode, freemode FROM groupbattle WHERE group_id = '.$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			$currMode = $row['mode'];
+			$freeMode = $row['mode'];
+			mysql_free_result($result);			
+			$user_id = $message['from']['id'];
+			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
+			for($i=0;$i<sizeof($adminList);$i++) {
+				if($adminList[$i]['user']['id'] == $user_id) {
+					$isAdmin = 1;
+				}
+			}
+			if($user_id == 6250647) {
+				$isAdmin = 1;
+			}
+			if($isAdmin == 1 || $freeMode == 1) {
+				$link = dbConnect();
+				error_log($logname." triggered: !cambiarmodo.");
+				switch($currMode) {
+					case 0: $mode = -1;
+							break;
+					case -1: $mode = -2;
+							break;
+					case -2: $mode = -3;
+							break;
+					case -3: $mode = -4;
+							break;
+					case -4: $mode = 0;
+							break;
+					default: $mode = 0;
+							break;
+				}
+				$query = 'UPDATE groupbattle SET mode = '.$mode.' WHERE group_id = '.$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				showMode($chat_id);
+			}
+			mysql_free_result($result);
+			mysql_close($link);
+		} else {
+			error_log($logname." tried to trigger in private: !modoadmin.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!mastil") !== false || strpos(strtolower($text), "!mástil")) {
+		error_log($logname." triggered: !mastil.");
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(100000);
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$result = getPoleBattle($message['from']['id'], $chat_id, $message['chat']['title']);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+		} else {
+			$result = "*Para usar esta función necesitas ejecutarla desde algún grupo, ¡añademe a tu grupo favorito y compite con tus amigos!*";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+		}
 	} else if (strpos(strtolower($text), "!banderasgrupo") !== false) {
 		error_log($logname." triggered: !banderasgrupo.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -2376,10 +3477,101 @@ function processMessage($message) {
 		usleep(100000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "!pole") !== false) {
-		error_log($logname." triggered: !pole.");
+		$link = dbConnect();
+		$from_id = $message['from']['id'];
 		$currentTime = time();
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
-			$from_id = $message['from']['id'];
+
+			$query = 'SELECT flagblock FROM groupbattle WHERE group_id = '.$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			$flagIsBlocked = $row['flagblock'];
+			mysql_free_result($result);	
+		} else {
+			$flagIsBlocked = 0;
+		}
+		if($flagIsBlocked == 0) {
+			error_log($logname." triggered: !pole.");
+			$query = 'SELECT last_check, penalty FROM lastpolecheck WHERE user_id = '.$from_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['last_check'])) {
+				$lastCheck = $row['last_check'];
+				$penalty = 20 * $row['penalty'];
+				$lastCheck = $lastCheck + $penalty;
+				if($currentTime > $lastCheck) {
+					mysql_free_result($result);	
+					$query = 'UPDATE lastpolecheck SET last_check = '.$currentTime.', penalty = 1 WHERE user_id = '.$from_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
+				} else {
+					$penalty = $row['penalty'];
+					mysql_free_result($result);
+					switch($penalty){
+						case 1: $newPenalty = 3;
+								break;
+						case 3: $newPenalty = 6;
+								break;
+						case 6: $newPenalty = 15;
+								break;
+						case 15: $newPenalty = 45;
+								break;
+						case 45: $newPenalty = 90;
+								break;
+						case 90: $newPenalty = 180;
+								break;
+						case 180: $newPenalty = 540;
+								break;
+						case 540: $newPenalty = 2160;
+								break;
+						case 2160: $newPenalty = 4320;
+								break;
+						case 4320: $newPenalty = 4320;
+								break;
+						default: $newPenalty = 4320;
+								break;
+					}
+					$query = 'UPDATE lastpolecheck SET last_check = '.$currentTime.', penalty = '.$newPenalty.' WHERE user_id = '.$from_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
+					$logname = str_replace("@","",$logname);
+					$penaltyMsg = "💀 *".$logname." ha sido sancionado con ";
+					switch($newPenalty){
+						case 1: $penaltyMsg = $penaltyMsg."veinte segundos";
+								break;
+						case 3: $penaltyMsg = $penaltyMsg."un minuto";
+								break;
+						case 6: $penaltyMsg = $penaltyMsg."dos minutos";
+								break;
+						case 15: $penaltyMsg = $penaltyMsg."cinco minutos";
+								break;
+						case 45: $penaltyMsg = $penaltyMsg."quince minutos";
+								break;
+						case 90: $penaltyMsg = $penaltyMsg."treinta minutos";
+								break;
+						case 180: $penaltyMsg = $penaltyMsg."una hora";
+								break;
+						case 540: $penaltyMsg = $penaltyMsg."tres horas";
+								break;
+						case 2160: $penaltyMsg = $penaltyMsg."doce horas";
+								break;
+						case 4320: $penaltyMsg = $penaltyMsg."un día";
+								break;
+						default: $penaltyMsg = $penaltyMsg."un día";
+								break;
+					}
+					$penaltyMsg = $penaltyMsg." de penalización por uso reiterado de la función \"!pole\".*";
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $penaltyMsg));
+					mysql_free_result($result);
+					mysql_close($link);
+					exit;
+				}
+			} else {
+				mysql_free_result($result);	
+				$query = "INSERT INTO `lastpolecheck` (`user_id`, `last_check`, `penalty`) VALUES ('".$from_id."', '".$currentTime."', '1');";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
+			}
+			mysql_free_result($result);				
 			$minutes = date('i');
 			$seconds = date('s');
 			$hour = date('g');
@@ -2388,7 +3580,8 @@ function processMessage($message) {
 			$randMultiplier = rand(3,6);
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
-			$link = dbConnect();
+
+			mysql_free_result($result);			
 			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
@@ -2410,7 +3603,12 @@ function processMessage($message) {
 						$name = "Desconocido";
 					}
 					$checkMax = 0;
-					$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
+
+					if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+						$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
+					} else {
+						$usersGroupCount = 17025;
+					}
 					if($from_id != $row['user_id'] && $usersGroupCount > 4) {
 						$total = 1;
 						$cleanName = str_replace("'","''",$name);
@@ -2431,11 +3629,16 @@ function processMessage($message) {
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								$row = mysql_fetch_array($result);
 								if(($newSeekerTotal - $row['total']) < 20) {
+									error_log($logname." got a new flag!");
 									mysql_free_result($result);
 									checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 									$total = 1 + $subTotal; 
 									mysql_free_result($result);
-									$chatTitle = str_replace("'","''",$message['chat']['title']);
+									if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+										$chatTitle = str_replace("'","''",$message['chat']['title']);
+									} else {
+										$chatTitle = "su homocueva";
+									}
 									$query = "SET NAMES utf8mb4;";
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 									$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
@@ -2450,8 +3653,13 @@ function processMessage($message) {
 							mysql_free_result($result);
 							checkPoint($hour, $chat_id, $link, $logname, $currentTime);
 							mysql_free_result($result);
+							error_log($logname." got a flag for the first time!");
 							$user_id = $message['from']['id'];
-							$chatTitle = str_replace("'","''",$message['chat']['title']);
+							if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+								$chatTitle = str_replace("'","''",$message['chat']['title']);
+							} else {
+								$chatTitle = "su homocueva";
+							}
 							$query = "SET NAMES utf8mb4;";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
@@ -2465,7 +3673,8 @@ function processMessage($message) {
 							if($hour != 1) {
 								$text = $text."s";
 							}
-							$text = $text." ".$hour."! 🎉</b>";	
+							$timeEmoji = timeEmoji($hour, 0);
+							$text = $text." ".$timeEmoji."! 🎉</b>";	
 							$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
 							mysql_free_result($result);
 							$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";
@@ -2493,19 +3702,134 @@ function processMessage($message) {
 					}
 				} else {
 					mysql_free_result($result);
-					poleFail($hour, $chat_id, $link, $logname, $currentTime);
+
+					error_log($logname." triggered: Polefail (flag).");
+					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$row = mysql_fetch_array($result);
+					$text = "🚩 <b>La bandera de la";
+					if($hour != 1) {
+						$text = $text."s";
+					}
+					$timeEmoji = timeEmoji($hour, 0);
+					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					mysql_free_result($result);
 				}
 			} else {
-				mysql_free_result($result);
-				poleFail($hour, $chat_id, $link, $logname, $currentTime);
+					mysql_free_result($result);
+
+					error_log($logname." triggered: Polefail (flag).");
+					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$row = mysql_fetch_array($result);
+					$text = "🚩 <b>La bandera de la";
+					if($hour != 1) {
+						$text = $text."s";
+					}
+					$timeEmoji = timeEmoji($hour, 0);
+					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					mysql_free_result($result);
 			}
-			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con la función !banderas el ránking global de usuarios con más banderas y con !banderasgrupo el ránking local del grupo.</i>";
+			// Changing Flag to Pole
+			if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+				if($minutes < 30) {
+					$halfTime = $currentTime - 1800;
+					$halfHour = $hour - 1;
+				} else {
+					$halfTime = $currentTime + 1800;
+					$halfHour = $hour;
+				}
+				$query = 'SELECT user_id, lastpole FROM userbattle WHERE group_id = '.$chat_id.' AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1';
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if($row['lastpole'] != $halfTime) {
+					if (isset($message['from']['username'])) {
+						$name = $message['from']['username'];
+					} else if (isset($message['from']['first_name'])) {
+						$name = $message['from']['first_name'];
+					} else {
+						$name = "Desconocido";
+					}
+					$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
+					if($from_id != $row['user_id'] && $usersGroupCount > 4) {
+						$total = 1;
+						$cleanName = str_replace("'","''",$name);
+						mysql_free_result($result);
+						$query = "SELECT totalpole FROM userbattle WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						if(isset($row['totalpole'])) {
+								$subTotal = $row['totalpole'];
+								mysql_free_result($result);
+								mysql_free_result($result);
+								$query = "SELECT totalpole FROM userbattle WHERE group_id = '".$chat_id."' ORDER BY totalpole DESC , lastpole LIMIT 9, 1";
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+								$row = mysql_fetch_array($result);
+								if(!isset($row['totalpole'])) {
+									$poleInventory = 0;
+								} else {
+									$poleInventory = $row['totalpole'];
+								}
+								if(($subTotal - $poleInventory) < 20) {
+									error_log($logname." got a new pole!");
+									mysql_free_result($result);
+									$total = 1 + $subTotal;
+									$query = "UPDATE `userbattle` SET `lastpole` = '".$halfTime."', `totalpole` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$from_id;
+									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+									mysql_free_result($result);
+									$text = $text.PHP_EOL."<b>📍🙋🏻 ¡".$name." ha reclamado el mástil de la";
+									if($halfHour != 1) {
+										$text = $text."s";
+									}
+									$timeEmoji = timeEmoji($halfHour, 1);
+									$text = $text." ".$timeEmoji."! 🎉</b>";
+								} else {
+									error_log($logname." has full pole inventory.");
+									$text = $text.PHP_EOL."<b>📍❌ ¡".$name." ha encontrado otro mástil, ¡pero ya tiene el inventario lleno!</b> 🚫";
+								}
+						} else {
+							$text = $text.PHP_EOL."<b>📍❌ ¡".$name." necesita participar más en el grupo para poder reclamar su primer mástil!</b> 🚫";
+						}
+					} else if($usersGroupCount > 4) {
+						$text = $text.PHP_EOL."<b>📍❌ ".$name." se ha topado con otro mástil, ¡pero no puede reclamar dos seguidos!</b> 🚫";
+					} else {
+						$text = $text.PHP_EOL."<b>📍❌ ".$name." se encuentra ante un mástil, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
+					}
+
+				} else {
+					mysql_free_result($result);
+					error_log($logname." triggered: Polefail.");
+					$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = ".$chat_id." AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$text = $text.PHP_EOL."📍 <b>El mástil de la";
+					if($halfHour != 1) {
+						$text = $text."s";
+					}
+					$timeEmoji = timeEmoji($halfHour, 1);
+					if($row['user_name'] == "") {
+						$shownName = $row['first_name'];
+					} else {
+						$shownName = $row['user_name'];
+					}
+					$text = $text." ".$timeEmoji." fue reclamado por ".$shownName.".</b>";
+					mysql_free_result($result);
+				}
+			} else {
+				$text = $text.PHP_EOL."<b>📍❌ El minijuego 'Reclama el mástil' está disponible solo para grupos.</b> 🚫";
+			}
+			// Result
+			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con !banderas el ránking global de banderas, con !banderasgrupo el ránking local y con !mastiles quién ha reclamado más veces un mástil en tu grupo.</i>";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 			mysql_free_result($result);
-			mysql_close($link);
+
 		} else {
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La pole solo está disponible para grupos y supergrupos, ¡añádeme a alguno!*"));
+
+			error_log($logname." tried to use !pole in a non-flags group and failed.");
 		}
+		mysql_close($link);
 	} else if (strpos(strtolower($text), "reportad") !== false || strpos(strtolower($text), "reportadit") !== false ||strpos(strtolower($text), "reportait") !== false) {
 		if($randomTicket > -2) {
 			error_log($logname." triggered: Reportado.");
@@ -2523,6 +3847,57 @@ function processMessage($message) {
 			}
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Reportado.");
+		}
+	} else if (strpos(strtolower($text), "ilitri") !== false || strpos(strtolower($text), "electrik") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Ilitri.");
+			usleep(400000);
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADQwcAApdgXwABY4iaIlE5MVEC'));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: ilitri.");
+		}
+	} else if (strpos(strtolower($text), "zpalomita") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Zpalomita.");
+			usleep(400000);
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADgAQAApdgXwABslbJX3gzis4C'));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Zpalomita.");
+		}
+	} else if (strpos(strtolower($text), "masmola") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Masmola.");
+			usleep(400000);
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADegQAApdgXwABBwuqBxBXY94C'));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Masmola.");
+		}
+	} else if (strpos(strtolower($text), "qmeparto") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Qmeparto.");
+			usleep(400000);
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADfgQAApdgXwAByjX2_VEwhzkC'));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Qmeparto.");
+		}
+	} else if (strpos(strtolower($text), "nusenuse") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Nusenuse.");
+			usleep(400000);
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAADfAQAApdgXwABjQjBkbORu5IC'));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Nusenuse.");
+		}
+	} else if (strpos(strtolower($text), "viva veget") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Viva Vegetta.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
+			usleep(400000);
+			// Cambiar en DemisukeBot
+			$gif = "AwADBAADRQcAApdgXwABqfQ693x1aVQC";
+			apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $gif));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");
 		}
 	} else if (strlen($text) > 1000) {
 		if($randomTicket > -3) {
@@ -2670,28 +4045,30 @@ function processMessage($message) {
 		$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		if($row['mode'] > -1) {
-			mysql_free_result($result);
-			error_log($logname." triggered: New group title.");
-			$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
-			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$row = mysql_fetch_array($result);
-			if(isset($row['total'])) {
-				if($row['total'] > 0) {
-					mysql_free_result($result);
-					$newtitle = $message['new_chat_title'];
-					$newtitle = str_replace("'","''",$newtitle);
-					$query = "SET NAMES utf8mb4;";
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				}
+		mysql_free_result($result);
+		$query = 'SELECT total FROM groupbattle WHERE group_id = '.$chat_id;
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['total'])) {
+			if($row['total'] > 0) {
+				mysql_free_result($result);
+				$newtitle = $message['new_chat_title'];
+				$newtitle = str_replace("'","''",$newtitle);
+				$newtitle = str_replace("<","",$newtitle);
+				$newtitle = str_replace(">","",$newtitle);
+				$query = "SET NAMES utf8mb4;";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$query = "UPDATE `groupbattle` SET `name` = '".$newtitle."' WHERE `group_id` = ".$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			}
+		}
+		if($row['mode'] > -1) {
+			error_log($logname." triggered: New group title.");
 			$msg = "*¿".$message['new_chat_title']."?*";
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(500000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
-			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));		
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: New group title.");
 		}
@@ -2711,7 +4088,7 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if($row['mode'] > -1) {
 			error_log($logname." triggered: Group photo.");
-			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, "reply_to_message_id" => $message_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));		
+			apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, "reply_to_message_id" => $message_id, 'sticker' => 'BQADBAAD9gEAApdgXwABtD7Xp1ZdrYsC'));
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: New group photo.");
 		}
@@ -2726,47 +4103,58 @@ function processMessage($message) {
 			$logname = "ID".$message['new_chat_member']['id'];
 		}
 		$link = dbConnect();
-		$query = "SELECT mode FROM groupbattle WHERE group_id = '".$chat_id."'";
+		$query = "SELECT mode, welcome_text FROM groupbattle WHERE group_id = '".$chat_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		if($row['mode'] > -1) {
+		$mode = $row['mode'];
+		$welcomeText = $row['welcome_text'];
+		if($welcomeText != "") {
+			$mode = 0;
+		}
+		if($mode > -1) {
 			error_log($logname." triggered: Newcomer to group.");
 			$imNewcomer = false;
 			if(isset($message['new_chat_member']['username'])) {
 				if($message['new_chat_member']['username'] == "DemisukeBot" || $message['new_chat_member']['username'] == "Demitest_bot") {
 					$imNewcomer = true;
-					$msg = "*Hora de portarse bien, aquí llega el menda.* 😎";
+					$msg = "<b>Hora de portarse bien, aquí llega el menda.</b> 😎";
 				} else {
-				$msg = "*¿Más gente nueva?,";
-				if(isset($message['new_chat_member']['first_name'])){
-					$msg = "*".$message['new_chat_member']['first_name'];
-				} else if(isset($message['new_chat_member']['username'])) {
-					$msg = $message['new_chat_member']['username']."*";
-				}
-				$msg = $msg." aporta algo al grupo o te echamos en 24 horas.*";
+					if($welcomeText != "") {
+						$msg = $welcomeText;
+					} else {
+						$msg = "<b>¿Más gente nueva?,";
+						if(isset($message['new_chat_member']['first_name'])){
+							$msg = "<b>".$message['new_chat_member']['first_name'];
+						} else if(isset($message['new_chat_member']['username'])) {
+							$msg = "@".$message['new_chat_member']['username']."<b>";
+
+						}
+						$msg = $msg." aporta algo al grupo o te echamos en 24 horas.</b>";
+					}
 				}
 			} else {
-				$msg = "*¿Más gente nueva?,";
-				if(isset($message['new_chat_member']['first_name'])){
-					$msg = "*".$message['new_chat_member']['first_name'];
+				if($welcomeText != "") {
+					$msg = $welcomeText;
+				} else {
+					$msg = "<b>¿Más gente nueva?,";
+					if(isset($message['new_chat_member']['first_name'])){
+						$msg = "<b>".$message['new_chat_member']['first_name'];
+					}
+					$msg = $msg." aporta algo al grupo o te echamos en 24 horas.</b>";
 				}
-				$msg = $msg." aporta algo al grupo o te echamos en 24 horas.*";
 			}
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			sleep(1);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 			if($imNewcomer) {
-				$msg = "*Dadme unos segundillos que me instalo en vuestro habitáculo...*";
+				$msg = "*Me estoy instalando en este grupo con las opciones predeterminadas. En unos segundos muestro la ayuda del bot, ¡configúrame bien para no ser pesado ni aburrido!*";
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				sleep(2);
+				sleep(1);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
-				$msg = "*Venga, todo listo, os dejo el menú y me piro a dormir.*";
+				sleep(4);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				sleep(3);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				sleep(2);
-				commandsList($chat_id);
+				commandsList($chat_id, "main");
 			}
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Newcomer to group.");
@@ -2927,11 +4315,73 @@ if (isset($update["message"])) {
 		$message = "*Los mensajes editados hacen llorar al niño Demisuke.*";
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));			
 		usleep(1000000);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $reply, "text" => $message));			
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $reply, "text" => $message));	
 	} else {
 		error_log($logname." tried to trigger and failed due to group restrictions: Edited message.");
 	}
 	mysql_free_result($result);
-	mysql_close($link);	
+	mysql_close($link);
+} else if (isset($update["inline_query"])) {
+	checkUserID($update["inline_query"]['from']['id']);
+	if(isset($update["inline_query"]['from']['username'])) {
+		checkUsername($update["inline_query"]['from']['username']);
+	}
+	if(isset($update["inline_query"]['from']['username'])) {
+		$logname = $update["inline_query"]['from']['username'];
+	} else if (isset($update["inline_query"]['from']['first_name'])) {
+		$logname = $update["inline_query"]['from']['first_name'];
+	} else {
+		$logname = "ID".$update["inline_query"]['from']['id'];
+	}
+	error_log($logname." starts inline query: ".$update["inline_query"]["query"]);
+	$queryId = $update["inline_query"]["id"];
+	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
+		$text = $update["inline_query"]["query"];
+		$text = str_replace("<", "", $text);
+		$text = str_replace(">", "", $text);
+		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text,$logname), "cache_time" => 60,]);
+	}
+}else if(isset($update["callback_query"])) {
+	debugMode($update);
+	if(isset($update["callback_query"]['from']['username'])) {
+		$logname = $update["callback_query"]['from']['username'];
+	} else if (isset($update["callback_query"]['from']['first_name'])) {
+		$logname = $update["callback_query"]['from']['first_name'];
+	} else {
+		$logname = "ID".$update["callback_query"]['from']['id'];
+	}
+	$callback = $update["callback_query"];
+	if($callback['data'] == "FLIPCOINqGq3Z6yf1guhfgFdwkzt") {
+		error_log($logname." flipped a coin.");
+		$face = rand(1,2);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌕 La moneda se lanza.*", 'parse_mode' => "Markdown",]);
+		usleep(800000);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌖 La moneda sube.*", 'parse_mode' => "Markdown",]);
+		usleep(800000);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌗 La moneda sube.*", 'parse_mode' => "Markdown",]);
+		usleep(800000);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌘 La moneda baja.*", 'parse_mode' => "Markdown",]);
+		usleep(800000);
+		if($face == 1) {
+			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌑 La moneda baja.*", 'parse_mode' => "Markdown",]);
+			usleep(800000);
+			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌒 La moneda rebota.*", 'parse_mode' => "Markdown",]);
+			usleep(800000);
+			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌓 La moneda sube.*", 'parse_mode' => "Markdown",]);
+			usleep(800000);
+			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌔 La moneda baja.*", 'parse_mode' => "Markdown",]);
+			usleep(800000);
+			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌝 ¡Ha salido cara!*", 'parse_mode' => "Markdown",]);
+		}else {
+			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌚 ¡Ha salido cruz!*", 'parse_mode' => "Markdown",]);
+		}
+	} else {
+		error_log($logname." clicked on a spoiler button.");
+		$query_id = $update["callback_query"]["id"];
+		$chat_id = $callback['from']['id'];
+		$message = "Mensaje oculto para ".$logname.":".PHP_EOL.PHP_EOL;
+		$message = $message.$callback['data'].PHP_EOL;
+		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "show_alert" => TRUE));	
+	}
 }
 ?>

@@ -3319,7 +3319,7 @@ function processMessage($message) {
 				mysql_free_result($result);
 				mysql_close($link);
 				usleep(100000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 La configuración del bot será editable todos los usuarios del grupo.*"));
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 La configuración del bot será editable por todos los usuarios del grupo.*"));
 			}
 		} else {
 			error_log($logname." tried to trigger in private: !modoadmin.");

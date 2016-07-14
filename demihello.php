@@ -3120,7 +3120,7 @@ function commandsList($send_id, $mode) {
 	} else if($mode == "texto") {
 		$text = "🔎 <b>Mensaje personalizado para grupos</b> 📝"
 				.PHP_EOL.PHP_EOL.
-				"<i>Si escribes </i><b>!texto mensaje</b><i> en un grupo donde seas administrador/a y esté presente el bot, podrás guardar un mensaje de texto que se mostrará cada vez que alguien escriba</i><b>!texto</b>."
+				"<i>Si escribes </i><b>!texto mensaje</b><i> en un grupo donde seas administrador/a y esté presente el bot, podrás guardar un mensaje de texto que se mostrará cada vez que alguien escriba</i> <b>!texto</b>."
 				.PHP_EOL.PHP_EOL.
 				"<i>El mensaje guardado se almacena formateado en HTML, por lo que puedes usar algunas etiquetas para, por ejemplo, escribir en negrita.</i>"
 				.PHP_EOL.
@@ -3129,7 +3129,14 @@ function commandsList($send_id, $mode) {
 				"<i>Para eliminar el mensaje guardado bastará con escribir </i><b>!texto off</b>."
 				;
 	} else if($mode == "info") {
-		$text = "informacion";
+		$text = "🔎 <b>Información y estadísticas del bot</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Con la función </i><b>!info</b><i> el bot relatará su historia y podrás saber de<pre>asd<b>a</b>asd</pre> dónde procede y más datos sobre su vida, tanto en Telegram como fuera.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Además contará de manera indirecta en cuántos grupos está instalado y te dará pistas sobre funciones ocultas como huevos de pascua o palabras clave.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Si utilizas la función </i><b>!infomini</b><i> el bot se limitará a responder cuántos usuarios usan a</i> @DemisukeBot</i>, en cuántos grupos ha estado y en cuántos sigue activo.</i>"
+				;
 	} else if($mode == "cita") {
 		$text = "citasssss";
 	} else if($mode == "mensajes") {

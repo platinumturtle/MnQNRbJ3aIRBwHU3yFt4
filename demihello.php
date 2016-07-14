@@ -3147,7 +3147,7 @@ function commandsList($send_id, $mode) {
 				"<i>También puedes incluir una firma para la cita introducida si escribes </i><b>!cita (mensaje1) mensaje2</b><i>. El mensaje2 escrito al final será la cita en sí, mientras que el mensaje1 escrito entre paréntesis será la firma con la que terminará la cita.</i>"
 				;
 	} else if($mode == "mensajes") {
-		$text = "🔎 <b>Los más activos de Telegram</b> 📝"
+		$text = "🔎 <b>Los usuarios más activos de Telegram</b> 📝"
 				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
 				.PHP_EOL.
@@ -3172,11 +3172,23 @@ function commandsList($send_id, $mode) {
 				"–<i>El 'floodeo' será ignorado y no puntuará, ningún usuario podrá obtener más de diez puntos en un minuto.</i>"
 				.PHP_EOL.
 				"–<i>Si el grupo se convierte en supergrupo, las estadísticas se reiniciarán. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
-				.PHP_EOL.PHP_EOL.
-				
-				; // cambio de grupo a super = reinicio
+				;
 	} else if($mode == "grupos") {
-		$text = "gruposssss"; // cambio de grupo a super = reinicio
+		$text = "🔎 <b>Los mejores grupos de Telegram</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"–<b>!mensajes</b>: <i>Muestra la clasificación global de Telegram de los usuarios más activos. Necesitas habilitar tu participación para aparecer aquí.</i>"
+				.PHP_EOL.
+				"–<b>!mensajesgrupo</b>: <i>Ránking exclusivo del grupo de los usuarios que más aportan. ¡Conoce quién mantiene con vida tu grupo! Todos los miembros que hayan escrito al menos un mensaje podrán aparecer en la clasificación.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"–<i>Por cada mensaje que escribas en el grupo se te sumará un punto al marcador.</i>"
+				.PHP_EOL.
+				"–<i>Las diez personas que más puntos obtengan aparecerán en el ránking con su nombre y puntuación.</i>"
+		
+				; // cambio de grupo a super = reinicio
 	} else if($mode == "bandera") {
 		$text = "banderitas"; // cambio de grupo a super = reinicio
 	} else if($mode == "mastil") {

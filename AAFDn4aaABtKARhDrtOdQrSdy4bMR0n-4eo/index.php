@@ -4342,7 +4342,6 @@ if (isset($update["message"])) {
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text,$logname), "cache_time" => 60,]);
 	}
 }else if(isset($update["callback_query"])) {
-	debugMode($update);
 	if(isset($update["callback_query"]['from']['username'])) {
 		$logname = $update["callback_query"]['from']['username'];
 	} else if (isset($update["callback_query"]['from']['first_name'])) {

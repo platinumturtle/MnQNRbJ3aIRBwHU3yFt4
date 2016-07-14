@@ -3407,7 +3407,7 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			$currMode = $row['mode'];
-			$freeMode = $row['mode'];
+			$freeMode = $row['freemode'];
 			mysql_free_result($result);			
 			$user_id = $message['from']['id'];
 			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));

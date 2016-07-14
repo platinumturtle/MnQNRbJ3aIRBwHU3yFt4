@@ -3105,7 +3105,18 @@ function commandsList($send_id, $mode) {
 				"La función de girar la moneda requiere un gran uso de la API de Telegram, por lo que solo hay una moneda general para todos los usuarios del bot, y se podrá girar una vez por minuto como máximo.</i>"
 				;
 	} else if($mode == "bienvenida") {
-		$text = "bienvenida";
+		$text = "🔎 <b>Mensaje de bienvenida personalizado</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<i>Si escribes </i><b>!bienvenida mensaje</b><i> en un grupo donde seas administrador/a y esté presente el bot, podrás guardar un mensaje de bienvenida que se mostrará autoáticamente cada vez que un nuevo usuario se añada al grupo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Para mostrar el mensaje puedes escribir simplemente </i><b>!bienvenida</b><i> sin especificar ningún texto adicional, y aparecerá el texto guardado para el grupo."
+				.PHP_EOL.
+				"El mensaje guardado se almacena formateado en HTML, por lo que puedes usar algunas etiquetas como \<b\>\</b\> para escribir en negrita."
+				.PHP_EOL.
+				"Si el mensaje no aparece es posible que el mensaje ocupe más de 2500 carácteres, que te hayas dejado alguna etiqueta abierta o que hayas intentado encadenar más de una para una misma palabra, algo que actualmente Telegram no permite."
+				.PHP_EOL.PHP_EOL.
+				"Para eliminar el mensaje guardado bastará con escribir </i><b>!bienvenida off</b><i>.</i>"
+				;
 	} else if($mode == "texto") {
 		$text = "textosssss";
 	} else if($mode == "info") {

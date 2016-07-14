@@ -3211,7 +3211,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"<b>!bloquearpole</b>: <i>Permite a los administradores de un grupo impedir que sus miembros puedan capturar banderas. Si eres miembro de un grupo con la captura de banderas bloqueada puedes abrir un chat privado con el bot e intentarlo desde ahí.</i>"
 				.PHP_EOL.
-				"<b>!permitirpole</b>: <i>Levanta la prohibición de utilizar banderas en un grupo. Puedes comprobar la disponibilidad del juego en tu grupo con la función !modo.</i>"
+				"<b>!permitirpole</b>: <i>Levanta la prohibición de capturar banderas en un grupo. Puedes comprobar la disponibilidad del juego en tu grupo con la función !modo.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas:</b>"
 				.PHP_EOL.
@@ -3223,7 +3223,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"–<i>Cada participante tendrá un inventario inicial para veinte banderas, y un inventario adicional con un hueco extra por cada una de las banderas que haya capturado el usuario que aparece en la posición 10 del ránking global.</i>"
 				.PHP_EOL.
-				"–<i>El uso de la función !pole es compatible con grupos y chats privados, siempre que los grupos tengan un número considerable de participantes.</i>"
+				"–<i>El uso de la función !pole para capturar la bandera es compatible con grupos y chats privados, siempre que los grupos tengan un número considerable de participantes.</i>"
 				.PHP_EOL.
 				"–<i>La función !pole estará disponible cada veinte segundos. Su uso reiterado sancionará al usuario.</i>"
 				.PHP_EOL.
@@ -3234,7 +3234,44 @@ function commandsList($send_id, $mode) {
 				"–<i>Si el grupo se convierte en supergrupo, las estadísticas de !banderasgrupo se reiniciarán. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
 				;
 	} else if($mode == "mastil") {
-		$text = "mastil mio"; // cambio de grupo a super = reinicio
+		$text = "🔎 <b>Reclama el mástil</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"<b>!mastiles</b>: <i>Muestra la clasificación de todos los mástiles del grupo reclamados, además de los que tiene el usuario que utiliza la función si lo ha reclamado al menos una vez.</i>"
+				.PHP_EOL.
+				"<b>!pole</b>: <i>Permite reclamar un nuevo mástil si está disponible, ¡utiliza esta función antes que los demás! En caso de estar reclamado el mástil mostrará quién lo hizo.</i>"
+				.PHP_EOL.
+				"<b>!bloquearpole</b>: <i>Permite a los administradores de un grupo impedir que sus miembros puedan reclamar mástiles.</i>"
+				.PHP_EOL.
+				"<b>!permitirpole</b>: <i>Levanta la prohibición de reclamar mástiles en un grupo. Puedes comprobar la disponibilidad del juego en tu grupo con la función !modo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"–<i>Cada hora se planta un nuevo mástil en el bot, media hora después de que aparezca una bandera nueva.</i>"
+				.PHP_EOL.
+				"–<i>El primer usuario que lo reclame con la función !mastil lo tendrá en su posesión y su nombre aparecerá justo debajo del propietario de la bandera.</i>"
+				.PHP_EOL.
+				"–<i>Más de una persona puede reclamar un mismo mástil si lo hacen al mismo tiempo. Los puntos se sumarán a todos los que lo consiguieron, sin embargo en la función !pole solo aparecerá reclamado por uno de ellos.</i>"
+				.PHP_EOL.
+				"–<i>'Reclama el mástil' es un juego exclusivo para grupos, no podrás participar desde chat privado.</i>"
+				.PHP_EOL.
+				"–<i>No hay ránking global de mástiles de Telegram, cada clasificación es exclusiva de su grupo. Si quieres competir contra otros grupos, intenta capturar la bandera en hora punta.</i>"
+				.PHP_EOL.
+				"–<i>El actual poseedor del último mástil reclamado no podrá reclamar el siguiente.</i>"
+				.PHP_EOL.
+				"–<i>Cada participante tendrá un inventario inicial para veinte mástiles, y un inventario adicional con un hueco extra por cada uno de los mástiles que haya capturado el usuario que aparece en la posición 10 de la clasificación del grupo.</i>"
+				.PHP_EOL.
+				"–<i>El uso de la función !pole es compatible con los grupos que tengan un número considerable de participantes.</i>"
+				.PHP_EOL.
+				"–<i>La función !pole estará disponible cada veinte segundos. Su uso reiterado sancionará al usuario.</i>"
+				.PHP_EOL.
+				"–<i>Si un usuario sancionado continúa tratando de reclamar un mástil con la penalización activa, su sanción aumentará.</i>"
+				.PHP_EOL.
+				"–<i>Un usuario sancionado no podrá conocer su tiempo restante de sanción, simplemente podrá volver a participar una vez la haya cumplido.</i>"
+				.PHP_EOL.
+				"–<i>Si el grupo se convierte en supergrupo, las clasificación se reiniciará. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
+				;
 	} else if($mode == "boton") {
 		$text = "🔎 <b>Aprende a volar</b> 📝"
 				.PHP_EOL.PHP_EOL.
@@ -5559,4 +5596,4 @@ class Image
 
 
 
-?>>
+?>

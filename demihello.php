@@ -3151,12 +3151,28 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
 				.PHP_EOL.
-				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
+				"–<b>!mensajes</b>: <i>Muestra la clasificación global de Telegram de los usuarios más activos. Necesitas habilitar tu participación para aparecer aquí.</i>"
+				.PHP_EOL.
+				"–<b>!mensajesgrupo</b>: <i>Ránking exclusivo del grupo de los usuarios que más aportan. ¡Conoce quién mantiene con vida tu grupo! Todos los miembros que hayan escrito al menos un mensaje podrán aparecer en la clasificación.</i>"
+				.PHP_EOL.
+				"–<b>!activame</b>: <i>Habilita la participación en el ránking global. Para mantener la privacidad, todos los usuarios están desactivados por defecto hasta que usan esta función.</i>"
+				.PHP_EOL.
+				"–<b>!desactivame</b>: <i>Oculta tu nombre en el ránking global de los más activos.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas:</b>"
 				.PHP_EOL.
-				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
-				//.PHP_EOL.PHP_EOL.
+				"–<i>Por cada mensaje que escribas en el grupo se te sumará un punto al marcador.</i>"
+				.PHP_EOL.
+				"–<i>Las diez personas que más puntos obtengan aparecerán en el ránking con su nombre y puntuación.</i>"
+				.PHP_EOL.
+				"–<i>La persona que consulte el ránking aparecerá como extra al final del TOP 10 y conocerá su puntuación actual.</i>"
+				.PHP_EOL.
+				"–<i>La utilización de funciones del bot no contará como mensaje escrito, por lo que no añadirá puntos al marcador.</i>"
+				.PHP_EOL.
+				"–<i>El 'floodeo' será ignorado y no puntuará, ningún usuario podrá obtener más de diez puntos en un minuto.</i>"
+				.PHP_EOL.
+				"–<i>Si el grupo se convierte en supergrupo, las estadísticas se reiniciarán. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
+				.PHP_EOL.PHP_EOL.
 				
 				; // cambio de grupo a super = reinicio
 	} else if($mode == "grupos") {
@@ -3726,7 +3742,7 @@ function processMessage($message) {
 		$bombTicket = rand(1,5);
 		$username = str_replace("@", "", $logname);
 		if($bombTicket == 4) {
-			$text = "*💀 ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
+			$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(250000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));

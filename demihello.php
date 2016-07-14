@@ -3140,7 +3140,7 @@ function commandsList($send_id, $mode) {
 	} else if($mode == "cita") {
 		$text = "🔎 <b>Imágenes con citas personalizadas</b> 📝"
 				.PHP_EOL.PHP_EOL.
-				"<i>Escribiendo </i><b>!cita mensaje</b><i> podrás crear una imagen con el texto introducido a modo de cita y compartirla con tus amigos."
+				"<i>Escribiendo </i><b>!cita mensaje</b><i> podrás crear una imagen con el texto introducido a modo de cita y compartirla con tus amigos.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>El tamaño máximo no es fijo sino que depende del espacio libre que quede en la imagen. Aun así, si el texto es muy largo o está vacío la propia función te avisará de ello.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -3155,7 +3155,7 @@ function commandsList($send_id, $mode) {
 	} else if($mode == "mastil") {
 		$text = "mastil mio"; // cambio de grupo a super = reinicio
 	} else if($mode == "boton") {
-		$text = "bombaaaaa";
+		$text = "🔎 <b>Aprende a volar</b> 📝";
 	}
 	if(strlen($text) > 5){
 		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			

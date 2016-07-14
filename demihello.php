@@ -3147,7 +3147,18 @@ function commandsList($send_id, $mode) {
 				"<i>También puedes incluir una firma para la cita introducida si escribes </i><b>!cita (mensaje1) mensaje2</b><i>. El mensaje2 escrito al final será la cita en sí, mientras que el mensaje1 escrito entre paréntesis será la firma con la que terminará la cita.</i>"
 				;
 	} else if($mode == "mensajes") {
-		$text = "mensajesssss"; // cambio de grupo a super = reinicio
+		$text = "🔎 <b>Los más activos de Telegram</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
+				.PHP_EOL.PHP_EOL.
+				
+				; // cambio de grupo a super = reinicio
 	} else if($mode == "grupos") {
 		$text = "gruposssss"; // cambio de grupo a super = reinicio
 	} else if($mode == "bandera") {
@@ -3156,6 +3167,11 @@ function commandsList($send_id, $mode) {
 		$text = "mastil mio"; // cambio de grupo a super = reinicio
 	} else if($mode == "boton") {
 		$text = "🔎 <b>Aprende a volar</b> 📝";
+				.PHP_EOL.PHP_EOL.
+				"<i>¿Será hoy tu día de suerte? Comprúebalo pulsando el botón que lo decide. Si utilizas la función </i><b>!boton</b><i> tienes un 20% de posibilidades de detonar una bomba en el chat y 'salir por los aires', de lo contrario aparecerá un mensaje confirmando que te has salvado de la explosión."
+				.PHP_EOL.
+				"<i>Es un minijuego muy útil para decidir a la suerte a un jugador de entre todos los participantes, como si fuera una ruleta o una botella que gira.</i>"
+				;
 	}
 	if(strlen($text) > 5){
 		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			

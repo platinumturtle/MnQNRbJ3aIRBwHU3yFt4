@@ -3151,13 +3151,13 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
 				.PHP_EOL.
-				"–<b>!mensajes</b>: <i>Muestra la clasificación global de Telegram de los usuarios más activos. Necesitas habilitar tu participación para aparecer aquí.</i>"
+				"<b>!mensajes</b>: <i>Muestra la clasificación global de Telegram de los usuarios más activos. Necesitas habilitar tu participación para aparecer aquí.</i>"
 				.PHP_EOL.
-				"–<b>!mensajesgrupo</b>: <i>Ránking exclusivo del grupo de los usuarios que más aportan. ¡Conoce quién mantiene con vida tu grupo! Todos los miembros que hayan escrito al menos un mensaje podrán aparecer en la clasificación.</i>"
+				"<b>!mensajesgrupo</b>: <i>Ránking exclusivo del grupo de los usuarios que más aportan. ¡Conoce quién mantiene con vida tu grupo! Todos los miembros que hayan escrito al menos un mensaje podrán aparecer en la clasificación.</i>"
 				.PHP_EOL.
-				"–<b>!activame</b>: <i>Habilita la participación en el ránking global. Para mantener la privacidad, todos los usuarios están desactivados por defecto hasta que usan esta función.</i>"
+				"<b>!activame</b>: <i>Habilita la participación en el ránking global. Para mantener la privacidad, todos los usuarios están desactivados por defecto hasta que usan esta función.</i>"
 				.PHP_EOL.
-				"–<b>!desactivame</b>: <i>Oculta tu nombre en el ránking global de los más activos.</i>"
+				"<b>!desactivame</b>: <i>Oculta tu nombre en el ránking global de los más activos.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas:</b>"
 				.PHP_EOL.
@@ -3178,7 +3178,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
 				.PHP_EOL.
-				"–<b>!grupos</b>: <i>Muestra la clasificación global de los grupos más activos de Telegram. Si no estás en el ránking de los mejores, la puntuación de tu grupo aparecerá al final.</i>"
+				"<b>!grupos</b>: <i>Muestra la clasificación global de los grupos más activos de Telegram. Si no estás en el ránking de los mejores, la puntuación de tu grupo aparecerá al final.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas:</b>"
 				.PHP_EOL.
@@ -3199,7 +3199,40 @@ function commandsList($send_id, $mode) {
 				"–<i>Solo los diez grupos con la puntuación más alta y el grupo donde se consulte el ránking aparecerán en la clasificación.</i>"
 				;
 	} else if($mode == "bandera") {
-		$text = "banderitas"; // cambio de grupo a super = reinicio
+		$text = "🔎 <b>Captura la bandera</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"<b>!banderas</b>: <i>Muestra la clasificación global de todas las banderas capturadas, además de las que tiene el usuario que utiliza la función si tiene al menos una.</i>"
+				.PHP_EOL.
+				"<b>!banderasgrupo</b>: <i>Muestra la clasificación del grupo de los usuarios con más banderas capturadas, además de las que tiene el usuario que utiliza la función si tiene al menos una.</i>"
+				.PHP_EOL.
+				"<b>!pole</b>: <i>Permite capturar una nueva bandera si está disponible, ¡utiliza esta función antes que los demás! En caso de estar capturada la bandera mostrará a quién pertenece y desde dónde la consiguió.</i>"
+				.PHP_EOL.
+				"<b>!bloquearpole</b>: <i>Permite a los administradores de un grupo impedir que sus miembros puedan capturar banderas. Si eres miembro de un grupo con la captura de banderas bloqueada puedes abrir un chat privado con el bot e intentarlo desde ahí.</i>"
+				.PHP_EOL.
+				"<b>!permitirpole</b>: <i>Levanta la prohibición de utilizar banderas en un grupo. Puedes comprobar la disponibilidad del juego en tu grupo con la función !modo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"–<i>Cada hora se planta una nueva bandera en el bot.</i>"
+				.PHP_EOL.
+				"–<i>El primer usuario que la capture con la función !pole la tendrá en su posesión y su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, hasta que se plante la siguiente bandera, además de sumar una bandera a su colección.</i>"
+				.PHP_EOL.
+				"–<i>El actual poseedor de la última bandera capturada no podrá capturar la siguiente.</i>"
+				.PHP_EOL.
+				"–<i>Cada participante tendrá un inventario inicial para veinte banderas, y un inventario adicional con un hueco extra por cada una de las banderas que haya capturado el usuario que aparece en la posición 10 del ránking global.</i>"
+				.PHP_EOL.
+				"–<i>El uso de la función !pole es compatible con grupos y chats privados, siempre que los grupos tengan un número considerable de participantes.</i>"
+				.PHP_EOL.
+				"–<i>La función !pole estará disponible cada veinte segundos. Su uso reiterado sancionará al usuario.</i>"
+				.PHP_EOL.
+				"–<i>Si un usuario sancionado continúa tratando de capturar una bandera con la penalización activa, su sanción aumentará.</i>"
+				.PHP_EOL.
+				"–<i>Un usuario sancionado no podrá conocer su tiempo restante de sanción, simplemente podrá volver a participar una vez la haya cumplido.</i>"
+				.PHP_EOL.
+				"–<i>Si el grupo se convierte en supergrupo, las estadísticas de !banderasgrupo se reiniciarán. Esto solo podrá ocurrir una vez según las normas de Telegram.</i>"
+				;
 	} else if($mode == "mastil") {
 		$text = "mastil mio"; // cambio de grupo a super = reinicio
 	} else if($mode == "boton") {

@@ -3168,7 +3168,7 @@ function commandsList($send_id, $mode) {
 	} else if($mode == "boton") {
 		$text = "🔎 <b>Aprende a volar</b> 📝"
 				.PHP_EOL.PHP_EOL.
-				"<i>¿Será hoy tu día de suerte? Comprúebalo pulsando el botón que lo decide. Si utilizas la función </i><b>!boton</b><i> tienes un 20% de posibilidades de detonar una bomba en el chat y 'salir por los aires', de lo contrario aparecerá un mensaje confirmando que te has salvado de la explosión."
+				"<i>¿Será hoy tu día de suerte? Comprúebalo pulsando el botón que lo decide. Si utilizas la función </i><b>!boton</b><i> tienes un 20% de posibilidades de detonar una bomba en el chat y 'salir por los aires', de lo contrario aparecerá un mensaje confirmando que te has salvado de la explosión.</i>"
 				.PHP_EOL.
 				"<i>Es un minijuego muy útil para decidir a la suerte a un jugador de entre todos los participantes, como si fuera una ruleta o una botella que gira.</i>"
 				;

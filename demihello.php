@@ -4372,7 +4372,7 @@ function processMessage($message) {
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
 		}
-	} else if (strpos(strtolower($text), "!mastil") !== false || strpos(strtolower($text), "!mástil")) {
+	} else if (strpos(strtolower($text), "!mastil") !== false || strpos(strtolower($text), "!mástil") !== false) {
 		error_log($logname." triggered: !mastil.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(100000);

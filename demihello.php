@@ -1559,6 +1559,8 @@ function timeEmoji($time, $aHalf) {
 					break;
 			case 12: return "12:30 🕧";
 					break;
+			case 0: return "12:30 🕧";
+					break;
 			default: return $time;
 					break;
 		}
@@ -1656,7 +1658,7 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 	}
 	else {
 		$link = dbConnect();
-		$text = "<b>🏁 Ránking de ".$groupName." de Banderas capturadas:</b>";
+		$text = "<b>🏁 Ránking de ".$groupName." de Mástiles reclamados:</b>";
 		$query = "SELECT user_name, totalpole FROM userbattle WHERE totalpole > 0 AND group_id = '".$group."' ORDER BY totalpole DESC , lastpole";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$text = $text.PHP_EOL.PHP_EOL.
@@ -1720,7 +1722,7 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 				} else {
 					$text = $text."ástil";
 				}
-				$text = $text." desde ".$groupName.".</b>".PHP_EOL.PHP_EOL;
+				$text = $text.".</b>".PHP_EOL.PHP_EOL;
 			}
 		}
 		mysql_free_result($result);
@@ -3076,7 +3078,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<i>La función </i><b>!cambiarmodo</b><i> por defecto puede ser utilizada por cualquier miembro del grupo, sin embargo un administrador de grupo puede restringir este privilegio escribiendo</i> <b>!modoadmin</b><i> y volver a darlo con</i> <b>!modolibre</b><i>.</i>"
 				.PHP_EOL.PHP_EOL.
-				"<i>Los minijuegos 'Captura la bandera' y 'Reclama el mástil' también se pueden prohibir mediante la función</i> <b>!prohibirpole</b><i> o permitir escribiendo</i> <b>!permitirpole</b><i>.</i>"
+				"<i>Los minijuegos 'Captura la bandera' y 'Reclama el mástil' también se pueden prohibir mediante la función</i> <b>!bloquearpole</b><i> o permitir escribiendo</i> <b>!permitirpole</b><i>.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>Además, también se visualizará el estado de la función personalizada y el mensaje de bienvenida personalizado del grupo. Consulta en la </i><b>!ayuda</b><i> cómo configurar estas funciones en sus apartados correspondientes.</i>"
 				;
@@ -4241,7 +4243,7 @@ function processMessage($message) {
 				mysql_free_result($result);
 				mysql_close($link);
 				usleep(100000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 La configuración del bot será editable todos los usuarios del grupo.*"));
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*🔑 La configuración del bot será editable por todos los usuarios del grupo.*"));
 			}
 		} else {
 			error_log($logname." tried to trigger in private: !modoadmin.");
@@ -4329,7 +4331,7 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			$currMode = $row['mode'];
-			$freeMode = $row['mode'];
+			$freeMode = $row['freemode'];
 			mysql_free_result($result);			
 			$user_id = $message['from']['id'];
 			$adminList = apiRequest("getChatAdministrators", array('chat_id' => $chat_id,));
@@ -4752,7 +4754,7 @@ function processMessage($message) {
 		$final = mysql_query("SELECT DEMI_TEST FROM DEMITEST WHERE DEMI_NAME = 'KAMI'");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $final));
 		mysqli_close($con);*/
-	} else if (strpos($text, "/dbdebugging") === 0) {
+	} else if (strpos($text, "/test") === 0) {
 		/*$link = mysql_connect('localhost', 'admink88juIN', 'xBBarZSuzgxt') or die('No se pudo conectar: ' . mysql_error());
 		mysql_select_db('demitesterbot') or die('No se pudo seleccionar la base de datos');
 		mysql_set_charset("UTF8");
@@ -4765,13 +4767,14 @@ function processMessage($message) {
 			}
 		}
 		mysql_free_result($result);
-		mysql_close($link);*/
+		mysql_close($link);
 		$currentTime = time();
 		$minutes = date('i');
 		$seconds = date('s');
 		$flagTime = $currentTime - ($minutes * 60) - $seconds;
 		error_log($currentTime." tiempo actual ".date('H:i:s  d-m-Y'));
-		error_log($flagTime." tiempo en punto ".date('H:i:s  d-m-Y', $flagTime));		
+		error_log($flagTime." tiempo en punto ".date('H:i:s  d-m-Y', $flagTime));*/	
+		
 	} else if (strpos(strtolower($text), "reportad") !== false || strpos(strtolower($text), "reportadit") !== false ||strpos(strtolower($text), "reportait") !== false) {
 		if($randomTicket > -2) {
 			error_log($logname." triggered: Reportado.");
@@ -4835,9 +4838,17 @@ function processMessage($message) {
 			error_log($logname." triggered: Viva Vegetta.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
 			usleep(400000);
-			// Cambiar en DemisukeBot
-			$gif = "AwADBAADRQcAApdgXwABqfQ693x1aVQC";
-			apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $gif));
+			$audio = "AwADBAADRQcAApdgXwABqfQ693x1aVQC";
+			apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $audio));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");
+		}
+	} else if (strpos(strtolower($text), "soy programador") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Soy programador.");
+			// Cambiar en DemisukeBot: BQADBAADTAcAApdgXwABjiyeQQvABfQC
+			$gif = "BQADBAADSwcAApdgXwABrTePNOqWdrQC";
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");
 		}
@@ -5305,14 +5316,14 @@ if (isset($update["message"])) {
 		$face = rand(1,2);
 		//$loops = rand(3,5);
 		//for(;$loops>0;$loops--) {
-			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌕 La moneda se lanza.*", 'parse_mode' => "Markdown",]);
-			usleep(800000);
-			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌖 La moneda sube.*", 'parse_mode' => "Markdown",]);
-			usleep(800000);
-			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌗 La moneda sube.*", 'parse_mode' => "Markdown",]);
-			usleep(800000);
-			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌘 La moneda baja.*", 'parse_mode' => "Markdown",]);
-			usleep(800000);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌕 La moneda se lanza.*", 'parse_mode' => "Markdown",]);
+		usleep(800000);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌖 La moneda sube.*", 'parse_mode' => "Markdown",]);
+		usleep(800000);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌗 La moneda sube.*", 'parse_mode' => "Markdown",]);
+		usleep(800000);
+		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌘 La moneda baja.*", 'parse_mode' => "Markdown",]);
+		usleep(800000);
 			//apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌑*", 'parse_mode' => "Markdown",]);
 			//usleep(100000);
 			//apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌒*", 'parse_mode' => "Markdown",]);

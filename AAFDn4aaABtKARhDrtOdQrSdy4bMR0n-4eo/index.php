@@ -227,7 +227,7 @@ function randomSentence() {
 						"Meteorito",	"Machete",
 						"Puercoespín",	"Cacahuete",
 						"Picaporte",	"Pañal",
-						"Papaya",
+						"Papaya",		"Sepia",
 						"Incienso",
 						"Garbanzo",
 						"Relámpago",
@@ -800,6 +800,8 @@ function timeEmoji($time, $aHalf) {
 					break;
 			case 12: return "12:30 🕧";
 					break;
+			case 0: return "12:30 🕧";
+					break;
 			default: return $time;
 					break;
 		}
@@ -896,7 +898,7 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 	}
 	else {
 		$link = dbConnect();
-		$text = "<b>🏁 Ránking de ".$groupName." de Banderas capturadas:</b>";
+		$text = "<b>🏁 Ránking de ".$groupName." de Mástiles reclamados:</b>";
 		$query = "SELECT user_name, totalpole FROM userbattle WHERE totalpole > 0 AND group_id = '".$group."' ORDER BY totalpole DESC , lastpole";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$text = $text.PHP_EOL.PHP_EOL.
@@ -960,7 +962,7 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 				} else {
 					$text = $text."ástil";
 				}
-				$text = $text." desde ".$groupName.".</b>".PHP_EOL.PHP_EOL;
+				$text = $text.".</b>".PHP_EOL.PHP_EOL;
 			}
 		}
 		mysql_free_result($result);
@@ -1617,6 +1619,7 @@ function goodbye() {
 						"¡Qué vaya bien!",
 						"¡Hasta luego!",
 						"¡Hasta otra!",
+						"Cierra al salir.",
 						"No vuelvas.",
 						"Ya era hora.",
 						"¡Venga!"
@@ -2248,7 +2251,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<i>La función </i><b>!cambiarmodo</b><i> por defecto puede ser utilizada por cualquier miembro del grupo, sin embargo un administrador de grupo puede restringir este privilegio escribiendo</i> <b>!modoadmin</b><i> y volver a darlo con</i> <b>!modolibre</b><i>.</i>"
 				.PHP_EOL.PHP_EOL.
-				"<i>Los minijuegos 'Captura la bandera' y 'Reclama el mástil' también se pueden prohibir mediante la función</i> <b>!prohibirpole</b><i> o permitir escribiendo</i> <b>!permitirpole</b><i>.</i>"
+				"<i>Los minijuegos 'Captura la bandera' y 'Reclama el mástil' también se pueden prohibir mediante la función</i> <b>!bloquearpole</b><i> o permitir escribiendo</i> <b>!permitirpole</b><i>.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>Además, también se visualizará el estado de la función personalizada y el mensaje de bienvenida personalizado del grupo. Consulta en la </i><b>!ayuda</b><i> cómo configurar estas funciones en sus apartados correspondientes.</i>"
 				;
@@ -2712,21 +2715,6 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
-/*	} else if (strpos($text, "/checkflags") === 0) {
-		error_log($logname." triggered: /checkflags.");
-		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
-			$link = dbConnect();
-			$query = "SELECT SUM(total) as 'total' FROM `flagcapture`";
-			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$row = mysql_fetch_array($result);
-			$total = $row['total'];
-			mysql_free_result($result);
-			mysql_close($link);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se han capturado un total de ".$total." banderas.*"));
-		} else if ($message['chat']['type'] == "private") {
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
-		}
-*/
 	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
 		if($randomTicket > -1) {
 			error_log($logname." triggered: Hola.");
@@ -3481,7 +3469,6 @@ function processMessage($message) {
 		$from_id = $message['from']['id'];
 		$currentTime = time();
 		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
-
 			$query = 'SELECT flagblock FROM groupbattle WHERE group_id = '.$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
@@ -3580,7 +3567,6 @@ function processMessage($message) {
 			$randMultiplier = rand(3,6);
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
-
 			mysql_free_result($result);			
 			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -3603,7 +3589,6 @@ function processMessage($message) {
 						$name = "Desconocido";
 					}
 					$checkMax = 0;
-
 					if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
 						$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
 					} else {
@@ -3702,7 +3687,6 @@ function processMessage($message) {
 					}
 				} else {
 					mysql_free_result($result);
-
 					error_log($logname." triggered: Polefail (flag).");
 					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -3718,7 +3702,6 @@ function processMessage($message) {
 				}
 			} else {
 					mysql_free_result($result);
-
 					error_log($logname." triggered: Polefail (flag).");
 					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -3824,9 +3807,7 @@ function processMessage($message) {
 			$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con !banderas el ránking global de banderas, con !banderasgrupo el ránking local y con !mastiles quién ha reclamado más veces un mástil en tu grupo.</i>";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 			mysql_free_result($result);
-
 		} else {
-
 			error_log($logname." tried to use !pole in a non-flags group and failed.");
 		}
 		mysql_close($link);
@@ -3893,8 +3874,17 @@ function processMessage($message) {
 			error_log($logname." triggered: Viva Vegetta.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
 			usleep(400000);
-			$gif = "AwADBAADRAcAApdgXwABd8d_ymKOze0C";
-			apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $gif));
+			$audio = "AwADBAADRAcAApdgXwABd8d_ymKOze0C";
+			apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $audio));
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");
+		}
+	} else if (strpos(strtolower($text), "soy programador") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Soy programador.");
+			// Cambiar en DemisukeBot: BQADBAADTAcAApdgXwABjiyeQQvABfQC
+			$gif = "BQADBAADSwcAApdgXwABrTePNOqWdrQC";
+			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");
 		}
@@ -4126,7 +4116,6 @@ function processMessage($message) {
 							$msg = "<b>".$message['new_chat_member']['first_name'];
 						} else if(isset($message['new_chat_member']['username'])) {
 							$msg = "@".$message['new_chat_member']['username']."<b>";
-
 						}
 						$msg = $msg." aporta algo al grupo o te echamos en 24 horas.</b>";
 					}
@@ -4270,7 +4259,6 @@ if (php_sapi_name() == 'cli') {
   exit;
 }
 
-
 date_default_timezone_set('Europe/Madrid');
 $content = file_get_contents("php://input");
 $update = json_decode($content, true);
@@ -4279,7 +4267,6 @@ if (!$update) {
   // receive wrong update, must not happen
   exit;
 }
-
 
 
 if (isset($update["message"])) {
@@ -4314,7 +4301,7 @@ if (isset($update["message"])) {
 		$message = "*Los mensajes editados hacen llorar al niño Demisuke.*";
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));			
 		usleep(1000000);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $reply, "text" => $message));	
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $reply, "text" => $message));
 	} else {
 		error_log($logname." tried to trigger and failed due to group restrictions: Edited message.");
 	}

@@ -2851,7 +2851,7 @@ function getSquirtle($text, $chat_id) {
 			$imageURL = dirname(__FILE__).$imageShortURL;
 			header('Content-type: image/jpg');
 			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
-			$textColor = imagecolorallocate($png_image, 0, 0, 0);
+			$textColor = imagecolorallocate($jpg_image, 0, 0, 0);
 			$font_path = dirname(__FILE__)."/img/calibri.ttf";
 			imagettftext($png_image, 32, 0, 100, $YPos, $textColor, $font_path, $text);
 			imagejpeg($jpg_image, $imageURL);

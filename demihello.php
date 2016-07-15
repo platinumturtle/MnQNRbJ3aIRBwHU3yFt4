@@ -2880,7 +2880,26 @@ function getMadrid($text, $chat_id) {
 	$text = substr($text, $start);
 	$text = ltrim(rtrim($text));
 	if(strlen($text) > 0) {
-		// buscar el dorsal y recortar espacios si existe numero
+		if(strpos($text, "(") === 0) {
+			$length = strpos($text, ")");
+			$number = substr($text, 1, $length - 1);
+			$text = substr($text, $length + 1);
+			$number = ltrim(rtrim($number));
+			if(is_numeric($number)) {
+				if($number < 0 || $number > 99) {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal debe estar comprendido entre el 0 y el 99.*"));
+					exit;
+				}
+			} else {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal introducido no es un número.*"));
+				exit;
+			}
+			$text = ltrim(rtrim($text));
+		}		
 		if(strlen($text) < 13) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
 			usleep(250000);

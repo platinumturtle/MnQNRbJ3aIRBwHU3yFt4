@@ -2912,6 +2912,12 @@ function getMadrid($text, $chat_id) {
 			$textColor = imagecolorallocate($jpg_image, 15, 29, 66);
 			$font_path = dirname(__FILE__)."/img/madrid.ttf";
 			imagettftext($jpg_image, 40, 0, $XPos, 120, $textColor, $font_path, $text);
+			if(strlen($number) == 1) {
+				$XPos = 190;
+			} else {
+				$XPos = 150;
+			}
+			imagettftext($jpg_image, 80, 0, $XPos, 325, $textColor, $font_path, $number);
 			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);

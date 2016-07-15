@@ -1762,6 +1762,9 @@ function containsCommand($text) {
 						"!cambiarmodo",
 						"!bloquearpole",
 						"!permitirpole",
+						"!squirtle",
+						"!barcelona",
+						"!madrid",
 						"!bequer",
 						"!moneda",
 						"!becker",
@@ -2833,7 +2836,7 @@ function getSquirtle($text, $chat_id) {
 	$text = substr($text, $start);
 	$text = ltrim(rtrim($text));
 	if(strlen($text) > 0) {
-		$text = wordwrap($text, 45, "\n", false);
+		$text = wordwrap($text, 24, "\n", false);
 		$totalEOL = substr_count($text, PHP_EOL);
 		if($totalEOL < 3) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
@@ -2847,6 +2850,49 @@ function getSquirtle($text, $chat_id) {
 			$textColor = imagecolorallocate($jpg_image, 0, 0, 0);
 			$font_path = dirname(__FILE__)."/img/calibri.ttf";
 			imagettftext($jpg_image, 72, 0, 100, $YPos, $textColor, $font_path, $text);
+			imagejpeg($jpg_image, $imageURL);
+			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+			$file_name_with_full_path = realpath($imageURL);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			imagedestroy($jpg_image);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+	} else {
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
+	}
+}
+
+
+function getMadrid($text, $chat_id) {
+	$start = strpos(strtolower($text), "!madrid") + 7;
+	$text = substr($text, $start);
+	$text = ltrim(rtrim($text));
+	if(strlen($text) > 0) {
+		// buscar el dorsal y recortar espacios si existe numero
+		if($text < 9) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$Xpos = 220 - (12 * strlen($text));
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/madrid_".$imageURL.".jpg";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/jpeg');
+			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
+			$textColor = imagecolorallocate($jpg_image, 0, 0, 0);
+			$font_path = dirname(__FILE__)."/img/madrid.ttf";
+			imagettftext($jpg_image, 32, 0, $XPos, 120, $textColor, $font_path, $text);
 			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);
@@ -4126,6 +4172,12 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!squirtle") !== false) {
 		error_log($logname." triggered: !squirtle.");
 		getSquirtle($text, $chat_id);
+	} else if (strpos(strtolower($text), "!barcelona") !== false) {
+		error_log($logname." triggered: !barcelona.");
+		//getBarcelona($text, $chat_id);
+	} else if (strpos(strtolower($text), "!madrid") !== false) {
+		error_log($logname." triggered: !madrid.");
+		//getMadrid($text, $chat_id);
 	} else if (strpos($text, "%GETSONG%") !== false) {
 		$text = substr($text,9);
 		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));

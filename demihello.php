@@ -2849,12 +2849,12 @@ function getSquirtle($text, $chat_id) {
 			$imageURL = rand(0,9);
 			$imageShortURL = "/img/squirtle_".$imageURL.".jpg";
 			$imageURL = dirname(__FILE__).$imageShortURL;
-			header('Content-type: image/png');
-			$png_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
+			header('Content-type: image/jpg');
+			$jpg_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
 			$textColor = imagecolorallocate($png_image, 0, 0, 0);
 			$font_path = dirname(__FILE__)."/img/calibri.ttf";
 			imagettftext($png_image, 32, 0, 100, $YPos, $textColor, $font_path, $text);
-			imagepng($png_image, $imageURL);
+			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);
 			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
@@ -2865,7 +2865,7 @@ function getSquirtle($text, $chat_id) {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 			$result=curl_exec ($ch);
 			curl_close ($ch);
-			imagedestroy($png_image);
+			imagedestroy($jpg_image);
 		} else {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(250000);

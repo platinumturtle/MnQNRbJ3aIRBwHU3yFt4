@@ -4177,7 +4177,7 @@ function processMessage($message) {
 		//getBarcelona($text, $chat_id);
 	} else if (strpos(strtolower($text), "!madrid") !== false) {
 		error_log($logname." triggered: !madrid.");
-		//getMadrid($text, $chat_id);
+		getMadrid($text, $chat_id);
 	} else if (strpos($text, "%GETSONG%") !== false) {
 		$text = substr($text,9);
 		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));

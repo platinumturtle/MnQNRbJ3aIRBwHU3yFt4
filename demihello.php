@@ -2881,10 +2881,10 @@ function getMadrid($text, $chat_id) {
 	$text = ltrim(rtrim($text));
 	if(strlen($text) > 0) {
 		// buscar el dorsal y recortar espacios si existe numero
-		if($text < 13) {
+		if(strlen($text) < 13) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
 			usleep(250000);
-			$XPos = 220 - (12 * strlen($text));
+			$XPos = 200 - (8 * strlen($text));
 			$imageURL = rand(0,9);
 			$imageShortURL = "/img/madrid_".$imageURL.".jpg";
 			$imageURL = dirname(__FILE__).$imageShortURL;

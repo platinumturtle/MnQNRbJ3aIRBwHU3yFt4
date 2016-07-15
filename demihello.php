@@ -2881,18 +2881,18 @@ function getMadrid($text, $chat_id) {
 	$text = ltrim(rtrim($text));
 	if(strlen($text) > 0) {
 		// buscar el dorsal y recortar espacios si existe numero
-		if($text < 9) {
+		if($text < 13) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
 			usleep(250000);
-			$Xpos = 220 - (12 * strlen($text));
+			$XPos = 220 - (12 * strlen($text));
 			$imageURL = rand(0,9);
 			$imageShortURL = "/img/madrid_".$imageURL.".jpg";
 			$imageURL = dirname(__FILE__).$imageShortURL;
 			header('Content-type: image/jpeg');
 			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
-			$textColor = imagecolorallocate($jpg_image, 0, 0, 0);
+			$textColor = imagecolorallocate($jpg_image, 15, 29, 66);
 			$font_path = dirname(__FILE__)."/img/madrid.ttf";
-			imagettftext($jpg_image, 32, 0, $XPos, 120, $textColor, $font_path, $text);
+			imagettftext($jpg_image, 40, 0, $XPos, 120, $textColor, $font_path, $text);
 			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);

@@ -2828,6 +2828,56 @@ function getQuote($text, $chat_id) {
 	}
 }
 
+function getSquirtle($text, $chat_id) {
+	$start = strpos(strtolower($text), "!squirtle") + 9;
+	$text = substr($text, $start);
+	$text = ltrim(rtrim($text));
+	$userQuote = "";
+	if(strlen($text) > 0) {
+		$text = wordwrap($text, 45, "\n", false);
+		$totalEOL = substr_count($text, PHP_EOL);
+		if($totalEOL < 4) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$YPos = 220;
+			if($totalEOL > 3){
+				$YPos = $YPos - (40 * ($totalEOL - 3));
+			}
+			if(strlen($userQuote) > 0) {
+				$text = $text.PHP_EOL."- ".$userQuote;
+			}
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/squirtle_".$imageURL.".jpg";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/png');
+			$png_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
+			$textColor = imagecolorallocate($png_image, 0, 0, 0);
+			$font_path = dirname(__FILE__)."/img/calibri.ttf";
+			imagettftext($png_image, 32, 0, 100, $YPos, $textColor, $font_path, $text);
+			imagepng($png_image, $imageURL);
+			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+			$file_name_with_full_path = realpath($imageURL);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			imagedestroy($png_image);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+	} else {
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
+	}
+}
+
 function commandsList($send_id, $mode) {
 	/*
 	$commands = 
@@ -4080,6 +4130,9 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto.*"));
 		}
 		*/
+	} else if (strpos(strtolower($text), "!squirtle") !== false) {
+		error_log($logname." triggered: !squirtle.");
+		getSquirtle($text, $chat_id);
 	} else if (strpos($text, "%GETSONG%") !== false) {
 		$text = substr($text,9);
 		//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));

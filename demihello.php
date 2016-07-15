@@ -2835,13 +2835,10 @@ function getSquirtle($text, $chat_id) {
 	if(strlen($text) > 0) {
 		$text = wordwrap($text, 45, "\n", false);
 		$totalEOL = substr_count($text, PHP_EOL);
-		if($totalEOL < 4) {
+		if($totalEOL < 3) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
 			usleep(250000);
-			$YPos = 220;
-			if($totalEOL > 3){
-				$YPos = $YPos - (40 * ($totalEOL - 3));
-			}
+			$YPos = 380;
 			$imageURL = rand(0,9);
 			$imageShortURL = "/img/squirtle_".$imageURL.".jpg";
 			$imageURL = dirname(__FILE__).$imageShortURL;
@@ -2849,7 +2846,7 @@ function getSquirtle($text, $chat_id) {
 			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
 			$textColor = imagecolorallocate($jpg_image, 0, 0, 0);
 			$font_path = dirname(__FILE__)."/img/calibri.ttf";
-			imagettftext($jpg_image, 32, 0, 100, $YPos, $textColor, $font_path, $text);
+			imagettftext($jpg_image, 72, 0, 100, $YPos, $textColor, $font_path, $text);
 			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);

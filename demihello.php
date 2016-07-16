@@ -2982,7 +2982,7 @@ function getBarcelona($text, $chat_id) {
 		if(strlen($text) < 13) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
 			usleep(250000);
-			$XPos = 200 - (8 * strlen($text));
+			$XPos = 215 - (8 * strlen($text));
 			$imageURL = rand(0,9);
 			$imageShortURL = "/img/barcelona_".$imageURL.".jpg";
 			$imageURL = dirname(__FILE__).$imageShortURL;
@@ -3007,7 +3007,7 @@ function getBarcelona($text, $chat_id) {
 					$XPos = 125;
 				}
 			}
-			imagettftext($jpg_image, 96, 0, $XPos, 250, $textColor, $font_path, $number);
+			imagettftext($jpg_image, 96, 0, $XPos, 275, $textColor, $font_path, $number);
 			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);

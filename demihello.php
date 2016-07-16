@@ -1320,7 +1320,7 @@ function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
 function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	error_log($logname." triggered: Polefail.");
 
-	$query = "SELECT group_name, user_name FROM flagcapturetest WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+	$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	$row = mysql_fetch_array($result);
@@ -1576,10 +1576,10 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		$link = dbConnect();
 		if($global == 1){
 			$text = "<b>🏁 Ránking global de Banderas capturadas:</b>";
-			$query = "SELECT user_id, user_name, MAX(last_flag) AS last_flag, SUM(total) AS total FROM flagcapturetest WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag";
+			$query = "SELECT user_id, user_name, MAX(last_flag) AS last_flag, SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag";
 		} else {
 			$text = "<b>🏁 Ránking de ".$groupName." de Banderas capturadas:</b>";
-			$query = "SELECT user_id, user_name, total FROM flagcapturetest WHERE total > 0 AND group_id =  '".$group."' ORDER BY total DESC , last_flag";
+			$query = "SELECT user_id, user_name, total FROM flagcapture WHERE total > 0 AND group_id =  '".$group."' ORDER BY total DESC , last_flag";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$text = $text.PHP_EOL.PHP_EOL.
@@ -1625,9 +1625,9 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		}
 		mysql_free_result($result);
 		if($global == 1) {
-			$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapturetest WHERE user_id = '".$myself."' GROUP BY user_id";
+			$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$myself."' GROUP BY user_id";
 		} else {
-			$query = "SELECT user_id, user_name, total FROM flagcapturetest WHERE user_id = '".$myself."' AND group_id = '".$group."'";
+			$query = "SELECT user_id, user_name, total FROM flagcapture WHERE user_id = '".$myself."' AND group_id = '".$group."'";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
@@ -2834,7 +2834,6 @@ function getQuote($text, $chat_id) {
 }
 
 function guessWho($chat_id, $reply_id) {
-	// una sql que pille los usuarios del grupo, si hay mas de 3 se use, si hay menos que diga "solo conozco a $ personas, en este grupo falta mas gente paar jugar a esto"
 	$link = dbConnect();
 	$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = '".$chat_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -2862,9 +2861,37 @@ function guessWho($chat_id, $reply_id) {
 		}
 		$finalName = str_replace("<", "", $finalName);
 		$finalName = str_replace(">", "", $finalName);
+		
+		$storedReply = array(
+							$finalName,
+							"Está claro que ".$finalName,
+							"Diría que ".$finalName.", aunque tengo dudas",
+							"Nadie, la verdad",
+							"Cualquiera me vale",
+							"Yo ✌😁",
+							$finalName." tiene todas las papeletas",
+							"Fácil, ".$finalName,
+							"Menuda pregunta... Pues ".$finalName.", obvio",
+							"Si lo pienso mucho te digo que ".$finalName,
+							"Así sin pensarlo ".$finalName." es quien me viene a la cabeza",
+							"Pues ".$finalName.", ¿no? Eso pienso",
+							"Yo a tope con ".$finalName,
+							"Hoy te diría que ".$finalName.". Mañana puede que cambie de opinión",
+							"Tú, por preguntar",
+							"A ver, yo diría que ".$finalName.", pero es capaz de quejarse..",
+							"Te voy a decir que ".$finalName,
+							"Pregúntale a ".$finalName."..",
+							$finalName." sabe la respuesta a eso mejor que yo",
+							"Con total seguridad, ".$finalName,
+							"La respuesta es... No, espera. Bueno sí, va, pensaba en ".$finalName." pero me habían entrado dudas",
+							"Así a voleo se me ocurre ".$finalName
+							);
+		$n = sizeof($storedReply) - 1;
+		$n = rand(0,$n);
+		$text = $storedReply[$n];
 		$text = $finalName;
 	} else {
-		$text = "Todavía no conozco a mucha gente de este grupo, te puedo contestar a esa pregunta en cuanto habléis más personas.";
+		$text = "Todavía no conozco a mucha gente de este grupo, te puedo contestar a esa pregunta en cuanto habléis más personas..";
 	}
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	usleep(500000);
@@ -3766,7 +3793,7 @@ function processMessage($message) {
 		error_log($logname." triggered: /checkflags.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			$link = dbConnect();
-			$query = "SELECT SUM(total) as 'total' FROM `flagcapturetest`";
+			$query = "SELECT SUM(total) as 'total' FROM `flagcapture`";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			$total = $row['total'];
@@ -4703,6 +4730,7 @@ function processMessage($message) {
 					$query = 'UPDATE lastpolecheck SET last_check = '.$currentTime.', penalty = 1 WHERE user_id = '.$from_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 				} else {
+					error_log($logname." got a penalty!");
 					$penalty = $row['penalty'];
 					mysql_free_result($result);
 					switch($penalty){
@@ -4780,7 +4808,7 @@ function processMessage($message) {
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
 			mysql_free_result($result);			
-			$query = 'SELECT user_id, last_flag FROM flagcapturetest WHERE fc_id = 0001';
+			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if($row['last_flag'] != $currentTime) {
@@ -4789,7 +4817,7 @@ function processMessage($message) {
 				$randMultiplier = rand(3,6);
 				$randomizer = $randomizer * $randMultiplier;
 				usleep($randomizer);
-				$query = 'SELECT user_id, last_flag FROM flagcapturetest WHERE fc_id = 0001';
+				$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				if($row['last_flag'] != $currentTime) {
@@ -4810,19 +4838,19 @@ function processMessage($message) {
 						$total = 1;
 						$cleanName = str_replace("'","''",$name);
 						mysql_free_result($result);
-						$query = "SELECT fc_id, total FROM flagcapturetest WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
+						$query = "SELECT fc_id, total FROM flagcapture WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
 						if(isset($row['fc_id'])) {
 							if($row['fc_id'] > 1) {
 								$subTotal = $row['total'];
 								mysql_free_result($result);
-								$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapturetest WHERE user_id = '".$from_id."' GROUP BY user_id";
+								$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$from_id."' GROUP BY user_id";
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								$row = mysql_fetch_array($result);
 								$newSeekerTotal = $row['total'];
 								mysql_free_result($result);
-								$query = "SELECT SUM(total) AS total FROM flagcapturetest WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
+								$query = "SELECT SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								$row = mysql_fetch_array($result);
 								if(($newSeekerTotal - $row['total']) < 20) {
@@ -4838,7 +4866,7 @@ function processMessage($message) {
 									}
 									$query = "SET NAMES utf8mb4;";
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-									$query = "UPDATE `flagcapturetest` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
+									$query = "UPDATE `flagcapture` SET `group_name` = '".$chatTitle."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."', `total` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$message['from']['id'];
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								} else {
 									error_log($logname." has full inventory.");
@@ -4859,12 +4887,12 @@ function processMessage($message) {
 							}
 							$query = "SET NAMES utf8mb4;";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-							$query = "INSERT INTO `flagcapturetest` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
+							$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						}
 						if($checkMax == 0) {
 							mysql_free_result($result);
-							$query = "UPDATE `flagcapturetest` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
+							$query = "UPDATE `flagcapture` SET `user_id` = '".$from_id."', `user_name` = '".$cleanName."', `last_flag` = '".$currentTime."' WHERE `fc_id` = '0001'";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$text = "<b>🚩🏃 ¡".$name." acaba de capturar la bandera de la";
 							if($hour != 1) {
@@ -4900,7 +4928,7 @@ function processMessage($message) {
 				} else {
 					mysql_free_result($result);
 					error_log($logname." triggered: Polefail (flag).");
-					$query = "SELECT group_name, user_name FROM flagcapturetest WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
 					$row = mysql_fetch_array($result);
@@ -4915,7 +4943,7 @@ function processMessage($message) {
 			} else {
 					mysql_free_result($result);
 					error_log($logname." triggered: Polefail (flag).");
-					$query = "SELECT group_name, user_name FROM flagcapturetest WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
+					$query = "SELECT group_name, user_name FROM flagcapture WHERE last_flag = '".$currentTime."' ORDER BY fc_id";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
 					$row = mysql_fetch_array($result);

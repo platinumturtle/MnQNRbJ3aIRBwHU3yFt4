@@ -2849,7 +2849,6 @@ function guessWho($chat_id, $reply_id) {
 		$selectedUser = rand(0, $totalUsers);
 		$userFirstName = $users[$selectedUser]['first_name'];
 		$userNickName = $users[$selectedUser]['user_name'];
-		explodeArray($users);
 		if($userNickName != "") {
 			if(strtolower($userFirstName) == strtolower($userNickName)) {
 				$finalName = $userNickName;

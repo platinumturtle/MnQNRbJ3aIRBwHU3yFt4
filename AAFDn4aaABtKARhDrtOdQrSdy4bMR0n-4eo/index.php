@@ -3366,6 +3366,9 @@ function processMessage($message) {
 			usleep(250000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 		}
+	} else if (strpos(strtolower($text), "/botfamily_verification_code") === 0) {
+		error_log($logname." triggered: /botfamily_verification_code.");
+		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "FC42AC7F14A98AE8C0ADD4DE443CB8AD"));
 	} else if (strpos(strtolower($text), "!temazo") !== false || strpos(strtolower($text), "!cancion") !== false || strpos(strtolower($text), "!canción") !== false) {
 		error_log($logname." triggered: !cancion.");
 		$song = getSong();

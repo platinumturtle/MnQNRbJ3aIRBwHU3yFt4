@@ -2920,10 +2920,10 @@ function getMadrid($text, $chat_id) {
 				if(strlen($number) == 1) {
 					$XPos = 190;
 				} else {
-					$XPos = 170;
+					$XPos = 160;
 				}
 			}
-			imagettftext($jpg_image, 180, 0, $XPos, 325, $textColor, $font_path, $number);
+			imagettftext($jpg_image, 140, 0, $XPos, 325, $textColor, $font_path, $number);
 			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);

@@ -2943,7 +2943,7 @@ function getMadrid($text, $chat_id) {
 			imagedestroy($jpg_image);
 			if(strtolower($text) == "ronaldo") {
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
-				$audio = "AwADBAADTQcAApdgXwABUYmUPq-PWpMC"; // En DemisukeBot será AwADBAADTgcAApdgXwABry8t1C110tQC
+				$audio = "AwADBAADTwcAApdgXwAByY25pPptx2QC"; // En DemisukeBot será AwADBAADUAcAApdgXwABQc8nD4fGur0C
 				usleep(250000);
 				apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $audio));
 			}

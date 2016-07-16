@@ -2874,7 +2874,6 @@ function getSquirtle($text, $chat_id) {
 	}
 }
 
-
 function getMadrid($text, $chat_id) {
 	$start = strpos(strtolower($text), "!madrid") + 7;
 	$text = substr($text, $start);
@@ -2915,7 +2914,86 @@ function getMadrid($text, $chat_id) {
 			imagettftext($jpg_image, 40, 0, $XPos, 120, $textColor, $font_path, $text);
 			if($number == "") {
 				$number = 7;
-				$XPos = 190;
+				$XPos = 165;
+			} else {
+				if((int)$number == 1) {
+					$XPos = 190;
+				} else if(strlen($number) == 1) {
+					$XPos = 165;
+				} else if($number == "11") {
+					$XPos = 160;
+				} else if((int)$number > 9 && (int)$number < 20) {
+					$XPos = 145;
+				} else {
+					$XPos = 125;
+				}
+			}
+			imagettftext($jpg_image, 140, 0, $XPos, 325, $textColor, $font_path, $number);
+			imagejpeg($jpg_image, $imageURL);
+			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+			$file_name_with_full_path = realpath($imageURL);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			imagedestroy($jpg_image);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+	} else {
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
+	}
+}
+
+function getBarcelona($text, $chat_id) {
+	$start = strpos(strtolower($text), "!barcelona") + 10;
+	$text = substr($text, $start);
+	$text = ltrim(rtrim($text));
+	$number = "";
+	if(strlen($text) > 0) {
+		if(strpos($text, "(") === 0) {
+			$length = strpos($text, ")");
+			$number = substr($text, 1, $length - 1);
+			$text = substr($text, $length + 1);
+			$number = ltrim(rtrim($number));
+			if(is_numeric($number)) {
+				if($number < 0 || $number > 99) {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal debe estar comprendido entre el 0 y el 99.*"));
+					exit;
+				}
+			} else {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal introducido no es un número.*"));
+				exit;
+			}
+			$text = ltrim(rtrim($text));
+		}		
+		if(strlen($text) < 13) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$XPos = 200 - (8 * strlen($text));
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/barcelona_".$imageURL.".jpg";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/jpeg');
+			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/barcelona.jpg');
+			$textColor = imagecolorallocate($jpg_image, 15, 29, 66);
+			$font_path = dirname(__FILE__)."/img/barcelona.ttf";
+			imagettftext($jpg_image, 40, 0, $XPos, 120, $textColor, $font_path, $text);
+			if($number == "") {
+				$number = 7;
+				$XPos = 165;
 			} else {
 				if((int)$number == 1) {
 					$XPos = 190;
@@ -4211,7 +4289,7 @@ function processMessage($message) {
 		getSquirtle($text, $chat_id);
 	} else if (strpos(strtolower($text), "!barcelona") !== false) {
 		error_log($logname." triggered: !barcelona.");
-		//getBarcelona($text, $chat_id);
+		getBarcelona($text, $chat_id);
 	} else if (strpos(strtolower($text), "!madrid") !== false) {
 		error_log($logname." triggered: !madrid.");
 		getMadrid($text, $chat_id);

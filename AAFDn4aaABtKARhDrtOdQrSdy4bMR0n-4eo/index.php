@@ -3638,19 +3638,40 @@ function processMessage($message) {
 							}
 						} else {
 							mysql_free_result($result);
-							checkPoint($hour, $chat_id, $link, $logname, $currentTime);
-							mysql_free_result($result);
-							error_log($logname." got a flag for the first time!");
-							$user_id = $message['from']['id'];
-							if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
-								$chatTitle = str_replace("'","''",$message['chat']['title']);
+							$query = "SELECT user_id, user_name, SUM(total) AS total FROM flagcapture WHERE user_id = '".$from_id."' GROUP BY user_id";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$row = mysql_fetch_array($result);
+							if(isset($row['total'])) {
+								$newSeekerTotal = $row['total'];
 							} else {
-								$chatTitle = "su homocueva";
+								$newSeekerTotal = 0;
 							}
-							$query = "SET NAMES utf8mb4;";
+							mysql_free_result($result);
+							$query = "SELECT SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-							$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$row = mysql_fetch_array($result);
+							$extraInventory = $row['total'];
+							$totalPlusInventory = $newSeekerTotal - $extraInventory;
+							if($totalPlusInventory < 20) {
+								mysql_free_result($result);
+								checkPoint($hour, $chat_id, $link, $logname, $currentTime);
+								mysql_free_result($result);
+								error_log($logname." got a flag for the first time!");
+								$user_id = $message['from']['id'];
+								if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+									$chatTitle = str_replace("'","''",$message['chat']['title']);
+								} else {
+									$chatTitle = "su homocueva";
+								}
+								$query = "SET NAMES utf8mb4;";
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+								$query = "INSERT INTO `flagcapture` (`group_id`, `user_id`, `group_name`, `user_name`, `last_flag`, `total`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$currentTime."', '1')";
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							} else {
+								error_log($logname." has full inventory.");
+								$checkMax = 1;
+								$text = "<b>🏴❌ ¡".$name." ha encontrado otra bandera, ¡pero ya tiene el inventario lleno!</b> 🚫";
+							}
 						}
 						if($checkMax == 0) {
 							mysql_free_result($result);

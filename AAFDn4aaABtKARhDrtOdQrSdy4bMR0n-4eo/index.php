@@ -2124,6 +2124,280 @@ function getQuote($text, $chat_id) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
 	}
 }
+function guessWho($chat_id, $reply_id) {
+	$link = dbConnect();
+	$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = '".$chat_id."'";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$users = array();
+	while ($row_user = mysql_fetch_assoc($result)) {
+		$users[] = $row_user;
+	}
+	mysql_free_result($result);
+	mysql_close($link);
+	$totalUsers = count($users);
+	if($totalUsers > 3) {
+		$totalUsers = $totalUsers - 1;
+		$selectedUser = rand(0, $totalUsers);
+		$userFirstName = $users[$selectedUser]['first_name'];
+		$userNickName = $users[$selectedUser]['user_name'];
+		if($userNickName != "") {
+			if(strtolower($userFirstName) == strtolower($userNickName)) {
+				$finalName = $userNickName;
+			} else {
+				$finalName = $userFirstName." (".$userNickName.")";
+			}
+		} else {
+			$finalName = $userFirstName;
+		}
+		$finalName = str_replace("<", "", $finalName);
+		$finalName = str_replace(">", "", $finalName);
+		
+		$storedReply = array(
+							$finalName,
+							"Está claro que ".$finalName,
+							"Diría que ".$finalName.", aunque tengo dudas",
+							"Nadie, la verdad",
+							"Cualquiera me vale",
+							"Yo ✌😁",
+							$finalName." tiene todas las papeletas",
+							"Fácil, ".$finalName,
+							"Menuda pregunta... Pues ".$finalName.", obvio",
+							"Si lo pienso mucho te digo que ".$finalName,
+							"Así sin pensarlo ".$finalName." es quien me viene a la cabeza",
+							"Pues ".$finalName.", ¿no? Eso pienso",
+							"Yo a tope con ".$finalName,
+							"Hoy te diría que ".$finalName.". Mañana puede que cambie de opinión",
+							"Tú, por preguntar",
+							"A ver, yo diría que ".$finalName.", pero es capaz de quejarse..",
+							"Te voy a decir que ".$finalName,
+							"Pregúntale a ".$finalName."..",
+							$finalName." sabe la respuesta a eso mejor que yo",
+							"Con total seguridad, ".$finalName,
+							"La respuesta es... No, espera. Bueno sí, va, pensaba en ".$finalName." pero me habían entrado dudas",
+							"Te leo dos veces y te digo que ".$finalName,
+							$finalName.", sin más",
+							"Evidentemente ".$finalName,
+							$finalName." con diferencia",
+							"Esta ahí ahí, pero me quedo con ".$finalName,
+							"Así a voleo se me ocurre ".$finalName
+							);
+		$n = sizeof($storedReply) - 1;
+		$n = rand(0,$n);
+		$text = $storedReply[$n];
+	} else {
+		$text = "Todavía no conozco a mucha gente de este grupo, te puedo contestar a esa pregunta en cuanto habléis más personas..";
+	}
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(500000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "reply_to_message_id" => $reply_id, "text" => "<b>".$text.".</b>"));
+}
+
+function getSquirtle($text, $chat_id) {
+	$start = strpos(strtolower($text), "!squirtle") + 9;
+	$text = substr($text, $start);
+	$text = ltrim(rtrim($text));
+	if(strlen($text) > 0) {
+		$text = wordwrap($text, 24, "\n", false);
+		$totalEOL = substr_count($text, PHP_EOL);
+		if($totalEOL < 3) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$YPos = 380;
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/squirtle_".$imageURL.".jpg";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/jpeg');
+			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
+			$textColor = imagecolorallocate($jpg_image, 0, 0, 0);
+			$font_path = dirname(__FILE__)."/img/calibri.ttf";
+			imagettftext($jpg_image, 72, 0, 100, $YPos, $textColor, $font_path, $text);
+			imagejpeg($jpg_image, $imageURL);
+			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+			$file_name_with_full_path = realpath($imageURL);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			imagedestroy($jpg_image);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+	} else {
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
+	}
+}
+
+function getMadrid($text, $chat_id) {
+	$start = strpos(strtolower($text), "!madrid") + 7;
+	$text = substr($text, $start);
+	$text = ltrim(rtrim($text));
+	$number = "";
+	if(strlen($text) > 0) {
+		if(strpos($text, "(") === 0) {
+			$length = strpos($text, ")");
+			$number = substr($text, 1, $length - 1);
+			$text = substr($text, $length + 1);
+			$number = ltrim(rtrim($number));
+			if(is_numeric($number)) {
+				if($number < 0 || $number > 99) {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal debe estar comprendido entre el 0 y el 99.*"));
+					exit;
+				}
+			} else {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal introducido no es un número.*"));
+				exit;
+			}
+			$text = ltrim(rtrim($text));
+		}		
+		if(strlen($text) < 13) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$XPos = 200 - (8 * strlen($text));
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/madrid_".$imageURL.".jpg";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/jpeg');
+			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
+			$textColor = imagecolorallocate($jpg_image, 15, 29, 66);
+			$font_path = dirname(__FILE__)."/img/madrid.ttf";
+			imagettftext($jpg_image, 40, 0, $XPos, 120, $textColor, $font_path, $text);
+			if($number == "") {
+				$number = 7;
+				$XPos = 165;
+			} else {
+				if((int)$number == 1) {
+					$XPos = 190;
+				} else if(strlen($number) == 1) {
+					$XPos = 165;
+				} else if($number == "11") {
+					$XPos = 160;
+				} else if((int)$number > 9 && (int)$number < 20) {
+					$XPos = 145;
+				} else {
+					$XPos = 125;
+				}
+			}
+			imagettftext($jpg_image, 140, 0, $XPos, 325, $textColor, $font_path, $number);
+			imagejpeg($jpg_image, $imageURL);
+			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+			$file_name_with_full_path = realpath($imageURL);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			imagedestroy($jpg_image);
+			if(strtolower($text) == "ronaldo") {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
+				$audio = "AwADBAADUAcAApdgXwABQc8nD4fGur0C";
+				usleep(250000);
+				apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $audio));
+			}
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+	} else {
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
+	}
+}
+
+function getBarcelona($text, $chat_id) {
+	$start = strpos(strtolower($text), "!barcelona") + 10;
+	$text = substr($text, $start);
+	$text = ltrim(rtrim($text));
+	$number = "";
+	if(strlen($text) > 0) {
+		if(strpos($text, "(") === 0) {
+			$length = strpos($text, ")");
+			$number = substr($text, 1, $length - 1);
+			$text = substr($text, $length + 1);
+			$number = ltrim(rtrim($number));
+			if(is_numeric($number)) {
+				if($number < 0 || $number > 99) {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal debe estar comprendido entre el 0 y el 99.*"));
+					exit;
+				}
+			} else {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal introducido no es un número.*"));
+				exit;
+			}
+			$text = ltrim(rtrim($text));
+		}		
+		if(strlen($text) < 13) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+			usleep(250000);
+			$XPos = 215 - (8 * strlen($text));
+			$imageURL = rand(0,9);
+			$imageShortURL = "/img/barcelona_".$imageURL.".jpg";
+			$imageURL = dirname(__FILE__).$imageShortURL;
+			header('Content-type: image/jpeg');
+			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/barcelona.jpg');
+			$textColor = imagecolorallocate($jpg_image, 219, 155, 56);
+			$font_path = dirname(__FILE__)."/img/barcelona.ttf";
+			imagettftext($jpg_image, 28, 0, $XPos, 135, $textColor, $font_path, $text);
+			if($number == "") {
+				$number = 10;
+				$XPos = 145;
+			} else {
+				if((int)$number == 1) {
+					$XPos = 185;
+				} else if(strlen($number) == 1) {
+					$XPos = 185;
+				} else if($number == "11") {
+					$XPos = 150;
+				} else if((int)$number > 9 && (int)$number < 20) {
+					$XPos = 145;
+				} else {
+					$XPos = 145;
+				}
+			}
+			imagettftext($jpg_image, 96, 0, $XPos, 275, $textColor, $font_path, $number);
+			imagejpeg($jpg_image, $imageURL);
+			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+			$file_name_with_full_path = realpath($imageURL);
+			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			imagedestroy($jpg_image);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(250000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
+		}
+	} else {
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
+	}
+}
 function commandsList($send_id, $mode) {
 	$mode = str_replace("/ayuda_", "", strtolower($mode));
 	$mode = str_replace("@demisukebot", "", strtolower($mode));
@@ -2138,7 +2412,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"⚠️ <b>¡Importante!</b>"
 				.PHP_EOL.
-				"<i>Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para el grupo.</i>"
+				"<i>Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para tu grupo.</i>"
 				.PHP_EOL.
 				"Más información: /ayuda_modo"
 				.PHP_EOL.
@@ -2165,6 +2439,8 @@ function commandsList($send_id, $mode) {
 				"📎 <b>Utilidades:</b>"
 				.PHP_EOL.
 				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"–<b>¿Quién?</b>: <i>Responde con un miembro del grupo a una pregunta utilizando \"!quien pregunta\".</i>"
 				.PHP_EOL.
 				"–<b>Insultos</b>: <i>Insulta a alguien mediante \"!insulta a nombre\".</i>"
 				.PHP_EOL.
@@ -2199,6 +2475,12 @@ function commandsList($send_id, $mode) {
 				"Más información: /ayuda_cita"
 				.PHP_EOL.
 				"–<b>Bécquer</b>: <i>Crea una imagen con texto de Bécquer usando \"!becquer mensaje\".</i>"
+				.PHP_EOL.
+				"–<b>Meme Squirtle (vamo a calmarno)</b>: <i>Crea un meme con Squirtle escribiendo \"!squirtle mensaje\".</i>"
+				.PHP_EOL.
+				"–<b>Equipaciones deportivas</b>: <i>Crea una camiseta con número y dorsal personalizados.</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_camisetas"
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
@@ -2238,7 +2520,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
 				.PHP_EOL.
-				"@DemisukeBot v2.0 creado por @Kamisuke."
+				"@DemisukeBot v2.1 creado por @Kamisuke."
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
@@ -2324,6 +2606,33 @@ function commandsList($send_id, $mode) {
 				"<i>El tamaño máximo no es fijo sino que depende del espacio libre que quede en la imagen. Aun así, si el texto es muy largo o está vacío la propia función te avisará de ello.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>También puedes incluir una firma para la cita introducida si escribes </i><b>!cita (mensaje1) mensaje2</b><i>. El mensaje2 escrito al final será la cita en sí, mientras que el mensaje1 escrito entre paréntesis será la firma con la que terminará la cita.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Nota: esta función incluye un huevo de pascua.</i>"
+				;
+	} else if($mode == "camisetas") {
+		$text = "🔎 <b>Equipaciones deportivas 2016/2017</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"<b>!madrid</b>: <i>Diseña la camiseta del Real Madrid CF.</i>"
+				.PHP_EOL.
+				"<b>!barcelona</b>: <i>Diseña la camiseta del FC Barcelona.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Uso:</b>"
+				.PHP_EOL.
+				"–<i>Escribe \"!madrid nombre\" o \"!barcelona nombre\" para crear una camiseta con dorsal predeterminado.</i>"
+				.PHP_EOL.
+				"–<i>También puedes escoger el dorsal si escribes \"!madrid (7) nombre\" o \"!barcelona (10) nombre\", por ejemplo.</i>"
+				.PHP_EOL.
+				"–<i>Los dorsales deben ser números comprendidos entre 0 y 99.</i>"
+				.PHP_EOL.
+				"–<i>Está permitido el uso del cero a la izquierda. El dorsal (09), por ejemplo, sería válido.</i>"
+				.PHP_EOL.
+				"–<i>El texto tendrá un máximo aproximado de doce caracteres, establecido por el tamaño oficial de las camisetas.</i>"
+				.PHP_EOL.
+				"–<i>Debido a las múltiples combinaciones posibles de los nombres, la precisión a la hora de centrar el nombre será aproximada dependiendo del tamaño y los carácteres utilizados, por lo que podría no aparecer exactamente centrada.</i>"
+				.PHP_EOL.
+				"–<i>Nota: esta función incluye un huevo de pascua.</i>"
 				;
 	} else if($mode == "mensajes") {
 		$text = "🔎 <b>Los usuarios más activos de Telegram</b> 📝"
@@ -2675,13 +2984,14 @@ function processMessage($message) {
 				strpos($text, "/ayuda_texto") === 0 || strpos($text, "/ayuda_texto@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_info") === 0 || strpos($text, "/ayuda_info@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_cita") === 0 || strpos($text, "/ayuda_cita@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_camisetas") === 0 || strpos($text, "/ayuda_camisetas@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_mensajes") === 0 || strpos($text, "/ayuda_mensajes@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_grupos") === 0 || strpos($text, "/ayuda_grupos@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_bandera") === 0 || strpos($text, "/ayuda_bandera@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_mastil") === 0 || strpos($text, "/ayuda_mastil@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_boton") === 0 || strpos($text, "/ayuda_boton@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
-		commandsList($chat_id, $text);	
+		commandsList($chat_id, $text);
     } else if (strpos($text, "/sendNotification") === 0) {
 		error_log($logname." triggered: New Notification.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {
@@ -2825,6 +3135,23 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(500000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$respuesta.".*"));
+	} else if (strpos(strtolower($text), "!quien") !== false || strpos(strtolower($text), "!quién") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			if(strlen($text) > 8) {
+				error_log($logname." triggered: !quien.");
+				guessWho($chat_id, $message_id);
+			} else {
+				error_log($logname." tried to trigger and failed: !quien.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido la pregunta, cuéntame más.*"));
+			}
+		} else {
+			error_log($logname." tried to trigger and failed: !quien.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
+		}
 	} else if (strpos(strtolower($text), "!ping") !== false) {
 		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));
@@ -3198,6 +3525,15 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!cita") !== false) {
 		error_log($logname." triggered: !cita.");
 		getQuote($text, $chat_id);
+	} else if (strpos(strtolower($text), "!squirtle") !== false) {
+		error_log($logname." triggered: !squirtle.");
+		getSquirtle($text, $chat_id);
+	} else if (strpos(strtolower($text), "!barcelona") !== false) {
+		error_log($logname." triggered: !barcelona.");
+		getBarcelona($text, $chat_id);
+	} else if (strpos(strtolower($text), "!madrid") !== false) {
+		error_log($logname." triggered: !madrid.");
+		getMadrid($text, $chat_id);
 	} else if (strpos(strtolower($text), "roto2") !== false) {
 		if($randomTicket > -2) {
 			error_log($logname." triggered: Roto2.");
@@ -3495,6 +3831,7 @@ function processMessage($message) {
 					$query = 'UPDATE lastpolecheck SET last_check = '.$currentTime.', penalty = 1 WHERE user_id = '.$from_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 				} else {
+					error_log($logname." got a penalty!");
 					$penalty = $row['penalty'];
 					mysql_free_result($result);
 					switch($penalty){
@@ -3909,8 +4246,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "soy programador") !== false) {
 		if($randomTicket > -2) {
 			error_log($logname." triggered: Soy programador.");
-			// Cambiar en DemisukeBot: BQADBAADTAcAApdgXwABjiyeQQvABfQC
-			$gif = "BQADBAADSwcAApdgXwABrTePNOqWdrQC";
+			$gif = "BQADBAADTAcAApdgXwABjiyeQQvABfQC";
 			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: Viva Vegetta.");

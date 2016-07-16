@@ -2888,7 +2888,6 @@ function guessWho($chat_id, $reply_id) {
 		$n = sizeof($storedReply) - 1;
 		$n = rand(0,$n);
 		$text = $storedReply[$n];
-		$text = $finalName;
 	} else {
 		$text = "Todavía no conozco a mucha gente de este grupo, te puedo contestar a esa pregunta en cuanto habléis más personas..";
 	}

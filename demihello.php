@@ -2988,9 +2988,9 @@ function getBarcelona($text, $chat_id) {
 			$imageURL = dirname(__FILE__).$imageShortURL;
 			header('Content-type: image/jpeg');
 			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/barcelona.jpg');
-			$textColor = imagecolorallocate($jpg_image, 15, 29, 66);
+			$textColor = imagecolorallocate($jpg_image, 219, 155, 56);
 			$font_path = dirname(__FILE__)."/img/barcelona.ttf";
-			imagettftext($jpg_image, 40, 0, $XPos, 120, $textColor, $font_path, $text);
+			imagettftext($jpg_image, 28, 0, $XPos, 135, $textColor, $font_path, $text);
 			if($number == "") {
 				$number = 7;
 				$XPos = 165;
@@ -3007,7 +3007,7 @@ function getBarcelona($text, $chat_id) {
 					$XPos = 125;
 				}
 			}
-			imagettftext($jpg_image, 140, 0, $XPos, 325, $textColor, $font_path, $number);
+			imagettftext($jpg_image, 90, 0, $XPos, 325, $textColor, $font_path, $number);
 			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);

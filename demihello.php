@@ -2941,6 +2941,12 @@ function getMadrid($text, $chat_id) {
 			$result=curl_exec ($ch);
 			curl_close ($ch);
 			imagedestroy($jpg_image);
+			if(strtolower($text) == "ronaldo") {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "record_audio"));
+				$audio = "AwADBAADTQcAApdgXwABUYmUPq-PWpMC"; // En DemisukeBot será AwADBAADTgcAApdgXwABry8t1C110tQC
+				usleep(250000);
+				apiRequest("sendVoice", array('chat_id' => $chat_id, 'voice' => $audio));
+			}
 		} else {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(250000);
@@ -2992,19 +2998,19 @@ function getBarcelona($text, $chat_id) {
 			$font_path = dirname(__FILE__)."/img/barcelona.ttf";
 			imagettftext($jpg_image, 28, 0, $XPos, 135, $textColor, $font_path, $text);
 			if($number == "") {
-				$number = 7;
-				$XPos = 165;
+				$number = 10;
+				$XPos = 145;
 			} else {
 				if((int)$number == 1) {
-					$XPos = 190;
+					$XPos = 185;
 				} else if(strlen($number) == 1) {
-					$XPos = 165;
+					$XPos = 185;
 				} else if($number == "11") {
-					$XPos = 160;
+					$XPos = 150;
 				} else if((int)$number > 9 && (int)$number < 20) {
 					$XPos = 145;
 				} else {
-					$XPos = 125;
+					$XPos = 145;
 				}
 			}
 			imagettftext($jpg_image, 96, 0, $XPos, 275, $textColor, $font_path, $number);

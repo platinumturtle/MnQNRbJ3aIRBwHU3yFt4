@@ -2844,15 +2844,31 @@ function guessWho($chat_id, $reply_id) {
 	}
 	mysql_free_result($result);
 	mysql_close($link);
-	explode($users);
-	error_log(count($users));
-	$text = "mis huevos";
-	// para sacar el nombre mirar si tiene nick, si tiene mirar si en minusculas es lo mismo que el first
-	// si es lo mismo se muestra el nick, si es distinto las dos cosas
-	// si no tiene nick se muestra el nombre
+	$totalUsers = count($users);
+	if($totalUsers > 3) {
+		$totalUsers = $totalUsers - 1;
+		$selectedUser = rand(0, $totalUsers);
+		$userFirstName = $users[$selectedUser]['first_name'];
+		$userNickName = $users[$selectedUser]['user_name'];
+		explodeArray($users);
+		if($userNickName != "") {
+			if(strtolower($userFirstName) == strtolower($userNickName)) {
+				$finalName = $userNickName;
+			} else {
+				$finalName = $userFirstName." (".$userNickName.")";
+			}
+		} else {
+			$finalName = $userFirstName;
+		}
+		$finalName = str_replace("<", "", $finalName);
+		$finalName = str_replace(">", "", $finalName);
+		$text = $finalName;
+	} else {
+		$text = "Todavía no conozco a mucha gente de este grupo, te puedo contestar a esa pregunta en cuanto habléis más personas.";
+	}
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	usleep(500000);
-	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $reply_id, "text" => "*".$text.".*"));
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "reply_to_message_id" => $reply_id, "text" => "<b>".$text.".</b>"));
 }
 
 function getSquirtle($text, $chat_id) {

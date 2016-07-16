@@ -2246,7 +2246,7 @@ function getMadrid($text, $chat_id) {
 			$number = substr($text, 1, $length - 1);
 			$text = substr($text, $length + 1);
 			$number = ltrim(rtrim($number));
-			if(is_numeric($number)) {
+			if(is_numeric($number) && strlen($number) < 3) {
 				if($number < 0 || $number > 99) {
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 					usleep(250000);
@@ -2256,7 +2256,7 @@ function getMadrid($text, $chat_id) {
 			} else {
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				usleep(250000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal introducido no es un número.*"));
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal introducido no es un número válido.*"));
 				exit;
 			}
 			$text = ltrim(rtrim($text));
@@ -2331,7 +2331,7 @@ function getBarcelona($text, $chat_id) {
 			$number = substr($text, 1, $length - 1);
 			$text = substr($text, $length + 1);
 			$number = ltrim(rtrim($number));
-			if(is_numeric($number)) {
+			if(is_numeric($number) && strlen($number) < 3) {
 				if($number < 0 || $number > 99) {
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 					usleep(250000);
@@ -2341,7 +2341,7 @@ function getBarcelona($text, $chat_id) {
 			} else {
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				usleep(250000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal introducido no es un número.*"));
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El dorsal introducido no es un número válido.*"));
 				exit;
 			}
 			$text = ltrim(rtrim($text));
@@ -3476,6 +3476,7 @@ function processMessage($message) {
 		}
 	} else if (strpos(strtolower($text), "!becquer") !== false || strpos(strtolower($text), "!bequer") !== false || strpos(strtolower($text), "!becker") !== false || strpos(strtolower($text), "!bécquer") !== false) {
 		error_log($logname." triggered: !becquer.");
+		$text = strtolower($text);
 		$text = str_replace("!bequer", "!becquer", $text);
 		$text = str_replace("!becker", "!becquer", $text);
 		$start = strpos(strtolower($text), "!becquer") + 9;

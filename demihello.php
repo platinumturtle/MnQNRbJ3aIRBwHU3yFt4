@@ -1756,6 +1756,8 @@ function containsCommand($text) {
 						"!grupos",
 						"!nick",
 						"!info",
+						"!quien",
+						"!quién",
 						"!mastil",
 						"!mástil",
 						"!modo",
@@ -2831,6 +2833,28 @@ function getQuote($text, $chat_id) {
 	}
 }
 
+function guessWho($chat_id, $reply_id) {
+	// una sql que pille los usuarios del grupo, si hay mas de 3 se use, si hay menos que diga "solo conozco a $ personas, en este grupo falta mas gente paar jugar a esto"
+	$link = dbConnect();
+	$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = '".$chat_id."'";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$users = array();
+	while ($row_user = mysql_fetch_assoc($result)) {
+		$users[] = $row_user;
+	}
+	mysql_free_result($result);
+	mysql_close($link);
+	explode($users);
+	error_log(count($users));
+	$text = "mis huevos";
+	// para sacar el nombre mirar si tiene nick, si tiene mirar si en minusculas es lo mismo que el first
+	// si es lo mismo se muestra el nick, si es distinto las dos cosas
+	// si no tiene nick se muestra el nombre
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(500000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $reply_id, "text" => "*".$text.".*"));
+}
+
 function getSquirtle($text, $chat_id) {
 	$start = strpos(strtolower($text), "!squirtle") + 9;
 	$text = substr($text, $start);
@@ -3844,6 +3868,23 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(500000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*".$respuesta.".*"));
+	} else if (strpos(strtolower($text), "!quien") !== false || strpos(strtolower($text), "!quién") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			if(strlen($text) > 8) {
+				error_log($logname." triggered: !quien.");
+				guessWho($chat_id, $message_id);
+			} else {
+				error_log($logname." tried to trigger and failed: !quien.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido la pregunta, cuéntame más.*"));
+			}
+		} else {
+			error_log($logname." tried to trigger and failed: !quien.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
+		}
 	} else if (strpos(strtolower($text), "!ping") !== false) {
 		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));

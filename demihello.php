@@ -3007,7 +3007,7 @@ function getBarcelona($text, $chat_id) {
 					$XPos = 125;
 				}
 			}
-			imagettftext($jpg_image, 90, 0, $XPos, 325, $textColor, $font_path, $number);
+			imagettftext($jpg_image, 96, 0, $XPos, 250, $textColor, $font_path, $number);
 			imagejpeg($jpg_image, $imageURL);
 			$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 			$file_name_with_full_path = realpath($imageURL);

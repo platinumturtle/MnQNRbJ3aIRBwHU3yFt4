@@ -2883,6 +2883,11 @@ function guessWho($chat_id, $reply_id) {
 							$finalName." sabe la respuesta a eso mejor que yo",
 							"Con total seguridad, ".$finalName,
 							"La respuesta es... No, espera. Bueno sí, va, pensaba en ".$finalName." pero me habían entrado dudas",
+							"Te leo dos veces y te digo que ".$finalName,
+							$finalName.", sin más",
+							"Evidentemente ".$finalName,
+							$finalName." con diferencia",
+							"Esta ahí ahí, pero me quedo con ".$finalName,
 							"Así a voleo se me ocurre ".$finalName
 							);
 		$n = sizeof($storedReply) - 1;
@@ -3104,125 +3109,6 @@ function getBarcelona($text, $chat_id) {
 }
 
 function commandsList($send_id, $mode) {
-	/*
-	$commands = 
-				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
-				.PHP_EOL.
-				"Utilízalo siempre que quieras repasar cuáles son los comandos que se pueden utilizar con el bot escribiendo \"/demisuke\" o \"!ayuda\" sin las comillas."
-				.PHP_EOL.PHP_EOL.
-				"〰〰〰〰〰〰〰〰〰"
-				.PHP_EOL.PHP_EOL.
-				"*Saludo*:"
-				.PHP_EOL.
-				"_Escribe \"hola\" para que el bot te devuelva el saludo._"
-				.PHP_EOL.PHP_EOL.
-				"*Preguntas Sí/No*:"
-				.PHP_EOL.
-				"_Escribe \"!siono\" seguido de una pregunta para que el bot te resuelva la duda._"
-				.PHP_EOL.
-				"Ejemplo:"
-				.PHP_EOL.
-				"`!siono ¿Te gusta este bot?`"
-				.PHP_EOL.PHP_EOL.
-				"*Insulto*:"
-				.PHP_EOL.
-				"_Escribe \"!insulta a\" seguido de un nombre o un usuario para que el bot le insulte. ¡Ojo! No siempre tendrá ganas de insultar a la persona en cuestión..._"
-				.PHP_EOL.
-				"Ejemplo:"
-				.PHP_EOL.
-				"`!insulta a @Kamisuke`"
-				.PHP_EOL.PHP_EOL.
-				"*Stickers*:"
-				.PHP_EOL.
-				"_Escribe \"!sticker\" para que el bot responda enviando un sticker escogido al azar._"
-				.PHP_EOL.PHP_EOL.
-				"*Historia*:"
-				.PHP_EOL.
-				"_Escribe \"!historia\" para que el bot se invente una historia basada en momentos aleatorios de la vida, con un mínimo de sentido._"
-				.PHP_EOL.PHP_EOL.
-				"*Música*:"
-				.PHP_EOL.
-				"_Escribe \"!cancion\" o \"!temazo\" para que el bot envíe una canción de éxito y anime el ambiente hasta en los grupos más decaídos._"
-				.PHP_EOL.PHP_EOL.
-				"*Generador de nombres de usuario*:"
-				.PHP_EOL.
-				"_Escribe \"!nick\" para que el bot genere automáticamente un nombre de usuario que poder utilizar en internet. Si el resultado no es del agrado de quien lo pide siempre puede volver a intentarlo._"
-				.PHP_EOL.PHP_EOL.
-				"*Dados de la suerte*:"
-				.PHP_EOL.
-				"_Escribe \"!dados\" para que el bot lance dos dados y muestre el resultado, una solución muy útil para resolver dudas o debates en grupo al azar, o para inventarse cualquier minijuego entretenido._"
-				.PHP_EOL.PHP_EOL.
-				"*Test de conexión*:"
-				.PHP_EOL.
-				"_Escribe \"!ping\" para que el bot te responda. Función útil para comprobar que tu dispositivo tiene conexión a internet y el bot está activo._"
-				.PHP_EOL.PHP_EOL.
-				"*Palabras y acciones clave*:"
-				.PHP_EOL.
-				"_El bot reaccionará ante diversas palabras clave y momentos puntuales en una conversación para dar su opinión, siempre que éstas se produzcan dentro de un grupo o supergrupo (¡contiene incluso Easter Eggs!)."
-				.PHP_EOL.
-				"En caso de ser usuario de ForoCoches darás con la mayoría de estas palabras fácilmente. ¡Encuéntralas todas!_"
-				;
-	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
-	
-	$commands = "*Historia del bot*:"
-				.PHP_EOL.
-				"_Con la función \"!info\" el bot relatará su historia y podrás saber de dónde procede y más datos sobre su vida, tanto en Telegram como fuera._"
-				.PHP_EOL.PHP_EOL.
-				"_Además contará en cuántos grupos está instalado y te dará pistas sobre funciones ocultas como huevos de pascua o palabras clave._"
-				.PHP_EOL.PHP_EOL.
-				"*Ránking de usuarios*:"
-				.PHP_EOL.
-				"_¡Con este ránking sabrás quiénes son los usuarios más activos de Telegram!_"
-				.PHP_EOL.
-				"_Utiliza \"!mensajesgrupo\" para ver la lista de usuarios más activos de tu grupo, o utiliza \"!mensajes\" para ver la lista global entre todos los grupos._"
-				.PHP_EOL.PHP_EOL.
-				"_Para mantener la privacidad, por defecto no aparecerás en la lista global de usuarios. Si quieres participar en ella usa la función \"!activame\" y tus puntos serán visibles en el ránking. Siempre podrás volver a ocultarte con \"!desactivame\"._"
-				.PHP_EOL.PHP_EOL.
-				"_Hay un máximo de diez puntos por minuto posibles. Usar masivamente funciones del bot, realizar 'flood' o enviar varios mensajes seguidos no añadirán más puntos a tu marcador._"
-				.PHP_EOL.PHP_EOL.
-				"*Ránking de grupos*:"
-				.PHP_EOL.
-				"_¡Compite contra otros grupos con la ayuda de tus amigos a ser el grupo más activo!_"
-				.PHP_EOL.
-				"_Por cada mensaje de texto escrito en un grupo se conseguirá un punto para el mismo, siempre que el mensaje enviado no sea ningún archivo, gif o sticker y no se obra de un bot._"
-				.PHP_EOL.PHP_EOL.
-				"_Escribe \"!grupos\" para ver la clasificación global de los mejores grupos._"
-				.PHP_EOL.PHP_EOL.
-				"*Captura la bandera*:"
-				.PHP_EOL.
-				"_Cada hora se planta una nueva bandera en el bot._"
-				.PHP_EOL.
-				"_El primer usuario que la capture con la función !pole la tendrá en su posesión y su nombre aparecerá para todos en dicha función como su propietario, junto al nombre del grupo desde donde la consiguió capturar, hasta que se plante la siguiente bandera, además de sumar una bandera a su colección._"
-				.PHP_EOL.PHP_EOL.
-				"_El usuario que tenga la bandera actual en su poder no podrá capturar la siguiente, y tampoco podrá hacerlo todo aquel usuario que tenga el inventario lleno o trate de capturarla desde un grupo muy pequeño._"
-				.PHP_EOL.
-				"_El tamaño total del inventario es de veinte ranuras para banderas además de una ranura extra por cada bandera que haya capturado el usuario que aparece en la décima posición del ránking._"
-				.PHP_EOL.
-				"_Puedes consultar el ránking global de banderas con la función \"!banderas\" o el ránking de tu grupo en concreto con \"!banderas\"._"
-				.PHP_EOL.
-				"¡Captúralas todas desde un grupo o un supergrupo para aparecer en los puestos más altos!"
-				.PHP_EOL.PHP_EOL.
-				"〰〰〰〰〰〰〰〰〰"
-				.PHP_EOL.PHP_EOL.
-				"Además de las funciones disponibles, @DemisukeBot tratará de aportar vida con frecuencia a los grupos activos que lo tengan en su lista de miembros."
-				.PHP_EOL.PHP_EOL.
-				"¿Alguna sugerencia que aportar para mejorar al bot? en @KamisukeBot existe el comando /sugerencias con una opción habilitada para registrar las sugerencias para @DemisukeBot donde puedes enviar tus ideas de la manera más rápida y cómoda."
-				.PHP_EOL.PHP_EOL.
-				"Este bot anunciará automáticamente las actualizaciones más importantes que se realizan, sin embargo hay otras actualizaciones menores que se realizan con frecuencia."
-				.PHP_EOL.
-				"Si quieres saber cuándo hay nuevo material guardado en este bot únete al @CanalKamisuke y podrás leer todas las novedades de @DemisukeBot al instante."
-				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v1.5.2 creado por @Kamisuke."
-				.PHP_EOL.PHP_EOL.
-				"〰〰〰〰〰〰〰〰〰"
-				.PHP_EOL.PHP_EOL.
-				"¿Te gusta el bot? ¡Puntúalo ⭐️⭐️⭐️⭐️⭐️!"
-				.PHP_EOL.
-				"https://telegram.me/storebot?start=DemisukeBot"
-				;
-	apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "Markdown", "text" => $commands));
-	//return $commands;
-	*/
 	$mode = str_replace("/ayuda_", "", strtolower($mode));
 	$mode = str_replace("@demisukebot", "", strtolower($mode));
 	$mode = str_replace("@demitest_bot", "", strtolower($mode));
@@ -3236,7 +3122,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"⚠️ <b>¡Importante!</b>"
 				.PHP_EOL.
-				"<i>Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para el grupo.</i>"
+				"<i>Para que el bot no resulte ni pesado ni aburrido, configura el panel \"!modo\" con los ajustes óptimos para tu grupo.</i>"
 				.PHP_EOL.
 				"Más información: /ayuda_modo"
 				.PHP_EOL.
@@ -3263,6 +3149,8 @@ function commandsList($send_id, $mode) {
 				"📎 <b>Utilidades:</b>"
 				.PHP_EOL.
 				"–<b>Sí o No</b>: <i>Responde a una pregunta con \"!siono pregunta\".</i>"
+				.PHP_EOL.
+				"–<b>¿Quién?</b>: <i>Responde con un miembro del grupo a una pregunta utilizando \"!quien pregunta\".</i>"
 				.PHP_EOL.
 				"–<b>Insultos</b>: <i>Insulta a alguien mediante \"!insulta a nombre\".</i>"
 				.PHP_EOL.
@@ -3297,6 +3185,12 @@ function commandsList($send_id, $mode) {
 				"Más información: /ayuda_cita"
 				.PHP_EOL.
 				"–<b>Bécquer</b>: <i>Crea una imagen con texto de Bécquer usando \"!becquer mensaje\".</i>"
+				.PHP_EOL.
+				"–<b>Meme Squirtle (vamo a calmarno)</b>: <i>Crea un meme con Squirtle escribiendo \"!Squirtle mensaje\".</i>"
+				.PHP_EOL.
+				"–<b>Equipaciones deportivas</b>: <i>Crea una camiseta con número y dorsal personalizados.</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_camisetas"
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
@@ -3336,7 +3230,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
 				.PHP_EOL.
-				"@DemisukeBot v2.0 creado por @Kamisuke."
+				"@DemisukeBot v2.1 creado por @Kamisuke."
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
@@ -3422,6 +3316,33 @@ function commandsList($send_id, $mode) {
 				"<i>El tamaño máximo no es fijo sino que depende del espacio libre que quede en la imagen. Aun así, si el texto es muy largo o está vacío la propia función te avisará de ello.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>También puedes incluir una firma para la cita introducida si escribes </i><b>!cita (mensaje1) mensaje2</b><i>. El mensaje2 escrito al final será la cita en sí, mientras que el mensaje1 escrito entre paréntesis será la firma con la que terminará la cita.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Nota: esta función incluye un huevo de pascua.</i>"
+				;
+	} else if($mode == "camisetas") {
+		$text = "🔎 <b>Equipaciones deportivas 2016/2017</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"<b>!madrid</b>: <i>Diseña la camiseta del Real Madrid CF.</i>"
+				.PHP_EOL.
+				"<b>!barcelona</b>: <i>Diseña la camiseta del FC Barcelona.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Uso:</b>"
+				.PHP_EOL.
+				"–<i>Escribe \"!madrid nombre\" o \"!barcelona nombre\" para crear una camiseta con dorsal predeterminado.</i>"
+				.PHP_EOL.
+				"–<i>También puedes escoger el dorsal si escribes \"!madrid (7) nombre\" o \"!barcelona (10) nombre\".</i>"
+				.PHP_EOL.
+				"–<i>Los dorsales deben ser números comprendidos entre 0 y 99.</i>"
+				.PHP_EOL.
+				"–<i>Está permitido el uso del cero a la izquierda. El dorsal (09), por ejemplo, sería válido.</i>"
+				.PHP_EOL.
+				"–<i>El texto tendrá un máximo aproximado de doce caracteres, establecido por el tamaño oficial de las camisetas.</i>"
+				.PHP_EOL.
+				"–<i>Debido a las múltiples combinaciones posibles de los nombres, la precisión a la hora de centrar el nombre será aproximada dependiendo del tamaño y los carácteres utilizados, por lo que podría no aparecer exactamente centrada.</i>"
+				.PHP_EOL.
+				"–<i>Nota: esta función incluye un huevo de pascua.</i>"
 				;
 	} else if($mode == "mensajes") {
 		$text = "🔎 <b>Los usuarios más activos de Telegram</b> 📝"
@@ -3732,6 +3653,7 @@ function processMessage($message) {
 				strpos($text, "/ayuda_texto") === 0 || strpos($text, "/ayuda_texto@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_info") === 0 || strpos($text, "/ayuda_info@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_cita") === 0 || strpos($text, "/ayuda_cita@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_camisetas") === 0 || strpos($text, "/ayuda_camisetas@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_mensajes") === 0 || strpos($text, "/ayuda_mensajes@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_grupos") === 0 || strpos($text, "/ayuda_grupos@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_bandera") === 0 || strpos($text, "/ayuda_bandera@DemisukeBot") === 0 || 

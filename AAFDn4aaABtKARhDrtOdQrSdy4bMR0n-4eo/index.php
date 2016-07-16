@@ -3613,7 +3613,9 @@ function processMessage($message) {
 								$query = "SELECT SUM(total) AS total FROM flagcapture WHERE total > 0 GROUP BY user_id ORDER BY total DESC , last_flag LIMIT 9, 1";
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								$row = mysql_fetch_array($result);
-								if(($newSeekerTotal - $row['total']) < 20) {
+								$extraInventory = $row['total'];
+								$totalPlusInventory = $newSeekerTotal - $extraInventory;
+								if($totalPlusInventory < 20) {
 									error_log($logname." got a new flag!");
 									mysql_free_result($result);
 									checkPoint($hour, $chat_id, $link, $logname, $currentTime);

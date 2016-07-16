@@ -2917,10 +2917,16 @@ function getMadrid($text, $chat_id) {
 				$number = 7;
 				$XPos = 190;
 			} else {
-				if(strlen($number) == 1) {
+				if((int)$number == 1) {
 					$XPos = 190;
-				} else {
+				} else if(strlen($number) == 1) {
+					$XPos = 165;
+				} else if($number == "11") {
 					$XPos = 160;
+				} else if((int)$number > 9 && (int)$number < 20) {
+					$XPos = 145;
+				} else {
+					$XPos = 125;
 				}
 			}
 			imagettftext($jpg_image, 140, 0, $XPos, 325, $textColor, $font_path, $number);

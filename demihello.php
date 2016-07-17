@@ -5031,7 +5031,14 @@ function processMessage($message) {
 		$flagTime = $currentTime - ($minutes * 60) - $seconds;
 		error_log($currentTime." tiempo actual ".date('H:i:s  d-m-Y'));
 		error_log($flagTime." tiempo en punto ".date('H:i:s  d-m-Y', $flagTime));*/	
-		
+			$currentTime = time();
+			$minutes = date('i');
+			$seconds = date('s');
+			$hour = date('g');
+			$currentTime = $currentTime - ($minutes * 60) - $seconds;
+			$strLastDigit = "Last from ".$currentTime;
+			$lastDigit = $strLastDigit[strlen($strLastDigit) - 1];
+			error_log("last digit ".$lastDigit);
 	} else if (strpos(strtolower($text), "reportad") !== false || strpos(strtolower($text), "reportadit") !== false ||strpos(strtolower($text), "reportait") !== false) {
 		if($randomTicket > -2) {
 			error_log($logname." triggered: Reportado.");

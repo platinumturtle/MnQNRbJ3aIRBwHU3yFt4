@@ -2932,7 +2932,7 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);
-		
+		/*
 		if($message['from']['id'] == '6250647') {
 			if(strpos($text, "/updateinfo") === 0) {
 				error_log($logname." triggered: /updateinfo.");
@@ -2982,7 +2982,7 @@ function processMessage($message) {
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 				exit;
 			}
-		}
+		}*/
 	}
     if (strpos($text, "/start") === 0) {
 	  error_log($logname." triggered: /start.");

@@ -2968,6 +2968,7 @@ function processMessage($message) {
 				mysql_close($link);
 				$result = "*Se ha actualizado la lista. Los grupos activos pasan a ser ".$totalActive." de los ".$oldTotalActive." que habían antes.*";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+				exit;
 			}
 		}
 	}

@@ -2922,7 +2922,7 @@ function processMessage($message) {
 		mysql_close($link);
 		
 		if($message['from']['id'] == '6250647') {
-			if(strpos($text, "/updateinfo") === 0) {
+			/*if(strpos($text, "/updateinfo") === 0) {
 				error_log($logname." triggered: /updateinfo.");
 				$result = "*Actualizando lista. Espera, por favor...*";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
@@ -2969,7 +2969,7 @@ function processMessage($message) {
 				$result = "*Se ha actualizado la lista. Los grupos activos pasan a ser ".$totalActive." de los ".$oldTotalActive." que habían antes.*";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 				exit;
-			}
+			}*/
 		}
 	}
     if (strpos($text, "/start") === 0) {

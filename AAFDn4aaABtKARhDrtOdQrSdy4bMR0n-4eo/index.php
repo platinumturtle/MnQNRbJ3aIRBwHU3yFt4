@@ -903,7 +903,7 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 	else {
 		$link = dbConnect();
 		$text = "<b>🏁 Ránking de ".$groupName." de Mástiles reclamados:</b>";
-		$query = "SELECT user_name, totalpole FROM userbattle WHERE totalpole > 0 AND group_id = '".$group."' ORDER BY totalpole DESC , lastpole";
+		$query = "SELECT first_name, user_name, totalpole FROM userbattle WHERE totalpole > 0 AND group_id = '".$group."' ORDER BY totalpole DESC , lastpole";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$text = $text.PHP_EOL.PHP_EOL.
 				"<b>🏆 POLE ABSOLUTA 🏆</b>"
@@ -933,10 +933,17 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 								break;
 						default: break;
 					}
-					$text = $text.
-							"<b>".$row['user_name']."</b>"
-							.PHP_EOL.
-							"<i>".$row['totalpole']." m";
+					if($row['user_name'] == "") {
+						$text = $text.
+								"<b>".$row['first_name']."</b>"
+								.PHP_EOL.
+								"<i>".$row['totalpole']." m";
+					} else {
+						$text = $text.
+								"<b>".$row['user_name']."</b>"
+								.PHP_EOL.
+								"<i>".$row['totalpole']." m";
+					}
 					if($row['totalpole'] > 1) {
 						$text = $text."ástiles";
 					} else {
@@ -999,12 +1006,17 @@ function containsCommand($text) {
 						"!grupos",
 						"!nick",
 						"!info",
+						"!quien",
+						"!quién",
 						"!mastil",
 						"!mástil",
 						"!modo",
 						"!cambiarmodo",
 						"!bloquearpole",
 						"!permitirpole",
+						"!squirtle",
+						"!barcelona",
+						"!madrid",
 						"!bequer",
 						"!moneda",
 						"!becker",
@@ -2520,7 +2532,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
 				.PHP_EOL.
-				"@DemisukeBot v2.1 creado por @Kamisuke."
+				"@DemisukeBot v2.1.1 creado por @Kamisuke."
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
@@ -2922,7 +2934,7 @@ function processMessage($message) {
 		mysql_close($link);
 		
 		if($message['from']['id'] == '6250647') {
-			/*if(strpos($text, "/updateinfo") === 0) {
+			if(strpos($text, "/updateinfo") === 0) {
 				error_log($logname." triggered: /updateinfo.");
 				$result = "*Actualizando lista. Espera, por favor...*";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
@@ -2969,7 +2981,7 @@ function processMessage($message) {
 				$result = "*Se ha actualizado la lista. Los grupos activos pasan a ser ".$totalActive." de los ".$oldTotalActive." que habían antes.*";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 				exit;
-			}*/
+			}
 		}
 	}
     if (strpos($text, "/start") === 0) {
@@ -3910,6 +3922,8 @@ function processMessage($message) {
 			$hour = date('g');
 			$currentTime = $currentTime - ($minutes * 60) - $seconds;
 			$randomizer = rand(5000, 20000);
+			$strLastDigit = "Last from ".$currentTime;
+			$lastDigit = $strLastDigit[strlen($strLastDigit) - 1];
 			$randMultiplier = rand(3,6);
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
@@ -3917,7 +3931,7 @@ function processMessage($message) {
 			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
-			if($row['last_flag'] != $currentTime) {
+			if($row['last_flag'] != $currentTime && (int)$lastDigit == 0) {
 				mysql_free_result($result);
 				$randomizer = rand(5000, 20000);
 				$randMultiplier = rand(3,6);

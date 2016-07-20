@@ -1568,7 +1568,13 @@ function getSticker() {
 
 						"BQADBAADuwUAApdgXwABfdmmytVMYM8C",
 						"BQADBAADvwYAApdgXwABpYy5KdsUFfMC",
-						"BQADBAADQwcAApdgXwABY4iaIlE5MVEC"
+						"BQADBAADQwcAApdgXwABY4iaIlE5MVEC",
+						"BQADBAADVQcAApdgXwAB076Y0fw91cUC",
+						"BQADBAADVwcAApdgXwABgsu8XChYVvMC",
+						
+						"BQADBAADWQcAApdgXwABmTV-cxb09LIC",
+						"BQADBAADWwcAApdgXwABDrq_X1UYZEIC",
+						"BQADBAADXQcAApdgXwABZwbEE4DKDZAC"
 						);
 	$n = sizeof($stickerList) - 1;
 	$n = rand(0,$n);
@@ -2932,57 +2938,75 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);
-		/*
+		//*
 		if($message['from']['id'] == '6250647') {
 			if(strpos($text, "/updateinfo") === 0) {
 				error_log($logname." triggered: /updateinfo.");
 				$result = "*Actualizando lista. Espera, por favor...*";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 				$link = dbConnect();
-				$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
+				$query = 'SELECT time FROM commonsetup WHERE cs_id = 001';
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
-				$oldTotalActive = $row['total_active'];
+				$lastTimeCheck = $row['time'];
 				mysql_free_result($result);
-				$query = 'SELECT group_id, name, lastpoint FROM `groupbattle`';
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$total = 0;
-				$totalActive = 0;
-				$updateQuery = "UPDATE groupbattle SET lastpoint = 0 WHERE group_id IN (";
 				$deadTime = time();
-				$deadTime = $deadTime - 1296000;
-				while($row = mysql_fetch_array($result)) {
-					$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
-					$total = $total + 1;
-					if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
-						if($deadTime > $row['lastpoint']) {
-							error_log($row['name']." has ".$counter." member/s but it's inactive.");
-							$updateQuery = $updateQuery." ".$row['group_id'].",";
+				$lastTimeCheck = $lastTimeCheck + 60;
+				if($lastTimeCheck < $deadTime) {
+					mysql_free_result($result);
+					$query = "UPDATE `commonsetup` SET `time` = '".$deadTime."' WHERE `cs_id` = 001";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					mysql_free_result($result);
+					$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$oldTotalActive = $row['total_active'];
+					mysql_free_result($result);
+					$query = 'SELECT group_id, name, lastpoint FROM `groupbattle`';
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$total = 0;
+					$totalActive = 0;
+					$updateQuery = "UPDATE groupbattle SET lastpoint = 0 WHERE group_id IN (";
+					$deadTime = time();
+					$deadTime = $deadTime - 1296000;
+					while($row = mysql_fetch_array($result)) {
+						$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
+						$total = $total + 1;
+						if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
+							if($deadTime > $row['lastpoint']) {
+								error_log($row['name']." has ".$counter." member/s but it's inactive.");
+								$updateQuery = $updateQuery." ".$row['group_id'].",";
+							} else {
+								$totalActive = $totalActive + 1;
+								error_log($row['name']." has ".$counter." member/s.");
+							}
 						} else {
-							$totalActive = $totalActive + 1;
-							error_log($row['name']." has ".$counter." member/s.");
+							error_log($row['name']." is dead.");
+							$updateQuery = $updateQuery." ".$row['group_id'].",";
 						}
-					} else {
-						error_log($row['name']." is dead.");
-						$updateQuery = $updateQuery." ".$row['group_id'].",";
 					}
+					$updateQuery = rtrim($updateQuery, ",");
+					$updateQuery = $updateQuery.")";
+					mysql_free_result($result);
+					$result = mysql_query($updateQuery) or die(error_log('SQL ERROR: ' . mysql_error()));
+					mysql_free_result($result);
+					$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$totalActive = $row['total_active'];
+					mysql_free_result($result);
+					mysql_close($link);
+					$result = "*Se ha actualizado la lista. Los grupos activos pasan a ser ".$totalActive." de los ".$oldTotalActive." que habían antes.*";
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+					exit;
+				} else {
+					error_log("Too many update info requests.");
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Los datos ya están actualizado, espera un minuto para volver a intentar.*"));
+					exit;
 				}
-				$updateQuery = rtrim($updateQuery, ",");
-				$updateQuery = $updateQuery.")";
-				mysql_free_result($result);
-				$result = mysql_query($updateQuery) or die(error_log('SQL ERROR: ' . mysql_error()));
-				mysql_free_result($result);
-				$query = "SELECT COUNT( * ) AS  'total_active' FROM ( SELECT DISTINCT gb_id FROM groupbattle WHERE lastpoint >0 )dt";
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$row = mysql_fetch_array($result);
-				$totalActive = $row['total_active'];
-				mysql_free_result($result);
-				mysql_close($link);
-				$result = "*Se ha actualizado la lista. Los grupos activos pasan a ser ".$totalActive." de los ".$oldTotalActive." que habían antes.*";
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
-				exit;
 			}
-		}*/
+		}
+		//*/
 	}
     if (strpos($text, "/start") === 0) {
 	  error_log($logname." triggered: /start.");

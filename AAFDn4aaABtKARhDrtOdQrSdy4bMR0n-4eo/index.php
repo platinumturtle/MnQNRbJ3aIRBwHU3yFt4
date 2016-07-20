@@ -2938,7 +2938,7 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);
-		//*
+		/*
 		if($message['from']['id'] == '6250647') {
 			if(strpos($text, "/updateinfo") === 0) {
 				error_log($logname." triggered: /updateinfo.");
@@ -3006,7 +3006,7 @@ function processMessage($message) {
 				}
 			}
 		}
-		//*/
+		*/
 	}
     if (strpos($text, "/start") === 0) {
 	  error_log($logname." triggered: /start.");

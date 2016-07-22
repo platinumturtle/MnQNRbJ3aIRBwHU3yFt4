@@ -2953,7 +2953,7 @@ function processMessage($message) {
 				$lastTimeCheck = $row['time'];
 				mysql_free_result($result);
 				$deadTime = time();
-				$lastTimeCheck = $lastTimeCheck + 60;
+				$lastTimeCheck = $lastTimeCheck + 3600;
 				if($lastTimeCheck < $deadTime) {
 					mysql_free_result($result);
 					$query = "UPDATE `commonsetup` SET `time` = '".$deadTime."' WHERE `cs_id` = 001";

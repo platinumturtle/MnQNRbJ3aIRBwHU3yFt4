@@ -3453,6 +3453,9 @@ function processMessage($message) {
 			if($lastTimeCheck < $deadTime) {			
 				error_log($logname." triggered: !info.");
 				mysql_free_result($result);
+				$query = "UPDATE `commonsetup` SET `time` = '".$deadTime."' WHERE `cs_id` = 002";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
 				$query = "SELECT COUNT( * ) AS  'total' FROM ( SELECT DISTINCT gb_id FROM groupbattle )dt";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);

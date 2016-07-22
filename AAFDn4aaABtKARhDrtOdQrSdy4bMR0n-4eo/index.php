@@ -119,6 +119,8 @@ function insult($name) {
 function checkUserID($id) {
 	$bannedID = array(
 					"119769161", // TaliBOT - 121704708 Rayne, 152288222 oikarinen
+					"228805033", //German
+					"120644940", // @JoGel
 					"" // MH (13707497)
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
@@ -2938,7 +2940,7 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);
-		/*
+		///*
 		if($message['from']['id'] == '6250647') {
 			if(strpos($text, "/updateinfo") === 0) {
 				error_log($logname." triggered: /updateinfo.");
@@ -2970,6 +2972,7 @@ function processMessage($message) {
 					$deadTime = time();
 					$deadTime = $deadTime - 1296000;
 					while($row = mysql_fetch_array($result)) {
+						sleep(1);
 						$counter = apiRequest("getChatMembersCount", array('chat_id' => $row['group_id']));
 						$total = $total + 1;
 						if($counter > 0 || $row['group_id'] == -1001056538642 || $row['group_id'] == -123031629) {
@@ -3001,12 +3004,13 @@ function processMessage($message) {
 					exit;
 				} else {
 					error_log("Too many update info requests.");
+					mysql_close($link);
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Los datos ya están actualizado, espera un minuto para volver a intentar.*"));
 					exit;
 				}
 			}
 		}
-		*/
+		//*/
 	}
     if (strpos($text, "/start") === 0) {
 	  error_log($logname." triggered: /start.");

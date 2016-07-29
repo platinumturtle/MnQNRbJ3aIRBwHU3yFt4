@@ -118,7 +118,7 @@ function insult($name) {
 
 function checkUserID($id) {
 	$bannedID = array(
-					"119769161", // TaliBOT - 121704708 Rayne, 152288222 oikarinen
+					"119769161", // TaliBOT
 					"228805033", //German
 					"120644940", // @JoGel
 					"" // MH (13707497)
@@ -347,28 +347,28 @@ function randomFart() {
 
 function getSong() {
 	$storedSong = array(
-					"AwADBAAD6gYAApdgXwABBWWaUZt10xIC",
-					"AwADBAAD6wYAApdgXwABgPtrtKG5_XIC",
-					"AwADBAAD7QYAApdgXwAB8UG_B4vc-l0C",
-					"AwADBAAD7AYAApdgXwABvhE2rHp5LmoC",
-					"AwADBAAD8QYAApdgXwABEwN6QTnOMH4C",
-					"AwADBAAD7gYAApdgXwAB3ZUY8QRv2YQC",
-					"AwADBAAD7wYAApdgXwABn4D4vmWCKeAC",
-					"AwADBAAD8wYAApdgXwABa5rCxO3nEpsC",
-					"AwADBAAD9AYAApdgXwABs8auiy40020C",
-					"AwADBAAD8gYAApdgXwABqL5bhNo7oS0C",
-					"AwADBAAD8AYAApdgXwAB3ZveNPhomiEC",
-					"AwADBAAD9QYAApdgXwABYmObYZ8doC0C",
-					"AwADBAAD9gYAApdgXwABOvYuM1U-cBUC",
-					"AwADBAAD9wYAApdgXwABzNHjVvo-Z7MC",
-					"AwADBAAD-AYAApdgXwABlfJxJ_EXMbMC",
-					"AwADBAAD-QYAApdgXwABksbT4k_xwWQC",
-					"AwADBAAD-gYAApdgXwABcaHMHm8ZH5sC",
-					"AwADBAAD_AYAApdgXwAB2XmLgB-YasIC",
-					"AwADBAAD-wYAApdgXwABszTkdSIdyxgC",
-					"AwADBAAD_QYAApdgXwABQKapIwEdRDwC",
-					"AwADBAAD_gYAApdgXwABIoK2nGln0fcC",
-					"AwADBAAD_wYAApdgXwAB5dwWmAFNGR4C"
+					"AwADBAADbwcAApdgXwABX68UgNLIQ90C",
+					"AwADBAADcAcAApdgXwAB666WIUXdJpUC",
+					"AwADBAADcQcAApdgXwABNzxxVoUpZkIC",
+					"AwADBAADcgcAApdgXwABqY13kei68BMC",
+					"AwADBAADcwcAApdgXwABXyldoFW6FtwC",
+					"AwADBAADdAcAApdgXwAB9MC7IX7Lwk4C",
+					"AwADBAADdQcAApdgXwABWhAL3LM4RxAC",
+					"AwADBAADdgcAApdgXwABTpFjg1SZ7lMC",
+					"AwADBAADdwcAApdgXwABX7onofRsrZ0C",
+					"AwADBAADeAcAApdgXwABu2VFsCujV1gC",
+					"AwADBAADeQcAApdgXwAB_W6S9zYM9oIC",
+					"AwADBAADegcAApdgXwABsdq2K-jvfTMC",
+					"AwADBAADewcAApdgXwABoWZzM_t4lwQC",
+					"AwADBAADfAcAApdgXwABerUsh_lNWBIC",
+					"AwADBAADfQcAApdgXwABHqBd29KkPsoC",
+					"AwADBAADfgcAApdgXwABjkvX2_sqOmoC",
+					"AwADBAADfwcAApdgXwABTX3d0SLyKPYC",
+					"AwADBAADgAcAApdgXwABKIhlvUGIRywC",
+					"AwADBAADgQcAApdgXwABY8eTaHL3UnkC",
+					"AwADBAADggcAApdgXwABMsiIOhtH81kC",
+					"AwADBAADgwcAApdgXwABsRfWHI8AAfbsAg",
+					"AwADBAADhAcAApdgXwABWbLCN1k_byEC"
 					);
 	$n = sizeof($storedSong) - 1;
 	$n = rand(0,$n);
@@ -380,6 +380,7 @@ function launchTdsPts($chat_id) {
 	if($chooseType > 3) {
 		$gif = Array (
 						"BQADBAADLwcAApdgXwAB5GRVtoyljo4C",
+						"BQADBAADWgEAAtWlKAABJtdmRuWDvY4C",
 						"BQADBAADMQcAApdgXwABIgfkLN1r5mQC",
 						"BQADBAADMgcAApdgXwABORftLTPVPDIC",
 						"BQADBAADMwcAApdgXwABIdvCm609w3kC",
@@ -1655,6 +1656,9 @@ function goodbye() {
 function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
+						"BQADBAADhQcAApdgXwABmLF7Cmu2n5oC",
+						"BQADBAADFQEAAtWlKAAB_7dx_We3QPgC",
+						"BQADBAADWwEAAtWlKAABlsH5y7ZG0boC",
 						"BQADBAADYAEAAimnRQZB4w653ruVQgI",
 						"BQADBAADcggAAogZZAcXMC3dF8jYogI",
 						"BQADBAADiQYAApdgXwABwPMa2J1LIrQC",
@@ -2540,7 +2544,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
 				.PHP_EOL.
-				"@DemisukeBot v2.1.1 creado por @Kamisuke."
+				"@DemisukeBot v2.1.2 creado por @Kamisuke."
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
@@ -3005,7 +3009,7 @@ function processMessage($message) {
 				} else {
 					error_log("Too many update info requests.");
 					mysql_close($link);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Los datos ya están actualizado, espera un minuto para volver a intentar.*"));
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Los datos continuan siendo actualizados o se ha iniciado la última actualización hace menos de una hora.*"));
 					exit;
 				}
 			}

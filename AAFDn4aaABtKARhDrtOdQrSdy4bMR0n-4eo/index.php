@@ -3046,9 +3046,10 @@ function processMessage($message) {
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				while($row = mysql_fetch_array($result)) {
 					$translatedDate = translateDate($row['date']);
-					$text = "<b>Autor:</b> ".$row['user_name'].PHP_EOL.
-							"<b>Lugar:</b> ".$row['group_name'].PHP_EOL.
-							"<b>Fecha:</b> ".$translatedDate.PHP_EOL.
+					$translatedDate = str_replace(":00)", ")", $translatedDate);
+					$text = "<b>Autor:</b> ".$row['user_name'].PHP_EOL.PHP_EOL.
+							"<b>Lugar:</b> ".$row['group_name'].PHP_EOL.PHP_EOL.
+							"<b>Fecha:</b> ".$translatedDate.PHP_EOL.PHP_EOL.
 							"<b>Nuevo total:</b> ".$row['newtotal'];
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 					sleep(1);
@@ -3277,7 +3278,7 @@ function processMessage($message) {
 		if(isset($message['from']['username'])) {
 			$msg = $msg." (@".$message['from']['username'].")";
 		}
-		$msg = $msg.":".PHP_EOL.PHP_EOL;
+		$msg = $msg." [".$message['from']['id']."]:".PHP_EOL.PHP_EOL;
 		$msg = $msg.substr($text, 12);
 		apiRequest("sendMessage", array('chat_id' => 6250647, "text" => $msg));
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

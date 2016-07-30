@@ -233,7 +233,7 @@ function randomSentence() {
 						"Puercoespín",	"Cacahuete",
 						"Picaporte",	"Pañal",
 						"Papaya",		"Sepia",
-						"Incienso",
+						"Incienso",		"Lince",
 						"Garbanzo",
 						"Relámpago",
 						"Chincheta",
@@ -263,7 +263,7 @@ function randomSentence() {
 						"estelar",					"oriental",
 						"fantasma",					"con extra de frescura",
 						"impermeable",				"de gran rocosidad",
-						"a la sal",
+						"a la sal",					"a la pachamama",
 						"en escabeche"
 						);
 	$n = sizeof($storedEnd) - 1;
@@ -1038,6 +1038,31 @@ function containsCommand($text) {
 	}
 	return 0;
 }
+
+function translateDate($english) {
+	$spanish = $english;
+	$spanish = str_replace("Monday", "Lunes", $spanish);
+	$spanish = str_replace("Tuesday", "Martes", $spanish);
+	$spanish = str_replace("Wednesday", "Miércoles", $spanish);
+	$spanish = str_replace("Thursday", "Jueves", $spanish);
+	$spanish = str_replace("Friday", "Viernes", $spanish);
+	$spanish = str_replace("Saturday", "Sábado", $spanish);
+	$spanish = str_replace("Sunday", "Domingo", $spanish);
+	$spanish = str_replace("January", "de enero del", $spanish);
+	$spanish = str_replace("February", "de febrero del", $spanish);
+	$spanish = str_replace("March", "de marzo del", $spanish);
+	$spanish = str_replace("April", "de abril del", $spanish);
+	$spanish = str_replace("May", "de mayo del", $spanish);
+	$spanish = str_replace("June", "de junio del", $spanish);
+	$spanish = str_replace("July", "de julio del", $spanish);
+	$spanish = str_replace("August", "de agosto del", $spanish);
+	$spanish = str_replace("September", "de septiembre del", $spanish);
+	$spanish = str_replace("October", "de octubre del", $spanish);
+	$spanish = str_replace("November", "de noviembre del", $spanish);
+	$spanish = str_replace("December", "de diciembre del", $spanish);
+	return $spanish;
+}
+
 function showMode($group_id) {
 	$query = "SELECT mode, name, flagblock, freemode, custom_text, welcome_text FROM groupbattle WHERE group_id = '".$group_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -1656,6 +1681,7 @@ function goodbye() {
 function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
+						"BQADBAADXAEAAtWlKAABd7dY2s4yLOEC",
 						"BQADBAADhQcAApdgXwABmLF7Cmu2n5oC",
 						"BQADBAADFQEAAtWlKAAB_7dx_We3QPgC",
 						"BQADBAADWwEAAtWlKAABlsH5y7ZG0boC",
@@ -1729,6 +1755,7 @@ function getHitIt() {
 function getMyTen() {
 	$storedGif = array(
 						"BQADBAADtQYAApdgXwABkmJgEDaRaNYC",
+						"BQADBAAD2CEAAq8cZAdMInl3ChiE9wI",
 						"BQADBAADtgYAApdgXwABPVd0LoJew2EC",
 						"BQADBAADtwYAApdgXwABHKyPb9hZWzMC",
 						"BQADBAADuAYAApdgXwABFX-msOLuIdsC",
@@ -3012,6 +3039,23 @@ function processMessage($message) {
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Los datos continuan siendo actualizados o se ha iniciado la última actualización hace menos de una hora.*"));
 					exit;
 				}
+			} else if(strpos($text, "/checkflags") === 0) {
+				error_log($logname." triggered: /checkflags.");
+				$link = dbConnect();
+				$query = "SELECT group_name, user_name, date, newtotal FROM flagwinnerlog ORDER BY epoch_time DESC LIMIT 0, 5";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				while($row = mysql_fetch_array($result)) {
+					$translatedDate = translateDate($row['date']);
+					$text = "<b>Autor:</b> ".$row['user_name'].PHP_EOL.
+							"<b>Lugar:</b> ".$row['group_name'].PHP_EOL.
+							"<b>Fecha:</b> ".$translatedDate.PHP_EOL.
+							"<b>Nuevo total:</b> ".$row['newtotal'];
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+					sleep(1);
+				}
+				mysql_free_result($result);
+				mysql_close($link);
+				exit;
 			}
 		}
 		//*/
@@ -4096,6 +4140,7 @@ function processMessage($message) {
 							$timeEmoji = timeEmoji($hour, 0);
 							$text = $text." ".$timeEmoji."! 🎉</b>";	
 							$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
+							$fullDate = translateDate($fullDate);
 							mysql_free_result($result);
 							$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

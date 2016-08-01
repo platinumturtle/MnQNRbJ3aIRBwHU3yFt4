@@ -4207,6 +4207,7 @@ function processMessage($message) {
 		$text = str_replace("!becker", "!becquer", $text);
 		$start = strpos(strtolower($text), "!becquer") + 9;
 		$text = substr($text, $start);
+		$text = "\"".ucfirst($text)."\"";
 		$text = wordwrap($text, 23, "\n", false);
 		$totalEOL = substr_count($text, PHP_EOL);
 		if($totalEOL < 7) {

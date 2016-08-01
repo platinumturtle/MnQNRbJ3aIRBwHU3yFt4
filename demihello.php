@@ -983,12 +983,12 @@ function randomSentence() {
 						"Papelera",		"Triciclo",
 						"Bombilla",		"Gominola",
 						"Plástico",		"Dinosaurio",
-						"Coliflor",
-						"Meteorito",
-						"Puercoespín",
-						"Picaporte",
-						"Papaya",
-						"Incienso",
+						"Coliflor",		"Barrilete",
+						"Meteorito",	"Machete",
+						"Puercoespín",	"Cacahuete",
+						"Picaporte",	"Pañal",
+						"Papaya",		"Sepia",
+						"Incienso",		"Lince",
 						"Garbanzo",
 						"Relámpago",
 						"Chincheta",
@@ -1009,16 +1009,16 @@ function randomSentence() {
 						"selección",				"volante",
 						"presidente",				"ancestral",
 						"reversible",				"atrapamoscas",
-						"elegante",
-						"manual",
-						"terrícola",
-						"velocista",
-						"centinela",
-						"revolución",
-						"estelar",
-						"fantasma",
-						"impermeable",
-						"a la sal",
+						"elegante",					"de alcanfor",
+						"manual",					"de la Antártida",
+						"terrícola",				"de Saturno",
+						"velocista",				"escolar",
+						"centinela",				"lendakari",
+						"revolución",				"serbocroata",
+						"estelar",					"oriental",
+						"fantasma",					"con extra de frescura",
+						"impermeable",				"de gran rocosidad",
+						"a la sal",					"a la pachamama",
 						"en escabeche"
 						);
 	$n = sizeof($storedEnd) - 1;
@@ -1781,6 +1781,8 @@ function containsCommand($text) {
 						"!bienvenida",
 						"!sugerencia",
 						"!becquer",
+						"!refrán",
+						"!refran",
 						"!historia"
 					);
 					
@@ -1793,6 +1795,29 @@ function containsCommand($text) {
 	return 0;
 }
 
+function translateDate($english) {
+	$spanish = $english;
+	$spanish = str_replace("Monday", "Lunes", $spanish);
+	$spanish = str_replace("Tuesday", "Martes", $spanish);
+	$spanish = str_replace("Wednesday", "Miércoles", $spanish);
+	$spanish = str_replace("Thursday", "Jueves", $spanish);
+	$spanish = str_replace("Friday", "Viernes", $spanish);
+	$spanish = str_replace("Saturday", "Sábado", $spanish);
+	$spanish = str_replace("Sunday", "Domingo", $spanish);
+	$spanish = str_replace("January", "de enero del", $spanish);
+	$spanish = str_replace("February", "de febrero del", $spanish);
+	$spanish = str_replace("March", "de marzo del", $spanish);
+	$spanish = str_replace("April", "de abril del", $spanish);
+	$spanish = str_replace("May", "de mayo del", $spanish);
+	$spanish = str_replace("June", "de junio del", $spanish);
+	$spanish = str_replace("July", "de julio del", $spanish);
+	$spanish = str_replace("August", "de agosto del", $spanish);
+	$spanish = str_replace("September", "de septiembre del", $spanish);
+	$spanish = str_replace("October", "de octubre del", $spanish);
+	$spanish = str_replace("November", "de noviembre del", $spanish);
+	$spanish = str_replace("December", "de diciembre del", $spanish);
+	return $spanish;
+}
 function showMode($group_id) {
 	$query = "SELECT mode, name, flagblock, freemode, custom_text, welcome_text FROM groupbattle WHERE group_id = '".$group_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -2327,7 +2352,13 @@ function getSticker() {
 
 						"BQADBAADuwUAApdgXwABfdmmytVMYM8C",
 						"BQADBAADvwYAApdgXwABpYy5KdsUFfMC",
-						"BQADBAADQwcAApdgXwABY4iaIlE5MVEC"
+						"BQADBAADQwcAApdgXwABY4iaIlE5MVEC",
+						"BQADBAADVQcAApdgXwAB076Y0fw91cUC",
+						"BQADBAADVwcAApdgXwABgsu8XChYVvMC",
+						
+						"BQADBAADWQcAApdgXwABmTV-cxb09LIC",
+						"BQADBAADWwcAApdgXwABDrq_X1UYZEIC",
+						"BQADBAADXQcAApdgXwABZwbEE4DKDZAC"
 						);
 	$n = sizeof($stickerList) - 1;
 	$n = rand(0,$n);
@@ -2394,6 +2425,7 @@ function goodbye() {
 						"¡Qué vaya bien!",
 						"¡Hasta luego!",
 						"¡Hasta otra!",
+						"Cierra al salir.",
 						"No vuelvas.",
 						"Ya era hora.",
 						"¡Venga!"
@@ -2574,6 +2606,95 @@ function getNickname() {
 	$name = $name.$storedPartD[$n];
 	
 	return $name;
+}
+
+function getSaying() {
+	$text = "";
+	$storedPartA = array(
+						"Al mal tiempo",
+						"A quien madruga",
+						"Dime con quién andas",
+						"A caballo regalado",
+						"Culo veo",
+						"Perro ladrador",
+						"Más vale pájaro en mano",
+						"Todo lo que sube",
+						"Por probar",
+						"Borrón",
+						"Más vale tarde",
+						"Dos cabezas",
+						"Cada loco",
+						"Los borrachos y los niños",
+						"Mala hierba",
+						"Del árbol caído",
+						"Querer",
+						"En abril",
+						"Hasta el cuarenta de mayo",
+						"Aunque la mona se vista de seda",
+						"Ande yo caliente",
+						"El tiempo",
+						"Ojos que no ven",
+						"Cada persona",
+						"A Dios rogando",
+						"Hay un roto",
+						"Cría cuervos",
+						"Sobre gustos",
+						"En el mundo de los ciegos",
+						"Nadie es profeta",
+						"Por la boca",
+						"En todos los lados",
+						"En casa del herrero",
+						"Sin prisa",
+						"Mal de muchos",
+						"Tanto va el cántaro a la fuente"
+						);
+	$n = sizeof($storedPartA) - 1;
+	$n = rand(0,$n);
+	$text = $text.$storedPartA[$n];
+	
+	$storedPartB = array(
+						"buena cara",
+						"Dios le ayuda",
+						"y te diré quién eres",
+						"no le mires el dentado",
+						"culo quiero",
+						"poco mordedor",
+						"que ciento volando",
+						"baja",
+						"no pierdes nada",
+						"y cuenta nueva",
+						"que nunca",
+						"piensan más que una",
+						"con su tema",
+						"siempre dicen la verdad",
+						"nunca muere",
+						"Todos hacen leña",
+						"es poder",
+						"aguas mil",
+						"no te quites el sayo",
+						"mona se queda",
+						"ríase la gente",
+						"es oro",
+						"corazón que no siente",
+						"es un mundo",
+						"y con el mazo dando",
+						"para un descosido",
+						"y te sacarán los ojos",
+						"no hay nada escrito",
+						"el tuerto es el rey",
+						"en su tierra",
+						"muere el pez",
+						"cuecen habas",
+						"cuchara de palo",
+						"pero sin pausa",
+						"consuelo de tontos",
+						"que al final se ahoga"
+						);
+	$n = sizeof($storedPartB) - 1;
+	$n = rand(0,$n);
+	$text = $text." ".$storedPartB[$n];
+	
+	return $text;
 }
 
 function tellStory($part,$name) {
@@ -3237,7 +3358,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
 				.PHP_EOL.
-				"@DemisukeBot v2.1.1 creado por @Kamisuke."
+				"@DemisukeBot v2.1.2 creado por @Kamisuke."
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
@@ -3705,31 +3826,6 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
-	/*}  else if (strpos($text, "/sendSpecialNot") === 0) {
-		error_log($logname." triggered: /sendSpecialNot.");
-		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
-			error_log($logname." triggered: Notification from Admin Kamisuke.");
-			$group_id = -1001044604308;
-			$notificationMessage = "*Se ha reiniciado el contador del grupo debido al floodeo masivo de DemoniaGothKestrell.*";
-			apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "Markdown", "text" => $notificationMessage));
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje.*"));
-		} else if ($message['chat']['type'] == "private") {
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
-		}*/
-	/*} else if (strpos($text, "/checkflags") === 0) {
-		error_log($logname." triggered: /checkflags.");
-		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
-			$link = dbConnect();
-			$query = "SELECT SUM(total) as 'total' FROM `flagcapture`";
-			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$row = mysql_fetch_array($result);
-			$total = $row['total'];
-			mysql_free_result($result);
-			mysql_close($link);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se han capturado un total de ".$total." banderas.*"));
-		} else if ($message['chat']['type'] == "private") {
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
-		}*/
 	} else if (strtolower($text) === "hola" || strtolower($text) === "buenas" || strtolower($text) === "ey" || strtolower($text) === "ola") {
 		if($randomTicket > -1) {
 			error_log($logname." triggered: Hola.");
@@ -3753,8 +3849,6 @@ function processMessage($message) {
     } else if (strpos(strtolower($text), "!dados") !== false) {
 		error_log($logname." triggered: !dados.");
 		rollDice($chat_id);
-    } else if (strpos($text, "/stop") === 0) {
-      // stop now
     } else if (isset($message['forward_from']['username'])){
 		if($message['forward_from']['username'] == 'DemisukeBot' || $message['forward_from']['username'] == 'Demitest_bot') {
 			if($randomTicket > -1) {
@@ -3803,8 +3897,6 @@ function processMessage($message) {
 			}
 			else {
 				$gif = "BQADBAADow4AAksYZAfIQMmy5CaN7gI";
-				//apiRequest("sendDocument", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "reply_to_message_id" => $message_id, "text" => "BQADBAADow4AAksYZAcZ8kFXOQJ3uAI"));
-				//apiRequest("sendDocument", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "reply_to_message_id" => $message_id, "text" => "BQADBAADow4AAksYZAfIQMmy5CaN7gI"));
 				apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 			}
 		}
@@ -3891,7 +3983,7 @@ function processMessage($message) {
 		if(isset($message['from']['username'])) {
 			$msg = $msg." (@".$message['from']['username'].")";
 		}
-		$msg = $msg.":".PHP_EOL.PHP_EOL;
+		$msg = $msg." [".$message['from']['id']."]:".PHP_EOL.PHP_EOL;
 		$msg = $msg.substr($text, 12);
 		apiRequest("sendMessage", array('chat_id' => 6250647, "text" => $msg));
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -4115,29 +4207,13 @@ function processMessage($message) {
 		$text = substr($text, $start);
 		$text = wordwrap($text, 23, "\n", false);
 		$totalEOL = substr_count($text, PHP_EOL);
-		//error_log($totalRows." LINEAS");
 		if($totalEOL < 7) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
 			usleep(250000);
 			$text = $text.PHP_EOL.PHP_EOL."-Gustavo Adolfo Bécquer";
 			$imageURL = rand(0,9);
-		//$imageURL = 1;
 			$imageShortURL = "/img/becquer_".$imageURL.".jpg";
 			$imageURL = dirname(__FILE__).$imageShortURL;
-		/*
-		$image = new Image('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
-		$text1 = new Text($text, 3, 25);
-		$text1->align = 'left';
-		$text1->color = 'FFFFFF';
-		$text1->font = 'https://demisuke-kamigram.rhcloud.com/img/handwritting.ttf';
-		$text1->lineHeight = 36;
-		$text1->size = 24;
-		$text1->startX = 40;
-		$text1->startY = 40;
-		$image->addText($text1);
-		$image->render($imageURL);*/
-		
-			// 6 enters
 
 			header('Content-type: image/jpeg');
 			$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/becquer.jpg');
@@ -4146,70 +4222,17 @@ function processMessage($message) {
 
 		// Set Path to Font File
 			$font_path = dirname(__FILE__)."/img/handwritting.ttf";
-
-		// Set Text to Be Printed On Image
-		//$text = "This is a sunset!";
-
 		// Print Text On Image
 			imagettftext($jpg_image, 28, 0, 475, 125, $textColor, $font_path, $text);
 
 		// Send Image to Browser
 			imagejpeg($jpg_image, $imageURL);
-		//$pingas = serialize($jpg_image);
-		
-		//$codif = base64_encode($text);
-		//$text = rtrim(strtr(base64_encode($text), '+/', '-_'), '=');
-		//error_log($text);
-		/*
-		$photo = new CURLFile(realpath("/img/becquer_1.jpg"));
-		
-		$ch = curl_init(); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-			"Content-Type:multipart/form-data"
-		));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $photo); 
-		$output = curl_exec($ch);*/
-
-
-
-		//$bot_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/";
-		//$url        = $bot_url . "sendPhoto?chat_id=" . $chat_id ;
-
-		//$post_fields = array('chat_id'   => $chat_id,
-		//					'photo' => new CURLFile(realpath("/img/becquer_1.jpg"))
-		//				);
-
-			//$cfile = curl_file_create('/img/becquer_1.jpg','image/jpeg','photo');
-
-			// Assign POST data
-			//$data = array('chat_id' => $chat_id, 'photo' => $cfile);
-			//curl_setopt($ch, CURLOPT_POST,1);
-			//curl_setopt($ch, CURLOPT_POSTFIELDS, $data);			
-		/*				
-						
-		$ch = curl_init(); 
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-		"Content-Type:multipart/form-data"
-		));
-		curl_setopt($ch, CURLOPT_URL, $url); 
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
-		$output = curl_exec($ch);*/
 		
 			$target_url    = "https://api.telegram.org/bot175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI/sendPhoto";
 		
-		//$target_url = 'http://127.0.0.1/accept.php';
         //This needs to be the full path to the file you want to send.
-		//$fullpath = dirname(__FILE__)."/img/becquer_1.jpg";
-		//$file_name_with_full_path = realpath('/img/becquer_1.jpg');
 			$file_name_with_full_path = realpath($imageURL);
-        /* curl will accept an array here too.
-         * Many examples I found showed a url-encoded string instead.
-         * Take note that the 'key' in the array will be the key that shows up in the
-         * $_FILES array of the accept script. and the at sign '@' is required before the
-         * file name.
-         */
+
 			$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
  
 			$ch = curl_init();
@@ -4219,18 +4242,7 @@ function processMessage($message) {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 			$result=curl_exec ($ch);
 			curl_close ($ch);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		//apiRequest("sendPhoto", array('chat_id' => $chat_id, 'photo' => ));
+
 
 		// Clear Memory
 			imagedestroy($jpg_image);
@@ -4244,63 +4256,6 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!cita") !== false) {
 		error_log($logname." triggered: !cita.");
 		getQuote($text, $chat_id);
-		/*
-		$start = strpos(strtolower($text), "!cita") + 5;
-		$text = substr($text, $start);
-		$text = ltrim(rtrim($text));
-		$userQuote = "";
-		if(strpos($text, "(") === 0) {
-			$length = strpos($text, ")");
-			$userQuote = substr($text, 1, $length - 1);
-			$text = substr($text, $length + 1);
-			$userQuote = ltrim(rtrim($userQuote));
-		}
-		$text = ltrim(rtrim($text));
-		if(strlen($text) > 0) {
-			$text = wordwrap($text, 45, "\n", false);
-			$text = '“'.$text.'”';
-			$totalEOL = substr_count($text, PHP_EOL);
-			if($totalEOL < 7) {
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
-				usleep(250000);
-				$YPos = 250;
-				if($totalEOL > 3){
-					$YPos = $YPos - (30 * ($totalEOL - 3));
-				}
-				if(strlen($userQuote) > 0) {
-					$text = $text.PHP_EOL."- ".$userQuote;
-				}
-				$imageURL = rand(0,9);
-				$imageShortURL = "/img/cita_".$imageURL.".png";
-				$imageURL = dirname(__FILE__).$imageShortURL;
-				header('Content-type: image/png');
-				$png_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/cita.png');
-				$textColor = imagecolorallocate($png_image, 255, 255, 255);
-				$font_path = dirname(__FILE__)."/img/journal.ttf";
-				imagettftext($png_image, 32, 0, 100, $YPos, $textColor, $font_path, $text);
-				imagepng($png_image, $imageURL);
-				$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
-				$file_name_with_full_path = realpath($imageURL);
-				$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_URL,$target_url);
-				curl_setopt($ch, CURLOPT_POST,1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-				$result=curl_exec ($ch);
-				curl_close ($ch);
-				imagedestroy($png_image);
-			} else {
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				usleep(250000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy largo, intenta ser más breve para que quepa al completo en la imagen.*"));
-			}
-		} else {
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			usleep(250000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto.*"));
-		}
-		*/
 	} else if (strpos(strtolower($text), "!squirtle") !== false) {
 		error_log($logname." triggered: !squirtle.");
 		getSquirtle($text, $chat_id);
@@ -4741,7 +4696,6 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if($row['last_flag'] != $currentTime && (int)$lastDigit == 0) {
-				error_log("last digit ".$lastDigit);
 				mysql_free_result($result);
 				$randomizer = rand(5000, 20000);
 				$randMultiplier = rand(3,6);
@@ -4854,6 +4808,7 @@ function processMessage($message) {
 							$timeEmoji = timeEmoji($hour, 0);
 							$text = $text." ".$timeEmoji."! 🎉</b>";	
 							$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
+							$fullDate = translateDate($fullDate);
 							mysql_free_result($result);
 							$query = "INSERT INTO `flagwinnerlog` (`group_id`, `user_id`, `group_name`, `user_name`, `date`, `epoch_time`, `newtotal`) VALUES ('".$chat_id."', '".$user_id."', '".$chatTitle."', '".$cleanName."', '".$fullDate."', '".$currentTime."', '".$total."')";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -5187,8 +5142,16 @@ function processMessage($message) {
 		apiRequestWebhook("sendSticker", array('chat_id' => $chat_id, 'sticker' => $sticker));
     } else if (strpos(strtolower($text), "!nick") !== false) {
 		error_log($logname." triggered: !nick.");
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		$nick = getNickname();
+		usleep(250000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El nombre de usuario generado automáticamente es ".$nick.".*"));
+    } else if (strpos(strtolower($text), "!refran") !== false || strpos(strtolower($text), "!refrán") !== false) {
+		error_log($logname." triggered: !refran.");
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		$text = getSaying();
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text.".*"));
     } else if (strpos(strtolower($text), "!historia") !== false) {
 		if($randomTicket > -3) {
 			error_log($logname." triggered: !historia.");
@@ -5250,7 +5213,7 @@ function processMessage($message) {
 		//$users = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
 		//error_log($users." users here.");
       //apiRequestWebhook("sendMessage", array('chat_id' => $chat_id, "reply_to_message_id" => $message_id, "text" => 'Cool'));
-    }
+	}
   } else {
 	 if (isset($message['new_chat_title'])) {
 		if(isset($message['from']['username'])) {
@@ -5372,8 +5335,6 @@ function processMessage($message) {
 				sleep(4);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				sleep(3);
-				//$msg = commandsList();
-				//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 				commandsList($chat_id, "main");
 			}
 		} else {
@@ -5558,12 +5519,6 @@ if (isset($update["message"])) {
 		$text = str_replace("<", "", $text);
 		$text = str_replace(">", "", $text);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text,$logname), "cache_time" => 60,]);
-		/* EL MIO BUENO
-		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => [
-		["type" => "article", "id" => "0", "title" => "Pulsa para crear Spoiler", "message_text" => "este no se como lo hare...", "reply_markup" => ["inline_keyboard" => [[ [[ (object)$object ]], ]] ], ],
-		["type" => "article", "id" => "1", "title" => "Pulsa para enviar en negrita", "message_text" => $boldText, 'parse_mode' => "HTML",],
-		["type" => "article", "id" => "2", "title" => "Pulsa para enviar en azul", "message_text" => $claveles, 'parse_mode' => "HTML", 'disable_web_page_preview' => TRUE],
-		]]);*/
 	}
 }else if(isset($update["callback_query"])) {
 	debugMode($update);
@@ -5578,8 +5533,6 @@ if (isset($update["message"])) {
 	if($callback['data'] == "FLIPCOINqGq3Z6yf1guhfgFdwkzt") {
 		error_log($logname." flipped a coin.");
 		$face = rand(1,2);
-		//$loops = rand(3,5);
-		//for(;$loops>0;$loops--) {
 		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌕 La moneda se lanza.*", 'parse_mode' => "Markdown",]);
 		usleep(800000);
 		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌖 La moneda sube.*", 'parse_mode' => "Markdown",]);
@@ -5588,15 +5541,6 @@ if (isset($update["message"])) {
 		usleep(800000);
 		apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌘 La moneda baja.*", 'parse_mode' => "Markdown",]);
 		usleep(800000);
-			//apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌑*", 'parse_mode' => "Markdown",]);
-			//usleep(100000);
-			//apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌒*", 'parse_mode' => "Markdown",]);
-			//usleep(100000);
-			//apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌓*", 'parse_mode' => "Markdown",]);
-			//usleep(100000);
-			//apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌔*", 'parse_mode' => "Markdown",]);
-			//usleep(100000);
-		//}
 		if($face == 1) {
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌑 La moneda baja.*", 'parse_mode' => "Markdown",]);
 			usleep(800000);
@@ -5614,260 +5558,10 @@ if (isset($update["message"])) {
 		error_log($logname." clicked on a spoiler button.");
 		$query_id = $update["callback_query"]["id"];
 		$chat_id = $callback['from']['id'];
-		//if(isset($callback['from']['username']) && strlen($callback['from']['username']) > 0) {
-		//	$senderName = $callback['from']['username'];
-		//} else if(isset($callback['from']['first_name']) && strlen($callback['from']['first_name']) > 0) {
-		//	$senderName = $callback['from']['first_name'];
-		//} else {
-		//	$senderName = "";
-		//}
-		//$start = strpos($senderName, "¡");
-		//$length = strpos(strtolower($senderName), " tiene un secreto") - $start;
-		//$str = var_export($callback, true);
-		//error_log($str);
-		//$str2 = json_encode($callback);
-		//error_log($str2);
-		//$senderName = substr($senderName, $start, $length);
-		//$message = "Mensaje";
-		//if(strlen($senderName) > 0) {
-		//	$message = $message." de ".$senderName;
-		//}
 		$message = "Mensaje oculto para ".$logname.":".PHP_EOL.PHP_EOL;
 		$message = $message.$callback['data'].PHP_EOL;
-		//$prueba = var_dump($message);
-		//error_log($prueba);
-		//$result = "Spoiler start: ".$callback['message']['text'].PHP_EOL."From question: ".$callback['inline_message_id'];
-		//error_log("ID ".$callback['id']." FROM ".$callback['from']['id']." MESSAGE ".var_dump($callback['message'])." INLINE MES ".$callback['inline_message_id']." DATA ".$callback['data']);
-		//apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => $result));	
-		//$alert = "Desvelando spoiler...";
-		//if(strpos(strtolower($message), "spoiler:") !== false) {
-			//$start = strpos(strtolower($callback['data']), "spoiler:");
-			//$start = strpos(strtolower($callback['message']), "spoiler:");
-			//$start = $start + 8;
-			//$result = substr($callback['data'], $start);
-			//$result = substr($callback['message'], $start);
-			//$result = ltrim($result);
-		//if($message == "") {
-		//	$message = $logname." no ha escrito ninguna respuesta, no puedo desvelarte ningún secreto más allá de su estupidez...";
-		//}
-		//} else {
-		//	$result = $callback['data'];
-		//}
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "show_alert" => TRUE));	
-		//usleep(500000);	
-		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $alert, "show_alert" => FALSE));
 	}
 }
-
-
-/*
-function encryptSpoiler($text) {
-	$cc = $text;
-	$key = 'fJcSdDIcScjShcYcsW';
-	$iv = '17251956';
-	$cipher = mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
-	mcrypt_generic_init($cipher, $key, $iv);
-	$encryptedText = mcrypt_generic($cipher,$cc);
-	mcrypt_generic_deinit($cipher);
-	mcrypt_module_close($cipher);
-	return $encryptedText;
-}
-
-function decryptSpoiler($text) {
-	$cc = $text;
-	$key = 'fJcSdDIcScjShcYcsW';
-	$iv = '17251956';
-	$cipher = mcrypt_module_open(MCRYPT_BLOWFISH,'','cbc','');
-	mcrypt_generic_init($cipher, $key, $iv);
-	$decryptedText = mdecrypt_generic($cipher,$encrypted);
-	mcrypt_generic_deinit($cipher);
-	mcrypt_module_close($cipher);
-	return $decryptedText;
-}
-
-class spoiler {
- 
-    private static $Key = "17251956fJcSdDIcScjShcYcsW";
- 
-    public static function encrypt ($input) {
-        $output = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5(spoiler::$Key), $input, MCRYPT_MODE_CBC, md5(md5(spoiler::$Key))));
-        return $output;
-    }
- 
-    public static function decrypt ($input) {
-        $output = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5(spoiler::$Key), base64_decode($input), MCRYPT_MODE_CBC, md5(md5(spoiler::$Key))), "\0");
-        return $output;
-    }
- 
-}
-*/
-
-
-
-
-
-
-
-
-/*
-
-class Text
-{
-    public $text = 'Demisuke soy yo reencarnado.';
-    public $width = 80;
-    public $startX = 0;
-    public $startY = 0;
-    public $align = 'left';
-    public $color = '3f3f3f';
-    public $font = 'handwritting.ttf';
-    public $lineHeight = 24;
-    public $size = 16;
-    protected $lines;
-
-    public function __construct($text, $numLines = 1, $width = 80)
-    {
-        $this->text = $text;
-        $this->width = $width;
-        $this->addLines($numLines);
-    }
-
-    public function addLines($numLines = 1)
-    {
-        for ($i = 0; $i < $numLines; $i++) {
-            $this->lines[] = array(
-                'chars' => 0,
-                'words' => array(),
-                'full' => false
-            );
-        }
-    }
-
-    public function renderToImage(Image $image)
-    {
-        // Allocate words to lines
-        $this->distributeText();
-        // Calculate maximum potential line width (close enough) in pixels
-        $maxWidthString = implode('', array_fill(0, $this->width, 'x'));
-        $maxWidthBoundingBox = imagettfbbox($this->size, 0, $this->font, $maxWidthString);
-        $maxLineWidth = abs($maxWidthBoundingBox[0] - $maxWidthBoundingBox[2]); // (lower left corner, X position) - (lower right corner, X position)
-        // Calculate each line width in pixels for alignment purposes
-        for ($j = 0; $j < count($this->lines); $j++) {
-            // Fetch line
-            $line =& $this->lines[$j];
-            // Remove unused lines
-            if (empty($line['words'])) {
-                unset($this->lines[$j]);
-                continue;
-            }
-            // Calculate width
-            $lineText = implode(' ', $line['words']);
-            $lineBoundingBox = imagettfbbox($this->size, 0, $this->font, $lineText);
-            $line['width'] = abs($lineBoundingBox[0] - $lineBoundingBox[2]); // (lower left corner, X position) - (lower right corner, X position)
-            $line['text'] = $lineText;
-        }
-        // Calculate line offsets
-        for ($i = 0; $i < count($this->lines); $i++) {
-            // Fetch line
-            if (array_key_exists($i, $this->lines)) {
-                $line =& $this->lines[$i];
-                // Calculate line width in pixels
-                $lineBoundingBox = imagettfbbox($this->size, 0, $this->font, $line['text']);
-                $lineWidth = abs($lineBoundingBox[0] - $lineBoundingBox[2]); // (lower left corner, X position) - (lower right corner, X position)
-                // Calculate line X,Y offsets in pixels
-                switch ($this->align) {
-                    case 'left':
-                        $offsetX = $this->startX;
-                        $offsetY = $this->startY + $this->lineHeight + ($this->lineHeight * $i);
-                        break;
-                    case 'center':
-                        $imageWidth = $image->getWidth();
-                        $offsetX = (($maxLineWidth - $lineWidth) / 2) + $this->startX;
-                        $offsetY = $this->startY + $this->lineHeight + ($this->lineHeight * $i);
-                        break;
-                    case 'right':
-                        $imageWidth = $image->getWidth();
-                        $offsetX = $imageWidth - $line['width'] - $this->startX;
-                        $offsetY = $this->startY + $this->lineHeight + ($this->lineHeight * $i);
-                        break;
-                }
-                // Render text onto image
-                $image->getImage()->text($line['text'], $offsetX, $offsetY, $this->size, $this->color, 0, $this->font);
-            }
-        }
-    }
-
-    protected function distributeText()
-    {
-        // Explode input text on word boundaries
-        $words = explode(' ', $this->text);
-        // Fill lines with words, toss exception if exceed available lines
-        while ($words) {
-            $word = array_shift($words);
-            for ($i = 0; $i < count($this->lines); $i++) {
-                $line =& $this->lines[$i];
-                if ($line['full'] === false) {
-                    $charsPotential = strlen($word) + $line['chars'];
-                    if ($charsPotential <= $this->width) {
-                        array_push($line['words'], $word);
-                        $line['chars'] = $charsPotential;
-                        break;
-                    } else {
-                        $line['full'] = true;
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-
-
-
-class Image
-{
-    public $image;
-    public $textObjects = array();
-    public function __construct($sourceImage)
-    {
-        $this->image = Image::make($sourceImage);
-    }
-    public function addText(Text $text)
-    {
-        $this->textObjects[] = $text;
-    }
-    public function drawText()
-    {
-        foreach ($this->textObjects as $text) {
-            $text->renderToImage($this);
-        }
-    }
-    public function render($outputImagePath)
-    {
-        $this->drawText();
-        $this->image->save($outputImagePath);
-    }
-    public function getWidth()
-    {
-        return imagesx($this->image->resource);
-    }
-    public function getImage()
-    {
-        return $this->image;
-    }
-}
-
-
-
-
-
-
-*/
-
-
-
-
-
-
 
 ?>

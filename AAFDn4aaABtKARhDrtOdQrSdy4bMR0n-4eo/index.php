@@ -120,8 +120,7 @@ function checkUserID($id) {
 	$bannedID = array(
 					"119769161", // TaliBOT
 					"228805033", //German
-					"120644940", // @JoGel
-					"" // MH (13707497)
+					"" // @JoGel 120644940
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
 		if($bannedID[$i] == $id) {
@@ -133,7 +132,7 @@ function checkUserID($id) {
 
 function checkUsername($username) {
 	$bannedUsername = array(
-					"", // DemoniaBot ShurNutriaFC DemoniaGothKestrell TaliBOT
+					"",
 					""
 				);
 	for($i=0;$i<sizeof($bannedUsername);$i++) {
@@ -146,7 +145,7 @@ function checkUsername($username) {
 
 function checkGroup($group) {
 	$bannedGroup = array(
-					"", // -1001044604308 GNU/Vodka
+					"",
 					""
 				);
 	for($i=0;$i<sizeof($bannedGroup);$i++) {
@@ -159,7 +158,7 @@ function checkGroup($group) {
 
 function rankedGroup($group) {
 	$bannedGroup = array(
-					"", // -1001044604308 GNU/Vodka, -1001056538642 Rincón Demigrante
+					"", // -1001056538642 Rincón Demigrante
 					""
 				);
 	for($i=0;$i<sizeof($bannedGroup);$i++) {
@@ -380,6 +379,7 @@ function launchTdsPts($chat_id) {
 	if($chooseType > 3) {
 		$gif = Array (
 						"BQADBAADLwcAApdgXwAB5GRVtoyljo4C",
+						"BQADBAAECQACjeVsAAEJ2lgEFaLGhAI",
 						"BQADBAADWgEAAtWlKAABJtdmRuWDvY4C",
 						"BQADBAADMQcAApdgXwABIgfkLN1r5mQC",
 						"BQADBAADMgcAApdgXwABORftLTPVPDIC",
@@ -402,6 +402,7 @@ function launchTdsPts($chat_id) {
 		apiRequestWebhook("sendVoice", array('chat_id' => $chat_id, 'voice' => $sound));
 	}
 }
+
 function rollDice($id) {
 	$storedStarting = array(
 						"De acuerdo, allá voy.",
@@ -552,6 +553,7 @@ function inlineOptions($text, $username) {
     ];
 	return $buttons;	
 }
+
 function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
 	$waitTime = rand(0, 25000);
 	$waitTime = $waitTime * 2;
@@ -747,7 +749,7 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 		} else {
 			$text = $text."<i>Consulta con !mensajes el ránking general de usuarios activos en Telegram.</i>";
 		}
-}
+	}
 	return $text;
 }
 
@@ -814,6 +816,7 @@ function timeEmoji($time, $aHalf) {
 		}
 	}
 }
+
 function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	//HTML Parse Mode
 	if($global == 0 && $group == 0) {
@@ -987,6 +990,7 @@ function getPoleBattle($myself, $group, $groupName = "grupo") {
 	}
 	return $text;
 }
+
 function containsCommand($text) {
 	$commandsList = array(
 						"/start",
@@ -1136,6 +1140,7 @@ function showMode($group_id) {
 	$message = $message."<i>Consulta la \"!ayuda\" para saber cómo cambiar la configuración.</i>";
 	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "HTML", "text" => $message));			
 }
+
 function getSticker() {
 	$stickerList = array(
 						"BQADBAADWQADl2BfAAEq3kLUvoh-bAI",
@@ -1678,6 +1683,7 @@ function goodbye() {
 	$n = rand(0,$n);
 	return $storedGreeting[$n];
 }
+
 function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
@@ -1730,6 +1736,7 @@ function getVideo() {
 	$n = rand(0,$n);
 	return $storedVideo[$n];
 }
+
 function getHitIt() {
 	$storedGif = array(
 						"BQADBAADqgYAApdgXwAB0nUF6aRRt_4C",
@@ -2175,6 +2182,7 @@ function getQuote($text, $chat_id) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
 	}
 }
+
 function guessWho($chat_id, $reply_id) {
 	$link = dbConnect();
 	$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = '".$chat_id."'";
@@ -2449,6 +2457,7 @@ function getBarcelona($text, $chat_id) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El texto introducido es muy corto. Escribe !ayuda si necesitas recordar cómo utilizar la función !cita.*"));
 	}
 }
+
 function commandsList($send_id, $mode) {
 	$mode = str_replace("/ayuda_", "", strtolower($mode));
 	$mode = str_replace("@demisukebot", "", strtolower($mode));
@@ -2971,7 +2980,6 @@ function processMessage($message) {
 		}
 		mysql_free_result($result);
 		mysql_close($link);
-		///*
 		if($message['from']['id'] == '6250647') {
 			if(strpos($text, "/updateinfo") === 0) {
 				error_log($logname." triggered: /updateinfo.");
@@ -3059,7 +3067,6 @@ function processMessage($message) {
 				exit;
 			}
 		}
-		//*/
 	}
     if (strpos($text, "/start") === 0) {
 	  error_log($logname." triggered: /start.");
@@ -3142,8 +3149,6 @@ function processMessage($message) {
     } else if (strpos(strtolower($text), "!dados") !== false) {
 		error_log($logname." triggered: !dados.");
 		rollDice($chat_id);
-    } else if (strpos($text, "/stop") === 0) {
-      // stop now
     } else if (isset($message['forward_from']['username'])){
 		if($message['forward_from']['username'] == 'DemisukeBot' || $message['forward_from']['username'] == 'Demitest_bot') {
 			if($randomTicket > -1) {
@@ -4024,7 +4029,8 @@ function processMessage($message) {
 			$randMultiplier = rand(3,6);
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
-			mysql_free_result($result);			
+			mysql_free_result($result);	
+			$avoidPoleCapture = 0;
 			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
@@ -4178,7 +4184,12 @@ function processMessage($message) {
 						$text = $text."s";
 					}
 					$timeEmoji = timeEmoji($hour, 0);
-					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					if($row['user_name'] == "" && $row['group_name'] == "") {
+						$text = $text." ".$timeEmoji." se ha capturado justo ahora y sus datos aún están siendo registrados. ¡Suerte para la próxima!</b>";
+						$avoidPoleCapture = 1;
+					} else {
+						$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					}
 					mysql_free_result($result);
 				}
 			} else {
@@ -4193,93 +4204,100 @@ function processMessage($message) {
 						$text = $text."s";
 					}
 					$timeEmoji = timeEmoji($hour, 0);
-					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
-					mysql_free_result($result);
+					if($row['user_name'] == "" && $row['group_name'] == "") {
+						$text = $text." ".$timeEmoji." se ha capturado justo ahora y sus datos aún están siendo registrados. ¡Suerte para la próxima!</b>";
+						$avoidPoleCapture = 1;
+					} else {
+						$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					}					mysql_free_result($result);
 			}
 			// Changing Flag to Pole
 			if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
-				if($minutes < 30) {
-					$halfTime = $currentTime - 1800;
-					$halfHour = $hour - 1;
-				} else {
-					$halfTime = $currentTime + 1800;
-					$halfHour = $hour;
-				}
-				$query = 'SELECT user_id, lastpole FROM userbattle WHERE group_id = '.$chat_id.' AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1';
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$row = mysql_fetch_array($result);
-				if($row['lastpole'] != $halfTime) {
-					if (isset($message['from']['username'])) {
-						$name = $message['from']['username'];
-					} else if (isset($message['from']['first_name'])) {
-						$name = $message['from']['first_name'];
+				if($avoidPoleCapture == 0) {
+					if($minutes < 30) {
+						$halfTime = $currentTime - 1800;
+						$halfHour = $hour - 1;
 					} else {
-						$name = "Desconocido";
+						$halfTime = $currentTime + 1800;
+						$halfHour = $hour;
 					}
-					$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
-					if($from_id != $row['user_id'] && $usersGroupCount > 4) {
-						$total = 1;
-						$cleanName = str_replace("'","''",$name);
-						mysql_free_result($result);
-						$query = "SELECT totalpole FROM userbattle WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						$row = mysql_fetch_array($result);
-						if(isset($row['totalpole'])) {
-								$subTotal = $row['totalpole'];
-								mysql_free_result($result);
-								mysql_free_result($result);
-								$query = "SELECT totalpole FROM userbattle WHERE group_id = '".$chat_id."' ORDER BY totalpole DESC , lastpole LIMIT 9, 1";
-								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-								$row = mysql_fetch_array($result);
-								if(!isset($row['totalpole'])) {
-									$poleInventory = 0;
-								} else {
-									$poleInventory = $row['totalpole'];
-								}
-								if(($subTotal - $poleInventory) < 20) {
-									error_log($logname." got a new pole!");
-									mysql_free_result($result);
-									$total = 1 + $subTotal;
-									$query = "UPDATE `userbattle` SET `lastpole` = '".$halfTime."', `totalpole` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$from_id;
-									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-									mysql_free_result($result);
-									$text = $text.PHP_EOL."<b>📍🙋🏻 ¡".$name." ha reclamado el mástil de la";
-									if($halfHour != 1) {
-										$text = $text."s";
-									}
-									$timeEmoji = timeEmoji($halfHour, 1);
-									$text = $text." ".$timeEmoji."! 🎉</b>";
-								} else {
-									error_log($logname." has full pole inventory.");
-									$text = $text.PHP_EOL."<b>📍❌ ¡".$name." ha encontrado otro mástil, ¡pero ya tiene el inventario lleno!</b> 🚫";
-								}
-						} else {
-							$text = $text.PHP_EOL."<b>📍❌ ¡".$name." necesita participar más en el grupo para poder reclamar su primer mástil!</b> 🚫";
-						}
-					} else if($usersGroupCount > 4) {
-						$text = $text.PHP_EOL."<b>📍❌ ".$name." se ha topado con otro mástil, ¡pero no puede reclamar dos seguidos!</b> 🚫";
-					} else {
-						$text = $text.PHP_EOL."<b>📍❌ ".$name." se encuentra ante un mástil, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
-					}
-
-				} else {
-					mysql_free_result($result);
-					error_log($logname." triggered: Polefail.");
-					$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = ".$chat_id." AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1";
+					$query = 'SELECT user_id, lastpole FROM userbattle WHERE group_id = '.$chat_id.' AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1';
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
-					$text = $text.PHP_EOL."📍 <b>El mástil de la";
-					if($halfHour != 1) {
-						$text = $text."s";
-					}
-					$timeEmoji = timeEmoji($halfHour, 1);
-					if($row['user_name'] == "") {
-						$shownName = $row['first_name'];
+					if($row['lastpole'] != $halfTime) {
+						if (isset($message['from']['username'])) {
+							$name = $message['from']['username'];
+						} else if (isset($message['from']['first_name'])) {
+							$name = $message['from']['first_name'];
+						} else {
+							$name = "Desconocido";
+						}
+						$usersGroupCount = apiRequest("getChatMembersCount", array('chat_id' => $chat_id));
+						if($from_id != $row['user_id'] && $usersGroupCount > 4) {
+							$total = 1;
+							$cleanName = str_replace("'","''",$name);
+							mysql_free_result($result);
+							$query = "SELECT totalpole FROM userbattle WHERE group_id = '".$chat_id."' AND user_id = '".$from_id."'";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$row = mysql_fetch_array($result);
+							if(isset($row['totalpole'])) {
+									$subTotal = $row['totalpole'];
+									mysql_free_result($result);
+									mysql_free_result($result);
+									$query = "SELECT totalpole FROM userbattle WHERE group_id = '".$chat_id."' ORDER BY totalpole DESC , lastpole LIMIT 9, 1";
+									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+									$row = mysql_fetch_array($result);
+									if(!isset($row['totalpole'])) {
+										$poleInventory = 0;
+									} else {
+										$poleInventory = $row['totalpole'];
+									}
+									if(($subTotal - $poleInventory) < 20) {
+										error_log($logname." got a new pole!");
+										mysql_free_result($result);
+										$total = 1 + $subTotal;
+										$query = "UPDATE `userbattle` SET `lastpole` = '".$halfTime."', `totalpole` = '".$total."' WHERE `group_id` = ".$chat_id." AND `user_id` = ".$from_id;
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+										mysql_free_result($result);
+										$text = $text.PHP_EOL."<b>📍🙋🏻 ¡".$name." ha reclamado el mástil de la";
+										if($halfHour != 1) {
+											$text = $text."s";
+										}
+										$timeEmoji = timeEmoji($halfHour, 1);
+										$text = $text." ".$timeEmoji."! 🎉</b>";
+									} else {
+										error_log($logname." has full pole inventory.");
+										$text = $text.PHP_EOL."<b>📍❌ ¡".$name." ha encontrado otro mástil, ¡pero ya tiene el inventario lleno!</b> 🚫";
+									}
+							} else {
+								$text = $text.PHP_EOL."<b>📍❌ ¡".$name." necesita participar más en el grupo para poder reclamar su primer mástil!</b> 🚫";
+							}
+						} else if($usersGroupCount > 4) {
+							$text = $text.PHP_EOL."<b>📍❌ ".$name." se ha topado con otro mástil, ¡pero no puede reclamar dos seguidos!</b> 🚫";
+						} else {
+							$text = $text.PHP_EOL."<b>📍❌ ".$name." se encuentra ante un mástil, ¡pero el grupo es tan pequeño que no entra!</b> 🚫";
+						}
 					} else {
-						$shownName = $row['user_name'];
+						mysql_free_result($result);
+						error_log($logname." triggered: Polefail.");
+						$query = "SELECT first_name, user_name FROM userbattle WHERE group_id = ".$chat_id." AND lastpole > 0 ORDER BY lastpole DESC LIMIT 1";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						$text = $text.PHP_EOL."📍 <b>El mástil de la";
+						if($halfHour != 1) {
+							$text = $text."s";
+						}
+						$timeEmoji = timeEmoji($halfHour, 1);
+						if($row['user_name'] == "") {
+							$shownName = $row['first_name'];
+						} else {
+							$shownName = $row['user_name'];
+						}
+						$text = $text." ".$timeEmoji." fue reclamado por ".$shownName.".</b>";
+						mysql_free_result($result);
 					}
-					$text = $text." ".$timeEmoji." fue reclamado por ".$shownName.".</b>";
-					mysql_free_result($result);
+				} else {
+					$text = $text.PHP_EOL."📍 <b>Justo en esta décima de segundo el mástil no se puede consultar.</b>";
 				}
 			} else {
 				$text = $text.PHP_EOL."<b>📍❌ El minijuego 'Reclama el mástil' está disponible solo para grupos.</b> 🚫";

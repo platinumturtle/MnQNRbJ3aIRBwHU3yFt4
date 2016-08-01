@@ -1373,7 +1373,7 @@ function getGroupBattle($owngroup) {
 							break;
 					default: break;
 				}
-				$tempFormattedPoints = number_format($row['total'], 0, '.', ',');
+				$tempFormattedPoints = number_format($row['total'], 0, ',', '.');
 				$text = $text.
 						"<b>".$row['name']."</b>"
 						.PHP_EOL.
@@ -1454,7 +1454,8 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 						$text = $text.
 							"<b> (".$row['user_name'].")</b>";
 					}
-					$text = $text."<b>:</b> ".$row['total'].PHP_EOL.PHP_EOL;
+					$tempFormattedPoints = number_format($row['total'], 0, ',', '.');
+					$text = $text."<b>:</b> ".$tempFormattedPoints.PHP_EOL.PHP_EOL;
 				}
 			} else if($i==0) {
 				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;

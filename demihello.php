@@ -1373,10 +1373,11 @@ function getGroupBattle($owngroup) {
 							break;
 					default: break;
 				}
+				$tempFormattedPoints = number_format($row['total'], 0, '.', ',');
 				$text = $text.
 						"<b>".$row['name']."</b>"
 						.PHP_EOL.
-						"<i>".$row['total']." puntos.</i>"
+						"<i>".$tempFormattedPoints." puntos.</i>"
 						.PHP_EOL.PHP_EOL;
 			}
 		}

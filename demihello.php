@@ -966,8 +966,11 @@ function failInsult() {
 	return $storedInsult[$n];
 }
 
-function randomSentence() {
+function randomSentence($isInvoking = false) {
 	$complete = "";
+	if($isInvoking) {
+		$complete = "Invoco a ";
+	}
 	$storedStart = array(
 						"Coyote",		"Cavernícola",
 						"Tambor",		"Ciervo",
@@ -989,8 +992,8 @@ function randomSentence() {
 						"Picaporte",	"Pañal",
 						"Papaya",		"Sepia",
 						"Incienso",		"Lince",
-						"Garbanzo",
-						"Relámpago",
+						"Garbanzo",		"Clavicordio",
+						"Relámpago",	"Berberecho",
 						"Chincheta",
 						"Mapache",
 						"Pterodáctilo"
@@ -1019,7 +1022,7 @@ function randomSentence() {
 						"fantasma",					"con extra de frescura",
 						"impermeable",				"de gran rocosidad",
 						"a la sal",					"a la pachamama",
-						"en escabeche"
+						"en escabeche",				"progresista"
 						);
 	$n = sizeof($storedEnd) - 1;
 	$n = rand(0,$n);
@@ -1783,6 +1786,7 @@ function containsCommand($text) {
 						"!bienvenida",
 						"!sugerencia",
 						"!becquer",
+						"!invocar",
 						"!refrán",
 						"!refran",
 						"!historia"
@@ -3926,7 +3930,13 @@ function processMessage($message) {
 		} else {
 				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
 		}
-	} else if (strpos(strtolower($text), "!siono") !== false && strlen($text) > 8) {
+	} else if (strpos(strtolower($text), "!invocar") !== false) {
+		error_log($logname." triggered: !invocar.");
+		$sentence = randomSentence(true);
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(500000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence.".*"));
+    } else if (strpos(strtolower($text), "!siono") !== false && strlen($text) > 8) {
 		error_log($logname." triggered: !siono.");
 		$respuesta = yesNoQuestion();
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

@@ -233,8 +233,8 @@ function randomSentence() {
 						"Picaporte",	"Pañal",
 						"Papaya",		"Sepia",
 						"Incienso",		"Lince",
-						"Garbanzo",
-						"Relámpago",
+						"Garbanzo",		"Clavicordio",
+						"Relámpago",	"Berberecho",
 						"Chincheta",
 						"Mapache",
 						"Pterodáctilo"
@@ -263,7 +263,7 @@ function randomSentence() {
 						"fantasma",					"con extra de frescura",
 						"impermeable",				"de gran rocosidad",
 						"a la sal",					"a la pachamama",
-						"en escabeche"
+						"en escabeche",				"progresista"
 						);
 	$n = sizeof($storedEnd) - 1;
 	$n = rand(0,$n);

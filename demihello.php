@@ -997,7 +997,7 @@ function randomSentence($isInvoking = false) {
 							"Gorrino",		"Cocotero",
 							"Celacanto",	"Fuet",
 							"Jamón",		"Salmorejo",
-							"Níspero",
+							"Níspero",		"ravioli",
 							"Ukelele",
 							"Colesterol",
 							"Rinoceronte",	"Perineo",
@@ -1018,12 +1018,12 @@ function randomSentence($isInvoking = false) {
 		$storedStart = array(
 							"cebolla",		"mandarina",
 							"Alcachofa",	"trompeta",
-							"Ventana",
-							"Diadema",
-							"Moneda",
-							"Papelera",
+							"Ventana",		"escobilla",
+							"Diadema",		"hamburguesa",
+							"Moneda",		"liebre",
+							"Papelera",		"nutria",
 							"Bombilla",		"Gominola",
-							"Coliflor",
+							"Coliflor",		"piruleta",
 							"Papaya",		"Sepia",
 							"Chincheta"
 							);				
@@ -1040,7 +1040,7 @@ function randomSentence($isInvoking = false) {
 						"temporal",					"sensual",
 						"con escayola",				"pelotari",
 						"selección",				"volante",
-						"presidente",				"ancestral",
+						"ancestral",				"musical",
 						"reversible",				"atrapamoscas",
 						"elegante",					"de alcanfor",
 						"manual",					"de la Antártida",
@@ -1049,21 +1049,45 @@ function randomSentence($isInvoking = false) {
 						"centinela",				"lendakari",
 						"revolución",				"serbocroata",
 						"estelar",					"oriental",
-						"fantasma",					"con extra de frescura",
-						"impermeable",				"de gran rocosidad",
+						"fantasma",					"illuminati",
+						"impermeable",				"del tiempo",
 						"a la sal",					"a la pachamama",
 						"en escabeche",				"progresista"
 						);
 	if($isMale == 1) {
 		array_push($storedEnd, 
+					"presidente",
+					"fresco",
+					"sano",
+					"calvo",
+					"rapado",
+					"poleador",
+					"unicejo",
+					"rocoso",
+					"mentolado",
 					"antártico",
 					"enyodado",
+					"picador",
+					"manchego",
+					"asturiano",
 					"loco"
 					);
 	} else {
 		array_push($storedEnd, 
+					"presidenta",
+					"fresca",
+					"sana",
+					"calva",
+					"rapada",
+					"poleadora",
+					"uniceja",
+					"rocosa",
+					"mentolada",
 					"antártica",
 					"enyodada",
+					"picadora",
+					"manchega",
+					"asturiana",
 					"loca"
 					);
 	}
@@ -1071,6 +1095,48 @@ function randomSentence($isInvoking = false) {
 	$n = rand(0,$n);
 	$complete = $complete." ".$storedEnd[$n];
 	return $complete;
+}
+
+function getEnjuto() {
+	$storedSentence = array(
+						"No funciona interneeeet",
+						"¡Ay piticlí bonico! Ay, piticli",
+						"Me' quedao' traspuesto",
+						"Noooooooooooooo",
+						"Pues... tiene tipazo",
+						"Apaga y enciende el ordenador, reinicia el router, llama al servicio técnico",
+						"Acho me via' quedar agurrumío' aquí afuera",
+						"Vaya bullate",
+						"Estoy echando teticas",
+						"Me muero con el calorcico",
+						"A ti te voy a llamar Pelusín",
+						"¿Quién te envía? Contéstame por e-mail",
+						"Mantente lejos de la ironía",
+						"Estoy en baja forma, mejor descanso",
+						"Tengo muchos followers en el Twitter",
+						"Hace tiempo que no mojo el pizarrín",
+						"Si sumas todas las piernas de los cuñados del mundo y el resultado lo divides entre dos, te sale el número total de Bonicos del to'",
+						"Cuando me levanto al baño en mi cuarto hay un error 404",
+						"Yo a mis vacaciones me llevo un manual de C++",
+						"Acho que vienen a por mí",
+						"Me hago viejoven cuando juego al Pokémon Go, con lo agustico que estoy en casa",
+						"Los zombis veintiocho semanas después no son zombis, son infectados",
+						"Lo estoy gozando cosa bárbara",
+						"Como se fue, vino",
+						"No tengo humor",
+						"Me gusta estar acurrucaíco delante de la pantalla",
+						"Vamos a ver vídeos de gaticos",
+						"Acho pa' pasar la tarde yo ya te valgo",
+						"He notado que estás a remiso",
+						"Yo viajo mucho por el Google Earth",
+						"¿Conoces la teoría de los seis grados de separación con Kevin Bacon? Pues tú no tienes ninguna conexión con él",
+						"¿Te gusta como clico? Me gusta abrir nuevas ventanas",
+						"¿Me hablas a mí? Qué sustico"
+						);
+	$n = sizeof($storedSentence) - 1;
+	$n = rand(0,$n);
+	$result = $storedSentence[$n];
+	return $result;
 }
 
 function yesNoQuestion() {
@@ -1830,6 +1896,8 @@ function containsCommand($text) {
 						"!sugerencia",
 						"!becquer",
 						"!invocar",
+						"!acho",
+						"!enjuto",
 						"!refrán",
 						"!refran",
 						"!historia"
@@ -3979,6 +4047,12 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(500000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence."!*"));
+    } else if (strpos(strtolower($text), "!acho") !== false || strpos(strtolower($text), "!enjuto") !== false) {
+		error_log($logname." triggered: !enjuto.");
+		$sentence = getEnjuto();
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(500000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence.".*"));
     } else if (strpos(strtolower($text), "!siono") !== false && strlen($text) > 8) {
 		error_log($logname." triggered: !siono.");
 		$respuesta = yesNoQuestion();

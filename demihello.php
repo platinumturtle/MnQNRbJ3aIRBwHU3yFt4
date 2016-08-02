@@ -1962,25 +1962,25 @@ function showMode($group_id) {
 	} else {
 		$message = $message."❌";
 	}
-	$message = $message." Participación activa del bot en la conversación".PHP_EOL;
+	$message = $message."1⃣ Participación activa del bot en la conversación".PHP_EOL;
 	if($mode > -2) {
 		$message = $message."✅";
 	} else {
 		$message = $message."❌";
 	}
-	$message = $message." Respuestas con gifs o audios a palabras clave concretas".PHP_EOL;
+	$message = $message."2⃣ Respuestas con gifs o audios a palabras clave concretas".PHP_EOL;
 	if($mode > -3) {
 		$message = $message."✅";
 	} else {
 		$message = $message."❌";
 	}
-	$message = $message." Huevos de pascua y funciones extensas".PHP_EOL;
+	$message = $message." <b>3</b>. Huevos de pascua, funciones extensas y minijuego 'Héroes de Telegram'".PHP_EOL;
 	if($mode > -4) {
 		$message = $message."✅";
 	} else {
 		$message = $message."❌";
 	}
-	$message = $message." Notificaciones de actualizaciones importantes del bot".PHP_EOL;
+	$message = $message." <b>4</b>. Notificaciones de actualizaciones importantes del bot".PHP_EOL.PHP_EOL;
 	if($freemode == 1) {
 		$message = $message."✅";
 	} else {
@@ -2004,8 +2004,8 @@ function showMode($group_id) {
 	} else {
 		$message = $message."❌";
 	}
-	$message = $message." Mensaje de bienvenida personalizado".PHP_EOL;
-	$message = $message."<i>Consulta la \"!ayuda\" para saber cómo cambiar la configuración.</i>";
+	$message = $message." Mensaje de bienvenida personalizado".PHP_EOL.PHP_EOL;
+	$message = $message."<i>Consulta con /ayuda_modo cómo cambiar la configuración.</i>";
 	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "HTML", "text" => $message));			
 }
 

@@ -1956,13 +1956,13 @@ function showMode($group_id) {
 	mysql_free_result($result);
 	apiRequest("sendChatAction", array('chat_id' => $group_id, 'action' => "typing"));
 	usleep(100000);
-	$message = "<b>Configuración del bot para ".$name.":</b>".PHP_EOL;
+	$message = "<b>Configuración del bot para ".$name.":</b>".PHP_EOL.PHP_EOL;
 	if($mode > -1) {
 		$message = $message."✅";
 	} else {
 		$message = $message."❌";
 	}
-	$message = $message."1⃣ Participación activa del bot en la conversación".PHP_EOL;
+	$message = $message."1⃣ Participación <b>activa</b> del bot en la conversación".PHP_EOL;
 	if($mode > -2) {
 		$message = $message."✅";
 	} else {
@@ -1974,13 +1974,13 @@ function showMode($group_id) {
 	} else {
 		$message = $message."❌";
 	}
-	$message = $message." <b>3</b>. Huevos de pascua, funciones extensas y minijuego 'Héroes de Telegram'".PHP_EOL;
+	$message = $message."3⃣ Huevos de pascua, funciones extensas y minijuego 'Héroes de Telegram'".PHP_EOL;
 	if($mode > -4) {
 		$message = $message."✅";
 	} else {
 		$message = $message."❌";
 	}
-	$message = $message." <b>4</b>. Notificaciones de actualizaciones importantes del bot".PHP_EOL.PHP_EOL;
+	$message = $message."4⃣ Notificaciones de actualizaciones importantes del bot".PHP_EOL.PHP_EOL;
 	if($freemode == 1) {
 		$message = $message."✅";
 	} else {
@@ -2005,7 +2005,7 @@ function showMode($group_id) {
 		$message = $message."❌";
 	}
 	$message = $message." Mensaje de bienvenida personalizado".PHP_EOL.PHP_EOL;
-	$message = $message."<i>Consulta con /ayuda_modo cómo cambiar la configuración.</i>";
+	$message = $message."<i>Consulta con</i> /ayuda_modo <i>cómo cambiar la configuración.</i>";
 	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "HTML", "text" => $message));			
 }
 
@@ -4674,6 +4674,25 @@ function processMessage($message) {
 							break;
 					default: $mode = 0;
 							break;
+				}
+				$text = strtolower($text);
+				$text = substr($text, (strpos($text, "!cambiarmodo") + 13 ));
+				$text = ltrim(rtrim($text));
+				error_log($text); // TESTING PURPOSES
+				if(is_numeric($text)) {
+					switch($text) {
+						case 0: $mode = 0;
+								break;
+						case 1: $mode = -1;
+								break;
+						case 2: $mode = -2;
+								break;
+						case 3: $mode = -3;
+								break;
+						case 4: $mode = -4;
+								break;
+						default: break;
+					}
 				}
 				$query = 'UPDATE groupbattle SET mode = '.$mode.' WHERE group_id = '.$chat_id;
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

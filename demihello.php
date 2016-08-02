@@ -969,38 +969,68 @@ function failInsult() {
 function randomSentence($isInvoking = false) {
 	$complete = "";
 	if($isInvoking) {
-		$complete = "Invoco a ";
+		//$complete = "¡Invoco a ";		
+		$storedSummoning = array(
+							"invoco a",
+							"por el poder que me ha sido otorgado, yo invoco a",
+							"adelante,",
+							"ve a por todas",
+							"es el momento de invocar a",
+							"ha llegado u hora, yo te invoco,",
+							"hora de invocar a",
+							"voy a invocar a",
+							"yo te invoco,",
+							"a esta conversación le falta una invocación,",
+							"voy a invocar a"
+							);
+		$n = sizeof($storedSummoning) - 1;
+		$n = rand(0,$n);
+		$complete = "¡".ucfirst($storedSummoning[$n])." ";
 	}
-	$storedStart = array(
-						"Coyote",		"Cavernícola",
-						"Tambor",		"Ciervo",
-						"Alcachofa",	"Corzo",
-						"Anacardo",		"Espantapájaros",
-						"Gorrino",		"Cocotero",
-						"Celacanto",	"Fuet",
-						"Jamón",		"Salmorejo",
-						"Ventana",		"Níspero",
-						"Ukelele",		"Diadema",
-						"Moneda",		"Colesterol",
-						"Rinoceronte",	"Perineo",
-						"Papelera",		"Triciclo",
-						"Bombilla",		"Gominola",
-						"Plástico",		"Dinosaurio",
-						"Coliflor",		"Barrilete",
-						"Meteorito",	"Machete",
-						"Puercoespín",	"Cacahuete",
-						"Picaporte",	"Pañal",
-						"Papaya",		"Sepia",
-						"Incienso",		"Lince",
-						"Garbanzo",		"Clavicordio",
-						"Relámpago",	"Berberecho",
-						"Chincheta",
-						"Mapache",
-						"Pterodáctilo"
-						);
+	$isMale = rand(0,1);
+	if($isMale == 1) {
+		$storedStart = array(
+							"Coyote",		"Cavernícola",
+							"Tambor",		"Ciervo",
+							"Corzo",		"caballo",
+							"Anacardo",		"Espantapájaros",
+							"Gorrino",		"Cocotero",
+							"Celacanto",	"Fuet",
+							"Jamón",		"Salmorejo",
+							"Níspero",
+							"Ukelele",
+							"Colesterol",
+							"Rinoceronte",	"Perineo",
+							"Triciclo",
+							"Plástico",		"Dinosaurio",
+							"Barrilete",
+							"Meteorito",	"Machete",
+							"Puercoespín",	"Cacahuete",
+							"Picaporte",	"Pañal",
+							"Incienso",		"Lince",
+							"Garbanzo",		"Clavicordio",
+							"Relámpago",	"Berberecho",
+							"Odín",
+							"Mapache",		"Leviatán",
+							"Pterodáctilo"
+							);
+	} else {
+		$storedStart = array(
+							"cebolla",		"mandarina",
+							"Alcachofa",	"trompeta",
+							"Ventana",
+							"Diadema",
+							"Moneda",
+							"Papelera",
+							"Bombilla",		"Gominola",
+							"Coliflor",
+							"Papaya",		"Sepia",
+							"Chincheta"
+							);				
+	}
 	$n = sizeof($storedStart) - 1;
 	$n = rand(0,$n);
-	$complete = $complete.$storedStart[$n];
+	$complete = $complete.ucfirst($storedStart[$n]);
 	$storedEnd = array(
 						"en almíbar",				"superestrella",
 						"a las finas hierbas",		"congresista",
@@ -1024,6 +1054,19 @@ function randomSentence($isInvoking = false) {
 						"a la sal",					"a la pachamama",
 						"en escabeche",				"progresista"
 						);
+	if($isMale == 1) {
+		array_push($storedEnd, 
+					"antártico",
+					"enyodado",
+					"loco"
+					);
+	} else {
+		array_push($storedEnd, 
+					"antártica",
+					"enyodada",
+					"loca"
+					);
+	}
 	$n = sizeof($storedEnd) - 1;
 	$n = rand(0,$n);
 	$complete = $complete." ".$storedEnd[$n];
@@ -3935,7 +3978,7 @@ function processMessage($message) {
 		$sentence = randomSentence(true);
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(500000);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence.".*"));
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$sentence."!*"));
     } else if (strpos(strtolower($text), "!siono") !== false && strlen($text) > 8) {
 		error_log($logname." triggered: !siono.");
 		$respuesta = yesNoQuestion();

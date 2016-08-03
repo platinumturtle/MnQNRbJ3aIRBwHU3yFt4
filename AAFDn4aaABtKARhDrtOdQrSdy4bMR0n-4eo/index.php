@@ -5340,5 +5340,5 @@ if (isset($update["message"])) {
 		$message = $message.$callback['data'].PHP_EOL;
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "show_alert" => TRUE));	
 	}
-}
+} 
 ?>

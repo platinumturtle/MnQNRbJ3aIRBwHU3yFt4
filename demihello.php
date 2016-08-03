@@ -3554,13 +3554,11 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
 				.PHP_EOL.
-				"@DemisukeBot v2.1.2 creado por @Kamisuke."
+				"@DemisukeBot v2.3 creado por @Kamisuke."
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
-				"¿Te gusta el bot? ¡Puntúalo ⭐️⭐️⭐️⭐️⭐️!"
-				.PHP_EOL.
-				"https://telegram.me/storebot?start=DemisukeBot"
+				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot</b> ⚙"
@@ -4383,7 +4381,7 @@ function processMessage($message) {
 			}
 			mysql_free_result($result);
 			if($bombTicket == 4) {
-				$penalty = rand(30,50);
+				$penalty = rand(20,40);
 				error_log($logname." loses these points: ".$penalty);
 				$userTotal = $userTotal - $penalty;
 				if($userTotal < 0) {
@@ -4395,7 +4393,7 @@ function processMessage($message) {
 				mysql_close($link);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
-				$text = $text.PHP_EOL."_Se restarán ".$victory." puntos de heroicidad y el total pasará a ser de ".$userTotal." punto";
+				$text = $text.PHP_EOL."_Se restarán ".$penalty." puntos de heroicidad y el total pasará a ser de ".$userTotal." punto";
 				if($userTotal == 1) {
 					$text = $text."._";
 				} else {

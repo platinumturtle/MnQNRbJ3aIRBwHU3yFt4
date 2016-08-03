@@ -3449,7 +3449,7 @@ function processMessage($message) {
 				strpos($text, "/ayuda_heroes") === 0 || strpos($text, "/ayuda_heroes@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
 		commandsList($chat_id, $text);
-    } else if (strpos($text, "/sendNotification") === 0) {
+   /* } else if (strpos($text, "/sendNotification") === 0) {
 		error_log($logname." triggered: New Notification.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647 && strlen($text) > 18) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
@@ -3475,6 +3475,7 @@ function processMessage($message) {
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));
 		}
+		*/
 	} else if (strpos($text, "/sendSpecialNot") === 0) {
 		error_log($logname." triggered: /sendSpecialNot.");
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {

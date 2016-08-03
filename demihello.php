@@ -4362,7 +4362,7 @@ function processMessage($message) {
 			$query = 'SELECT total, last_check FROM heroesbattle WHERE user_id = '.$user_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
-			if($row['total'] >= 0) {
+			if(isset($row['total'])) {
 				if( ($row['last_check'] + 20) > $currTime) {
 					error_log($logname." triggered too fast: !boton.");
 					mysql_free_result($result);

@@ -3803,7 +3803,7 @@ function commandsList($send_id, $mode) {
 	if(strlen($text) > 5){
 		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
 		usleep(100000);
-		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", "text" => $text));
+		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
 	}
 }
 

@@ -4353,25 +4353,72 @@ function processMessage($message) {
 		}
 	} else if (strpos(strtolower($text), "!boton") !== false || strpos(strtolower($text), "!botón") !== false) {
 		if($randomTicket > -3) {
+			$currTime = time();
 			error_log($logname." triggered: !boton.");
 			$bombTicket = rand(1,5);
 			$username = str_replace("@", "", $logname);
-			// buscar el id del usuario en la tabla heroes battle y quedarse con su total
-			// si existe, pararle los pies si hace menos de 20seg que ha pulsado el boton
-			// si no existe, crear un usuario nuevo
+			$userTotal = 100;
+			$link = dbConnect();
+			$query = 'SELECT total, last_check FROM heroesbattle WHERE user_id = '.$user_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if($row['total'] >= 0) {
+				if( ($row['last_check'] + 20) > $currTime) {
+					error_log($logname." triggered too fast: !boton.");
+					mysql_free_result($result);
+					mysql_close($link);
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$text = "*Solo puedes pulsar el botón una vez cada veinte segundos.*";
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => $text));
+					exit;
+				} else {
+					$userTotal = $row['total'];
+				}
+			} else {
+				mysql_free_result($result);
+				$query = "INSERT INTO `heroesbattle` (`user_id`, `name`, `last_check`) VALUES ('".$user_id."', '".$username."', '".$currTime."');";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
+			}
+			mysql_free_result($result);
 			if($bombTicket == 4) {
-				// calcular el total y hacer update del total, el nombre y el tiempo
-				$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
+				$penalty = rand(30,50);
+				$userTotal = $userTotal - $penalty;
+				if($userTotal < 0) {
+					$userTotal = 0;
+				}
+				$query = "UPDATE `heroesbattle` SET `name` = '".$username."', `last_check` = '".$currTime."', `total` = '".$userTotal."' WHERE `user_id` = ".$user_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				mysql_close($link);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
+				$text = $text.PHP_EOL."_Se restarán ".$victory." puntos de heroicidad y el total pasará a ser de ".$userTotal." punto";
+				if($userTotal == 1) {
+					$text = $text."._";
+				} else {
+					$text = $text."s._";
+				}
 				usleep(250000);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 				usleep(100000);
 				$gif = "BQADBAADQQcAApdgXwABZVaKL-av07AC";
 				apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 			} else {
-				// calcular el total y hacer update del total, el nombre y el tiempo 
-				$text = "*✅ ¡".$username." ha pulsado el botón y se ha salvado! 🍾*";
+				$victory = rand(3,9);
+				$userTotal = $userTotal + $victory;
+				$query = "UPDATE `heroesbattle` SET `name` = '".$username."', `last_check` = '".$currTime."', `total` = '".$userTotal."' WHERE `user_id` = ".$user_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);
+				mysql_close($link);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$text = "*✅ ¡".$username." ha pulsado el botón y se ha salvado! 🍾*";
+				$text = $text.PHP_EOL."_Se sumarán ".$victory." puntos de heroicidad y el total pasará a ser de ".$userTotal." punto";
+				if($userTotal == 1) {
+					$text = $text."._";
+				} else {
+					$text = $text."s._";
+				}
 				usleep(250000);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 			}

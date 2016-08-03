@@ -1765,6 +1765,83 @@ function getFlagBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	return $text;
 }
 
+function getHeroesBattle($myself, $global, $group = 0, $groupName = "grupo") {
+	//HTML Parse Mode
+	if($global == 0 && $group == 0) {
+		$text = "<b>La función !heroesgrupo es exclusiva para grupos y supergrupos, ¡añádeme a alguno y utilízala allí!</b>";
+	}
+	else {
+		$link = dbConnect();
+		if($global == 1){
+			$text = "<b>🏁 Los diez héroes de Telegram:</b>";
+			$query = "SELECT user_id, name, total FROM heroesbattle WHERE total > 119 ORDER BY total DESC , last_check";
+		} else {
+			$text = "<b>🏁 Los diez héroes de ".$groupName.":</b>";
+			$query = "SELECT user_id, name, total FROM heroesbattle WHERE user_id IN ( SELECT user_id FROM userbattle WHERE group_id = ".$group." ) ORDER BY total DESC , last_check";
+		}
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$text = $text.PHP_EOL.PHP_EOL.
+				"<b>🏆 SUPERHÉROE 🏆</b>"
+				.PHP_EOL;
+		for($i=0;$i<10;$i++) {
+			$row = mysql_fetch_array($result);
+			if(isset($row['total'])) {
+				if($row['total'] > 0) {
+					switch($i) {
+						case 1: $text = $text."<b>🎖2º </b>";
+								break;
+						case 2: $text = $text."<b>🏅3º </b>";
+								break;
+						case 3: $text = $text."4⃣ ";
+								break;
+						case 4: $text = $text."5⃣ ";
+								break;
+						case 5: $text = $text."6⃣ ";
+								break;
+						case 6: $text = $text."7⃣ ";
+								break;
+						case 7: $text = $text."8⃣ ";
+								break;
+						case 8: $text = $text."9⃣ ";
+								break;
+						case 9: $text = $text."🔟 ";
+								break;
+						default: break;
+					}
+					$text = $text.
+							"<b>".$row['name']."</b>"
+							.PHP_EOL.
+							"<i>".$row['total']." punto";
+					if($row['total'] > 1) {
+						$text = $text."s";
+					}
+					$text = $text.".</i>".PHP_EOL.PHP_EOL;
+				}
+			} else if($i==0) {
+				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
+			}
+		}
+		mysql_free_result($result);
+		$query = "SELECT user_id, name, total FROM heroesbattle WHERE user_id = '".$myself."'";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['user_id'])) {
+			$text = $text.
+			"<b>".$row['name']." tiene ".$row['total']." punto";
+			if($row['total'] > 1) {
+				$text = $text."s";
+			}
+			$text = $text." de heroicidad.</b>".PHP_EOL.PHP_EOL;
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		$text = $text.
+				"<i>Para ganar puntos juega utilizando la función !boton.".PHP_EOL.
+				"Si 'Héroes de Telegram' no está disponible en tu grupo puedes jugar por mensaje privado al bot. Con !ayuda puedes consultar las reglas del juego.</i>";
+	}
+	return $text;
+}
+
 function getPoleBattle($myself, $group, $groupName = "grupo") {
 	//HTML Parse Mode
 	if($group == 0) {
@@ -1898,6 +1975,8 @@ function containsCommand($text) {
 						"!invocar",
 						"!acho",
 						"!enjuto",
+						"!héroes",
+						"!heroes",
 						"!refrán",
 						"!refran",
 						"!historia"
@@ -4273,23 +4352,33 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
 		}
 	} else if (strpos(strtolower($text), "!boton") !== false || strpos(strtolower($text), "!botón") !== false) {
-		error_log($logname." triggered: !boton.");
-		$bombTicket = rand(1,5);
-		$username = str_replace("@", "", $logname);
-		if($bombTicket == 4) {
-			$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			usleep(250000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
-			usleep(100000);
-			$gif = "BQADBAADQQcAApdgXwABZVaKL-av07AC";
-			apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+		if($randomTicket > -3) {
+			error_log($logname." triggered: !boton.");
+			$bombTicket = rand(1,5);
+			$username = str_replace("@", "", $logname);
+			// buscar el id del usuario en la tabla heroes battle y quedarse con su total
+			// si existe, pararle los pies si hace menos de 20seg que ha pulsado el boton
+			// si no existe, crear un usuario nuevo
+			if($bombTicket == 4) {
+				// calcular el total y hacer update del total, el nombre y el tiempo
+				$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+				usleep(100000);
+				$gif = "BQADBAADQQcAApdgXwABZVaKL-av07AC";
+				apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
+			} else {
+				// calcular el total y hacer update del total, el nombre y el tiempo 
+				$text = "*✅ ¡".$username." ha pulsado el botón y se ha salvado! 🍾*";
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+			}
+			exit;
 		} else {
-			$text = "*✅ ¡".$username." ha pulsado el botón y se ha salvado! 🍾*";
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			usleep(250000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
-		}
+			error_log($logname." tried to trigger and failed due to group restrictions: !boton.");
+		}		
 	} else if (strpos(strtolower($text), "!temazo") !== false || strpos(strtolower($text), "!cancion") !== false || strpos(strtolower($text), "!canción") !== false) {
 		error_log($logname." triggered: !cancion.");
 		$song = getSong();
@@ -4678,7 +4767,6 @@ function processMessage($message) {
 				$text = strtolower($text);
 				$text = substr($text, (strpos($text, "!cambiarmodo") + 13 ));
 				$text = ltrim(rtrim($text));
-				error_log($text); // TESTING PURPOSES
 				if(is_numeric($text)) {
 					switch($text) {
 						case 0: $mode = 0;
@@ -4717,6 +4805,23 @@ function processMessage($message) {
 			$result = "*Para usar esta función necesitas ejecutarla desde algún grupo, ¡añademe a tu grupo favorito y compite con tus amigos!*";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
 		}
+	} else if (strpos(strtolower($text), "!heroesgrupo") !== false || strpos(strtolower($text), "!héroesgrupo") !== false) {
+		error_log($logname." triggered: !heroesgrupo.");
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(100000);
+		if($message['chat']['type'] == "supergroup" || $message['chat']['type'] == "group") {
+			$result = getHeroesBattle($message['from']['id'], 0, $chat_id, $message['chat']['title']);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+		} else {
+			$result = "*Para usar esta función necesitas ejecutarla desde algún grupo, ¡añademe a tu grupo favorito y compite con tus amigos!*";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+		}
+	} else if (strpos(strtolower($text), "!heroes") !== false || strpos(strtolower($text), "!héroes") !== false) {
+		error_log($logname." triggered: !heroes.");
+		$result = getHeroesBattle($message['from']['id'], 1);
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(100000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "!banderasgrupo") !== false) {
 		error_log($logname." triggered: !banderasgrupo.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

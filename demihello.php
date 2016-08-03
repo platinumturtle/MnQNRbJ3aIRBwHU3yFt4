@@ -3574,11 +3574,11 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
 				.PHP_EOL.
-				"@DemisukeBot v2.3 creado por @Kamisuke."
-				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
+				.PHP_EOL.PHP_EOL.
+				"@DemisukeBot v2.3 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -5055,7 +5055,8 @@ function processMessage($message) {
 			$randMultiplier = rand(3,6);
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
-			mysql_free_result($result);			
+			mysql_free_result($result);
+			$avoidPoleCapture = 0;
 			$query = 'SELECT user_id, last_flag FROM flagcapture WHERE fc_id = 0001';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
@@ -5209,7 +5210,12 @@ function processMessage($message) {
 						$text = $text."s";
 					}
 					$timeEmoji = timeEmoji($hour, 0);
-					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					if($row['user_name'] == "" && $row['group_name'] == "") {
+						$text = $text." ".$timeEmoji." se ha capturado justo ahora y sus datos aún están siendo registrados. ¡Suerte para la próxima!</b>";
+						$avoidPoleCapture = 1;
+					} else {
+						$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					}
 					mysql_free_result($result);
 				}
 			} else {
@@ -5224,7 +5230,12 @@ function processMessage($message) {
 						$text = $text."s";
 					}
 					$timeEmoji = timeEmoji($hour, 0);
-					$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					if($row['user_name'] == "" && $row['group_name'] == "") {
+						$text = $text." ".$timeEmoji." se ha capturado justo ahora y sus datos aún están siendo registrados. ¡Suerte para la próxima!</b>";
+						$avoidPoleCapture = 1;
+					} else {
+						$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
+					}
 					mysql_free_result($result);
 			}
 			// Changing Flag to Pole

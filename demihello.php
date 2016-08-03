@@ -2014,7 +2014,7 @@ function translateDate($english) {
 	$spanish = str_replace("December", "de diciembre del", $spanish);
 	return $spanish;
 }
-function showMode($group_id, $newGroup = true) {
+function showMode($group_id, $newGroup = false) {
 	$query = "SELECT mode, name, flagblock, freemode, custom_text, welcome_text FROM groupbattle WHERE group_id = '".$group_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);

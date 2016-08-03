@@ -4376,6 +4376,7 @@ function processMessage($message) {
 					$userTotal = $row['total'];
 				}
 			} else {
+				error_log($logname." is a new player!");
 				mysql_free_result($result);
 				$query = "INSERT INTO `heroesbattle` (`user_id`, `name`, `last_check`) VALUES ('".$user_id."', '".$username."', '".$currTime."');";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
@@ -4383,6 +4384,7 @@ function processMessage($message) {
 			mysql_free_result($result);
 			if($bombTicket == 4) {
 				$penalty = rand(30,50);
+				error_log($logname." loses these points: ".$penalty);
 				$userTotal = $userTotal - $penalty;
 				if($userTotal < 0) {
 					$userTotal = 0;
@@ -4406,6 +4408,7 @@ function processMessage($message) {
 				apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 			} else {
 				$victory = rand(3,9);
+				error_log($logname." wins these points: ".$victory);
 				$userTotal = $userTotal + $victory;
 				$query = "UPDATE `heroesbattle` SET `name` = '".$username."', `last_check` = '".$currTime."', `total` = '".$userTotal."' WHERE `user_id` = ".$user_id;
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

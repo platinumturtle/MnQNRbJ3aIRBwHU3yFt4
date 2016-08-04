@@ -236,33 +236,27 @@ function randomSentence($isInvoking = false) {
 		$storedStart = array(
 							"Coyote",		"Cavernícola",
 							"Tambor",		"Ciervo",
-
 							"Corzo",		"caballo",
 							"Anacardo",		"Espantapájaros",
 							"Gorrino",		"Cocotero",
 							"Celacanto",	"Fuet",
 							"Jamón",		"Salmorejo",
 							"Níspero",		"ravioli",
-
 							"Ukelele",
 							"Colesterol",
 							"Rinoceronte",	"Perineo",
 							"Triciclo",
-
 							"Plástico",		"Dinosaurio",
 							"Barrilete",
 							"Meteorito",	"Machete",
 							"Puercoespín",	"Cacahuete",
 							"Picaporte",	"Pañal",
-
 							"Incienso",		"Lince",
 							"Garbanzo",		"Clavicordio",
 							"Relámpago",	"Berberecho",
-
 							"Odín",
 							"Mapache",		"Leviatán",
 							"Pterodáctilo"
-
 							);
 	} else {
 		$storedStart = array(
@@ -290,7 +284,6 @@ function randomSentence($isInvoking = false) {
 						"temporal",					"sensual",
 						"con escayola",				"pelotari",
 						"selección",				"volante",
-
 						"ancestral",				"musical",
 						"reversible",				"atrapamoscas",
 						"elegante",					"de alcanfor",
@@ -300,7 +293,6 @@ function randomSentence($isInvoking = false) {
 						"centinela",				"lendakari",
 						"revolución",				"serbocroata",
 						"estelar",					"oriental",
-
 						"fantasma",					"illuminati",
 						"impermeable",				"del tiempo",
 						"a la sal",					"a la pachamama",
@@ -390,6 +382,7 @@ function getEnjuto() {
 	$result = $storedSentence[$n];
 	return $result;
 }
+
 function yesNoQuestion() {
 	$storedReply = array(
 						"Claro, por supuesto",
@@ -1229,7 +1222,7 @@ function containsCommand($text) {
 						"!bienvenida",
 						"!sugerencia",
 						"!becquer",
-						"!invocar",
+						"!invoca",
 						"!acho",
 						"!enjuto",
 						"!héroes",
@@ -1282,7 +1275,6 @@ function showMode($group_id, $newGroup = false) {
 		$flag = $row['flagblock'];
 		$freemode = $row['freemode'];
 		if($row['custom_text'] == "") {
-
 			$hasCustomText = 0;
 		} else {
 			$hasCustomText = 1;
@@ -1293,17 +1285,12 @@ function showMode($group_id, $newGroup = false) {
 			$hasWelcomeText = 1;
 		}
 	} else {
-
-
-
 		$mode = 0;
 		$name = "este grupo";
 		$flag = 0;
 		$freemode = 1;
 		$hasCustomText = 0;
 		$hasWelcomeText = 0;
-
-
 	}
 	mysql_free_result($result);
 	apiRequest("sendChatAction", array('chat_id' => $group_id, 'action' => "typing"));
@@ -2888,7 +2875,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
-				"🤖 <b>Otros bots:</b>"
+				"💎 <b>Otros bots:</b>"
 				.PHP_EOL.
 				"@KamisukeBot: <i>Envía sonidos cortos como con el antiguo \"Messenger Plus!\".</i>"
 				.PHP_EOL.
@@ -2904,7 +2891,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v2.3 creado por @Kamisuke."
+				"@DemisukeBot v2.3.1 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -3173,13 +3160,13 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>Si pulsas el !botón y te salvas, se añadirán puntos de heroicidad a tu marcador, pero si no te salvas perderás bastantes puntos.</i>"
 				.PHP_EOL.
-				"▶️<i>La probabilidad de no salvarte pulsando el !botón varía entre el 10 y el 20%, por lo que siempre habrá un mínimo del 80% de posibilidades de salvarte.</i>"
+				"▶️<i>La probabilidad de no salvarte pulsando el !botón depende progresivamente de tus puntos actuales. Por ejemplo, un jugador con 0 puntos tendrá un 100% de posibilidades de salvarse, y un jugador con 150 puntos, un 90%.</i>"
 				.PHP_EOL.
 				"▶️<i>Para aparecer en las tablas de clasificación bastará con haber pulsado al menos una vez el !botón.</i>"
 				.PHP_EOL.
 				"▶️<i>La primera vez que pulses el !botón recibirás 100 puntos iniciales extra.</i>"
 				.PHP_EOL.
-				"▶️<i>Puedes pulsar el !botón una vez cada veinte segundos, sin límite de pulsaciones máximas.</i>"
+				"▶️<i>Puedes pulsar el !botón una vez cada quince segundos, sin límite de pulsaciones máximas.</i>"
 				.PHP_EOL.
 				"▶️<i>Ningún jugador tendrá puntuaciones negativas aunque reciba penalizaciones. La mínima puntuación de un jugador es 0.</i>"
 				.PHP_EOL.
@@ -3596,7 +3583,7 @@ function processMessage($message) {
 		} else {
 				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
 		}
-	} else if (strpos(strtolower($text), "!invocar") !== false) {
+	} else if (strpos(strtolower($text), "!invoca") !== false) {
 		error_log($logname." triggered: !invocar.");
 		$sentence = randomSentence(true);
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -3831,7 +3818,7 @@ function processMessage($message) {
 		if($randomTicket > -3) {
 			$currTime = time();
 			error_log($logname." triggered: !boton.");
-			$bombTicket = rand(1,5);
+			$bombTicket = 0;
 			$username = str_replace("@", "", $logname);
 			$userTotal = 100;
 			$link = dbConnect();
@@ -3839,12 +3826,12 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['total'])) {
-				if( ($row['last_check'] + 20) > $currTime) {
+				if( ($row['last_check'] + 15) > $currTime) {
 					error_log($logname." triggered too fast: !boton.");
 					mysql_free_result($result);
 					mysql_close($link);
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					$text = "*Solo puedes pulsar el botón una vez cada veinte segundos.*";
+					$text = "*Solo puedes pulsar el botón una vez cada quince segundos.*";
 					usleep(250000);
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => $text));
 					exit;
@@ -3858,7 +3845,25 @@ function processMessage($message) {
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 			}
 			mysql_free_result($result);
-			if($bombTicket == 4) {
+			$lastTotal = $userTotal;
+			if($userTotal < 110) {
+				$bombTicket = 1;
+			} else if($userTotal < 250) {
+				$bombTicket = rand(1,10);
+			} else if($userTotal < 400) {
+				$bombTicket = rand(2,10);
+			} else if($userTotal < 500) {
+				$bombTicket = rand(3,10);
+			} else if($userTotal < 700) {
+				$bombTicket = rand(4,10);
+			} else if($userTotal < 900) {
+				$bombTicket = rand(6,10);
+			} else if($userTotal < 950) {
+				$bombTicket = rand(9,10);
+			} else {
+				$bombTicket = 10;
+			}
+			if($bombTicket == 10) {
 				$penalty = rand(20,40);
 				error_log($logname." loses these points: ".$penalty);
 				$userTotal = $userTotal - $penalty;
@@ -3871,7 +3876,7 @@ function processMessage($message) {
 				mysql_close($link);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
-				$text = $text.PHP_EOL."_Se restarán ".$penalty." puntos de heroicidad y el total pasará a ser de ".$userTotal." punto";
+				$text = $text.PHP_EOL."_Se restarán ".$penalty." puntos de heroicidad y el total pasará de ".$lastTotal." a ".$userTotal." punto";
 				if($userTotal == 1) {
 					$text = $text."._";
 				} else {
@@ -3892,7 +3897,7 @@ function processMessage($message) {
 				mysql_close($link);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				$text = "*✅ ¡".$username." ha pulsado el botón y se ha salvado! 🍾*";
-				$text = $text.PHP_EOL."_Se sumarán ".$victory." puntos de heroicidad y el total pasará a ser de ".$userTotal." punto";
+				$text = $text.PHP_EOL."_Se sumarán ".$victory." puntos de heroicidad y el total pasará de ".$lastTotal." a ".$userTotal." punto";
 				if($userTotal == 1) {
 					$text = $text."._";
 				} else {

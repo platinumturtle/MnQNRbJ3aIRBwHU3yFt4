@@ -3562,7 +3562,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
-				"👁‍🗨 <b>Otros bots:</b>"
+				"🎁💎 <b>Otros bots:</b>"
 				.PHP_EOL.
 				"@KamisukeBot: <i>Envía sonidos cortos como con el antiguo \"Messenger Plus!\".</i>"
 				.PHP_EOL.
@@ -3847,13 +3847,13 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>Si pulsas el !botón y te salvas, se añadirán puntos de heroicidad a tu marcador, pero si no te salvas perderás bastantes puntos.</i>"
 				.PHP_EOL.
-				"▶️<i>La probabilidad de no salvarte pulsando el !botón varía entre el 10 y el 20%, por lo que siempre habrá un mínimo del 80% de posibilidades de salvarte.</i>"
+				"▶️<i>La probabilidad de no salvarte pulsando el !botón depende progresivamente de tus puntos actuales. Por ejemplo, un jugador con 0 puntos tendrá un 100% de posibilidades de salvarse, y un jugador con 150 puntos, un 90%.</i>"
 				.PHP_EOL.
 				"▶️<i>Para aparecer en las tablas de clasificación bastará con haber pulsado al menos una vez el !botón.</i>"
 				.PHP_EOL.
 				"▶️<i>La primera vez que pulses el !botón recibirás 100 puntos iniciales extra.</i>"
 				.PHP_EOL.
-				"▶️<i>Puedes pulsar el !botón una vez cada veinte segundos, sin límite de pulsaciones máximas.</i>"
+				"▶️<i>Puedes pulsar el !botón una vez cada quince segundos, sin límite de pulsaciones máximas.</i>"
 				.PHP_EOL.
 				"▶️<i>Ningún jugador tendrá puntuaciones negativas aunque reciba penalizaciones. La mínima puntuación de un jugador es 0.</i>"
 				.PHP_EOL.
@@ -4423,12 +4423,12 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['total'])) {
-				if( ($row['last_check'] + 20) > $currTime) {
+				if( ($row['last_check'] + 15) > $currTime) {
 					error_log($logname." triggered too fast: !boton.");
 					mysql_free_result($result);
 					mysql_close($link);
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					$text = "*Solo puedes pulsar el botón una vez cada veinte segundos.*";
+					$text = "*Solo puedes pulsar el botón una vez cada quince segundos.*";
 					usleep(250000);
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => $text));
 					exit;
@@ -4473,7 +4473,7 @@ function processMessage($message) {
 				mysql_close($link);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				$text = "*☠ ¡".$username." ha pulsado el botón y ha salido volando! 💀*";
-				$text = $text.PHP_EOL."_Se restarán ".$penalty." puntos de heroicidad y el total pasará a ser de ".$userTotal." punto";
+				$text = $text.PHP_EOL."_Se restarán ".$penalty." puntos de heroicidad y el total pasará de ".$lastTotal." a ".$userTotal." punto";
 				if($userTotal == 1) {
 					$text = $text."._";
 				} else {
@@ -4494,7 +4494,7 @@ function processMessage($message) {
 				mysql_close($link);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				$text = "*✅ ¡".$username." ha pulsado el botón y se ha salvado! 🍾*";
-				$text = $text.PHP_EOL."_Se sumarán ".$victory." puntos de heroicidad y el total pasará a ser de ".$userTotal." punto";
+				$text = $text.PHP_EOL."_Se sumarán ".$victory." puntos de heroicidad y el total pasará de ".$lastTotal." a ".$userTotal." punto";
 				if($userTotal == 1) {
 					$text = $text."._";
 				} else {

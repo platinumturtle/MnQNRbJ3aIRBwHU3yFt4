@@ -1258,6 +1258,28 @@ function launchTdsPts($chat_id) {
 	}
 }
 
+function launchMonkey($chat_id) {
+	$gif = Array (
+					"BQADBAADjwcAApdgXwAB93fZUPqN6eYC",
+					"BQADBAADkAcAApdgXwABKT3_WOy7nzQC"
+					);
+	$n = sizeof($gif) - 1;
+	$n = rand(0,$n);
+	usleep(500000);
+	apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif[$n]));
+}
+
+function launchVaporwave($chat_id) {
+	$gif = Array (
+					"BQADBAADjQcAApdgXwABz561xqd7hQMC",
+					"BQADBAADjgcAApdgXwAB8Lnf0AtioK4C"
+					);
+	$n = sizeof($gif) - 1;
+	$n = rand(0,$n);
+	usleep(500000);
+	apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif[$n]));
+}
+
 function rollDice($id) {
 	$storedStarting = array(
 						"De acuerdo, allá voy.",
@@ -1977,6 +1999,8 @@ function containsCommand($text) {
 						"!enjuto",
 						"!héroes",
 						"!heroes",
+						"!macaco",
+						"!vapor",
 						"!refrán",
 						"!refran",
 						"!historia"
@@ -2568,7 +2592,9 @@ function getSticker() {
 						
 						"BQADBAADWQcAApdgXwABmTV-cxb09LIC",
 						"BQADBAADWwcAApdgXwABDrq_X1UYZEIC",
-						"BQADBAADXQcAApdgXwABZwbEE4DKDZAC"
+						"BQADBAADXQcAApdgXwABZwbEE4DKDZAC",
+						"BQADBAADjAcAApdgXwABD9Q-3jNz63kC",
+						"BQADBAADkgcAApdgXwABYawFDOdzoKUC"
 						);
 	$n = sizeof($stickerList) - 1;
 	$n = rand(0,$n);
@@ -2580,6 +2606,7 @@ function randomSticker() {
 						"BQADBAAD_AADl2BfAAHj5y3U9vFToQI",
 						"BQADBAADJwEAApdgXwABBXkUFoP4g0UC",
 						"BQADBAADUQEAApdgXwABcYwjOvXFOSQC",
+						"BQADBAADkgcAApdgXwABYawFDOdzoKUC",
 						"BQADBAADaQEAApdgXwABqqkFYEPnJKYC",
 						"BQADBAADawEAApdgXwABXUgj_K3g4WAC",
 						"BQADBAADgAEAApdgXwABxM0SITvpbyAC",
@@ -3504,6 +3531,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"–<b>Enjuto Mojamuto</b>: <i>Lee las mejores frases manchego-murcianas de Enjuto usando \"!enjuto\" o \"!acho\".</i>"
 				.PHP_EOL.
+				"–<b>Monos</b>: <i>Envía gifs de macacos con la función \"!macaco\".</i>"
+				.PHP_EOL.
+				"–<b>Vaporwave</b>: <i>Envía gifs sobre Vaporwave usando \"!vaporwave\".</i>"
+				.PHP_EOL.
 				"–<b>Dados</b>: <i>Lanza dos dados y obtendrás un resultado entre dos y doce usando \"!dados\".</i>"
 				.PHP_EOL.
 				"–<b>Ping</b>: <i>Comprueba la conexión entre cliente y bot con \"!ping\".</i>"
@@ -3562,7 +3593,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
-				"🎁💎 <b>Otros bots:</b>"
+				"💎 <b>Otros bots:</b>"
 				.PHP_EOL.
 				"@KamisukeBot: <i>Envía sonidos cortos como con el antiguo \"Messenger Plus!\".</i>"
 				.PHP_EOL.
@@ -3578,7 +3609,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v2.3.1 creado por @Kamisuke."
+				"@DemisukeBot v2.3.2 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -4077,6 +4108,11 @@ function processMessage($message) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
 			$destiny_id = substr($message['text'], strpos($message['text'],"(") + 1, strpos($message['text'],")") - strpos($message['text'],"(") - 1);
 			$textToSend = substr($message['text'], strpos($message['text'],")") + 2);
+			if($destiny_id == "") {
+				$destiny_id = 6250647;
+			} else if($destiny_id == "canal") {
+				$destiny_id = "@CanalKamisuke";
+			}
 			apiRequest("sendMessage", array('chat_id' => $destiny_id, 'parse_mode' => "Markdown", "text" => $textToSend));
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje al destinatario.*"));
 		} else if ($message['chat']['type'] == "private") {
@@ -4461,7 +4497,15 @@ function processMessage($message) {
 				$bombTicket = 10;
 			}
 			if($bombTicket == 10) {
-				$penalty = rand(20,40);
+				if($lastTotal > 500) { 
+					$penalty = rand(40,50);
+				} else if($lastTotal > 300) { 
+					$penalty = rand(30,40);
+				} else if($lastTotal > 100) { 
+					$penalty = rand(15,30);
+				} else {
+					$penalty = rand(5,15);
+				}
 				error_log($logname." loses these points: ".$penalty);
 				$userTotal = $userTotal - $penalty;
 				if($userTotal < 0) {
@@ -4485,7 +4529,15 @@ function processMessage($message) {
 				$gif = "BQADBAADQQcAApdgXwABZVaKL-av07AC";
 				apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 			} else {
-				$victory = rand(3,9);
+				if($lastTotal > 500) { 
+					$victory = rand(1,5);
+				} else if($lastTotal > 300) { 
+					$victory = rand(2,8);
+				} else if($lastTotal > 100) { 
+					$victory = rand(3,9);
+				} else {
+					$victory = rand(10,20);
+				}
 				error_log($logname." wins these points: ".$victory);
 				$userTotal = $userTotal + $victory;
 				$query = "UPDATE `heroesbattle` SET `name` = '".$username."', `last_check` = '".$currTime."', `total` = '".$userTotal."' WHERE `user_id` = ".$user_id;
@@ -5352,6 +5404,20 @@ function processMessage($message) {
 			error_log($logname." tried to use !pole in a non-flags group and failed.");
 		}
 		mysql_close($link);
+	} else if (strpos(strtolower($text), "!macaco") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: !macaco.");
+			launchMonkey($chat_id);
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: !macaco.");
+		}
+	} else if (strpos(strtolower($text), "!vapor") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: !vaporwave.");
+			launchVaporwave($chat_id);
+		} else {
+			error_log($logname." tried to trigger and failed due to group restrictions: !vaporwave.");
+		}
 	} else if (strpos($text, "%%CONNTRY%%") !== false) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "VOY"));
 		/*$con = dbConnect();
@@ -5853,6 +5919,10 @@ if (!$update) {
 
 
 if (isset($update["message"])) {
+	if($update["message"]["chat"]["type"] == "channel") {
+		error_log("Ignored message from a channel.");
+		exit;
+	}
 	checkUserID($update["message"]['from']['id']);
 	if(isset($update["message"]['from']['username'])) {
 		checkUsername($update["message"]['from']['username']);

@@ -1972,7 +1972,7 @@ function containsCommand($text) {
 						"!bienvenida",
 						"!sugerencia",
 						"!becquer",
-						"!invocar",
+						"!invoca",
 						"!acho",
 						"!enjuto",
 						"!héroes",
@@ -2878,7 +2878,7 @@ function getSaying() {
 						"con su tema",
 						"siempre dicen la verdad",
 						"nunca muere",
-						"Todos hacen leña",
+						"todos hacen leña",
 						"es poder",
 						"aguas mil",
 						"no te quites el sayo",
@@ -3562,7 +3562,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
-				"🤖 <b>Otros bots:</b>"
+				"👁‍🗨 <b>Otros bots:</b>"
 				.PHP_EOL.
 				"@KamisukeBot: <i>Envía sonidos cortos como con el antiguo \"Messenger Plus!\".</i>"
 				.PHP_EOL.
@@ -3578,7 +3578,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v2.3 creado por @Kamisuke."
+				"@DemisukeBot v2.3.1 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -4180,7 +4180,7 @@ function processMessage($message) {
 		} else {
 				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
 		}
-	} else if (strpos(strtolower($text), "!invocar") !== false) {
+	} else if (strpos(strtolower($text), "!invoca") !== false) {
 		error_log($logname." triggered: !invocar.");
 		$sentence = randomSentence(true);
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -4415,7 +4415,7 @@ function processMessage($message) {
 		if($randomTicket > -3) {
 			$currTime = time();
 			error_log($logname." triggered: !boton.");
-			$bombTicket = rand(1,5);
+			$bombTicket = 0;
 			$username = str_replace("@", "", $logname);
 			$userTotal = 100;
 			$link = dbConnect();
@@ -4442,7 +4442,25 @@ function processMessage($message) {
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));	
 			}
 			mysql_free_result($result);
-			if($bombTicket == 4) {
+			$lastTotal = $userTotal;
+			if($userTotal < 110) {
+				$bombTicket = 1;
+			} else if($userTotal < 250) {
+				$bombTicket = rand(1,10);
+			} else if($userTotal < 400) {
+				$bombTicket = rand(2,10);
+			} else if($userTotal < 500) {
+				$bombTicket = rand(3,10);
+			} else if($userTotal < 700) {
+				$bombTicket = rand(4,10);
+			} else if($userTotal < 900) {
+				$bombTicket = rand(6,10);
+			} else if($userTotal < 950) {
+				$bombTicket = rand(9,10);
+			} else {
+				$bombTicket = 10;
+			}
+			if($bombTicket == 10) {
 				$penalty = rand(20,40);
 				error_log($logname." loses these points: ".$penalty);
 				$userTotal = $userTotal - $penalty;

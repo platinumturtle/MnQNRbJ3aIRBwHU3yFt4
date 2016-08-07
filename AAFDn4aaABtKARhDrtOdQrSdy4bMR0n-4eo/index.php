@@ -2268,7 +2268,8 @@ function getSaying() {
 						"En casa del herrero",
 						"Sin prisa",
 						"Mal de muchos",
-						"Tanto va el cántaro a la fuente"
+						"Tanto va el cántaro a la fuente",
+						"Después de la tempestad"
 						);
 	$n = sizeof($storedPartA) - 1;
 	$n = rand(0,$n);
@@ -2310,7 +2311,8 @@ function getSaying() {
 						"cuchara de palo",
 						"pero sin pausa",
 						"consuelo de tontos",
-						"que al final se ahoga"
+						"que al final se ahoga",
+						"llega la calma"
 						);
 	$n = sizeof($storedPartB) - 1;
 	$n = rand(0,$n);

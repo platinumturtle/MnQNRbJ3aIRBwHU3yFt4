@@ -1999,6 +1999,10 @@ function containsCommand($text) {
 						"!enjuto",
 						"!héroes",
 						"!heroes",
+						"!chiste",
+						"!apuesta",
+						"!ruleta",
+						"!fichas",
 						"!macaco",
 						"!vapor",
 						"!refrán",
@@ -2934,6 +2938,77 @@ function getSaying() {
 	return $text;
 }
 
+function getJoke() {
+	$storedJoke = array(
+						"Hace tiempo fui a un restaurante, comí y me fui sin pagar. Pensé: esto mola. Al día siguiente fui a un buffet, pagué y me fui corriendo sin comer. Hice el 'sinpa' de las anoréxicas.",
+						"Me gusta la sopa de fideos, la sopa de letras y la sopa de puntos, que es como la de letras pero en Braille para los ciegos.",
+						"Vendí mi sidecar para pagar las multas que me pusieron por aparcar en doble fila",
+						"De una relación entre una mujer y un amigo imaginario puede durgir un embarazo psicológico",
+						"Lo bueno de ser estéril es que no es hereditario",
+						"Cuando a la pregunta \"¿Qué llevas puesto?\" te respondan: un camisón y nada debajo, ¡cuidado! es un fantasma",
+						"Me matriculé en una universidad a distancia porque veía mal de cerca",
+						"Estoy escribiendo un libro para aprender a andar en tres sencillos pasos. Si lo lees muy rápido aprendes a correr",
+						"El mejor sitio para ir a la cárcel es el espacio, porque el jabón flota",
+						"Lo mejor de Venecia es que puedes sacar al pez a la calle a hacer sus cositas, y participar en encierros con tiburones",
+						"Los yonkis ponen ratones debajo de la almohada para que les traigan dientes",
+						"Los vagabundos compran cartones en Zara Homeless",
+						"Una vez me compré la revista Muy interesnte, cogí un boli rojo y lo subrayé todo",
+						"Cuando quiero un zumo de naranja exprimo un tomate y un limón, porque el rojo y el amarillo hacen el naranja",
+						"Ayer vi un mimo haciendo como que jugaba con una cuerda. A mí me gustó, así que hice como que le echaba una moneda",
+						"En África hay mucho Sida, por eso hay tan pocos vampiros",
+						"Alguien me acosa y me llama frecuentemente por teléfono. La policía dice que puede ser cualquiera, o Carlos Latre",
+						"Un anacardo es un cacahuete en posición fetal",
+						"Islandia se puso el nombre antes que las demás islas",
+						"No es que tenga el síndrome de Diógenes, es que mi basura tiene el síndrome de Estocolmo, no reciclo porque no creo en la reencarnación",
+						"Encontrar un reloj de oro en la basura es tirar tiempo y dinero",
+						"Tengo una línea horizontal tatuada en el cuello para que cuando vaya a la playa sepa cuándo cubre",
+						"Me quiero poner pendientes, pero me pondré solo uno, así llevo puesto un pendiente y tengo el otro pendiente",
+						"Un pelirrojo es un albino tinto",
+						"Me he comprado una cuerda para tender la ropa porque la que tenía la he lavado y la he puesto a tender",
+						"Me he comprado crema depilatoria porque tengo moqueta y quiero parquet",
+						"El otro día en las noticias contaban que una chica llamada Susana había desaparecido y sus vecinos hicieron una pancarta con el lema: todos somos Sunsana. Eso no ayuda. Esperad a que la encuentren antes de jugar al despiste",
+						"Mi vecina es enana. Sus padres le hicieron repetir preescolar para disimular hasta que murió",
+						"El enano es la Metadona del pedófilo",
+						"Tres enanos en un ataúd son un cacahuete",
+						"Mi vecino es camello, pero porque tiene chepa",
+						"'Saber vivir' es un un programa innecesario, porque cualquiera que esté viendo el programa entre semana a las doce de la mañana, sabe vivir",
+						"No quiero morir solo, por eso siempre viajo con EasyJet",
+						"Me encantan los escritores de nombre, escriben en perfecto Times New Roman",
+						"Dicen que es peligroso hacer una Ouija con unas tijeras cerca. En realidad lo peligroso es dejar unas tijeras cerca de un grupo de estúpidos",
+						"Las mujeres Transformer tardan dos horas en transformarse, y sus hijos bajan a jugar al párking",
+						"Un amigo se depiló las cejas, ahora solo tiene entrecejo",
+						"Un amigo intentó suicidarse y al día siguiente se denunció por amenazas",
+						"Las camisas hawaiianas son camisas de camuflaje en Hawaii",
+						"Las tiendas de disfraces son una tapadera de tiendas de maniquíes",
+						"He encontrado unas pastillas con las que puedo estar horas sin fumar, se llaman Dormidina",
+						"No entiendo a la gente que le toca pasillo en un avión, a mí siempre me toca asiento",
+						"El transporte más seguro no es el avión, es la ambulancia",
+						"No estoy en coma, estoy en modo avión",
+						"Yo doy el pésame con el emoticono de la báscula",
+						"Los zombis avanzan en punto muerto",
+						"El fútbol es de niños y coser es de niñas. Eso es sexismo. Aprendamos de Pakistán, donde niños y niñas cosen balones",
+						"Yo no odio, amo en negativo",
+						"Cuando muera quiero que os incineren",
+						"Me encanta dormid con alguien que ronca y soñar que tengo una Harley",
+						"Quemar un ninot de tu mujer es Valencia de género",
+						"Un atasco es una manifestación de Transformers",
+						"Lo mejor de un tsunami es que alcanza bien donde no se llega con la bayeta",
+						"Al funeral de una soltera van cuatro gatos",
+						"Si mi coche pierde aceite no lo llevo al taller, lo que tengo que hacer es aceptarlo",
+						"Cuando muera quiero que en mi lápida solo ponga mi fecha de nacimiento, para que quien pase piense que me han enterrado vivo",
+						"El hombre invéntó la rueda en el Neolítico e inventó la silla en el Paralítico",
+						"Me echaron del Rey León por tirarle cacahuetes al reparto",
+						"Quiero profanar la tumba del fundador de Danone y ver si hay algo bajo la tapa",
+						"Pitar un himno es silbarlo mal",
+						"Yo me baño en bolas camuflado en una piscina de bolas",
+						"Tenía la impresión de que me seguían, así que contraté un guardaespaldas y dejó de ser una impresión. Lo bueno es que son gratis, porque si no les pagas te siguen dos cobradores del Frac y el efecto es el mismo"
+						);
+	$n = sizeof($storedJoke) - 1;
+	$n = rand(0,$n);
+
+	return $storedJoke[$n];
+}
+
 function tellStory($part,$name) {
 	$name = $name." ";
 	$story = "example";
@@ -3519,6 +3594,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"–<b>Insultos</b>: <i>Insulta a alguien mediante \"!insulta a nombre\".</i>"
 				.PHP_EOL.
+				"–<b>Humor</b>: <i>Escribe \"!chiste\" para leer una frase célebre de Luis Álvaro.</i>"
+				.PHP_EOL.
 				"–<b>Sticker</b>: <i>Envía un sticker al azar con \"!sticker\".</i>"
 				.PHP_EOL.
 				"–<b>Historia</b>: <i>Cuenta una larga historia al escribir \"!historia\".</i>"
@@ -3591,6 +3668,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Más información: /ayuda_heroes"
 				.PHP_EOL.
+				"–<b>Apuestas</b>: <i>Gana fichas apostando en grupos con \"!apuesta\"</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_apuestas"
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"💎 <b>Otros bots:</b>"
@@ -3609,7 +3690,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v2.3.2 creado por @Kamisuke."
+				"@DemisukeBot v2.5 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -3892,6 +3973,35 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>La tabla de !héroesgrupo mostrará todos aquellos usuarios que hayan pulsado el !botón al menos una vez, sin importar su puntuación o la ventana de chat desde donde lo pulsaron.</i>"
 				;
+	} else if($mode == "apuesta") {
+		$text = "🔎 <b>Apuestas entre amigos</b> 📝"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"➡️<b>!heroes</b>: <i>Muestra la clasificación de los diez mejores héroes de Telegram.</i>"
+				.PHP_EOL.
+				"➡️<b>!heroesgrupo</b>: <i>Muestra el TOP10 de héroes del grupo desde donde se ejecuta la función.</i>"
+				.PHP_EOL.
+				"➡️<b>!boton</b>: <i>Pulsa el botón mágico que decidirá el futuro de tu heroicidad.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"▶️<i>Si pulsas el !botón y te salvas, se añadirán puntos de heroicidad a tu marcador, pero si no te salvas perderás bastantes puntos.</i>"
+				.PHP_EOL.
+				"▶️<i>La probabilidad de no salvarte pulsando el !botón depende progresivamente de tus puntos actuales. Por ejemplo, un jugador con 0 puntos tendrá un 100% de posibilidades de salvarse, y un jugador con 150 puntos, un 90%.</i>"
+				.PHP_EOL.
+				"▶️<i>Para aparecer en las tablas de clasificación bastará con haber pulsado al menos una vez el !botón.</i>"
+				.PHP_EOL.
+				"▶️<i>La primera vez que pulses el !botón recibirás 100 puntos iniciales extra.</i>"
+				.PHP_EOL.
+				"▶️<i>Puedes pulsar el !botón una vez cada quince segundos, sin límite de pulsaciones máximas.</i>"
+				.PHP_EOL.
+				"▶️<i>Ningún jugador tendrá puntuaciones negativas aunque reciba penalizaciones. La mínima puntuación de un jugador es 0.</i>"
+				.PHP_EOL.
+				"▶️<i>La tabla de !héroes mostrará solamente aquellos héroes o heroínas que tengan un minimo de 120 puntos de heroicidad.</i>"
+				.PHP_EOL.
+				"▶️<i>La tabla de !héroesgrupo mostrará todos aquellos usuarios que hayan pulsado el !botón al menos una vez, sin importar su puntuación o la ventana de chat desde donde lo pulsaron.</i>"
+				;
 	}
 	if(strlen($text) > 5){
 		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
@@ -4073,7 +4183,8 @@ function processMessage($message) {
 				strpos($text, "/ayuda_grupos") === 0 || strpos($text, "/ayuda_grupos@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_bandera") === 0 || strpos($text, "/ayuda_bandera@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_mastil") === 0 || strpos($text, "/ayuda_mastil@DemisukeBot") === 0 || 
-				strpos($text, "/ayuda_heroes") === 0 || strpos($text, "/ayuda_heroes@DemisukeBot") === 0) {
+				strpos($text, "/ayuda_heroes") === 0 || strpos($text, "/ayuda_heroes@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_apuestas") === 0 || strpos($text, "/ayuda_apuestas@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
 		commandsList($chat_id, $text);
     } else if (strpos($text, "/sendNotification") === 0) {
@@ -4254,6 +4365,66 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!ping") !== false) {
 		error_log($logname." triggered: !ping.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¡Pong!*"));
+	} else if (strpos(strtolower($text), "!apuesta") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			if(strlen($text) > 14) {
+				error_log($logname." triggered: !apuesta.");
+				$errorFound = 0;
+				$betResult = substr($text, strpos($text,"(") + 1, 2);
+				$betNumber =(int)$betResult[0];
+				$betColor = strtoupper($betResult[1]);
+				$betTokens = substr($text, strpos($text,")") + 1);
+				$betTokens = rtrim(ltrim($betTokens));
+				if(!is_numeric($betNumber)) {
+					$errorFound = 1;
+				} else if($betNumber < 1) {
+					$errorFound = 1;
+				} else if($betNumber > 5) {
+					$errorFound = 1;
+				} else if($betColor != "R" && $betColor != "N" ) {
+					$errorFound = 1;
+				} else if(!is_numeric($betTokens)) {
+					$errorFound = 1;
+				} else if($betTokens < 1) {
+					$errorFound = 1;
+				}
+				if($errorFound > 0) {
+					error_log($logname." wrote wrong bet.");
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido la apuesta, consulta* /ayuda_apuestas *para saber cómo apostar correctamente.*"));
+					exit;
+				}
+				error_log("Apuesta buena.");
+			} else {
+				error_log($logname." tried to trigger and failed: !apuesta.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido la apuesta, consulta* /ayuda_apuestas *para saber cómo apostar correctamente.*"));
+			}
+		} else {
+			error_log($logname." tried to trigger and failed: !apuesta.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!ruleta") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered: !ruleta.");
+
+		} else {
+			error_log($logname." tried to trigger and failed: !ruleta.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Esta función solo está disponible para grupos, ¡añádeme a uno!*"));
+		}
+	} else if (strpos(strtolower($text), "!fichas") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !fichas.");
+
+		} else {
+			error_log($logname." triggered in private: !fichas.");
+		}
 	} else if (strpos(strtolower($text), "!moneda") !== false) {
 		if($randomTicket > -3) {
 			error_log($logname." triggered: !moneda.");
@@ -5609,6 +5780,12 @@ function processMessage($message) {
 		error_log($logname." triggered: !refran.");
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		$text = getSaying();
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text.".*"));
+    } else if (strpos(strtolower($text), "!chiste") !== false) {
+		error_log($logname." triggered: !chiste.");
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		$text = getJoke();
 		usleep(250000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*".$text.".*"));
     } else if (strpos(strtolower($text), "!historia") !== false) {

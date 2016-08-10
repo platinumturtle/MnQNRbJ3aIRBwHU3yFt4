@@ -2970,6 +2970,7 @@ function getJoke() {
 						"Mi vecina es enana. Sus padres le hicieron repetir preescolar para disimular hasta que murió",
 						"El enano es la Metadona del pedófilo",
 						"Tres enanos en un ataúd son un cacahuete",
+						"Yo soy una persona normal, un retrasado en Canarias",
 						"Mi vecino es camello, pero porque tiene chepa",
 						"'Saber vivir' es un un programa innecesario, porque cualquiera que esté viendo el programa entre semana a las doce de la mañana, sabe vivir",
 						"No quiero morir solo, por eso siempre viajo con EasyJet",
@@ -4396,28 +4397,25 @@ function processMessage($message) {
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>No he entendido la apuesta, consulta</b> /ayuda_apuestas <b>para saber cómo apostar correctamente.</b>"));
 					exit;
 				}
-				// comprobar si existe en la tabla de jugadores
 				$link = dbConnect();
 				$query = "SELECT tokens FROM userbet WHERE user_id = '".$user_id."' AND group_id = '".$chat_id."'";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				if(isset($row['tokens'])) {
 					$tokens = $row['tokens'];
-					// si existe, comprobar en la tabla de jugadas si ya ha apostado
 					mysql_free_result($result);
 					$query = "SELECT bet_tokens, bet_result FROM drawerbet WHERE user_id = '".$user_id."' AND group_id = '".$chat_id."'";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
 					if(isset($row['bet_tokens'])) {
-						// si ha apostado, mostrar la apuesta de la tabla de jugadas
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						usleep(100000);
 						$text = "*Ya tienes una apuesta sobre la mesa de ";
 						$text = $text.$row['bet_tokens'];
 						if($row['bet_tokens'] > 1) {
-							$text = $text.$row['bet_tokens']." fichas al ";
+							$text = $text." fichas al ";
 						} else {
-							$text = $text.$row['bet_tokens']." ficha al ";
+							$text = $text." ficha al ";
 						}
 						$text = $text.$row['bet_result'][0]." ";
 						if($row['bet_result'][1] == 'R') {
@@ -4428,9 +4426,7 @@ function processMessage($message) {
 						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 					} else {
 						mysql_free_result($result);
-						// si no ha apostado, comprobar si tiene pasta suficiente
 						if($betTokens > $tokens) {
-							// si no tiene pasta avisar de que no tiene pasta, que use el !fichas en privado para recargar o elija un numero mas pequeño
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 							$text = "*Tienes ";
 							if($tokens > 1) {
@@ -4448,6 +4444,9 @@ function processMessage($message) {
 							$finalBet = $betNumber.$betColor;
 							$query = "INSERT INTO `drawerbet` (`user_id`, `group_id`, `bet_tokens`, `bet_result`) VALUES ('".$user_id."', '".$chat_id."', '".$betTokens."', '".$finalBet."');";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							$query = 'UPDATE userbet SET tokens = tokens - '.$betTokens.' WHERE user_id = '.$user_id.' AND group_id = '.$chat_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							$text = "*Fichas disponibles antes de apostar:* ".$tokens.PHP_EOL;
 							$text = $text."*Apuesta realizada:* ".$betNumber;
 							if($betColor == "R") {
@@ -4455,15 +4454,14 @@ function processMessage($message) {
 							} else {
 								$text = $text." negro".PHP_EOL;
 							}
-							$text = $text."*Fichas apostadas:* ".$betTokens;
+							$text = $text."*Fichas apostadas:* ".$betTokens.PHP_EOL.PHP_EOL;
+							$text = $text."_Cuando se hayan realizado todas las apuestas deseadas utiliza !ruleta para hacer girar la ruleta._";
 							usleep(100000);
 							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 						}							
 					}
 				} else {
-					// si no existe, revisar si la apuesta hecha es de 100 o menos
 					if($betTokens < 101) {
-						// si es apuesta real, añadirlo como nuevo jugador y realizar la apuesta
 						mysql_free_result($result);
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						$finalBet = $betNumber.$betColor;
@@ -4480,11 +4478,11 @@ function processMessage($message) {
 						} else {
 							$text = $text." negro".PHP_EOL;
 						}
-						$text = $text."*Fichas apostadas:* ".$betTokens;
+						$text = $text."*Fichas apostadas:* ".$betTokens.PHP_EOL.PHP_EOL;
+						$text = $text."_Cuando se hayan realizado todas las apuestas deseadas utiliza !ruleta para hacer girar la ruleta._";
 						usleep(100000);
 						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 					} else {
-						// si la apuesta no es real avisar de que en este grupo es tu primera apuesta y solo dispones de 100 fichuscas
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						$text = "*En esta mesa solo dispones de 100 fichas, realiza una apuesta menor.*";
 						usleep(100000);
@@ -4509,11 +4507,89 @@ function processMessage($message) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered: !ruleta.");
 			// comprobar si existe alguna apuesta en la tabla de jugadas
+			$link = dbConnect();
+			$query = "SELECT bet_tokens FROM drawerbet WHERE group_id = '".$chat_id."'";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['bet_tokens'])) {
 				// si hay una apuesta, girar la ruleta y avisar con un mensaje
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				$logname = str_replace("@", "", $logname);
+				$text = "<b>¡".$logname." ha girado la ruleta!</b>".PHP_EOL."El resultado aparecerá en cuanto la ruleta se detenga, suerte a todos los participantes.";
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				$rouletteResult = rand(1,10);
+				switch($rouletteResult){
+					case 1: $rouletteResult = "1N";
+							break;
+					case 2: $rouletteResult = "2N";
+							break;
+					case 3: $rouletteResult = "3N";
+							break;
+					case 4: $rouletteResult = "4N";
+							break;
+					case 5: $rouletteResult = "5N";
+							break;
+					case 6: $rouletteResult = "1R";
+							break;
+					case 7: $rouletteResult = "2R";
+							break;
+					case 8: $rouletteResult = "3R";
+							break;
+					case 9: $rouletteResult = "4R";
+							break;
+					case 10: $rouletteResult = "5R";
+							break;
+					default: $rouletteResult = "1N";
+							break;
+				}
+				mysql_free_result($result);
+				$query = "SELECT COUNT( * ) AS  'winners' FROM ( SELECT bet_tokens FROM drawerbet WHERE group_id = ".$chat_id." AND bet_result = '".$rouletteResult."' )dt";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if($rouletteResult[1] == "R") {
+					$colorResult = "rojo";
+				} else {
+					$colorResult = "negro";
+				}
+				$text = "<b>¡El resultado es el ".$rouletteResult[0]." ".$colorResult."!</b>".PHP_EOL.PHP_EOL;
+				sleep(1);
+				if(isset($row['winners']) || $row['winners'] > 0) {
 					// si hay ganadores, mostrar la lista de ganadores, lo que van a ganar y repartir el premio
+					$winners = $row['winners'];
+					mysql_free_result($result);
+					$query = "SELECT SUM( bet_tokens ) AS  'total' FROM  drawerbet WHERE group_id = ".$chat_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$totalTokens = $row['total'];
+					if($winners > 1){
+						// si hay mas de uno, division para recalcular el total apostado ganador
+						$totalTokens = $totalTokens / $winners;
+						(int)$totalTokens = round($totalTokens);
+					}
+					// query de suma a los ganadores
+					mysql_free_result($result);
+					$query = "UPDATE `userbet` SET `tokens` = `tokens` + ".$totalTokens." WHERE `group_id` = ".$chat_id." AND `user_id` IN ( SELECT user_id FROM drawerbet WHERE group_id = ".$chat_id." AND bet_result = '".$rouletteResult."')";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$text = $text."<b>Apuestas ganadoras:</b> ".$winners.PHP_EOL;
+					$text = $text."<b>Fichas a repartir por ganador:</b> ".$totalTokens;
+				} else {
 					// si no hay ganadores, motrar mensaje del resultado y que gana la banca
-					// borrar todas las jugadas de la mesa de grupo
+					$text = $text."Gana la banca, ¡mejor suerte la próxima vez!";
+				}
+				mysql_free_result($result);
+					// borrar todas las jugadas de la mesa de grupo	
+				$query = "DELETE FROM drawerbet WHERE group_id = ".$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+			} else {
 				// si no hay apuesta mostrar mensaje de que no hay apuestas, que alguien use !apuesta primero
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>No hay ninguna apuesta activa sobre la mesa, la ruleta se podrá girar cuando un usuario realice una !apuesta válida.</b>"));
+			}
+			mysql_free_result($result);
+			mysql_close($link);
 		} else {
 			error_log($logname." tried to trigger and failed: !ruleta.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

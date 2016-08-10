@@ -242,7 +242,7 @@ function randomSentence($isInvoking = false) {
 							"Celacanto",	"Fuet",
 							"Jamón",		"Salmorejo",
 							"Níspero",		"ravioli",
-							"Ukelele",
+							"Ukelele",		"volquete",
 							"Colesterol",
 							"Rinoceronte",	"Perineo",
 							"Triciclo",

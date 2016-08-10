@@ -4369,6 +4369,7 @@ function processMessage($message) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			if(strlen($text) > 14) {
 				error_log($logname." triggered: !apuesta.");
+				$user_id = $message['from']['id'];
 				$errorFound = 0;
 				$betResult = substr($text, strpos($text,"(") + 1, 2);
 				$betNumber =(int)$betResult[0];
@@ -4392,15 +4393,111 @@ function processMessage($message) {
 					error_log($logname." wrote wrong bet.");
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 					usleep(100000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido la apuesta, consulta* /ayuda_apuestas *para saber cómo apostar correctamente.*"));
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>No he entendido la apuesta, consulta</b> /ayuda_apuestas <b>para saber cómo apostar correctamente.</b>"));
 					exit;
 				}
-				error_log("Apuesta buena.");
+				// comprobar si existe en la tabla de jugadores
+				$link = dbConnect();
+				$query = "SELECT tokens FROM userbet WHERE user_id = '".$user_id."' AND group_id = '".$chat_id."'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if(isset($row['tokens'])) {
+					$tokens = $row['tokens'];
+					// si existe, comprobar en la tabla de jugadas si ya ha apostado
+					mysql_free_result($result);
+					$query = "SELECT bet_tokens, bet_result FROM drawerbet WHERE user_id = '".$user_id."' AND group_id = '".$chat_id."'";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					if(isset($row['bet_tokens'])) {
+						// si ha apostado, mostrar la apuesta de la tabla de jugadas
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(100000);
+						$text = "*Ya tienes una apuesta sobre la mesa de ";
+						$text = $text.$row['bet_tokens'];
+						if($row['bet_tokens'] > 1) {
+							$text = $text.$row['bet_tokens']." fichas al ";
+						} else {
+							$text = $text.$row['bet_tokens']." ficha al ";
+						}
+						$text = $text.$row['bet_result'][0]." ";
+						if($row['bet_result'][1] == 'R') {
+							$text = $text."rojo.*";
+						} else {
+							$text = $text."negro.*";
+						}
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+					} else {
+						mysql_free_result($result);
+						// si no ha apostado, comprobar si tiene pasta suficiente
+						if($betTokens > $tokens) {
+							// si no tiene pasta avisar de que no tiene pasta, que use el !fichas en privado para recargar o elija un numero mas pequeño
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							$text = "*Tienes ";
+							if($tokens > 1) {
+								$text = $text.$tokens." fichas ";
+							} else {
+								$text = $text.$tokens." ficha ";
+							}
+							$text = $text."en esta mesa, no puedes hacer esa apuesta. Haz una apuesta más pequeña o utiliza !fichas en chat privado con el bot para obtener más fichas.*";
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+						} else {
+							// si tiene pasta, realizar la apuesta y avisar de lo que tenia en total y lo que ha apostado
+							mysql_free_result($result);
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							$finalBet = $betNumber.$betColor;
+							$query = "INSERT INTO `drawerbet` (`user_id`, `group_id`, `bet_tokens`, `bet_result`) VALUES ('".$user_id."', '".$chat_id."', '".$betTokens."', '".$finalBet."');";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$text = "*Fichas disponibles antes de apostar:* ".$tokens.PHP_EOL;
+							$text = $text."*Apuesta realizada:* ".$betNumber;
+							if($betColor == "R") {
+								$text = $text." rojo".PHP_EOL;
+							} else {
+								$text = $text." negro".PHP_EOL;
+							}
+							$text = $text."*Fichas apostadas:* ".$betTokens;
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+						}							
+					}
+				} else {
+					// si no existe, revisar si la apuesta hecha es de 100 o menos
+					if($betTokens < 101) {
+						// si es apuesta real, añadirlo como nuevo jugador y realizar la apuesta
+						mysql_free_result($result);
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$finalBet = $betNumber.$betColor;
+						$query = "INSERT INTO `drawerbet` (`user_id`, `group_id`, `bet_tokens`, `bet_result`) VALUES ('".$user_id."', '".$chat_id."', '".$betTokens."', '".$finalBet."');";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						$leftTokens = 100 - $betTokens;
+						$query = "INSERT INTO `userbet` (`user_id`, `group_id`, `tokens`) VALUES ('".$user_id."', '".$chat_id."', '".$leftTokens."');";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$text = "*Fichas disponibles antes de apostar:* 100".PHP_EOL;
+						$text = $text."*Apuesta realizada:* ".$betNumber;
+						if($betColor == "R") {
+							$text = $text." rojo".PHP_EOL;
+						} else {
+							$text = $text." negro".PHP_EOL;
+						}
+						$text = $text."*Fichas apostadas:* ".$betTokens;
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+					} else {
+						// si la apuesta no es real avisar de que en este grupo es tu primera apuesta y solo dispones de 100 fichuscas
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$text = "*En esta mesa solo dispones de 100 fichas, realiza una apuesta menor.*";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+					}
+				}
+				mysql_free_result($result);
+				mysql_close($link);
 			} else {
 				error_log($logname." tried to trigger and failed: !apuesta.");
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				usleep(100000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido la apuesta, consulta* /ayuda_apuestas *para saber cómo apostar correctamente.*"));
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>No he entendido la apuesta, consulta</b> /ayuda_apuestas <b>para saber cómo apostar correctamente.</b>"));
 			}
 		} else {
 			error_log($logname." tried to trigger and failed: !apuesta.");
@@ -4411,7 +4508,12 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!ruleta") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered: !ruleta.");
-
+			// comprobar si existe alguna apuesta en la tabla de jugadas
+				// si hay una apuesta, girar la ruleta y avisar con un mensaje
+					// si hay ganadores, mostrar la lista de ganadores, lo que van a ganar y repartir el premio
+					// si no hay ganadores, motrar mensaje del resultado y que gana la banca
+					// borrar todas las jugadas de la mesa de grupo
+				// si no hay apuesta mostrar mensaje de que no hay apuestas, que alguien use !apuesta primero
 		} else {
 			error_log($logname." tried to trigger and failed: !ruleta.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -4421,9 +4523,14 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!fichas") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !fichas.");
-
+			// mostrar el top10 de fichas del grupo como en cualquier otro minijuego, funcion estandar y listo. (que tenga el separador de miles)
 		} else {
 			error_log($logname." triggered in private: !fichas.");
+			// comprobar si el usuario existe en al menos una mesa de grupo
+				// si existe, comprobar con el tiempo mas nuevo si han pasado 12h
+					// si han pasado 12h, añadirle +100 a cada celda y mostrar el nuevo bolsillo de esa mesa
+					// si no han pasado 12h, mostrar cuanto dinero tiene en cada mesa y avisar de que podra añadir fondos cuando pasen 12h de su ultimo ingreso
+				// si no existe, avisar de que empiece apostando algo en alguna mesa
 		}
 	} else if (strpos(strtolower($text), "!moneda") !== false) {
 		if($randomTicket > -3) {

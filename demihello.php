@@ -4881,7 +4881,7 @@ function processMessage($message) {
 						$emojiA = emojiSlot($slotA);
 						$emojiB = emojiSlot($slotB);
 						$emojiC = emojiSlot($slotC);
-						$text = $text.$emojiA.$emojiB.$emojiC.;
+						$text = $text.$emojiA.$emojiB.$emojiC;
 						$text = $text."⬛️".PHP_EOL."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
 						// calcular el premio
 						if($slotA == $slotB && $slotB == $slotC) {
@@ -4961,7 +4961,7 @@ function processMessage($message) {
 				$emojiA = emojiSlot($slotA);
 				$emojiB = emojiSlot($slotB);
 				$emojiC = emojiSlot($slotC);
-				$text = $text.$emojiA.$emojiB.$emojiC.;
+				$text = $text.$emojiA.$emojiB.$emojiC;
 				$text = $text."⬛️".PHP_EOL."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
 				// calcular el premio
 				if($slotA == $slotB && $slotB == $slotC) {

@@ -3846,7 +3846,6 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Más información: /ayuda_rocosos"
 				.PHP_EOL.
-				.PHP_EOL.
 				"–<b>Batalla de mensajes</b>: <i>Compite por ser el más activo de Telegram con \"!mensajes\".</i>"
 				.PHP_EOL.
 				"Más información: /ayuda_mensajes"

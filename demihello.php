@@ -2186,6 +2186,7 @@ function containsCommand($text) {
 						"!chiste",
 						"!apuesta",
 						"!slot",
+						"!777",
 						"!ludopata",
 						"!ludópata",
 						"!ruleta",
@@ -4372,6 +4373,7 @@ function processMessage($message) {
 				strpos($text, "/ayuda_bandera") === 0 || strpos($text, "/ayuda_bandera@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_mastil") === 0 || strpos($text, "/ayuda_mastil@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_heroes") === 0 || strpos($text, "/ayuda_heroes@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_slots") === 0 || strpos($text, "/ayuda_slots@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_apuestas") === 0 || strpos($text, "/ayuda_apuestas@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
 		commandsList($chat_id, $text);
@@ -4844,7 +4846,7 @@ function processMessage($message) {
 			mysql_free_result($result);
 			mysql_close($link);
 		}
-	} else if (strpos(strtolower($text), "!slot") !== false || strpos(strtolower($text), "!777")) {
+	} else if (strpos(strtolower($text), "!slot") !== false || strpos(strtolower($text), "!777") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !slot.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -4890,7 +4892,7 @@ function processMessage($message) {
 						// calcular el premio
 						if($slotA == $slotB && $slotB == $slotC) {
 							error_log($logname." got a prize! Prize number ".$slotA);
-							$text = $text."¡Enhorabuena! Has ganado ";
+							$text = $text."🎉 ¡Enhorabuena! Has ganado ";
 							switch($slotA){
 								case 1: $prize = 10;
 										break;
@@ -4917,12 +4919,12 @@ function processMessage($message) {
 							}
 							$text = $text.$prize." fichas.".PHP_EOL;
 						} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
-							$price = 3;
+							$prize = 3;
 							$text = $text."¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
 						} else {
-							$price = 0;
+							$prize = 0;
 						}
-						$userTokens = $userTokens + $price;
+						$userTokens = $userTokens + $prize;
 						$text = $text."<b>Fichas que te quedan:</b> ".$userTokens;
 						$query = "UPDATE `userbet` SET `tokens` = '".$userTokens."', `last_slot` = '".$currTime."' WHERE `user_id` = ".$chat_id." AND group_id = 0";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -4970,7 +4972,7 @@ function processMessage($message) {
 				// calcular el premio
 				if($slotA == $slotB && $slotB == $slotC) {
 					error_log($logname." got a prize! Prize number ".$slotA);
-					$text = $text."¡Enhorabuena! Has ganado ";
+					$text = $text."🎉 ¡Enhorabuena! Has ganado ";
 					switch($slotA){
 						case 1: $prize = 10;
 								break;
@@ -4997,12 +4999,12 @@ function processMessage($message) {
 					}
 					$text = $text.$prize." fichas.".PHP_EOL;
 				} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
-					$price = 3;
+					$prize = 3;
 					$text = $text."¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
 				} else {
-					$price = 0;
+					$prize = 0;
 				}
-				$userTokens = $userTokens + $price;
+				$userTokens = $userTokens + $prize;
 				$text = $text."<b>Fichas que te quedan:</b> ".$userTokens;
 				$query = "INSERT INTO `userbet` (`user_id`, `group_id`, `tokens`, `last_slot`) VALUES ('".$chat_id."', '0', '".$userTokens."', '".$currTime."');";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

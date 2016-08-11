@@ -3743,10 +3743,14 @@ function getBarcelona($text, $chat_id) {
 }
 
 function commandsList($send_id, $mode) {
+	$mainHelp = 0;
 	$mode = str_replace("/ayuda_", "", strtolower($mode));
 	$mode = str_replace("@demisukebot", "", strtolower($mode));
 	$mode = str_replace("@demitest_bot", "", strtolower($mode));
 	if($mode == "main") {
+		$mainHelp = 1;
+		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
+		usleep(100000);
 		$text = 
 				"Este es el menú de ayuda de @DemisukeBot, aquí encontrarás todo lo que el bot es capaz de hacer."
 				.PHP_EOL.
@@ -3836,10 +3840,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"–<b>Equipaciones deportivas</b>: <i>Crea una camiseta con número y dorsal personalizados.</i>"
 				.PHP_EOL.
-				"Más información: /ayuda_camisetas"
-				.PHP_EOL.
-				"〰〰〰〰〰〰〰〰〰"
-				.PHP_EOL.
+				"Más información: /ayuda_camisetas";
+				apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
+
+				$text = 
 				"👾 <b>Minijuegos:</b>"
 				.PHP_EOL.
 				"–<b>Rocosos de Demisuke</b>: <i>RPG para Telegram. ¡Entrena a tu personaje usando \"!exp\" en privado!.</i>"
@@ -4288,8 +4292,10 @@ function commandsList($send_id, $mode) {
 				;
 	}
 	if(strlen($text) > 5){
-		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
-		usleep(100000);
+		if($mainHelp == 0) {
+			apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
+			usleep(100000);
+		}
 		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
 	}
 }

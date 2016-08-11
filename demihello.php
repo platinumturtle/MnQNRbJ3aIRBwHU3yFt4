@@ -4892,7 +4892,7 @@ function processMessage($message) {
 						// calcular el premio
 						if($slotA == $slotB && $slotB == $slotC) {
 							error_log($logname." got a prize! Prize number ".$slotA);
-							$text = $text."🎉 ¡Enhorabuena! Has ganado ";
+							$text = $text."❗️🎉 ¡Enhorabuena! Has ganado ";
 							switch($slotA){
 								case 1: $prize = 10;
 										break;
@@ -4920,7 +4920,7 @@ function processMessage($message) {
 							$text = $text.$prize." fichas.".PHP_EOL;
 						} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
 							$prize = 3;
-							$text = $text."¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
+							$text = $text."💪 ¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
 						} else {
 							$prize = 0;
 						}
@@ -4972,7 +4972,7 @@ function processMessage($message) {
 				// calcular el premio
 				if($slotA == $slotB && $slotB == $slotC) {
 					error_log($logname." got a prize! Prize number ".$slotA);
-					$text = $text."🎉 ¡Enhorabuena! Has ganado ";
+					$text = $text."❗️🎉 ¡Enhorabuena! Has ganado ";
 					switch($slotA){
 						case 1: $prize = 10;
 								break;
@@ -5000,7 +5000,7 @@ function processMessage($message) {
 					$text = $text.$prize." fichas.".PHP_EOL;
 				} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
 					$prize = 3;
-					$text = $text."¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
+					$text = $text."💪 ¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
 				} else {
 					$prize = 0;
 				}

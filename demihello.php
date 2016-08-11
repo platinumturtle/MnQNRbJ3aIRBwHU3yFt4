@@ -4759,7 +4759,11 @@ function processMessage($message) {
 					$query = "UPDATE `userbet` SET `tokens` = `tokens` + ".$totalTokens." WHERE `group_id` = ".$chat_id." AND `user_id` IN ( SELECT user_id FROM drawerbet WHERE group_id = ".$chat_id." AND bet_result = '".$rouletteResult."')";
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$text = $text."<b>Apuestas ganadoras:</b> ".$winners.PHP_EOL;
-					$text = $text."<b>Fichas a repartir por ganador:</b> ".$totalTokens;
+					if($winners > 0) {
+						$text = $text."<b>Fichas a repartir por ganador:</b> ".$totalTokens;
+					} else {
+						$text = $text."La banca gana y se queda con las fichas apostadas.";
+					}
 				} else {
 					// si no hay ganadores, motrar mensaje del resultado y que gana la banca
 					$text = $text."Gana la banca, ¡mejor suerte la próxima vez!";
@@ -4941,11 +4945,11 @@ function processMessage($message) {
 				// si no existe, avisar con una bienvenida de que ahora tiene 100 fichas y que se va a usar la primera de ellas para jugar
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				usleep(100000);
-				$text = "*¡Bienvenido/a al demigrante casino Demisuke de Telegram!.*".PHP_EOL.PHP_EOL;
+				$text = "<b>¡Bienvenido/a al demigrante casino Demisuke de Telegram!.</b>".PHP_EOL.PHP_EOL;
 				$text = $text."Como es la primera vez que juegas, te regalo 100 fichas para que puedas hacer tus primeras tiradas.".PHP_EOL;
 				$text = $text."Recuerda que puedes conseguir más fichas usando la función !fichas y consultar los premios y las reglas con /ayuda_slots.".PHP_EOL;
-				$text = $text.PHP_EOL."*Realizando tu primera tirada... ¡Suerte!*";
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+				$text = $text.PHP_EOL."<b>Realizando tu primera tirada... ¡Suerte!</b>";
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				mysql_free_result($result);
 				usleep(500000);
@@ -5012,7 +5016,7 @@ function processMessage($message) {
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(100000);
 		$result = getLudo($message['from']['id']);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $result));
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 	} else if (strpos(strtolower($text), "!moneda") !== false) {
 		if($randomTicket > -3) {
 			error_log($logname." triggered: !moneda.");

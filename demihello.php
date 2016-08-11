@@ -4890,7 +4890,7 @@ function processMessage($message) {
 						$slotC = rand(1,10);
 						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
 						$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
-						$text = $text."⬛️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."⬛️".PHP_EOL;
+						$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
 						$text = $text."⬛️".emojiSlot($slotA + 1).emojiSlot($slotB + 1).emojiSlot($slotC + 1)."⬛️".PHP_EOL;
 						$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
 						// calcular el premio

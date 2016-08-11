@@ -800,6 +800,11 @@ function rankedGroup($group) {
 }
 
 function emojiSlot($slot) {
+	if($slot == 0){
+		$slot = 10;
+	} else if($slot == 11) {
+		$slot = 1;
+	}
 	switch($slot) {
 		case 1: $emoji = "⚡️";
 				break;
@@ -4883,12 +4888,11 @@ function processMessage($message) {
 						$slotB = rand(1,10);
 						usleep(rand(10,50));
 						$slotC = rand(1,10);
-						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL."⬛️";
-						$emojiA = emojiSlot($slotA);
-						$emojiB = emojiSlot($slotB);
-						$emojiC = emojiSlot($slotC);
-						$text = $text.$emojiA.$emojiB.$emojiC;
-						$text = $text."⬛️".PHP_EOL."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
+						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
+						$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
+						$text = $text."⬛️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."⬛️".PHP_EOL;
+						$text = $text."⬛️".emojiSlot($slotA + 1).emojiSlot($slotB + 1).emojiSlot($slotC + 1)."⬛️".PHP_EOL;
+						$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
 						// calcular el premio
 						if($slotA == $slotB && $slotB == $slotC) {
 							error_log($logname." got a prize! Prize number ".$slotA);

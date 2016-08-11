@@ -3842,6 +3842,11 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"👾 <b>Minijuegos:</b>"
 				.PHP_EOL.
+				"–<b>Rocosos de Demisuke</b>: <i>RPG para Telegram. ¡Entrena a tu personaje usando \"!exp\" en privado!.</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_rocosos"
+				.PHP_EOL.
+				.PHP_EOL.
 				"–<b>Batalla de mensajes</b>: <i>Compite por ser el más activo de Telegram con \"!mensajes\".</i>"
 				.PHP_EOL.
 				"Más información: /ayuda_mensajes"
@@ -3866,6 +3871,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"Más información: /ayuda_apuestas"
 				.PHP_EOL.
+				"–<b>Máquina tragaperras</b>: <i>¡Llévate el premio gordo con \"!slot\" o \"!777\"!</i>"
+				.PHP_EOL.
+				"Más información: /ayuda_slots"
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"💎 <b>Otros bots:</b>"
@@ -3883,7 +3892,9 @@ function commandsList($send_id, $mode) {
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
-				.PHP_EOL.PHP_EOL.
+				.PHP_EOL.
+				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
+				.PHP_EOL.
 				"@DemisukeBot v2.5 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
@@ -4167,12 +4178,92 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>La tabla de !héroesgrupo mostrará todos aquellos usuarios que hayan pulsado el !botón al menos una vez, sin importar su puntuación o la ventana de chat desde donde lo pulsaron.</i>"
 				;
-	} else if($mode == "apuesta") {
-		$text = "🔎 <b>Apuestas entre amigos</b> 📝"
+	} else if($mode == "apuestas") {
+		$text = "🔎 <b>Apuestas entre amigos</b> 🎲"
 				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
 				.PHP_EOL.
-				"➡️<b>!heroes</b>: <i>Muestra la clasificación de los diez mejores héroes de Telegram.</i>"
+				"➡️<b>!apuesta</b>: <i>Realiza una apuesta en la mesa del grupo. No funciona desde chat privado. Consulta más abajo en las reglas qué apuestas están disponibles.</i>"
+				.PHP_EOL.
+				" <i>Ejemplo de apuesta (25 fichas al 3 rojo):</i> !apuesta (3R) 25"
+				.PHP_EOL.
+				" <i>Ejemplo de apuesta (40 fichas al 1 negro):</i> !apuesta (1N) 40"
+				.PHP_EOL.
+				"➡️<b>!ruleta</b>: <i>Gira la ruleta de la mesa de grupo en caso de que haya al menos una apuesta activa y muestra los ganadores.</i>"
+				.PHP_EOL.
+				"➡️<b>!fichas</b>: <i>Si se usa en grupos mostrará el ránking de usuarios con más fichas del grupo. Si se usa desde chat privado con el bot, recibirás gratis 100 fichas en cada mesa donde hayas realizado una aouesta al menos una vez, además de otras 100 fichas para utilizar en las tragaperras.</i>"
+				.PHP_EOL.
+				"<i>Utilizar !fichas en privado también permitirá mostrar al usuario sus fichas disponibles para cada una de las mesas donde participa, además de las fichas disponibles para la máquina tragaperras.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"▶️<i>Podrás recibir fichas gratis cada 12 horas.</i>"
+				.PHP_EOL.
+				"▶️<i>La primera apuesta que realices sobre un grupo nuevo debe ser entre 1 y 100, ya que al estrenarte en una mesa nueva recibes 100 fichas de regalo.</i>"
+				.PHP_EOL.
+				"▶️<i>Para aparecer en el ránking de fichas de un grupo debes haber apostado al menos una vez en ese grupo.</i>"
+				.PHP_EOL.
+				"▶️<i>Las apuestas disponibles van del 1 al 5 en cuanto al número de la casilla y entre rojo (R) y negro (N) en cuanto al color.</i>"
+				.PHP_EOL.
+				"▶️<i>No podrás realizar apuestas mayores a tus fichas disponibles, el saldo de fichas nunca será negativo. Si pierdes todas tus fichas tendrás que conseguir más con la función !fichas en chat privado con el bot.</i>"
+				.PHP_EOL.
+				"▶️<i>No podrás realizar una segunda apuesta si ya tienes una activa para esa mesa, tendrás que esperar a que se gire la ruleta para volver a apostar.</i>"
+				.PHP_EOL.
+				"▶️<i>En caso de haber más de un ganador, el premio se dividirá y se repartirá la parte entera. En caso de que la parte decimal sea de la mitad o más de una unidad, se añadirá una ficha adicional para cada uno de los ganadores.</i>"
+				;
+	} else if($mode == "slots") {
+		$text = "🔎 <b>Máquina tragaperras</b> 🎰"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"➡️<b>!slot</b>: <i>Inserta tres fichas en la máquina y acciona la palanca para realizar una tirada. Solo disponible en chat privado con el bot.</i>"
+				.PHP_EOL.
+				"➡️<b>!777</b>: <i>Es una alternativa a !slot, su función será exactamente la misma.</i>"
+				.PHP_EOL.
+				"➡️<b>!ludopatas</b>: <i>Muestra el ránking de los diez usuarios con más fichas de tragaperras del demigrante casino Demisuke de Telegram.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas:</b>"
+				.PHP_EOL.
+				"▶️<i>Cada tirada tendrá un precio fijo de 3 fichas. En caso de no disponer de fichas suficientes puedes conseguir más gratis utilizando la función !fichas. Consulta</i> /ayuda_apuestas <i>para saber más acerca de la función !fichas.</i>"
+				.PHP_EOL.
+				"▶️<i>En la máquina aparecerán tres filas y tres columnas de casillas con un resultado. La apuesta tendrá en cuenta las tres casillas de la fila central, señaladas entre flechas.</i>"
+				.PHP_EOL.
+				"▶️<i>Existen diez posibles resultados por cada casilla, mostrados en la tabla de premios.</i>"
+				.PHP_EOL.
+				"▶️<i>En caso de hacer una pareja (dos casillas iguales) en la fila central, se te devolverán las 3 fichas que usaste al realizar la tirada.</i>"
+				.PHP_EOL.
+				"▶️<i>Si logras detener la máquina obteniendo los mismos símbolos en las tres casillas de la fila horizontal central recibirás el premio de la tabla de premios correspondiente a ese resultado.</i>"
+				.PHP_EOL.
+				"▶️<i>Hacer líneas diagonales con los mismos resultados no tendrá premio, el premio se recibirá si se realiza en la fila horizontal central.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Tabla de premios:</b>"
+				.PHP_EOL.
+				"7⃣7⃣7⃣ <i>10.000 fichas</i>"
+				.PHP_EOL.
+				"💎💎💎 <i>1.000 fichas</i>"
+				.PHP_EOL.
+				"🍒🍒🍒 <i>500 fichas</i>"
+				.PHP_EOL.
+				"🍓🍓🍓 <i>250 fichas</i>"
+				.PHP_EOL.
+				"🍉🍉🍉 <i>100 fichas</i>"
+				.PHP_EOL.
+				"🍋🍋🍋 <i>100 fichas</i>"
+				.PHP_EOL.
+				"🔔🔔🔔 <i>75 fichas</i>"
+				.PHP_EOL.
+				"💖💖💖 <i>50 fichas</i>"
+				.PHP_EOL.
+				"💙💙💙 <i>25 fichas</i>"
+				.PHP_EOL.
+				"⚡️⚡️⚡️ <i>10 fichas</i>"
+				;
+	} else if($mode == "rocosos") {
+		$text = "🔎 <b>Juego RPG: Los rocosos de Demisuke</b> 💪"
+				.PHP_EOL.PHP_EOL.
+				"<b>Funciones disponibles:</b>"
+				.PHP_EOL.
+				"➡️<b>!exp</b>: <i>Muestra la clasificación de los diez mejores héroes de Telegram.</i>"
 				.PHP_EOL.
 				"➡️<b>!heroesgrupo</b>: <i>Muestra el TOP10 de héroes del grupo desde donde se ejecuta la función.</i>"
 				.PHP_EOL.
@@ -4379,6 +4470,7 @@ function processMessage($message) {
 				strpos($text, "/ayuda_mastil") === 0 || strpos($text, "/ayuda_mastil@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_heroes") === 0 || strpos($text, "/ayuda_heroes@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_slots") === 0 || strpos($text, "/ayuda_slots@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_rocosos") === 0 || strpos($text, "/ayuda_rocosos@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_apuestas") === 0 || strpos($text, "/ayuda_apuestas@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
 		commandsList($chat_id, $text);
@@ -4845,7 +4937,7 @@ function processMessage($message) {
 				// si no existe, avisar de que empiece apostando algo en alguna mesa
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				usleep(100000);
-				$result = "<b>Para recargar tus fichas debes jugar al menos una vez a las tragaperras con !slot o realizar una !apuesta válida en un grupo.</b>";
+				$result = "<b>Para recargar tus fichas debes jugar al menos una vez a las tragaperras con !slot (o !777) o realizar una !apuesta válida en un grupo.</b>";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
 			}
 			mysql_free_result($result);

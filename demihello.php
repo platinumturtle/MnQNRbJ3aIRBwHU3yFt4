@@ -2614,13 +2614,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		}
 		$calcType = $newLevel;
 		error_log("CALC TYPE ".$calcType);
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;

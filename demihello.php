@@ -3059,15 +3059,16 @@ function getClanLevel($id, $link) {
 	$query = "SELECT COUNT( group_id ) AS  'total' FROM playerbattle WHERE group_id = '".$id."' GROUP BY group_id";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
-	if($level > 49) {
+	$levelNumber = $row['total'];
+	if($levelNumber > 49) {
 		$level = "【★★★★★】";
-	} else if($level > 29) {
+	} else if($levelNumber > 29) {
 		$level = "【★★★★☆】";
-	} else if($level > 14) {
+	} else if($levelNumber > 14) {
 		$level = "【★★★☆☆】";
-	} else if($level > 6) {
+	} else if($levelNumber > 6) {
 		$level = "【★★☆☆☆】";
-	} else if($level > 0) {
+	} else if($levelNumber > 0) {
 		$level = "【★☆☆☆☆】";
 	} else {
 		$level = "【☆☆☆☆☆】";

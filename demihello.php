@@ -2688,13 +2688,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 5) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-		$msg = "<b>Acabas de desbloquear la función !atacar, ¡ya puedes enfrentarte a los jefes de las zonas en las que te encuentres!".PHP_EOL;
+		$msg = "<b>Acabas de obtener un arma nueva, y con ella has desbloqueado la función !atacar, ¡ya puedes enfrentarte a los jefes de las zonas en las que te encuentres!".PHP_EOL;
 		$msg = $msg."Como sigues en el área de entrenamiento, cuando uses la función podrás practicar con una babosa sencilla de eliminar. ¡Practica tantas veces como quieras!</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 6) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-		$msg = "<b>Acabas de llegar al área de entrenamiento avanzado. A partir de ahora te enfrentarás a los verdaderos jefes de entrenamiento con la función !atacar, además de poder unirte a un clan con la función !unirme. ¡Buena suerte en tu aventura!</b>";
+		$msg = "<b>Acabas de obtener un escudo nuevo, y con él se te permite llegar al área de entrenamiento avanzado. A partir de ahora te enfrentarás a los verdaderos jefes de entrenamiento con la función !atacar, además de poder unirte a un clan con la función !unirme. ¡Buena suerte en tu aventura!</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 10) {
@@ -3056,7 +3056,7 @@ function getLevelBar($exp, $level) {
 }
 
 function getPlayerInfo($fullInfo, $link, $user_id) {
-	$query = "SELECT exp_points, level FROM playerbattle WHERE user_id = '".$user_id."'";
+	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_wins FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	$msg = "";
@@ -3066,6 +3066,67 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$expBar = getLevelBar($row['exp_points'], $row['level']);
 		$msg = $msg.$expBar.PHP_EOL.PHP_EOL;
 		$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
+	} else {		
+		// mostrar toooodos los stats posibles, con el monospace y eso
+		// no mostrar ayudas ni nada, que parezca una ficha de jugador REAL
+		$group_id = $row['group_id'];
+		$exp_points = $row['exp_points'];
+		$level = $row['level'];
+		$extra_points = $row['extra_points'];
+		$hp = $row['hp'];
+		$attack = $row['attack'];
+		$defense = $row['defense'];
+		$critic = $row['critic'];
+		$speed = $row['speed'];
+		$helmet = $row['helmet'];
+		$body = $row['body'];
+		$boots = $row['boots'];
+		$weapon = $row['weapon'];
+		$shield = $row['shield'];
+		$avatar = $row['avatar'];
+		mysql_free_result($result);
+		$query = "SELECT first_name, user_name FROM userbattle WHERE user_id = '".$user_id."'";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$userFirstName = $row['first_name'];
+		$userNickName = $row['user_name'];
+		if($userNickName != "") {
+			if(strtolower($userFirstName) == strtolower($userNickName)) {
+				$finalName = $userNickName;
+			} else {
+				$finalName = $userFirstName." (".$userNickName.")";
+			}
+		} else {
+			$finalName = $userFirstName;
+		}
+		$finalName = str_replace("<", "", $finalName);
+		$finalName = str_replace(">", "", $finalName);
+		$msg = "<b>Mi ficha rocosa</b>".PHP_EOL.PHP_EOL;
+		if(strlen($avatar) > 5) {
+			$msg = $msg."<a href=\"".$avatar."\">".$finalName."</a>".PHP_EOL.PHP_EOL;
+		} else {
+			$msg = $msg.$finalName.PHP_EOL.PHP_EOL;
+		}
+		if(strlen($group_id) > 1) {
+			mysql_free_result($result);
+			$query = "SELECT name FROM groupbattle WHERE group_id = '".$group_id."'";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			$msg = $msg."<b>Clan:</b> <i>".$row['name']."</i>".PHP_EOL;
+		} else {
+			$msg = $msg."<b>Clan:</b> <i>Ninguno</i>".PHP_EOL;
+		}
+		$msg = $msg."<b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL.PHP_EOL;
+		$msg = $msg."<pre>VID:";
+		switch(strlen($hp)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		.$hp."</pre>".PHP_EOL;
 	}
 	mysql_free_result($result);
 	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
@@ -7325,8 +7386,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!pj") !== false) {
 		error_log($logname." triggered: !pj.");
 		// usar la funcion !pj maxi, en el !exp se usaba la mini
-		// mostrar toooodos los stats posibles, con el monospace y eso
-		// no mostrar ayudas ni nada, que parezca una ficha de jugador REAL
+		getPlayerInfo(1, $link, $chat_id);
 	} else if (strpos(strtolower($text), "!guerras") !== false) {
 		error_log($logname." triggered: !guerras.");
 		// mostrar las cinco ultimas guerras entre clanes, con la fecha, los nombres de ambos, el resultado, y si eso una linea pequeña adicional, no se aun, quizas guardo en la base de datos si fue ajustada, paliza, demigrante, random... xD

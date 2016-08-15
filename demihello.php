@@ -2336,7 +2336,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 80 || $newLevel == 85) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {
@@ -2369,7 +2369,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 70 || $newLevel == 75) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {
@@ -2402,7 +2402,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 60 || $newLevel == 65) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {
@@ -2435,7 +2435,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 50 || $newLevel == 55) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {
@@ -2468,7 +2468,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 40 || $newLevel == 45) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {
@@ -2501,7 +2501,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 30 || $newLevel == 35) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {
@@ -2534,7 +2534,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 20 || $newLevel == 25) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {
@@ -2567,7 +2567,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 10 || $newLevel == 15) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {

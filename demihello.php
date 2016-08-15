@@ -3055,6 +3055,26 @@ function getLevelBar($exp, $level) {
 	return $textBar;
 }
 
+function getClanLevel($id, $link) {
+	$query = "SELECT COUNT( group_id ) AS  'total' FROM playerbattle WHERE group_id = '".$id."' GROUP BY group_id";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	if($level > 49) {
+		$level = "【★★★★★】";
+	} else if($level > 29) {
+		$level = "【★★★★☆】";
+	} else if($level > 14) {
+		$level = "【★★★☆☆】";
+	} else if($level > 6) {
+		$level = "【★★☆☆☆】";
+	} else if($level > 0) {
+		$level = "【★☆☆☆☆】";
+	} else {
+		$level = "【☆☆☆☆☆】";
+	}
+	mysql_free_result($result);
+	return $level;
+}
 function getPlayerInfo($fullInfo, $link, $user_id) {
 	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_wins FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -3114,7 +3134,9 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			$query = "SELECT name FROM groupbattle WHERE group_id = '".$group_id."'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
-			$msg = $msg."<b>Clan:</b> <i>".$row['name']."</i>".PHP_EOL;
+			$clanName = $row['name'];
+			mysql_free_result($result);
+			$msg = $msg."<b>Clan:</b> <i>".getClanLevel($group_id, $link).$clanName."</i>".PHP_EOL;
 		} else {
 			$msg = $msg."<b>Clan:</b> <i>Ninguno</i>".PHP_EOL;
 		}

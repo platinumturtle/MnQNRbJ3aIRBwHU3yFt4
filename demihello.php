@@ -2303,7 +2303,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		if($newLevel == 90 || $newLevel == 95) {
 			$newCrit = 1;
 		}
-		if($newLevel % 2) == 1) {
+		if(($newLevel % 2) == 1) {
 			$newHP = $newHP + $extraTicketA;
 			$newDef = $newDef + $extraTicketB;
 		} else {

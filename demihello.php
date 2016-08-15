@@ -3048,7 +3048,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	$msg = "";
-	if($fullInfo == 1) {
+	if($fullInfo == 0) {
 		$msg = $msg."Puntos totales de experiencia: ".$row['exp_points'].PHP_EOL;
 		$msg = $msg."Experiencia de nivel:".PHP_EOL;
 		$expBar = getLevelBar($row['exp_points'], $row['level']);

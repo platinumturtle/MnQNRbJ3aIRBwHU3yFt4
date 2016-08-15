@@ -970,6 +970,2101 @@ function reverseString ($message) {
 	return $message;
 }
 
+function getPlayerExp($currLevel, $user_id) {
+	$exp = 0;
+	$text = "*Te has quedado dormido y has perdido la oportunidad, el personaje no reacciona.*";
+	if($currLevel == 100) {
+		$text = "*Estás sentado en tu trono de rey, viendo la vida pasar, y viendo como tú eres superior al resto de los mortales. Has llegado a la cima.*";
+	} else if($currLevel > 89) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Tras haber pasado por lugares gélidos y calderas infernales, aprendes a adaptarte al medio y lograr mimetizarte con el ambiente. Ganas 94 puntos de experiencia.*";
+					$exp = 94;
+					break;
+			case 2: $text = "*Te sientes realmente poderoso, pero continúas entrenando con objetos del entorno hasta caer agotado. Ganas 96 puntos de experiencia.*";
+					$exp = 96;
+					break;
+			case 3: $text = "*Luchas contra pequeños seres que intentan atacarte y los usas de alimento. Has ganado 97 puntos de experiencia.*";
+					$exp = 97;
+					break;
+			case 4: $text = "*Creas fuentes de luz y con ellas logras encontrar un manantial de agua potable. Has ganado 98 puntos de experiencia.*";
+					$exp = 98;
+					break;
+			case 5: $text = "*Entrenas sin parar practicando con tus armas hasta lograr eliminar pequeños enemigos casi sin esfuerzo. Ganas 99 puntos de experiencia y te subes la moral.*";
+					$exp = 99;
+					break;
+		}
+	} else if($currLevel > 79) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Intentas utilizar objetos ignífugos que encuentras por el camino como armadura adicional para no quemarte. Has ganado 84 puntos de experiencia.*";
+					$exp = 84;
+					break;
+			case 2: $text = "*Estudias los posibles caminos para seguir avanzando y descartas los más cálidos. Has ganado 86 puntos de experiencia.*";
+					$exp = 86;
+					break;
+			case 3: $text = "*Encuentras una especia de lago aislado a rebosar de agua. Pretendes nadar hacia el fondo del lago para buscar nuevos caminos pero rápidamente te das cuenta de que el agua está hirviendo, sin embargo parece agua potable. Ganas 87 puntos de experiencia y una fuente de alimentación.*";
+					$exp = 87;
+					break;
+			case 4: $text = "*Te entrenas eliminando pequeñas bestias que intentan atacarte y te olvidas de las altas temperaturas que sufres. Ganas 88 puntos de experiencia.*";
+					$exp = 88;
+					break;
+			case 5: $text = "*Logras desviar ríos de lava y creas atajos para continuar con tu aventura, has ganado 89 puntos de experiencia.*";
+					$exp = 89;
+					break;
+		}
+	} else if($currLevel > 69) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Trazas mapas de la zona utilizando objetos que te encuentras por el camino y te estudias el portal. Has ganado 74 puntos de experiencia.*";
+					$exp = 74;
+					break;
+			case 2: $text = "*Buscas formas de atravesar el portal sin ser detectado. No encuentras ninguna, pero estudias cuáles pueden ser las más sencillas. Has ganado 76 puntos de experiencia.*";
+					$exp = 76;
+					break;
+			case 3: $text = "*Te escondes y estudias cómo los seres de la zona circulan por el portal para adivinar cómo atravesarlo. Ganas 77 puntos de experiencia.*";
+					$exp = 77;
+					break;
+			case 4: $text = "*Te alejas un poco del portal y te entrenas con diversos seres que pretenden atacarte. Ganas 78 puntos de experiencia.*";
+					$exp = 78;
+					break;
+			case 5: $text = "*Intentas poner cebos y trampas a los guardianes del portal para estudiar sus reacciones y encontrar puntos débiles. Ganas 79 puntos de experiencia.*";
+					$exp = 79;
+					break;
+		}
+	} else if($currLevel > 59) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Te adaptas al calor del pasaje recortando un poco tu ropa. Ganas 64 puntos de experiencia y un bronceado infernal.*";
+					$exp = 64;
+					break;
+			case 2: $text = "*Encuentras la ruta a seguir mediante señales de luz que proceden del infierno. Has ganado 66 puntos de experiencia.*";
+					$exp = 66;
+					break;
+			case 3: $text = "*Te adaptas a convivir con los vapores que provienen del Infierno y empiezas a diferenciar algunas ilusiones ópticas, has ganado 67 puntos de experiencia.*";
+					$exp = 67;
+					break;
+			case 4: $text = "*Encuentras un río de lava y logras crear una especie de balsa con la que viajar por el río hacia tu destino final. Has ganado 68 puntos de experiencia y el medio de transporte más inestable de tu vida.*";
+					$exp = 68;
+					break;
+			case 5: $text = "*Te logras mimetizar con el entorno esquivando a todo aquel que intenta atacarte y provocando que caigan a la lava o a otros puntos de calor extremo. Has ganado 69 puntos de experiencia.*";
+					$exp = 69;
+					break;
+		}
+	} else if($currLevel > 49) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Aprendes a iluminarte por la cueva utilizando lo aprendido en el portal desde donde entraste, ganas 54 puntos de experiencia y mejoras el sentido de la orientación.*";
+					$exp = 54;
+					break;
+			case 2: $text = "*Te entrenas matando a una especie de murciélagos-dragón que te intentan atacar aprovechando la poca visibilidad de la cueva. Ganas 56 puntos de experiencia.*";
+					$exp = 56;
+					break;
+			case 3: $text = "*Encuentras fuentes de agua potable. El agua está hirviendo, pero consigues hidratarte bien con ella. Has ganado 57 puntos de experiencia y te sientes revitalizado.*";
+					$exp = 57;
+					break;
+			case 4: $text = "*Encuentras restos de seres muertos comestibles y consigues alimentarte sin problemas, has ganado 58 puntos de experiencia.*";
+					$exp = 58;
+					break;
+			case 5: $text = "*Debido a tu aventura comienzas a perder algo de tu cordura y montas un ring improvisado para hacer combates con todo ser que te intente atacar en la cueva. Ganas 59 puntos de experiencia y un fuerte aplauso del público... si lo hubiera.*";
+					$exp = 59;
+					break;
+		}
+	} else if($currLevel > 39) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Te sientes en una zona muy turbia del planeta, como en un túnel de transición entre lo real y lo que te puede aniquilar con la mirada, pero aprendes a tranquilizarte concentrándote en tu misión y confiando en tu fuerza. Ganas 44 puntos de experiencia.*";
+					$exp = 44;
+					break;
+			case 2: $text = "*Aprendes a guiarte por el camino correcto según hacia dónde viaja la fauna salvaje del lugar. Has ganado 46 puntos de experiencia.*";
+					$exp = 46;
+					break;
+			case 3: $text = "*Agudizas el oído y comienzas a guiarte creando caminos hacia donde proceden sonidos que no parecen relacionados con el mundo humano. Ganas 47 puntos de experiencia.*";
+					$exp = 47;
+					break;
+			case 4: $text = "*Aprendes a crear iluminación artificial con los materiales que encuentras por el camino y copiando lo que ves a tu alrededor, has ganado 48 puntos de experiencia y mejorado tu sentido de la vista.*";
+					$exp = 48;
+					break;
+			case 5: $text = "*Añoras el mundo que conocemos en la superficie terrestre y simulas una zona de entrenamiento improvisada como la de tu procedencia para fortalecerte. Ganas 49 puntos de experiencia.*";
+					$exp = 49;
+					break;
+		}
+	} else if($currLevel > 29) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Investigas esta zona inexplorada por los humanos y encuentras el camino para seguir con tu aventura, además de ganar 33 puntos de experiencia.*";
+					$exp = 33;
+					break;
+			case 2: $text = "*Aprendes a caminar sobre hielo sin resbalarte tanto como antes, ganas 35 puntos de experiencia.*";
+					$exp = 35;
+					break;
+			case 3: $text = "*Encuentras una especie de dinosaurio con alas. Parece tan inofensivo que enseguida entablas amistad con él y te deja subir a su lomo y volar. Ganas 37 puntos de experiencia y transporte aéreo. ¡Qué lástima que el camino sea hacia abajo!*";
+					$exp = 37;
+					break;
+			case 4: $text = "*Te ves tan solo como ser humano en el glaciar que te sientes colonizador emprendedor y comienzas a cavar túneles con lo primero que encuentras. Ganas 38 puntos de experiencia.*";
+					$exp = 38;
+					break;
+			case 5: $text = "*Te encuentras una babosa azul intentando comerte una pierna y acabas con ella. ¡Qué lástima que esta no sea como aquella del área de entrenamiento, con esta tan solo ganas 39 puntos de experiencia.*";
+					$exp = 39;
+					break;
+		}
+	} else if($currLevel > 19) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Has aprendido técnicas de camuflaje con el entorno, ganas 22 puntos de experiencia.*";
+					$exp = 22;
+					break;
+			case 2: $text = "*Has aprendido a huir de animales salvajes que pretenden devorarte, has ganado 23 puntos de experiencia.*";
+					$exp = 23;
+					break;
+			case 3: $text = "*Has eliminado varias trampas del camino, ahora evitarás caer en ellas y te llevas 25 puntos de experiencia.*";
+					$exp = 25;
+					break;
+			case 4: $text = "*Has domado una serpiente, ahora encuentras más fácil los caminos seguros y ganas 28 puntos de experiencia y una brújula reptil.*";
+					$exp = 28;
+					break;
+			case 5: $text = "*Te has encontrado con un oso bebiendo agua en el río, le has dado algo de comer y ahora puedes montar en él para viajar más rápido. Ganas 29 puntos de experiencia y un vehículo animal de transporte.*";
+					$exp = 29;
+					break;
+		}
+	} else if($currLevel > 9) {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Te has ido a meditar un rato bajo el agua de una cascada, has ganado 14 puntos de experiencia.*";
+					$exp = 14;
+					break;
+			case 2: $text = "*Te has adentrado en el bosque en busca de comida y ahs encontrado frutas silvestres. Te llevas 15 puntos de experiencia.*";
+					$exp = 15;
+					break;
+			case 3: $text = "*Has investigado el bosque y has creado una ruta para viajar más fácilmente por su interior, has ganado 16 puntos de experiencia.*";
+					$exp = 16;
+					break;
+			case 4: $text = "*Has cazado un jabalí y has preparado una cena con él, ganas 18 puntos de experiencia.*";
+					$exp = 18;
+					break;
+			case 5: $text = "*Has domado un águila del bosque y ahora puedes mirar al cielo para saber dónde hay comida. Ganas 19 puntos de experiencia... y un amigo volador.*";
+					$exp = 19;
+					break;
+		}
+	} else {
+		$luckyExp = rand(1,5);
+		switch($luckyExp) {
+			case 1: $text = "*Has salido a dar un paseo y ahora conoces más la zona, has ganado 2 puntos de experiencia.*";
+					$exp = 2;
+					break;
+			case 2: $text = "*Has regado el jardín y las plantas ahora brotan con mayor brío, has ganado 4 puntos de experiencia.*";
+					$exp = 4;
+					break;
+			case 3: $text = "*Has ayudado a unos ancianos a cruzar un paso de cebra en las afueras del área de entrenamiento. Ganas 7 puntos de experiencia.*";
+					$exp = 7;
+					break;
+			case 4: $text = "*Te has encontrado una rama de árbol en el suelo y la has blandido durante un rato como si fuera una espada, has ganado 8 puntos de experiencia.*";
+					$exp = 8;
+					break;
+			case 5: $text = "*Te has tomado en serio tu rocosidad y has estado un buen rato entrenando con varios ejercicios físicos, has ganado 9 puntos de experiencia.*";
+					$exp = 9;
+					break;
+		}
+	}
+	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+	usleep(100000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+	return $exp;
+}
+
+function getLevelFromExp($exp) {
+	$level = 1;
+	if($exp > 7999999) {
+		$level = 100;
+	} else if($exp > 2739999) {
+		if($exp > 7017999) {
+			$level = 99;
+		} else if($exp > 6145999) {
+			$level = 98;
+		}  else if($exp > 5373999) {
+			$level = 97;
+		}  else if($exp > 4701999) {
+			$level = 96;
+		}  else if($exp > 4129999) {
+			$level = 95;
+		}  else if($exp > 3657999) {
+			$level = 94;
+		}  else if($exp > 3285999) {
+			$level = 93;
+		}  else if($exp > 3013999) {
+			$level = 92;
+		}  else if($exp > 2841999) {
+			$level = 91;
+		}  else {
+			$level = 90;
+		} 
+	} else if($exp > 1940974) {
+		if($exp > 2655099) {
+			$level = 89;
+		} else if($exp > 2572594) {
+			$level = 88;
+		}  else if($exp > 2490929) {
+			$level = 87;
+		}  else if($exp > 2410049) {
+			$level = 86;
+		}  else if($exp > 2329949) {
+			$level = 85;
+		}  else if($exp > 2250624) {
+			$level = 84;
+		}  else if($exp > 2172069) {
+			$level = 83;
+		}  else if($exp > 2094279) {
+			$level = 82;
+		}  else if($exp > 2017249) {
+			$level = 81;
+		}  else {
+			$level = 80;
+		} 
+	} else if($exp > 1311149) {
+		if($exp > 1874699) {
+			$level = 79;
+		} else if($exp > 1809169) {
+			$level = 78;
+		}  else if($exp > 1744379) {
+			$level = 77;
+		}  else if($exp > 1680324) {
+			$level = 76;
+		}  else if($exp > 1616999) {
+			$level = 75;
+		}  else if($exp > 1554399) {
+			$level = 74;
+		}  else if($exp > 1492519) {
+			$level = 73;
+		}  else if($exp > 1431354) {
+			$level = 72;
+		}  else if($exp > 1370899) {
+			$level = 71;
+		}  else {
+			$level = 70;
+		} 
+	} else if($exp > 829324) {
+		if($exp > 1259899) {
+			$level = 69;
+		} else if($exp > 1209344) {
+			$level = 68;
+		}  else if($exp > 1159899) {
+			$level = 67;
+		}  else if($exp > 1110299) {
+			$level = 66;
+		}  else if($exp > 1061799) {
+			$level = 65;
+		}  else if($exp > 1013974) {
+			$level = 64;
+		}  else if($exp > 966819) {
+			$level = 63;
+		}  else if($exp > 920329) {
+			$level = 62;
+		}  else if($exp > 874499) {
+			$level = 61;
+		}  else {
+			$level = 60;
+		} 
+	} else if($exp > 475999) {
+		if($exp > 791149) {
+			$level = 59;
+		} else if($exp > 753619) {
+			$level = 58;
+		}  else if($exp > 7116729) {
+			$level = 57;
+		}  else if($exp > 680474) {
+			$level = 56;
+		}  else if($exp > 644849) {
+			$level = 55;
+		}  else if($exp > 609849) {
+			$level = 54;
+		}  else if($exp > 575469) {
+			$level = 53;
+		}  else if($exp > 541704) {
+			$level = 52;
+		}  else if($exp > 508549) {
+			$level = 51;
+		}  else {
+			$level = 50;
+		} 
+	} else if($exp > 236674) {
+		if($exp > 449449) {
+			$level = 49;
+		} else if($exp > 423494) {
+			$level = 48;
+		}  else if($exp > 398129) {
+			$level = 47;
+		}  else if($exp > 373349) {
+			$level = 46;
+		}  else if($exp > 349149) {
+			$level = 45;
+		}  else if($exp > 325524) {
+			$level = 44;
+		}  else if($exp > 302469) {
+			$level = 43;
+		}  else if($exp > 279979) {
+			$level = 42;
+		}  else if($exp > 258049) {
+			$level = 41;
+		}  else {
+			$level = 40;
+		} 
+	} else if($exp > 91849) {
+		if($exp > 219799) {
+			$level = 39;
+		} else if($exp > 203469) {
+			$level = 38;
+		}  else if($exp > 187679) {
+			$level = 37;
+		}  else if($exp > 172424) {
+			$level = 36;
+		}  else if($exp > 157699) {
+			$level = 35;
+		}  else if($exp > 143499) {
+			$level = 34;
+		}  else if($exp > 129819) {
+			$level = 33;
+		}  else if($exp > 116654) {
+			$level = 32;
+		}  else if($exp > 103999) {
+			$level = 31;
+		}  else {
+			$level = 30;
+		} 
+	} else if($exp > 23349) {
+		if($exp > 82959) {
+			$level = 29;
+		} else if($exp > 74569) {
+			$level = 28;
+		}  else if($exp > 66674) {
+			$level = 27;
+		}  else if($exp > 59254) {
+			$level = 26;
+		}  else if($exp > 52279) {
+			$level = 25;
+		}  else if($exp > 45724) {
+			$level = 24;
+		}  else if($exp > 39569) {
+			$level = 23;
+		}  else if($exp > 33799) {
+			$level = 22;
+		}  else if($exp > 28399) {
+			$level = 21;
+		}  else {
+			$level = 20;
+		} 
+	} else if($exp > 2434) {
+		if($exp > 20139) {
+			$level = 19;
+		} else if($exp > 17264) {
+			$level = 18;
+		}  else if($exp > 14684) {
+			$level = 17;
+		}  else if($exp > 12364) {
+			$level = 16;
+		}  else if($exp > 10274) {
+			$level = 15;
+		}  else if($exp > 8389) {
+			$level = 14;
+		}  else if($exp > 6679) {
+			$level = 13;
+		}  else if($exp > 5129) {
+			$level = 12;
+		}  else if($exp > 3719) {
+			$level = 11;
+		}  else {
+			$level = 10;
+		} 
+	} else {
+		if($exp > 1854) {
+			$level = 9;
+		} else if($exp > 1374) {
+			$level = 8;
+		}  else if($exp > 979) {
+			$level = 7;
+		}  else if($exp > 659) {
+			$level = 6;
+		}  else if($exp > 409) {
+			$level = 5;
+		}  else if($exp > 224) {
+			$level = 4;
+		}  else if($exp > 99) {
+			$level = 3;
+		}  else if($exp > 29) {
+			$level = 2;
+		}  else {
+			$level = 1;
+		}
+	}
+	return $level;
+}
+
+function getItemPower($currLevel, $itemType) {
+	$maxRand = 3;
+	if($itemType == 1) {
+		$maxRand = 2;
+	}
+	if($currLevel == 1) {
+		$powerVariant = 0;
+	} else if($currLevel < 100) {
+		$powerVariant = rand(1, $maxRand);
+	} else {
+		$powerVariant = 42;
+	}
+	$levelPower = floor($currLevel / 5);
+	if($itemType > 3) {
+		$levelPower = $levelPower - 1;
+	}
+	$itemPower = ($maxRand * $levelPower) + $powerVariant;
+	return $itemPower;
+}
+
+function getItemName($type, $power) {
+	if($type == 1) {
+		if($power < 10) {
+			switch($power) {
+				// nivel 1
+				case 0: $name = "<i>Gorro para dormir (Crítico +0)</i>";
+						break;
+				// nivel 2
+				case 1: $name = "Sombrero de papel (Crítico +1)";
+						break;
+				case 2: $name = "<b>Sombrero de papel de aluminio (Crítico +2)</b>";
+						break;
+				// nivel 7
+				case 3: $name = "Casco de entrenamiento (Crítico +3)";
+						break;
+				case 4: $name = "<b>Casco de obrero (Crítico +4)</b>";
+						break;
+				// nivel 12
+				case 5: $name = "Casco de metal (Crítico +5)";
+						break;
+				case 6: $name = "<b>Casco de metal reforzado (Crítico +6)</b>";
+						break;
+				// nivel 17
+				case 7: $name = "Sombrero antimosquitos (Crítico +7)";
+						break;
+				case 8: $name = "<b>Casco de metal contra insectos (Crítico +8)</b>";
+						break;
+				// nivel 22
+				case 9: $name = "Casco ligero de protección (Crítico +9)";
+						break;
+			}
+		} else if ($power < 20) {
+			switch($power) {
+				case 10: $name = "<b>Casco ultraligero de protección (Crítico +10)</b>";
+						break;
+				// nivel 27
+				case 11: $name = "Casco de camuflaje (Crítico +11)";
+						break;
+				case 12: $name = "<b>Casco militar (Crítico +12)</b>";
+						break;
+				// nivel 32
+				case 13: $name = "Casco helado (Crítico +13)";
+						break;
+				case 14: $name = "<b>Casco helado reforzado (Crítico +14)</b>";
+						break;
+				// nivel 37
+				case 15: $name = "Casco térmico (Crítico +15)";
+						break;
+				case 16: $name = "<b>Casco térmico de guerrero (Crítico +16)</b>";
+						break;
+				// nivel 42
+				case 17: $name = "Casco puntiagudo (Crítico +17)";
+						break;
+				case 18: $name = "<b>Casco puntiagudo reforzado (Crítico +18)</b>";
+						break;
+				// nivel 47
+				case 19: $name = "Casco místico (Crítico +19)";
+						break;
+			}
+		} else if ($power < 30) {
+			switch($power) {
+				case 20: $name = "<b>Casco místico de guerra (Crítico +20)</b>";
+						break;
+				// nivel 52
+				case 21: $name = "Casco prehistórico (Crítico +21)";
+						break;
+				case 22: $name = "<b>Casco ancestral (Crítico +22)</b>";
+						break;
+				// nivel 57
+				case 23: $name = "Casco con linterna (Crítico +23)";
+						break;
+				case 24: $name = "<b>Casco de guerra retroiluminado (Crítico +24)</b>";
+						break;
+				// nivel 62
+				case 25: $name = "Casco de la clemencia (Crítico +25)";
+						break;
+				case 26: $name = "<b>Casco militar marrón (Crítico +26)</b>";
+						break;
+				// nivel 67
+				case 27: $name = "Casco con tridente (Crítico +27)";
+						break;
+				case 28: $name = "<b>Casco de ataque adicional (Crítico +28)</b>";
+						break;
+				// nivel 72
+				case 29: $name = "Casco transparente (Crítico +29)";
+						break;
+			}
+		} else {
+			switch($power) {
+				case 30: $name = "<b>Casco mágico (Crítico +30)</b>";
+						break;
+				// nivel 77
+				case 31: $name = "Casco de héroe (Crítico +31)";
+						break;
+				case 32: $name = "<b>Casco de Elegido (Crítico +32)</b>";
+						break;
+				// nivel 82
+				case 33: $name = "Casco infernal (Crítico +33)";
+						break;
+				case 34: $name = "<b>Casco de lava (Crítico +34)</b>";
+						break;
+				// nivel 87
+				case 35: $name = "Casco ignífugo (Crítico +35)";
+						break;
+				case 36: $name = "<b>Casco polar ignífugo (Crítico +36)</b>";
+						break;
+				// nivel 92
+				case 37: $name = "Casco de héroe del Inframundo (Crítico +37)";
+						break;
+				case 38: $name = "<b>Casco diamante (Crítico +38)</b>";
+						break;
+				// nivel 97
+				case 39: $name = "Casco dorado (Crítico +39)";
+						break;
+				case 40: $name = "<b>Casco de Rocoso (Crítico +40)</b>";
+						break;
+			}
+		}
+	} else if($type == 2) {
+		if($power < 10) {
+			switch($power) {
+				case 0: $name = "<i>Pijama (Vida +0)</i>";
+						break;
+				// area entrenamiento
+				// nivel 3
+				case 1: $name = "<i>Ropa deportiva económica (Vida +1)</i>";
+						break;
+				case 2: $name = "Equipación profesional deportiva (Vida +2)";
+						break;
+				case 3: $name = "<b>Traje militar básico (Vida +3)</b>";
+						break;
+				// nivel 8
+				case 4: $name = "<i>Traje con protectores (Vida +4)</i>";
+						break;
+				case 5: $name = "Equipación con protecciones de rugby (Vida +5)";
+						break;
+				case 6: $name = "<b>Equipación de portero de hockey (Vida +6)</b>";
+						break;
+				// bosque
+				// nivel 13
+				case 7: $name = "<i>Ropa de camuflaje (Vida +7)</i>";
+						break;
+				case 8: $name = "Atuendo de montañero (Vida +8)";
+						break;
+				case 9: $name = "<b>Traje de alpinista con protecciones (Vida +9)</b>";
+						break;
+			}
+		} else if ($power < 20) {
+			switch($power) {
+				// nivel 18
+				case 10: $name = "<i>Ropa de camuflaje profesional (Vida +10)</i>";
+						break;
+				case 11: $name = "Traje de supervivencia (Vida +11)";
+						break;
+				case 12: $name = "<b>Armadura contra los insectos (Vida +12)</b>";
+						break;
+				// selva
+				// nivel 23
+				case 13: $name = "<i>Traje de cazador (Vida +13)</i>";
+						break;
+				case 14: $name = "Traje de cazador prfoesional (Vida +14)";
+						break;
+				case 15: $name = "<b>Traje de nativo de la jungla (Vida +15)</b>";
+						break;
+				// nivel 28
+				case 16: $name = "<i>Armadura metálica (Vida +16)</i>";
+						break;
+				case 17: $name = "Armadura de metal liviano (Vida +17)";
+						break;
+				case 18: $name = "<b>Armadura de guerrero (Vida +18)</b>";
+						break;
+				// glaciar
+				// nivel 33
+				case 19: $name = "<i>Armadura de hielo (Vida +19)</i>";
+						break;
+			}
+		} else if ($power < 30) {
+			switch($power) {
+				case 20: $name = "Armadura fresca (Vida +20)";
+						break;
+				case 21: $name = "<b>Armadura de hielo reforzada (Vida +21)</b>";
+						break;
+				// nivel 38
+				case 22: $name = "<i>Armadura con calentadores (Vida +22)</i>";
+						break;
+				case 23: $name = "Armadura térmica (Vida +23)";
+						break;
+				case 24: $name = "<b>Armadura térmica reforzada (Vida +24)</b>";
+						break;
+				// portal salida mundo real
+				// nivel 43
+				case 25: $name = "<i>Armadura de samurái (Vida +25)</i>";
+						break;
+				case 26: $name = "Armadura de samurái jefe (Vida +26)";
+						break;
+				case 27: $name = "<b>Armadura de samurái de la élite (Vida +27)</b>";
+						break;
+				// nivel 48
+				case 28: $name = "<i>Armadura mística (Vida +28)</i>";
+						break;
+				case 29: $name = "Armadura mística de guerra (Vida +29)";
+						break;
+			}
+		} else if ($power < 40) {
+			switch($power) {
+				case 30: $name = "<b>Armadura caleidoscópica (Vida +30)</b>";
+						break;
+				// cueva
+				// nivel 53
+				case 31: $name = "<i>Armadura fosforescente (Vida +31)</i>";
+						break;
+				case 32: $name = "Armadura prehistórica (Vida +32)";
+						break;
+				case 33: $name = "<b>Armadura ancestral (Vida +33)</b>";
+						break;
+				// nivel 58
+				case 34: $name = "<i>Armadura con intermitentes (Vida +34)</i>";
+						break;
+				case 35: $name = "Armadura con luces de Navidad (Vida +35)";
+						break;
+				case 36: $name = "<b>Armadura retroiluminada (Vida +36)</b>";
+						break;
+				// pasaje infierno
+				// nivel 63
+				case 37: $name = "<i>Armadura clementina (Vida +37)</i>";
+						break;
+				case 38: $name = "Armadura vikinga (Vida +38)";
+						break;
+				case 39: $name = "<b>Armadura bárbara (Vida +39)</b>";
+						break;
+			}
+		} else if ($power < 50) {
+			switch($power) {
+				// nivel 68
+				case 40: $name = "<i>Armadura tribal (Vida +40)</i>";
+						break;
+				case 41: $name = "Armadura de alto cargo militar (Vida +41)";
+						break;
+				case 42: $name = "<b>Armadura Real (Vida +42)</b>";
+						break;
+				// portal elegidos
+				// nivel 73
+				case 43: $name = "<i>Armadura mágica (Vida +43)</i>";
+						break;
+				case 44: $name = "Armadura medieval (Vida +44)";
+						break;
+				case 45: $name = "<b>Armadura electrificada (Vida +45)</b>";
+						break;
+				// nivel 78
+				case 46: $name = "<i>Armadura impenetrable (Vida +46)</i>";
+						break;
+				case 47: $name = "Armadura de héroe (Vida +47)";
+						break;
+				case 48: $name = "<b>Armadura de Elegido (Vida +48)</b>";
+						break;
+				// infierno
+				// nivel 83
+				case 49: $name = "<i>Armadura infernal (Vida +49)</i>";
+						break;
+			}
+		} else {
+			switch($power) {
+				case 50: $name = "Armadura de lava (Vida +50)";
+						break;
+				case 51: $name = "<b>Armadura de fuego (Vida +51)</b>";
+						break;
+				// nivel 88
+				case 52: $name = "<i>Armadura antiquemaduras (Vida +52)</i>";
+						break;
+				case 53: $name = "Armadura ignífuga (Vida +53)";
+						break;
+				case 54: $name = "<b>Armadura polar (Vida +54)</b>";
+						break;
+				// inframundo
+				// nivel 93
+				case 55: $name = "<i>Armadura tenebrosa (Vida +55)</i>";
+						break;
+				case 56: $name = "Armadura de héroes del Inframundo (Vida +56)";
+						break;
+				case 57: $name = "<b>Armadura diamante (Vida +57)</b>";
+						break;
+				// nivel 98
+				case 58: $name = "<i>Armadura platino (Vida +58)</i>";
+						break;
+				case 59: $name = "Armadura dorada (Vida +59)";
+						break;
+				case 60: $name = "<b>Armadura de Rocoso (Vida +60)</b>";
+						break;
+			}
+		}
+	} else if($type == 3) {
+		if($power < 10) {
+			switch($power) {
+				case 0: $name = "<i>Calcetines (Velocidad +0)</i>";
+						break;
+				// area entrenamiento
+				// nivel 4
+				case 1: $name = "<i>Zapatos cómodos (Velocidad +1)</i>";
+						break;
+				case 2: $name = "Calzado deportivo (Velocidad +2)";
+						break;
+				case 3: $name = "<b>Deportivas de competición (Velocidad +3)</b>";
+						break;
+				// nivel 9
+				case 4: $name = "<i>Botas de batalla (Velocidad +4)</i>";
+						break;
+				case 5: $name = "Botas profesionales de batalla (Velocidad +5)";
+						break;
+				case 6: $name = "<b>Botas de montañero (Velocidad +6)</b>";
+						break;
+				// bosque
+				// nivel 14
+				case 7: $name = "<i>Botas militares (Velocidad +7)</i>";
+						break;
+				case 8: $name = "Botas de montañero con punta de hierro (Velocidad +8)";
+						break;
+				case 9: $name = "<b>Botas de alpinista (Velocidad +9)</b>";
+						break;
+			}
+		} else if ($power < 20) {
+			switch($power) {
+				// nivel 19
+				case 10: $name = "<i>Botas livianas (Velocidad +10)</i>";
+						break;
+				case 11: $name = "Botas de agarre (Velocidad +11)";
+						break;
+				case 12: $name = "<b>Botas espaciales (Velocidad +12)</b>";
+						break;
+				// selva
+				// nivel 24
+				case 13: $name = "<i>Botas de cazador (Velocidad +13)</i>";
+						break;
+				case 14: $name = "Botas de cazador maestro (Velocidad +14)";
+						break;
+				case 15: $name = "<b>Protectores maya (Velocidad +15)</b>";
+						break;
+				// nivel 29
+				case 16: $name = "<i>Botas de metal (Velocidad +16)</i>";
+						break;
+				case 17: $name = "Botas de metal livianas (Velocidad +17)";
+						break;
+				case 18: $name = "<b>Botas de armadura (Velocidad +18)</b>";
+						break;
+				// glaciar
+				// nivel 34
+				case 19: $name = "<i>Botas frescas (Velocidad +19)</i>";
+						break;
+			}
+		} else if ($power < 30) {
+			switch($power) {
+				case 20: $name = "Botas de hielo (Velocidad +20)";
+						break;
+				case 21: $name = "<b>Botas antiresbalones (Velocidad +21)</b>";
+						break;
+				// nivel 39
+				case 22: $name = "<i>Botas de esquí (Velocidad +22)</i>";
+						break;
+				case 23: $name = "Botas térmicas (Velocidad +23)";
+						break;
+				case 24: $name = "<b>Patines térmicos (Velocidad +24)</b>";
+						break;
+				// portal salida mundo real
+				// nivel 44
+				case 25: $name = "<i>Botas de guerra (Velocidad +25)</i>";
+						break;
+				case 26: $name = "Botas de guerra con ruedas (Velocidad +26)";
+						break;
+				case 27: $name = "<b>Armadura inferior de samurái (Velocidad +27)</b>";
+						break;
+				// nivel 49
+				case 28: $name = "<i>Botas místicas (Velocidad +28)</i>";
+						break;
+				case 29: $name = "Botas místicas de guerra (Velocidad +29)";
+						break;
+			}
+		} else if ($power < 40) {
+			switch($power) {
+				case 30: $name = "<b>Botas fosforescentes (Velocidad +30)</b>";
+						break;
+				// cueva
+				// nivel 54
+				case 31: $name = "<i>Botas con muelles (Velocidad +31)</i>";
+						break;
+				case 32: $name = "Botas de pirata (Velocidad +32)";
+						break;
+				case 33: $name = "<b>Botas de navegación (Velocidad +33)</b>";
+						break;
+				// nivel 59
+				case 34: $name = "<i>Aletas de submarinista (Velocidad +34)</i>";
+						break;
+				case 35: $name = "Botas de explorador experimentado (Velocidad +35)";
+						break;
+				case 36: $name = "<b>Botas de arqueología (Velocidad +36)</b>";
+						break;
+				// pasaje infierno
+				// nivel 64
+				case 37: $name = "<i>Botas del perdón (Velocidad +37)</i>";
+						break;
+				case 38: $name = "Armadura inferior (Velocidad +38)";
+						break;
+				case 39: $name = "<b>Armadura de élite inferior (Velocidad +39)</b>";
+						break;
+			}
+		} else if ($power < 50) {
+			switch($power) {
+				// nivel 69
+				case 40: $name = "<i>Botas mágicas (Velocidad +40)</i>";
+						break;
+				case 41: $name = "Botas medievales (Velocidad +41)";
+						break;
+				case 42: $name = "<b>Botas extraterrestres (Velocidad +42)</b>";
+						break;
+				// portal elegidos
+				// nivel 74
+				case 43: $name = "<i>Botas de velocista aventurero profesional (Velocidad +43)</i>";
+						break;
+				case 44: $name = "Botas de piel de tiburón (Velocidad +44)";
+						break;
+				case 45: $name = "<b>Botas de piel de brontosaurio (Velocidad +45)</b>";
+						break;
+				// nivel 79
+				case 46: $name = "<i>Botas irrompibles (Velocidad +46)</i>";
+						break;
+				case 47: $name = "Botas de héroe (Velocidad +47)";
+						break;
+				case 48: $name = "<b>Botas de Elegido (Velocidad +48)</b>";
+						break;
+				// infierno
+				// nivel 84
+				case 49: $name = "<i>Botas de bronce (Velocidad +49)</i>";
+						break;
+			}
+		} else {
+			switch($power) {
+				case 50: $name = "Botas de lava (Velocidad +50)";
+						break;
+				case 51: $name = "<b>Botas de fuego (Velocidad +51)</b>";
+						break;
+				// nivel 89
+				case 52: $name = "<i>Botas resistentes al calor (Velocidad +52)</i>";
+						break;
+				case 53: $name = "Botas ignífugas (Velocidad +53)";
+						break;
+				case 54: $name = "<b>Botas polares (Velocidad +54)</b>";
+						break;
+				// inframundo
+				// nivel 94
+				case 55: $name = "<i>Botas de las tinieblas (Velocidad +55)</i>";
+						break;
+				case 56: $name = "Botas de héroe del inframundo (Velocidad +56)";
+						break;
+				case 57: $name = "<b>Botas de plata (Velocidad +57)</b>";
+						break;
+				// nivel 99
+				case 58: $name = "<i>Botas bañadas en oro (Velocidad +58)</i>";
+						break;
+				case 59: $name = "Botas doradas (Velocidad +59)";
+						break;
+				case 60: $name = "<b>Botas de Rocoso (Velocidad +60)</b>";
+						break;
+			}
+		}
+	} else if($type == 4) {
+		if($power < 10) {
+			switch($power) {
+				case 0: $name = "<i>Osito de peluche (Ataque +0)</i>";
+						break;
+				// area entrenamiento
+				// nivel 5
+				case 1: $name = "<i>Periódico enrollado (Ataque +1)</i>";
+						break;
+				case 2: $name = "Espada de cartón (Ataque +2)";
+						break;
+				case 3: $name = "<b>Espada de madera (Ataque +3)</b>";
+						break;
+				// bosque
+				// nivel 10
+				case 4: $name = "<i>Florete de esgrima (Ataque +4)</i>";
+						break;
+				case 5: $name = "Katana (Ataque +5)";
+						break;
+				case 6: $name = "<b>Katana larga afilada (Ataque +6)</b>";
+						break;
+				// nivel 15
+				case 7: $name = "<i>Navaja multiusos (Ataque +7)</i>";
+						break;
+				case 8: $name = "Bumerán con cuchillas afiladas (Ataque +8)";
+						break;
+				case 9: $name = "<b>Shuriken (Ataque +9)</b>";
+						break;
+			}
+		} else if ($power < 20) {
+			switch($power) {
+				// selva
+				// nivel 20
+				case 10: $name = "<i>Lanza con punta de hierro (Ataque +10)</i>";
+						break;
+				case 11: $name = "Hacha oxidada (Ataque +11)";
+						break;
+				case 12: $name = "<b>Maza de hierro (Ataque +12)</b>";
+						break;
+				// nivel 25
+				case 13: $name = "<i>Nunchaku (Ataque +13)</i>";
+						break;
+				case 14: $name = "Cuchillo de gran tamaño (Ataque +14)";
+						break;
+				case 15: $name = "<b>Sable (Ataque +15)</b>";
+						break;
+				// glaciar
+				// nivel 30
+				case 16: $name = "<i>Picahielos (Ataque +16)</i>";
+						break;
+				case 17: $name = "Espada helada (Ataque +17)";
+						break;
+				case 18: $name = "<b>Espada de doble hoja (Ataque +18)</b>";
+						break;
+				// nivel 35
+				case 19: $name = "<i>Dagas imbuidas (Ataque +19)</i>";
+						break;
+			}
+		} else if ($power < 30) {
+			switch($power) {
+				case 20: $name = "Dagas de fuego (Ataque +20)";
+						break;
+				case 21: $name = "<b>Espada de fuego (Ataque +21)</b>";
+						break;
+				// portal salida mundo real
+				// nivel 40
+				case 22: $name = "<i>Arco y flechas (Ataque +22)</i>";
+						break;
+				case 23: $name = "Bayesta (Ataque +23)";
+						break;
+				case 24: $name = "<b>Bayesta de élite (Ataque +24)</b>";
+						break;
+				// nivel 45
+				case 25: $name = "<i>Pistola improvisada (Ataque +25)</i>";
+						break;
+				case 26: $name = "Rifle de dardos venenosos (Ataque +26)";
+						break;
+				case 27: $name = "<b>Rifle de francotirador (Ataque +27)</b>";
+						break;
+				// cueva
+				// nivel 50
+				case 28: $name = "<i>Marfil puro con hojas afiladas incrustadas (Ataque +28)</i>";
+						break;
+				case 29: $name = "Arco y flechas de fuego (Ataque +29)";
+						break;
+			}
+		} else if ($power < 40) {
+			switch($power) {
+				case 30: $name = "<b>Aerosol nuclear (Ataque +30)</b>";
+						break;
+				// nivel 55
+				case 31: $name = "<i>Espada electrificada (Ataque +31)</i>";
+						break;
+				case 32: $name = "Doble espada electrificada (Ataque +32)";
+						break;
+				case 33: $name = "<b>Espada de doble filo electrificada (Ataque +33)</b>";
+						break;
+				// pasaje infierno
+				// nivel 60
+				case 34: $name = "<i>Hacha afilada (Ataque +34)</i>";
+						break;
+				case 35: $name = "Hacha afilada gigante (Ataque +35)";
+						break;
+				case 36: $name = "<b>Hacha gigante con bola de pinchos (Ataque +36)</b>";
+						break;
+				// nivel 65
+				case 37: $name = "<i>Shuriken de fuego (Ataque +37)</i>";
+						break;
+				case 38: $name = "Bayesta con mirilla de ultraprecisión (Ataque +38)";
+						break;
+				case 39: $name = "<b>Bazuca (Ataque +39)</b>";
+						break;
+			}
+		} else if ($power < 50) {
+			switch($power) {
+				// portal elegidos
+				// nivel 70
+				case 40: $name = "<i>Espada mágica (Ataque +40)</i>";
+						break;
+				case 41: $name = "Motosierra (Ataque +41)";
+						break;
+				case 42: $name = "<b>Motosierra electrificada (Ataque +42)</b>";
+						break;
+				// nivel 75
+				case 43: $name = "<i>Espada enorme (Ataque +43)</i>";
+						break;
+				case 44: $name = "Sable láser (Ataque +44)";
+						break;
+				case 45: $name = "<b>Espada de Elegido (Ataque +45)</b>";
+						break;
+				// infierno
+				// nivel 80
+				case 46: $name = "<i>Granadas (Ataque +46)</i>";
+						break;
+				case 47: $name = "Cócteles Molotov (Ataque +47)";
+						break;
+				case 48: $name = "<b>Lanzallamas (Ataque +48)</b>";
+						break;
+				// nivel 85
+				case 49: $name = "<i>Lanzamisiles (Ataque +49)</i>";
+						break;
+			}
+		} else {
+			switch($power) {
+				case 50: $name = "Lanzagranadas (Ataque +50)";
+						break;
+				case 51: $name = "<b>Leviatán (Ataque +51)</b>";
+						break;
+				// inframundo
+				// nivel 90
+				case 52: $name = "<i>Espada negra de halo rojo (Ataque +52)</i>";
+						break;
+				case 53: $name = "Espada de héroe del Inframundo (Ataque +53)";
+						break;
+				case 54: $name = "<b>Espada antimateria (Ataque +54)</b>";
+						break;
+				// nivel 95
+				case 55: $name = "<i>Excalibur (Ataque +55)</i>";
+						break;
+				case 56: $name = "Espada de oro (Ataque +56)";
+						break;
+				case 57: $name = "<b>Espada de Rocoso (Ataque +57)</b>";
+						break;
+				// nivel 100
+				case 99: $name = "<b>Corona y cetro de Rey Rocoso de las Tinieblas (Ataque +99)</b>";
+						break;
+			}
+		}
+	} else {
+		if($power < 10) {
+			switch($power) {
+				case 0: $name = "<i>Manta (Defensa +0)</i>";
+						break;
+				// area entrenamiento
+				// nivel 6
+				case 1: $name = "<i>Chaqueta gruesa (Defensa +1)</i>";
+						break;
+				case 2: $name = "Bufanda imantada (Defensa +2)";
+						break;
+				case 3: $name = "<b>Tienda de campaña (Defensa +3)</b>";
+						break;
+				// bosque
+				// nivel 11
+				case 4: $name = "<i>Mosquitera (Defensa +4)</i>";
+						break;
+				case 5: $name = "Escudo de carton (Defensa +5)";
+						break;
+				case 6: $name = "<b>Escudo de PVC (Defensa +6)</b>";
+						break;
+				// nivel 16
+				case 7: $name = "<i>Escudo de hierro (Defensa +7)</i>";
+						break;
+				case 8: $name = "Escudo liviano (Defensa +8)";
+						break;
+				case 9: $name = "<b>Gran escudo liviano (Defensa +9)</b>";
+						break;
+			}
+		} else if ($power < 20) {
+			switch($power) {
+				// selva
+				// nivel 21
+				case 10: $name = "<i>Escudo medieval (Defensa +10)</i>";
+						break;
+				case 11: $name = "Escudo reforzado (Defensa +11)";
+						break;
+				case 12: $name = "<b>Escudo de marfil (Defensa +12)</b>";
+						break;
+				// nivel 26
+				case 13: $name = "<i>Escudo de piel de serpiente (Defensa +13)</i>";
+						break;
+				case 14: $name = "Escudo de piel de cocodrilo (Defensa +14)";
+						break;
+				case 15: $name = "<b>Escudo de metal y piel (Defensa +15)</b>";
+						break;
+				// glaciar
+				// nivel 31
+				case 16: $name = "<i>Escudo helado (Defensa +16)</i>";
+						break;
+				case 17: $name = "Escudo de hielo (Defensa +17)";
+						break;
+				case 18: $name = "<b>Escudo de hielo con pinchos (Defensa +18)</b>";
+						break;
+				// nivel 36
+				case 19: $name = "<i>Caparazón iglú (Defensa +19)</i>";
+						break;
+			}
+		} else if ($power < 30) {
+			switch($power) {
+				case 20: $name = "Escudo de cuerpo con visera (Defensa +20)";
+						break;
+				case 21: $name = "<b>Escudo zafiro (Defensa +21)</b>";
+						break;
+				// portal salida mundo real
+				// nivel 41
+				case 22: $name = "<i>Escudo viking (Defensa +22)</i>";
+						break;
+				case 23: $name = "Escudo de bronce (Defensa +23)";
+						break;
+				case 24: $name = "<b>Escudo reforzado de bronce (Defensa +24)</b>";
+						break;
+				// nivel 46
+				case 25: $name = "<i>Escudo místico (Defensa +25)</i>";
+						break;
+				case 26: $name = "Escudo místico de guerra (Defensa +26)";
+						break;
+				case 27: $name = "<b>Escudo espejo (Defensa +27)</b>";
+						break;
+				// cueva
+				// nivel 51
+				case 28: $name = "<i>Escudo con linterna (Defensa +28)</i>";
+						break;
+				case 29: $name = "Escudo destello (Defensa +29)";
+						break;
+			}
+		} else if ($power < 40) {
+			switch($power) {
+				case 30: $name = "<b>Escudo de luz (Defensa +30)</b>";
+						break;
+				// nivel 56
+				case 31: $name = "<i>Escudo hipnótico (Defensa +31)</i>";
+						break;
+				case 32: $name = "Escudo láser (Defensa +32)";
+						break;
+				case 33: $name = "<b>Escudo electrificado (Defensa +33)</b>";
+						break;
+				// pasaje infierno
+				// nivel 61
+				case 34: $name = "<i>Escudo propulsor (Defensa +34)</i>";
+						break;
+				case 35: $name = "Escudo de plata (Defensa +35)";
+						break;
+				case 36: $name = "<b>Escudo de guerra de plata (Defensa +36)</b>";
+						break;
+				// nivel 66
+				case 37: $name = "<i>Escudo calavera (Defensa +37)</i>";
+						break;
+				case 38: $name = "Escudo esqueleto (Defensa +38)";
+						break;
+				case 39: $name = "<b>Escudo Real (Defensa +39)</b>";
+						break;
+			}
+		} else if ($power < 50) {
+			switch($power) {
+				// portal elegidos
+				// nivel 71
+				case 40: $name = "<i>Escudo mágico (Defensa +40)</i>";
+						break;
+				case 41: $name = "Escudo con visión nocturna (Defensa +41)";
+						break;
+				case 42: $name = "<b>Escudo guardaespaldas (Defensa +42)</b>";
+						break;
+				// nivel 76
+				case 43: $name = "<i>Escudo imperforable (Defensa +43)</i>";
+						break;
+				case 44: $name = "Escudo de héroe (Defensa +44)";
+						break;
+				case 45: $name = "<b>Escudo de Elegido (Defensa +45)</b>";
+						break;
+				// infierno
+				// nivel 81
+				case 46: $name = "<i>Escudo rubí (Defensa +46)</i>";
+						break;
+				case 47: $name = "Escudo de lava (Defensa +47)";
+						break;
+				case 48: $name = "<b>Escudo de fuego (Defensa +48)</b>";
+						break;
+				// nivel 86
+				case 49: $name = "<i>Escudo lanzallamas (Defensa +49)</i>";
+						break;
+			}
+		} else {
+			switch($power) {
+				case 50: $name = "Escudo ignífugo (Defensa +50)";
+						break;
+				case 51: $name = "<b>Escudo antifuego (Defensa +51)</b>";
+						break;
+				// inframundo
+				// nivel 91
+				case 52: $name = "<i>Escudo final (Defensa +52)</i>";
+						break;
+				case 53: $name = "Escudo automático (Defensa +53)";
+						break;
+				case 54: $name = "<b>Escudo platino (Defensa +54)</b>";
+						break;
+				// nivel 96
+				case 55: $name = "<i>Escudo diamante (Defensa +55)</i>";
+						break;
+				case 56: $name = "Escudo de oro (Defensa +56)";
+						break;
+				case 57: $name = "<b>Escudo de Rocoso (Defensa +57)</b>";
+						break;
+			}
+		}
+	}
+	return $name;
+}
+
+function getAreaName ($level) {
+	if($level == 100) {
+		$name = "Palacio Real del Inframundo";
+	} else if($level > 89) {
+		$name = "Inframundo";
+	} else if($level > 87) {
+		$name = "Límites del Infierno";
+	} else if($level > 79) {
+		$name = "Infierno";
+	} else if($level > 78) {
+		$name = "Protección final de selección de Elegidos";
+	} else if($level > 69) {
+		$name = "Portal protegido de los Elegidos";
+	} else if($level > 67) {
+		$name = "Final del pasaje ancestral";
+	} else if($level > 59) {
+		$name = "Pasaje ancestral hacia el Infierno";
+	} else if($level > 54) {
+		$name = "Profundidades de la cueva mitológica";
+	} else if($level > 49) {
+		$name = "Cueva mitológica";
+	} else if($level > 39) {
+		$name = "Portal del mundo real hacia el Inframundo";
+	} else if($level > 36) {
+		$name = "Fondo del glaciar";
+	} else if($level > 29) {
+		$name = "Glaciar oculto bajo tierra";
+	} else if($level > 27) {
+		$name = "Selva fría";
+	} else if($level > 19) {
+		$name = "Selva profunda";
+	} else if($level > 16) {
+		$name = "Profundidad del bosque tenebroso";
+	} else if($level > 9) {
+		$name = "Bosque tenebroso";
+	} else if($level > 5) {
+		$name = "Área de entrenamiento avanzado";
+	} else {
+		$name = "Área de entrenamiento";
+	}
+	return $name;
+}
+
+function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
+	$currTime = time();
+	$newHP = 0;
+	$newAt = 0;
+	$newDef = 0;
+	$newCrit = 0;
+	$newSp = 0;
+	$newItemType = 1;
+	$newItemPower = 0;
+	$newExtraPoints = 0;
+	// darle los nuevos puntos (el critico max 40), la exp max 8m
+	// los de gastar punto
+	if($newLevel == 100) {
+		$newHP = 11;
+		$newAt = 11;
+		$newDef = 11;
+		$newSp = 11;
+		$newExtraPoints = 100;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		$newCrit = 1;
+		if($newExp > 7999999) {
+			$newExp = 8000000;
+		}
+		$newAt = $newAt + $extraTicketA;
+		$newSp = $newSp + $extraTicketB;
+		$newItemType = 4;
+	} else if ($newLevel > 89) {
+		$newHP = 10;
+		$newAt = 10;
+		$newDef = 10;
+		$newSp = 10;
+		$newExtraPoints = 70;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 90 && $newLevel < 99) {
+			$newExtraPoints = $newExtraPoints + ($newLevel - 90);
+		} else if($newLevel == 99) {
+			$newExtraPoints = $newExtraPoints + 20;
+		}
+		if($newLevel == 90 || $newLevel == 95) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 90;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else if ($newLevel > 79) {
+		$newHP = 9;
+		$newAt = 9;
+		$newDef = 9;
+		$newSp = 9;
+		$newExtraPoints = 50;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 84) {
+			$newExtraPoints = $newExtraPoints + 3;
+		}
+		if($newLevel == 80 || $newLevel == 85) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 80;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else if ($newLevel > 69) {
+		$newHP = 8;
+		$newAt = 8;
+		$newDef = 8;
+		$newSp = 8;
+		$newExtraPoints = 30;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 74) {
+			$newExtraPoints = $newExtraPoints + 2;
+		}
+		if($newLevel == 70 || $newLevel == 75) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 70;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else if ($newLevel > 59) {
+		$newHP = 7;
+		$newAt = 7;
+		$newDef = 7;
+		$newSp = 7;
+		$newExtraPoints = 25;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 64) {
+			$newExtraPoints = $newExtraPoints + 2;
+		}
+		if($newLevel == 60 || $newLevel == 65) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 60;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else if ($newLevel > 49) {
+		$newHP = 6;
+		$newAt = 6;
+		$newDef = 6;
+		$newSp = 6;
+		$newExtraPoints = 20;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 54) {
+			$newExtraPoints = $newExtraPoints + 2;
+		}
+		if($newLevel == 50 || $newLevel == 55) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 50;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else if ($newLevel > 39) {
+		$newHP = 5;
+		$newAt = 5;
+		$newDef = 5;
+		$newSp = 5;
+		$newExtraPoints = 15;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 44) {
+			$newExtraPoints = $newExtraPoints + 2;
+		}
+		if($newLevel == 40 || $newLevel == 45) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 40;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else if ($newLevel > 29) {
+		$newHP = 4;
+		$newAt = 4;
+		$newDef = 4;
+		$newSp = 4;
+		$newExtraPoints = 10;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 34) {
+			$newExtraPoints = $newExtraPoints + 2;
+		}
+		if($newLevel == 30 || $newLevel == 35) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 30;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else if ($newLevel > 19) {
+		$newHP = 3;
+		$newAt = 3;
+		$newDef = 3;
+		$newSp = 3;
+		$newExtraPoints = 4;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 24) {
+			$newExtraPoints = $newExtraPoints + 1;
+		}
+		if($newLevel == 20 || $newLevel == 25) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 20;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else if ($newLevel > 9) {
+		$newHP = 2;
+		$newAt = 2;
+		$newDef = 2;
+		$newSp = 2;
+		$newExtraPoints = 2;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel > 14) {
+			$newExtraPoints = $newExtraPoints + 1;
+		}
+		if($newLevel == 10 || $newLevel == 15) {
+			$newCrit = 1;
+		}
+		if($newLevel % 2) == 1) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel - 10;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	} else {
+		$newHP = 1;
+		$newAt = 1;
+		$newDef = 1;
+		$newSp = 1;
+		$newExtraPoints = 1;
+		$extraTicketA = rand(0,1);
+		$extraTicketB = rand(0,1);
+		if($newLevel == 2) {
+			$newHP = $newHP + $extraTicketA;
+		} else if($newLevel == 3) {
+			$newAt = $newAt + $extraTicketA;
+		} else if($newLevel == 3) {
+			$newDef = $newDef + $extraTicketA;
+		} else if($newLevel == 5) {
+			$newCrit = 1;
+			$newSp = $newSp + $extraTicketA;
+		} else if($newLevel == 6 || $newLevel == 8) {
+			$newHP = $newHP + $extraTicketA;
+			$newDef = $newDef + $extraTicketB;
+		} else if($newLevel == 7 || $newLevel == 9) {
+			$newAt = $newAt + $extraTicketA;
+			$newSp = $newSp + $extraTicketB;
+		}
+		$calcType = $newLevel;
+		if($calcType == 0 || $calcType = 5) {
+			$newItemType = 4;
+		} else if($calcType == 1 || $calcType = 6) {
+			$newItemType = 5;
+		} else if($calcType == 2 || $calcType = 7) {
+			$newItemType = 1;
+		} else if($calcType == 3 || $calcType = 8) {
+			$newItemType = 2;
+		} else {
+			$newItemType = 3;
+		}
+	}
+	if($currCrit > 39) {
+		$newHP = $newHP + $newCrit;
+		$newCrit = 0;
+	}
+	// buscar la nueva ropa 
+	$newItemPower = getItemPower($newLevel, $newItemType);
+	switch($newItemType) {
+		case 1: $newItemTypeName = "helmet";
+				break;
+		case 2: $newItemTypeName = "body";
+				break;
+		case 3: $newItemTypeName = "boots";
+				break;
+		case 4: $newItemTypeName = "weapon";
+				break;
+		case 5: $newItemTypeName = "shield";
+				break;
+	}
+	// y actualizar la base de datos
+	$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `level` = '".$newLevel."', `extra_points` = `extra_points` + ".$newExtraPoints.", `hp` = `hp` + ".$newHP.", `attack` = `attack` + ".$newAt.", `defense` = `defense` + ".$newDef.", `critic` = `critic` + ".$newCrit.", `speed` = `speed` + ".$newSp.", `".$newItemTypeName."` = ".$newItemPower." WHERE `user_id` = '".$user_id."'";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	mysql_free_result($result);		
+	// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
+	$itemName = getItemName($newItemType, $newItemPower);
+	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+	$msg = "<b>¡Enhorabuena! Acabas de subir al nivel ".$newLevel.".</b>".PHP_EOL.PHP_EOL;
+	$msg = $msg."Las estadísticas de tu personaje han mejorado:".PHP_EOL;
+	$msg = $msg."<pre>VID +".$newHP."</pre>".PHP_EOL;
+	$msg = $msg."<pre>ATA +".$newAt."</pre>".PHP_EOL;
+	$msg = $msg."<pre>DEF +".$newDef."</pre>".PHP_EOL;
+	$msg = $msg."<pre>CRÍ +".$newCrit."</pre>".PHP_EOL;
+	$msg = $msg."<pre>VEL +".$newSp."</pre>".PHP_EOL;
+	$msg = $msg."Puedes consultar las estadísticas completas de tu personaje con la función !pj.".PHP_EOL.PHP_EOL;
+	$msg = $msg."<i>Has ganado ".$newExtraPoints." punto";
+	if($newExtraPoints > 1) {
+		$msg = $msg."s adicionales";
+	} else {
+		$msg = $msg." adicional";
+	}
+	$msg = $msg." para distribuir libremente en las estadísticas de tu personaje con !gastarpunto.</i>".PHP_EOL.PHP_EOL;
+	$msg = $msg."Te has conseguido reforzar con el siguiente objeto:".PHP_EOL;
+	$msg = $msg.$itemName;
+	sleep(1);
+	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	// (al 10 avisar de que se cambia la exp ganada )
+	// si en este nuevo nivel desbloquea alguna funcion nueva o pasa al nuevo mundo, avisar con un mensaje
+	if($newLevel == 2) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Acabas de desbloquear la función !avatarpj, ¡ya puedes utilizar un avatar personalizado para tu personaje!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 5) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Acabas de desbloquear la función !atacar, ¡ya puedes enfrentarte a los jefes de las zonas en las que te encuentres!".PHP_EOL;
+		$msg = $msg."Como sigues en el área de entrenamiento, cuando uses la función podrás practicar con una babosa sencilla de eliminar. ¡Practica tantas veces como quieras!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 6) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Acabas de llegar al área de entrenamiento avanzado. A partir de ahora te enfrentarás a los verdaderos jefes de entrenamiento con la función !atacar, además de poder unirte a un clan con la función !unirme. ¡Buena suerte en tu aventura!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 10) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>El área de entrenamiento ya no es lugar para ti, es hora de emprender tu verdadera aventura, y el primer paso pasa por atravesar el bosque tenebroso.</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 17) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Te acabas de adentrar en las profundidades del bosque tenebroso, ¡buena suerte!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 20) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>El bosque se ha quedado atrás, ¡te doy la bienvenida a la selva!.</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 28) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Estás llegando al fondo de la selva, las temperaturas empiezan a no ser humanas, el frío cada vez es más intenso... ¿qué habrá al final de la selva?</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 30) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Acabas de llegar a un glaciar oculto bajo tierra. No parece que el ser humano haya estado por aquí... O en todo caso, no parece que ningún ser humano que ha estado aquí haya vuelto con vida a la superficie.</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 37) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Estás en el fondo del glaciar. Atrás queda la superficie fría cercana a la selva, y parece que te estás adaptando a las bajas temperaturas. ¡Tu rocosidad es cada vez mayor!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 40) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Parece que al final del glaciar se encuentra el portal que permite abandonar el mundo real para adentrarte en la peligrosa ruta hacia el Inframundo. ¿Serás capaz de derrotar a los guardianes del portal?</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	}  else if($newLevel == 50) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Los guardianes del portal ya son historia para ti. De hecho, quizás el mundo real también lo sea... Lo sobrenatural comienza ahora, en lo que parece ser una oscura cueva mitológica. ¡Hora de explorar un mundo desconocido!</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 55) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>El tono de las paredes por esta zona parecen diferentes. Has caminado mucho, debes andar ya en las profundidades de estas cuevas...</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 60) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>La cueva comienza a quemar, a partir de aquí es mejor no tocar las paredes con las manos desnudas, el Infierno está cada vez más cerca, pero el camino a recorrer se hará eterno...</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 68) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Cada vez hay mas luz al fondo del pasaje. No por un sol que ilumine un cielo, si no por fuego que parece inundar el camino. A partir de ahora tendrás que tomar más medidas de precaución contra el fuego...</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 70) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>¡Porras! El Infierno está a un paso, sin embargo toda la zona está repleta de guardianes que custodian la entrada, creando así un portal prácticamente infranqueable. Parece que solo los Elegidos podrán atravesar el portal... ¿conseguirás alcanzar la meta?</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 79) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Tu rocosidad ha aumentado a niveles estratosféricos. Todavía no consigues avanzar demasiado, pero la protección del portal parece mucho más débil ahora que el primer día que llegaste. ¡Ánimo, que ya lo tienes!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 80) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Acabas de abrir las puertas del Infierno. Quién sabe si eso es bueno o es malo, todo aquí parece mortal. Es como si solo por respirar o mirar hacia adelante tu vida estuviera en grave peligro. El camino restante se prevé bastante cuesta arriba...</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 88) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Estás llegando a los límites del Infierno. ¡Parecía una tarea imposible, pero parece que lo estás logrando!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 90) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Acabas de adentrarte en el Inframundo. El ambiente es realmente turbio, solo el hecho de mirar hacia adelante convierte al Infierno en un paraíso. Continuar hacia adelante se va a hacer eterno, pero la gloria está a solo un paso...</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 100) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>¡Enhorabuena, has alcanzado la máxima experiencia, el Palacio Real del Inframundo ahora es tuyo!</b>".PHP_EOL;
+		$msg = $msg."<b>Tu rocosidad es pura y contigo al mando del Inframundo el planeta estará a salvo. ¡Puedes aprovechar tu poder supremo para luchar contra los clanes más fuertes del mundo!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	}
+}
+
+function getMaxExpFromLevel($level) {
+	$exp = 0;
+	if($level > 90) {
+		switch($level) {
+			case 91: $exp = 3014000;
+					break;
+			case 92: $exp = 3286000;
+					break;
+			case 93: $exp = 3658000;
+					break;
+			case 94: $exp = 4130000;
+					break;
+			case 95: $exp = 4702000;
+					break;
+			case 96: $exp = 5374000;
+					break;
+			case 97: $exp = 6146000;
+					break;
+			case 98: $exp = 7018000;
+					break;
+			case 99: $exp = 8000000;
+					break;
+			case 100: $exp = 8000000;
+					break;
+		}
+	} else if($level > 80) {
+		switch($level) {
+			case 81: $exp = 2094280;
+					break;
+			case 82: $exp = 2172070;
+					break;
+			case 83: $exp = 2250625;
+					break;
+			case 84: $exp = 2329950;
+					break;
+			case 85: $exp = 2410050;
+					break;
+			case 86: $exp = 2490930;
+					break;
+			case 87: $exp = 2572595;
+					break;
+			case 88: $exp = 2655100;
+					break;
+			case 89: $exp = 2740000;
+					break;
+			case 90: $exp = 2842000;
+					break;
+		}
+	} else if($level > 70) {
+		switch($level) {
+			case 71: $exp = 1431355;
+					break;
+			case 72: $exp = 1492520;
+					break;
+			case 73: $exp = 1554400;
+					break;
+			case 74: $exp = 1617000;
+					break;
+			case 75: $exp = 1680325;
+					break;
+			case 76: $exp = 1744380;
+					break;
+			case 77: $exp = 1809170;
+					break;
+			case 78: $exp = 1874700;
+					break;
+			case 79: $exp = 1940975;
+					break;
+			case 80: $exp = 2017070;
+					break;
+		}
+	} else if($level > 60) {
+		switch($level) {
+			case 61: $exp = 920330;
+					break;
+			case 62: $exp = 966820;
+					break;
+			case 63: $exp = 1013975;
+					break;
+			case 64: $exp = 1061800;
+					break;
+			case 65: $exp = 1110300;
+					break;
+			case 66: $exp = 1159480;
+					break;
+			case 67: $exp = 1209345;
+					break;
+			case 68: $exp = 1259900;
+					break;
+			case 69: $exp = 1311150;
+					break;
+			case 70: $exp = 1370900;
+					break;
+		}
+	} else if($level > 50) {
+		switch($level) {
+			case 51: $exp = 541705;
+					break;
+			case 52: $exp = 575470;
+					break;
+			case 53: $exp = 609850;
+					break;
+			case 54: $exp = 644850;
+					break;
+			case 55: $exp = 680475;
+					break;
+			case 56: $exp = 716730;
+					break;
+			case 57: $exp = 753620;
+					break;
+			case 58: $exp = 791150;
+					break;
+			case 59: $exp = 829325;
+					break;
+			case 60: $exp = 874500;
+					break;
+		}
+	} else if($level > 40) {
+		switch($level) {
+			case 41: $exp = 279980;
+					break;
+			case 42: $exp = 302470;
+					break;
+			case 43: $exp = 325525;
+					break;
+			case 44: $exp = 349150;
+					break;
+			case 45: $exp = 373350;
+					break;
+			case 46: $exp = 398130;
+					break;
+			case 47: $exp = 423495;
+					break;
+			case 48: $exp = 449450;
+					break;
+			case 49: $exp = 476000;
+					break;
+			case 50: $exp = 508550;
+					break;
+		}
+	} else if($level > 30) {
+		switch($level) {
+			case 31: $exp = 116655;
+					break;
+			case 32: $exp = 129820;
+					break;
+			case 33: $exp = 143500;
+					break;
+			case 34: $exp = 157700;
+					break;
+			case 35: $exp = 172425;
+					break;
+			case 36: $exp = 187680;
+					break;
+			case 37: $exp = 203470;
+					break;
+			case 38: $exp = 219800;
+					break;
+			case 39: $exp = 236675;
+					break;
+			case 40: $exp = 258050;
+					break;
+		}
+	} else if($level > 20) {
+		switch($level) {
+			case 21: $exp = 33800;
+					break;
+			case 22: $exp = 39570;
+					break;
+			case 23: $exp = 45725;
+					break;
+			case 24: $exp = 52280;
+					break;
+			case 25: $exp = 59255;
+					break;
+			case 26: $exp = 66675;
+					break;
+			case 27: $exp = 74570;
+					break;
+			case 28: $exp = 82960;
+					break;
+			case 29: $exp = 91850;
+					break;
+			case 30: $exp = 104000;
+					break;
+		}
+	} else if($level > 10) {
+		switch($level) {
+			case 11: $exp = 5130;
+					break;
+			case 12: $exp = 6680;
+					break;
+			case 13: $exp = 8390;
+					break;
+			case 14: $exp = 10275;
+					break;
+			case 15: $exp = 12365;
+					break;
+			case 16: $exp = 14685;
+					break;
+			case 17: $exp = 17265;
+					break;
+			case 18: $exp = 20140;
+					break;
+			case 19: $exp = 23350;
+					break;
+			case 20: $exp = 28400;
+					break;
+		}
+	} else {
+		switch($level) {
+			case 1: $exp = 30;
+					break;
+			case 2: $exp = 100;
+					break;
+			case 3: $exp = 225;
+					break;
+			case 4: $exp = 410;
+					break;
+			case 5: $exp = 660;
+					break;
+			case 6: $exp = 980;
+					break;
+			case 7: $exp = 1375;
+					break;
+			case 8: $exp = 1855;
+					break;
+			case 9: $exp = 2435;
+					break;
+			case 10: $exp = 3720;
+					break;
+		}
+	}
+	return $exp;
+}
+
+function getLevelBar($exp, $level) {
+	$maxLevelExp = getMaxExpFromLevel($level);
+	if($level > 1) {
+		$maxPrevLevelExp = getMaxExpFromLevel($level - 1);
+	} else {
+		$maxPrevLevelExp = 0;
+	}
+	$maxBar = $maxLevelExp - $maxPrevLevelExp;
+	$expBar = $exp - $maxPrevLevelExp;
+	(float)($fullExp) = $maxBar / $expBar;
+	(float)($fullExp) = floor($fullExp * 100) / 100;
+	$shortExp = floor($fullExp);
+	$textbar = "";
+	for($i=1; $i<11; $i++) {
+		if($shortExp >= ($i*10)) {
+			$textBar = $textBar."◼️";
+		} else {
+			$textBar = $textBar."◻️";
+		}
+	}
+	$textBar = $textBar." ".$fullExp."%";
+	return $textBar;
+}
+
+function getPlayerInfo($fullInfo, $link, $user_id) {
+	$query = "SELECT exp_points, level FROM playerbattle WHERE user_id = '".$user_id."'";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	$msg = "";
+	if($fullInfo == 1) {
+		$msg = $msg."Puntos totales de experiencia: ".$row['exp_points'].PHP_EOL;
+		$msg = $msg."Experiencia de nivel:".PHP_EOL;
+		$expBar = getLevelBar($row['exp_points'], $row['level']);
+		$msg = $msg.$expBar.PHP_EOL.PHP_EOL;
+		$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
+	}
+	mysql_free_result($result);
+	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+	if($fullInfo == 1){
+		usleep(100000);
+	} else {
+		sleep(1);
+	}
+	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+}
+
 function failInsult() {
 	$storedInsult = array(
 						"No quiero, subnormal",
@@ -2198,6 +4293,17 @@ function containsCommand($text) {
 						"!fichas",
 						"!macaco",
 						"!vapor",
+						"!exp",
+						"!gastarpunto",
+						"!pj",
+						"!unirme",
+						"!clanes",
+						"!atacar",
+						"!avatarpj",
+						"!declararguerra",
+						"!aceptarguerra",
+						"!rechazarguerra",
+						"!guerras",
 						"!refrán",
 						"!refran",
 						"!historia"
@@ -3897,7 +6003,7 @@ function commandsList($send_id, $mode) {
 				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"@DemisukeBot v2.5 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
@@ -4266,29 +6372,33 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
 				.PHP_EOL.
-				"➡️<b>!exp</b>: <i>Muestra la clasificación de los diez mejores héroes de Telegram.</i>"
+				"➡️<b>!exp</b>: <i>En construcción.</i>"
 				.PHP_EOL.
-				"➡️<b>!heroesgrupo</b>: <i>Muestra el TOP10 de héroes del grupo desde donde se ejecuta la función.</i>"
+				"➡️<b>!gastarpunto</b>: <i>En construcción.</i>"
 				.PHP_EOL.
-				"➡️<b>!boton</b>: <i>Pulsa el botón mágico que decidirá el futuro de tu heroicidad.</i>"
+				"➡️<b>!pj</b>: <i>En construcción.</i>"
+				.PHP_EOL.
+				"➡️<b>!unirme</b>: <i>En construcción.</i>"
+				.PHP_EOL.
+				"➡️<b>!clanes</b>: <i>En construcción.</i>"
+				.PHP_EOL.
+				"➡️<b>!atacar</b>: <i>En construcción.</i>"
+				.PHP_EOL.
+				"➡️<b>!avatarpj</b>: <i>En construcción.</i>"
+				.PHP_EOL.
+				"➡️<b>!declararguerra</b>: <i>En construcción.</i>"
+				.PHP_EOL.
+				"➡️<b>!aceptarguerra</b>: <i>En construcción.</i>"
+				.PHP_EOL.
+				"➡️<b>!rechazarguerra</b>: <i>En construcción.</i>"
+				.PHP_EOL.
+				"➡️<b>!guerras</b>: <i>En construcción.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas:</b>"
 				.PHP_EOL.
-				"▶️<i>Si pulsas el !botón y te salvas, se añadirán puntos de heroicidad a tu marcador, pero si no te salvas perderás bastantes puntos.</i>"
+				"▶️<i>En construcción.</i>"
 				.PHP_EOL.
-				"▶️<i>La probabilidad de no salvarte pulsando el !botón depende progresivamente de tus puntos actuales. Por ejemplo, un jugador con 0 puntos tendrá un 100% de posibilidades de salvarse, y un jugador con 150 puntos, un 90%.</i>"
-				.PHP_EOL.
-				"▶️<i>Para aparecer en las tablas de clasificación bastará con haber pulsado al menos una vez el !botón.</i>"
-				.PHP_EOL.
-				"▶️<i>La primera vez que pulses el !botón recibirás 100 puntos iniciales extra.</i>"
-				.PHP_EOL.
-				"▶️<i>Puedes pulsar el !botón una vez cada quince segundos, sin límite de pulsaciones máximas.</i>"
-				.PHP_EOL.
-				"▶️<i>Ningún jugador tendrá puntuaciones negativas aunque reciba penalizaciones. La mínima puntuación de un jugador es 0.</i>"
-				.PHP_EOL.
-				"▶️<i>La tabla de !héroes mostrará solamente aquellos héroes o heroínas que tengan un minimo de 120 puntos de heroicidad.</i>"
-				.PHP_EOL.
-				"▶️<i>La tabla de !héroesgrupo mostrará todos aquellos usuarios que hayan pulsado el !botón al menos una vez, sin importar su puntuación o la ventana de chat desde donde lo pulsaron.</i>"
+				"▶️<i>En construcción.</i>"
 				;
 	}
 	if(strlen($text) > 5){
@@ -5113,6 +7223,197 @@ function processMessage($message) {
 			}
 			mysql_free_result($result);
 			mysql_close($link);
+		}
+	} else if (strpos(strtolower($text), "!exp") !== false) {
+		if($message['chat']['type'] == "private") {
+			error_log($logname." triggered: !exp.");
+			// iniciar db y mirar si tiene pj
+			$link = dbConnect();
+			$query = "SELECT last_exp, level, exp_points, critic FROM playerbattle WHERE user_id = ".$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['last_exp'])){
+				$currTime = time();
+				// si tiene pj mirar si han pasado 5min
+				if(($currTime - 299) > $row['last_exp']) {
+					// si si han pasado, mirar el nivel 
+						// segun el nivel, dar una experiencia u otra, con una funcion que muestre un texto al chat id enviado y devuelva la exp random final
+						$expAcquired = getPlayerExp($row['level'], $chat_id);
+						$newExp = $row['exp_points'] + $expAcquired;
+						$newLevel = getLevelFromExp($newExp);
+						mysql_free_result($result);	
+						// comprobar si con la nueva exp sube de nivel
+						if($newLevel != $row['level']){
+							levelUp($newLevel, $newExp, $row['critic'], $link, $chat_id);
+							//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
+								// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
+								// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
+						} else {
+							// sumar exp y last exp
+							$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						}
+						// mostrar mensaje del nivel, la exp total, una barra y la exp necesaria para subir de nivel
+						mysql_free_result($result);
+						getPlayerInfo(0, $link, $chat_id);
+				} else {
+					// si no han pasado, avisar de que no corra, que se espere 5min
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$currTime = $currTime - $row['last_exp'];
+					if($currTime > 239) {
+						$energy = 80;
+					} else if ($currTime > 179) {
+						$energy = 60;
+					} else if ($currTime > 119) {
+						$energy = 40;
+					} else if ($currTime > 59) {
+						$energy = 20;
+					} else {
+						$energy = 5;
+					}
+					$text = "*Tu rocoso personaje se encuentra descansando de su última tarea, espera a que recupere toda su energía, que todavía está al ".$energy."%.*";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+				}
+			} else {
+				error_log($logname." is a new player!");
+				// si no tiene, dar mensaje de bienvenida, explicar un poco las normas y eso y que se divierta
+				// crear un nuevo pj con 0 de experiencia y todo de base
+				mysql_free_result($result);
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$query = "INSERT INTO `playerbattle` (`user_id`) VALUES ('".$chat_id."');";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$text = "*¡Bienvenido/a a 'Los Rocosos de Demisuke'!*".PHP_EOL.PHP_EOL;
+				$text = $text."_Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura._".PHP_EOL;
+				$text = $text."_Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!_".PHP_EOL;
+				$text = $text.PHP_EOL."_A partir de ahora ya puedes volver a utilizar !exp para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj._".PHP_EOL;
+				$text = $text."_Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!._".PHP_EOL;
+				$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+			}
+			// cerrar la db
+			mysql_free_result($result);
+			mysql_close($link);
+		}
+	} else if (strpos(strtolower($text), "!gastarpunto") !== false) {
+		if($message['chat']['type'] == "private") {
+			error_log($logname." triggered: !gastarpunto.");
+			// revisar si lo que hay despues de gastar punto es un stat valido
+				// si es valido, comenzar la chicha
+					// iniciar db y mirar si tiene pj
+						// si tiene pj, mirar si tiene puntos por gastar
+							// si tiene puntos, añadirlo donde dice y usar la funcion de ver los nuevos stats (un !pj mini quizas)
+							// si no le quedan puntos, mostrar aviso
+						// si no tiene pj, avisar de que use !exp en privado
+					// cerrar la db
+				// si no, avisar de que use bien eso, que mire la ayuda_rocosos si no se entera				
+		}
+	} else if (strpos(strtolower($text), "!pj") !== false) {
+		error_log($logname." triggered: !pj.");
+		// usar la funcion !pj maxi, en el !exp se usaba la mini
+		// mostrar toooodos los stats posibles, con el monospace y eso
+		// no mostrar ayudas ni nada, que parezca una ficha de jugador REAL
+	} else if (strpos(strtolower($text), "!guerras") !== false) {
+		error_log($logname." triggered: !guerras.");
+		// mostrar las cinco ultimas guerras entre clanes, con la fecha, los nombres de ambos, el resultado, y si eso una linea pequeña adicional, no se aun, quizas guardo en la base de datos si fue ajustada, paliza, demigrante, random... xD
+		// que sea esquematica, que si no aburre y sale un tochaco
+		// si aun no se ha librado ninguna guerra, avisar
+	} else if (strpos(strtolower($text), "!unirme") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !unirme.");
+			// abrir db
+			// mirar si quien lo usa tiene pj y de nivel correcto
+				// si tiene pj, mirar si el clan existe en la base de datos de groupbattle
+					// si existe, unirte (sin siquiera mirar si ya se esta en otro, sobreescritura a saco)
+					// si no, decir que el grupo es nuevo y tal, que el bot no lo conoce, que cuando se hable mas por el grupo se podra
+				// si no tiene pj dejarlo en ridiculo en el grupo xD, no tiene un pj con minimo de nivel
+			// cerrar db
+		} else {
+			error_log($logname." triggered in private and failed: !unirme.");
+			// mensaje de que esto es para grupos, retarded
+		}
+	} else if (strpos(strtolower($text), "!clanes") !== false) {
+		error_log($logname." triggered: !clanes.");
+		// abrir db
+		// revisar si hay clanes con miembros (haciendo la suma de stats totales agrupando por el group id y quitando bosses y mierdas que haya metido se ve)
+			// si hay clanes, mostrar la tabla, aqui con los totales ya se calcularan las estrellas
+				// depende de como haga las batallas pvp habra que ir a buscar ese dato a otro lado
+			// si no hay, decir que no hay clanes
+		// cerrar db
+	} else if (strpos(strtolower($text), "!atacar") !== false) {
+		if($message['chat']['type'] == "private") {
+			error_log($logname." triggered: !atacar.");
+			// abrir db
+			// mirar si tiene pj
+				// si tiene pj, mirar si cumple el nivel
+					// si cumple el nivel, mirar si hace mucho que ya se cargo al ultimo
+						// si hace mucho, atacar al boss que le toque, mirar por nivel cual le toca sacar de la db
+							// librar batalla y mostrar los datos del boss y que ocurre en ella
+								// si gana la batalla, avisar de que ha ganado, y darle la exp
+									// hacer aqui todo el rollaco de !exp...
+								// si no gana, avisar de mala suerte
+						// si hace poco, avisar de que se espere un rato
+					// si no cumple el nivel, avisar de que suba un poco mas
+				// si no tiene pj, decir que use !exp
+			// cerrar db
+		}
+	} else if (strpos(strtolower($text), "!avatarpj") !== false) {
+		error_log($logname." triggered: !avatarpj.");
+		// revisar si es una url correcta (250 caracateres, http: y .jpg, .png o .gif)
+			// si es correcta, abrir db y añadirla al avatar en caso de que sea lv2 (sobreescribiendo a saco)
+				// mostrar mensaje de que se ha guardado, que aparecera cada vez que use !pj
+				// cerrar db
+			  // si no es lv2 avisar tambien...
+			// si no es correcta, ayudarle con el formato				
+	} else if (strpos(strtolower($text), "!declararguerra") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !declararguerra.");
+			// revisar que este bien escrito el comando
+				// si esta bien escrito, chicha insaid
+					// abrir db
+					// revisar si el grupo tiene al menos 3 estrellas
+						// si tiene, revisar la ultima batalla librada para ver si es vieja
+							// si es vieja, revisar que el grupo que quiere petar es tambien ***
+								// si lo es, lanzar en la db la guerra pendiente y avisar a ambos grupos de que tienen 24h pra aceptar y eso
+								// si no es ***, decir que ese grupo es peque
+							// si no, decir que te esperes un rato
+						// si no, decir que tu grupo es peque, que se una mas gente primero
+					// cerrar db
+				// si no esta bien, decir que esta mal
+		} else {
+			error_log($logname." triggered in private: !declararguerra.");
+			// mensaje de que esto es para grupos, retarded
+		}
+	} else if (strpos(strtolower($text), "!aceptarguerra") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !aceptarguerra.");
+			// abrir db
+			// revisar si tiene alguna guerra pendiente
+				// si la tiene revisar si tu grupo sigue siendo ***
+					// si sigue, aceptar la guerra, avisar en ambos clanes, y editar muchas db, la de guerra pendiente como aceptada, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
+						// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
+					// si no, decir que no tienes miembros para aceptarla, se autorechaza
+						// avisar de que se ha rechazado la guerra, y hacer lo de !rechazarguerra
+				// si no, avisar de que no tienes solicitudes de guerra pendientes
+			// cerrar db
+		} else {
+			error_log($logname." triggered in private: !aceptarguerra.");
+			// mensaje de que esto es para grupos, retarded
+		}
+	} else if (strpos(strtolower($text), "!rechazarguerra") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !rechazarguerra.");
+			// abrir db
+			// revisar si tiene alguna guerra pendiente
+				// si la tiene rechazar guerra
+					// avisar en ambos clanes, y editar muchas db, la de guerra pendiente como rechazada
+					// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
+				// si no, avisar de que no tienes solicitudes de guerra pendientes
+			// cerrar db
+		} else {
+			error_log($logname." triggered in private: !rechazarguerra.");
+			// mensaje de que esto es para grupos, retarded
 		}
 	} else if (strpos(strtolower($text), "!ludopata") !== false || strpos(strtolower($text), "!ludópata")) {
 		error_log($logname." triggered: !ludopata.");

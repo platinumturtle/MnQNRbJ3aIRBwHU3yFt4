@@ -3746,6 +3746,7 @@ function processMessage($message) {
 				$time = $time + 60;
 				$query = "UPDATE `flipcoin` SET `user_id` = '".$message['from']['id']."', `group_id` = '".$chat_id."', `last_flip` = '".$time."', `times_flipped` = `times_flipped` + 1 WHERE `fc_id` = '01'";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);		
 				mysql_close($link);
 				$keyboardButton = (object) ["text" => "Girar la moneda", "callback_data" => "FLIPCOINqGq3Z6yf1guhfgFdwkzt"];
 				apiRequestJson("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¿Cara o cruz? ¡Piensa en un resultado y pulsa el botón para girar la moneda!*", "reply_markup" => ["inline_keyboard" => [[$keyboardButton,]] ]));

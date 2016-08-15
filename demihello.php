@@ -7386,6 +7386,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!pj") !== false) {
 		error_log($logname." triggered: !pj.");
 		// usar la funcion !pj maxi, en el !exp se usaba la mini
+		$link = dbConnect();
 		getPlayerInfo(1, $link, $chat_id);
 	} else if (strpos(strtolower($text), "!guerras") !== false) {
 		error_log($logname." triggered: !guerras.");

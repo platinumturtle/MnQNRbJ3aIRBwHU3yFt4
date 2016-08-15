@@ -1410,11 +1410,13 @@ function getItemPower($currLevel, $itemType) {
 	} else {
 		$powerVariant = 42;
 	}
+	error_log("POWER VARIANT ".$powerVariant);
 	$levelPower = floor($currLevel / 5);
 	if($itemType > 3) {
 		$levelPower = $levelPower - 1;
 	}
 	$itemPower = ($maxRand * $levelPower) + $powerVariant;
+	error_log("ITEM POWER ".$itemPower);
 	return $itemPower;
 }
 
@@ -2654,7 +2656,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 	$msg = $msg."<pre>ATA +".$newAt."</pre>".PHP_EOL;
 	$msg = $msg."<pre>DEF +".$newDef."</pre>".PHP_EOL;
 	$msg = $msg."<pre>CRÍ +".$newCrit."</pre>".PHP_EOL;
-	$msg = $msg."<pre>VEL +".$newSp."</pre>".PHP_EOL;
+	$msg = $msg."<pre>VEL +".$newSp."</pre>".PHP_EOL.PHP_EOL;
 	$msg = $msg."Puedes consultar las estadísticas completas de tu personaje con la función !pj.".PHP_EOL.PHP_EOL;
 	$msg = $msg."<i>Has ganado ".$newExtraPoints." punto";
 	if($newExtraPoints > 1) {
@@ -3049,8 +3051,8 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 	$row = mysql_fetch_array($result);
 	$msg = "";
 	if($fullInfo == 0) {
-		$msg = $msg."Puntos totales de experiencia: ".$row['exp_points'].PHP_EOL;
-		$msg = $msg."Experiencia de nivel:".PHP_EOL;
+		$msg = $msg."<b>Puntos totales de experiencia:</b> ".$row['exp_points'].PHP_EOL;
+		$msg = $msg."<b>Experiencia de nivel ".$row['level'].":</b>".PHP_EOL;
 		$expBar = getLevelBar($row['exp_points'], $row['level']);
 		$msg = $msg.$expBar.PHP_EOL.PHP_EOL;
 		$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
@@ -7244,6 +7246,7 @@ function processMessage($message) {
 						mysql_free_result($result);	
 						// comprobar si con la nueva exp sube de nivel
 						if($newLevel != $row['level']){
+							error_log($logname." is now level ".$newLevel.".");
 							levelUp($newLevel, $newExp, $row['critic'], $link, $chat_id);
 							//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
 								// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje

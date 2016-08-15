@@ -3126,7 +3126,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			case 3: $msg = $msg." ";
 					break;
 		}
-		.$hp."</pre>".PHP_EOL;
+		$msg = $msg.$hp."</pre>".PHP_EOL;
 	}
 	mysql_free_result($result);
 	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));

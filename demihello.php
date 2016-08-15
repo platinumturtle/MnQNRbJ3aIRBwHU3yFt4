@@ -3028,7 +3028,7 @@ function getLevelBar($exp, $level) {
 	}
 	$maxBar = $maxLevelExp - $maxPrevLevelExp;
 	$expBar = $exp - $maxPrevLevelExp;
-	(float)$fullExp = $maxBar / $expBar;
+	(float)$fullExp = ($expBar / $maxBar) * 100;
 	(float)$fullExp = floor($fullExp * 100) / 100;
 	$shortExp = floor($fullExp);
 	$textbar = "";

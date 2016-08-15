@@ -3084,6 +3084,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$weapon = $row['weapon'];
 		$shield = $row['shield'];
 		$avatar = $row['avatar'];
+		$pvp_wins = $row['pvp_wins'];
 		mysql_free_result($result);
 		$query = "SELECT first_name, user_name FROM userbattle WHERE user_id = '".$user_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -3101,12 +3102,13 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		}
 		$finalName = str_replace("<", "", $finalName);
 		$finalName = str_replace(">", "", $finalName);
-		$msg = "<b>Mi ficha rocosa</b>".PHP_EOL.PHP_EOL;
+		$msg = "⚔ <b>FICHA DE ROCOSIDAD</b> ⚔".PHP_EOL;
 		if(strlen($avatar) > 5) {
 			$msg = $msg."<a href=\"".$avatar."\">".$finalName."</a>".PHP_EOL.PHP_EOL;
 		} else {
 			$msg = $msg.$finalName.PHP_EOL.PHP_EOL;
 		}
+		$msg = $msg."<b>Nivel:</b> ".$level.PHP_EOL;
 		if(strlen($group_id) > 1) {
 			mysql_free_result($result);
 			$query = "SELECT name FROM groupbattle WHERE group_id = '".$group_id."'";
@@ -3116,7 +3118,13 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		} else {
 			$msg = $msg."<b>Clan:</b> <i>Ninguno</i>".PHP_EOL;
 		}
-		$msg = $msg."<b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL.PHP_EOL;
+		$msg = $msg."<b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL;
+		$msg = $msg."<b>Al siguiente nivel:</b>".PHP_EOL;
+		$expBar = getLevelBar($exp_points, $level);
+		$msg = $msg.$expBar.PHP_EOL;
+		$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
+		$msg = $msg."<b>Puntos por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
+		$msg = $msg."<b>Estadísticas</b>".PHP_EOL;
 		$msg = $msg."<pre>VID:";
 		switch(strlen($hp)){
 			case 1: $msg = $msg."   ";
@@ -3127,6 +3135,52 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 					break;
 		}
 		$msg = $msg.$hp."</pre>".PHP_EOL;
+		$msg = $msg."<pre>ATA:";
+		switch(strlen($attack)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$attack."</pre>".PHP_EOL;
+		$msg = $msg."<pre>DEF:";
+		switch(strlen($defense)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$defense."</pre>".PHP_EOL;
+		$msg = $msg."<pre>CRÍ:";
+		switch(strlen($critic)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$critic."</pre>".PHP_EOL;
+		$msg = $msg."<pre>VEL:";
+		switch(strlen($speed)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$speed."</pre>".PHP_EOL.PHP_EOL;
+		$msg = $msg."<b>Equipo:</b>".PHP_EOL;
+		$msg = $msg."🎩 ".getItemName(1, $helmet).PHP_EOL;
+		$msg = $msg."👔 ".getItemName(2, $body).PHP_EOL;
+		$msg = $msg."👞 ".getItemName(3, $boots).PHP_EOL;
+		$msg = $msg."🗡 ".getItemName(4, $weapon).PHP_EOL;
+		$msg = $msg."🛡 ".getItemName(5, $shield);
 	}
 	mysql_free_result($result);
 	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));

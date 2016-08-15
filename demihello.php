@@ -2613,6 +2613,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel;
+		error_log("CALC TYPE ".$calcType);
 		if($calcType == 0 || $calcType = 5) {
 			$newItemType = 4;
 		} else if($calcType == 1 || $calcType = 6) {
@@ -2630,6 +2631,8 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		$newCrit = 0;
 	}
 	// buscar la nueva ropa 
+	error_log("ITEM TYPE: ".$newItemType);
+	error_log("NEW LEVEL ".$newLevel);
 	$newItemPower = getItemPower($newLevel, $newItemType);
 	switch($newItemType) {
 		case 1: $newItemTypeName = "helmet";

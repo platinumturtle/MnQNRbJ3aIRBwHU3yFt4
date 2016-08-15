@@ -1410,13 +1410,11 @@ function getItemPower($currLevel, $itemType) {
 	} else {
 		$powerVariant = 42;
 	}
-	error_log("POWER VARIANT ".$powerVariant);
 	$levelPower = floor($currLevel / 5);
 	if($itemType > 3) {
 		$levelPower = $levelPower - 1;
 	}
 	$itemPower = ($maxRand * $levelPower) + $powerVariant;
-	error_log("ITEM POWER ".$itemPower);
 	return $itemPower;
 }
 
@@ -2613,7 +2611,6 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel;
-		error_log("CALC TYPE ".$calcType);
 		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
 		} else if($calcType == 1 || $calcType == 6) {
@@ -2631,8 +2628,6 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		$newCrit = 0;
 	}
 	// buscar la nueva ropa 
-	error_log("ITEM TYPE: ".$newItemType);
-	error_log("NEW LEVEL ".$newLevel);
 	$newItemPower = getItemPower($newLevel, $newItemType);
 	switch($newItemType) {
 		case 1: $newItemTypeName = "helmet";
@@ -2669,7 +2664,19 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 	}
 	$msg = $msg." para distribuir libremente en las estadísticas de tu personaje con !gastarpunto.</i>".PHP_EOL.PHP_EOL;
 	$msg = $msg."Te has conseguido reforzar con el siguiente objeto:".PHP_EOL;
-	$msg = $msg.$itemName;
+	switch($newItemType) {
+		case 1: $msg = $msg."🎩";// "helmet";
+				break;
+		case 2: $msg = $msg."👔";// "body";
+				break;
+		case 3: $msg = $msg."👞";// "boots";
+				break;
+		case 4: $msg = $msg."🗡";// "weapon";
+				break;
+		case 5: $msg = $msg."🛡";// "shield";
+				break;
+	}
+	$msg = $msg." ".$itemName;
 	sleep(1);
 	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	// (al 10 avisar de que se cambia la exp ganada )

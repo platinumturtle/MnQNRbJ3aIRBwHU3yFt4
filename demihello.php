@@ -7887,7 +7887,7 @@ function processMessage($message) {
 			if(isset($row['level'])) {
 				// si tiene pj, mirar si cumple el nivel
 				if($row['level'] > 4) {
-					if($row['level'] == 100) {
+					if($row['level'] < 100) {
 						$spawnTime = time();
 						$spawnTime = $spawnTime - (3600 * 6);
 						if($spawnTime >= $row['last_boss']) {

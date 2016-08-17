@@ -7930,6 +7930,7 @@ function processMessage($message) {
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 							$text = "<b>No hay ningún jefe a la vista, tendrás que esperar un poco más para librar una nueva batalla.</b>".PHP_EOL;
 							$hours = date(g, ($row['last_boss'] - $spawnTime));
+							$hours = (int)$hours - 1;
 							(string)$minutes = date(i, ($row['last_boss'] - $spawnTime));
 							if($minutes[0] == "0") {
 								$minutes = $minutes[1];
@@ -7938,7 +7939,27 @@ function processMessage($message) {
 							if($seconds[0] == "0") {
 								$seconds = $seconds[1];
 							}
-							$text = $text."<b>Tiempo restante:</b> ".$hours." hora/s, ".$minutes." minuto/s, ".$seconds." segundo/s.";
+							$text = $text."<b>Tiempo restante:</b> ";
+							if((int)$hours > 0) {
+								$text = $text.$hours." hora";
+								if((int)$hours > 1) {
+									$text = $text."s";
+								}
+								$text = $text.", ";
+							}
+							if((int)$minutes > 0) {
+								$text = $text.$minutes." minuto";
+								if((int)$minutes > 1) {
+									$text = $text."s";
+								}
+								$text = $text.", ";
+							}
+							$text = $text.$seconds." segundo";
+							if((int)$seconds > 1) {
+								$text = $text."s.";
+							} else {
+								$text = $text.".";
+							}
 							usleep(100000);
 							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 						}

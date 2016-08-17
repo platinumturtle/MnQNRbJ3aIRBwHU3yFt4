@@ -3307,6 +3307,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 	$bossName = substr($row['extra_info'], strpos($row['extra_info'], "(") + 1);
 	$bossName = substr($bossName, 0, strpos($bossName, ")"));
 	$bossInfo = substr($row['extra_info'], strpos($row['extra_info'], ")") + 2);
+	$msg = $msg."<b>Nivel:</b> ".$row['level'].PHP_EOL;
 	$msg = $msg."<b>Nombre:</b> <a href=\"".$row['avatar']."\">".$bossName."</a>".PHP_EOL.PHP_EOL;
 	$msg = $msg."<b>Descripción:</b>".PHP_EOL;
 	$msg = $msg."<i>".$bossInfo."</i>".PHP_EOL.PHP_EOL;

@@ -3593,7 +3593,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$msg = $msg.$expBar.PHP_EOL;
 		$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
 		$msg = $msg."<b>Puntos por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
-		$msg = $msg."<b>Estadísticas base (y con equipo)</b>".PHP_EOL;
+		$msg = $msg."<b>Estadísticas base [y con equipo]</b>".PHP_EOL;
 		$msg = $msg."<pre>VID:";
 		switch(strlen($hp)){
 			case 1: $msg = $msg."   ";
@@ -3603,7 +3603,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			case 3: $msg = $msg." ";
 					break;
 		}
-		$msg = $msg.$hp." (";
+		$msg = $msg.$hp." [";
 		$fullHP = $hp + $body;
 		switch(strlen($fullHP)){
 			case 1: $msg = $msg."   ";
@@ -3613,7 +3613,88 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			case 3: $msg = $msg." ";
 					break;
 		}
-		$msg = $msg.$fullHP.")</pre>".PHP_EOL;
+		$msg = $msg.$fullHP."]</pre>".PHP_EOL;
+		$msg = $msg."<pre>ATA:";
+		switch(strlen($attack)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$attack." [";
+		$fullAttack = $attack + $weapon;
+		switch(strlen($fullAttack)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$fullAttack."]</pre>".PHP_EOL;
+		$msg = $msg."<pre>DEF:";
+		switch(strlen($defense)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$defense." [";
+		$fullDefense = $defense + $shield;
+		switch(strlen($fullDefense)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$fullDefense."]</pre>".PHP_EOL;
+		$msg = $msg."<pre>CRÍ:";
+		switch(strlen($critic)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$critic." [";
+		$fullCritic = $critic + $helmet;
+		switch(strlen($fullCritic)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$fullCritic."]</pre>".PHP_EOL;
+		$msg = $msg."<pre>VEL:";
+		switch(strlen($speed)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$speed." [";
+		$fullSpeed = $speed + $boots;
+		switch(strlen($fullSpeed)){
+			case 1: $msg = $msg."   ";
+					break;
+			case 2: $msg = $msg."  ";
+					break;
+			case 3: $msg = $msg." ";
+					break;
+		}
+		$msg = $msg.$fullSpeed."]</pre>".PHP_EOL.PHP_EOL;
+		/*
 		$msg = $msg."<pre>ATA:";
 		switch(strlen($attack)){
 			case 1: $msg = $msg."   ";
@@ -3653,7 +3734,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			case 3: $msg = $msg." ";
 					break;
 		}
-		$msg = $msg.$speed."</pre>".PHP_EOL.PHP_EOL;
+		$msg = $msg.$speed."</pre>".PHP_EOL.PHP_EOL;*/
 		$msg = $msg."<b>Equipo:</b>".PHP_EOL;
 		$msg = $msg."🎩 ".getItemName(1, $helmet).PHP_EOL;
 		$msg = $msg."👔 ".getItemName(2, $body).PHP_EOL;

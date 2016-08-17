@@ -3305,7 +3305,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 	// mostrar la ficha del boss
 	$msg = "☠ <b>FICHA DE JEFE</b> ☠".PHP_EOL;
 	$bossName = substr($row['extra_info'], strpos($row['extra_info'], "(") + 1);
-	$bossName = substr($bossName, 0, strpos($bossName, ")") - 1);
+	$bossName = substr($bossName, 0, strpos($bossName, ")"));
 	$bossInfo = substr($row['extra_info'], strpos($row['extra_info'], ")") + 2);
 	$msg = $msg."<a href=\"".$row['avatar']."\">".$bossName."</a>".PHP_EOL.PHP_EOL;
 	$msg = $msg."<b>Descripción:</b>".PHP_EOL;
@@ -7916,7 +7916,7 @@ function processMessage($message) {
 										// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
 								} else {
 									// sumar exp y last exp
-									$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `last_boss` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+									$query = "UPDATE `playerbattle` SET `exp_points` = '".$expPoints."', `last_boss` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								}
 							} else {
@@ -7929,12 +7929,12 @@ function processMessage($message) {
 							// si hace poco, avisar de que se espere un rato
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 							$text = "<b>No hay ningún jefe a la vista, tendrás que esperar un poco más para librar una nueva batalla.</b>".PHP_EOL;
-							$hours = date(g, ($row['level'] - $spawnTime));
-							(string)$minutes = date(i, ($row['level'] - $spawnTime));
+							$hours = date(g, ($row['last_boss'] - $spawnTime));
+							(string)$minutes = date(i, ($row['last_boss'] - $spawnTime));
 							if($minutes[0] == "0") {
 								$minutes = $minutes[1];
 							}
-							(string)$seconds = date(s, ($row['level'] - $spawnTime));
+							(string)$seconds = date(s, ($row['last_boss'] - $spawnTime));
 							if($seconds[0] == "0") {
 								$seconds = $seconds[1];
 							}

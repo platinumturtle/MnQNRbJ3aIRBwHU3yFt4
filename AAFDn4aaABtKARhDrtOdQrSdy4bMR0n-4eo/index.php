@@ -4486,7 +4486,7 @@ function processMessage($message) {
 			mysql_free_result($result);
 			mysql_close($link);
 		} else {
-			error_log($logname." tried to trigger in private: !modoadmin.");
+			error_log($logname." tried to trigger in private and failed: !cambiarmodo.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));

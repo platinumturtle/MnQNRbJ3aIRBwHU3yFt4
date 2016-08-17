@@ -2260,7 +2260,7 @@ function getAreaName ($level) {
 	return $name;
 }
 
-function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
+function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) {
 	$currTime = time();
 	$newHP = 0;
 	$newAt = 0;
@@ -2642,7 +2642,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 				break;
 	}
 	// y actualizar la base de datos
-	$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `level` = '".$newLevel."', `extra_points` = `extra_points` + ".$newExtraPoints.", `hp` = `hp` + ".$newHP.", `attack` = `attack` + ".$newAt.", `defense` = `defense` + ".$newDef.", `critic` = `critic` + ".$newCrit.", `speed` = `speed` + ".$newSp.", `".$newItemTypeName."` = ".$newItemPower." WHERE `user_id` = '".$user_id."'";
+	$currTime = time();
+	if($fromBoss == 1) {
+		$respawnType = "last_boss";
+	} else {
+		$respawnType = "last_exp";
+	}
+	$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `level` = '".$newLevel."', `extra_points` = `extra_points` + ".$newExtraPoints.", `hp` = `hp` + ".$newHP.", `attack` = `attack` + ".$newAt.", `defense` = `defense` + ".$newDef.", `critic` = `critic` + ".$newCrit.", `speed` = `speed` + ".$newSp.", `".$newItemTypeName."` = ".$newItemPower.", `".$respawnType."` = ".$currTime." WHERE `user_id` = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	mysql_free_result($result);		
 	// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
@@ -2784,6 +2790,12 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 		$msg = "<b>Acabas de adentrarte en el Inframundo. El ambiente es realmente turbio, solo el hecho de mirar hacia adelante convierte al Infierno en un paraíso. Continuar hacia adelante se va a hacer eterno, pero la gloria está a solo un paso...</b>".PHP_EOL;
 		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 98) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Ha llegado la hora de la verdad, ya estás preparado para hacer frente al jefe final. ¡A por él!</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora te podrás enfrentar al jefe final. Él y su guardián serán los únicos jefes a los que podrás derrotar, el resto han caído a tus pies. ¡Ahora o nunca!</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 100) {
@@ -3055,6 +3067,362 @@ function getLevelBar($exp, $level) {
 	return $textBar;
 }
 
+function chooseBoss($level) {
+	if($level == 5) {
+		$id = -4;
+	} else if ($level < 10) {
+		$bossTicket = rand(1,4);
+		switch($bossTicket) {
+			case 1: $id = -6;
+					break;
+			case 2: $id = -7;
+					break;
+			case 3: $id = -8;
+					break;
+			case 4: $id = -9;
+					break;
+		}
+	} else if ($level < 20) {
+		$bossTicket = rand(1,5);
+		switch($bossTicket) {
+			case 1: $id = -11;
+					break;
+			case 2: $id = -14;
+					break;
+			case 3: $id = -16;
+					break;
+			case 4: $id = -17;
+					break;
+			case 5: $id = -18;
+					break;
+		}
+	} else if ($level < 30) {
+		$bossTicket = rand(1,5);
+		switch($bossTicket) {
+			case 1: $id = -21;
+					break;
+			case 2: $id = -23;
+					break;
+			case 3: $id = -25;
+					break;
+			case 4: $id = -26;
+					break;
+			case 5: $id = -27;
+					break;
+		}
+	} else if ($level < 40) {
+		$bossTicket = rand(1,5);
+		switch($bossTicket) {
+			case 1: $id = -31;
+					break;
+			case 2: $id = -32;
+					break;
+			case 3: $id = -34;
+					break;
+			case 4: $id = -36;
+					break;
+			case 5: $id = -38;
+					break;
+		}
+	} else if ($level < 50) {
+		$bossTicket = rand(1,5);
+		switch($bossTicket) {
+			case 1: $id = -41;
+					break;
+			case 2: $id = -43;
+					break;
+			case 3: $id = -45;
+					break;
+			case 4: $id = -46;
+					break;
+			case 5: $id = -48;
+					break;
+		}
+	} else if ($level < 60) {
+		$bossTicket = rand(1,5);
+		switch($bossTicket) {
+			case 1: $id = -51;
+					break;
+			case 2: $id = -52;
+					break;
+			case 3: $id = -54;
+					break;
+			case 4: $id = -56;
+					break;
+			case 5: $id = -58;
+					break;
+		}
+	} else if ($level < 70) {
+		$bossTicket = rand(1,5);
+		switch($bossTicket) {
+			case 1: $id = -61;
+					break;
+			case 2: $id = -63;
+					break;
+			case 3: $id = -65;
+					break;
+			case 4: $id = -66;
+					break;
+			case 5: $id = -68;
+					break;
+		}
+	} else if ($level < 80) {
+		$bossTicket = rand(1,5);
+		switch($bossTicket) {
+			case 1: $id = -71;
+					break;
+			case 2: $id = -72;
+					break;
+			case 3: $id = -75;
+					break;
+			case 4: $id = -77;
+					break;
+			case 5: $id = -78;
+					break;
+		}
+	} else if ($level < 90) {
+		$bossTicket = rand(1,5);
+		switch($bossTicket) {
+			case 1: $id = -81;
+					break;
+			case 2: $id = -82;
+					break;
+			case 3: $id = -85;
+					break;
+			case 4: $id = -86;
+					break;
+			case 5: $id = -88;
+					break;
+		}
+	} else if ($level < 98) {
+		$bossTicket = rand(1,4);
+		switch($bossTicket) {
+			case 1: $id = -91;
+					break;
+			case 2: $id = -93;
+					break;
+			case 3: $id = -95;
+					break;
+			case 4: $id = -98;
+					break;
+		}
+	} else {
+		$bossTicket = rand(1,2);
+		switch($bossTicket) {
+			case 1: $id = -98;
+					break;
+			case 2: $id = -100;
+					break;
+		}
+	}
+	return $id;
+}
+
+function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
+	if($win == 1 && $lucky == 0) {
+		$storedStandardVictory = array(
+								"La lucha ha comenzado bastante igualada, pero enseguida te has puesto por delante y no has dejado opción al rival. Ha sido una victoria cómoda sin contratiempos.",
+								"No ha habido rival, has asestado el primer golpe del combate y casualmente ha sido un golpe crítico. A partir de ahí, coser y cantar, y victoria fácil.",
+								"Pan comido, se te ha visto con ganas de luchar sentado para darle emoción. Te has llevado la victoria de calle, y parece que no te importaría repetir.",
+								"Tu rival te ha asestado un par de golpes muy fuertes nada más comenzar la pelea que te han dejado grogui, pero tus ataque críticos le han dado la vuelta al combate y has salido victorioso.",
+								"Te has mostrado muy sólido en defensa, parece como si en lugar de luchar hubieras querido poner a prueba tu resistencia física, y tu rival prácticamente no te ha quitado puntos de vida. Prueba superada.",
+								"¡Cómo corres! Desde el principio del combate te has puesto a dar vueltas alrededor de tu rival y lo has desconcertado con tanto movimiento, lograste atacarle con un par de críticos por detrás y terminaste rápido el combate.",
+								"¡Eres un tanque! Has luchado de tal manera que parecía que tus puntos de vida no se iban a agotar nunca, tu rival incluso parecía desesperado por momentos, nunca vio ganada esta batalla.",
+								"Tus puntos de ataque han sido vitales esta vez, por cada tres golpes que tu rival lograba acertar sobre ti, tú respondías con uno igual de fuerte. Te has marcado un combo final que ha decantado el combate a tu favor.",
+								"Combate extraño, primero parecía que te lo ibas a llevar de calle, pero luego tu rival cogió fuerza y te remontó hasta llevarte al límite, pero en cuanto se cansó del esfuerzo volviste a tomar el mando y la victoria cayó de tu bando.",
+								"Es inexplicable, pero tu rival te ha atacado con todo y ha llevado el peso del combate, hasta que ha llegado un punto en que parecía que no podía más, y desde ese momento no ha supuesto un rival digno paar ti. La victoria es tuya.",
+								"¡No hay color! Te has paseado por el campo de batalla, te has llevado la victoria prácticamente sin sudar. Si vienen más así mejorarás rápido tus estadísticas."
+								);
+		$n = sizeof($storedStandardVictory) - 1;
+		$n = rand(0,$n);
+		$msg = $storedStandardVictory[$n];
+	} else if($win == 1 && lucky == 1) {
+		$storedUnexpectedVictory = array(
+									"Tu rival era muy superior a ti, y lo ha visto tan fácil que se ha despistado y lo has aprovechado para pillarlo desprevenido y salir victorioso del combate.",
+									"Buen inicio de combate, dominando el ataque y protegiéndote bien con tu defensa, pero tu rival logró romper tu defensa y dejarte prácticamente K.O., aunque no llegó a tiempo y la victoria fue tuya.",
+									"Combate de tú a tú pese a ser inferior a tu rival. Has logrado intimidar a tu enemigo actuando de manera muy rápida, y te has llevado el combate por la mínima.",
+									"¡Quién lo iba a decir! Has estado todo el combate sufriendo y atacando de manera pésima, pero cuando ibas a sentir el golpe final en tu cuerpo te has marcado un combo que ha terminado con el rival.",
+									"Combate de críticos. Tu rival te ha golpeado con mucha dureza y tú has contraatacado con golpes críticos, de no ser por ellos ahora estarías mordiendo el polvo...",
+									"¡Tienes demasiado poder de ataque! Tu rival era superior a ti, pero has logrado luchar con el 120% de tu fuerza ignorando toda tu defensa. Te la has jugado a una carta y te has llevado la victoria.",
+									"Esto no era lo esperado, tu rival era bastante mas poderoso de lo habitual, has tenido que sudar sangre para ganar esta batalla, has estado todo el rato contra las cuerdas.",
+									"¡Heróica batalla! Tu rival era mejor que tú, y lo ha demostrado a lo largo de todo el combate, pero cuando ya estabas moribundo en el suelo has conseguido derribar al rival y le has dado la vuelta a la tortilla.",
+									"Combate muy igualado, las barras de vida de tu rival y tú disminuían a la misma velocidad. Eso beneficiaba al rival, algo superior a ti, pero aun así te has logrado llevar la victoria.",
+									"¡Menuda locura! Tu rival ha sido superior a ti, pero una serie de combos finales con golpes críticos ha logrado contrarrestar esa falta de poder y ha provocado que la victoria sea tuya."
+									);
+		$n = sizeof($storedUnexpectedVictory) - 1;
+		$n = rand(0,$n);
+		$msg = $storedUnexpectedVictory[$n];
+	} else if ($win == 0 && $lucky == 0) {
+		$storedStandardDefeat = array(
+									"Nada fuera de lo esperado, tu rival era muy superior a ti, y has sucumbido tal y como estaba escrito. Pero ahora sabes cómo se las gastan tus rivales por esta zona...",
+									"Parecía que te lo ibas a llevar de calle, pero nada más lejos de la realidad. Tu rival tiene demasiada fuerza como para hacerle frente, no has podido con sus ataques finales.",
+									"No eres rival para un enemigo de este nivel, te han dado una buena paliza. Vas a tener que mejorar un poco más tus habilidades si quieres ganar puntos de experiencia contra rivales así.",
+									"¡Menudos críticos has realizado! Has conseguido dar en el blanco varias veces. Pero tu rival era claramente superior y no ha sido suficiente para llevarte la victoria, es lo que hay.",
+									"Tu rival ha visto miedo en tus ojos y ha tenido un encuentro muy plácido, enseguida te ha visto tus puntos débiles y prácticamente no has opuesto resistencia.",
+									"Derrota clara, de principio a fin. No hay más, prácticamente no has hecho un solo rasguño a tu rival. Deberías planear venganza contra tu enemigo cuando tu rocosidad sea mayor.",
+									"Combate bastante igualado que se ha acabado decantando por la superioridad de tu rival. Tal vez entrenando un poco más logres oponer bastante más resistencia que la vivida en esta batalla...",
+									"¿Qué has hecho? Parecía como si estuvieras durmiendo, el rival no ha sudado para derrotarte. Vas a tener que mejorar mucho si quieres plantar cara a rivales así.",
+									"Has puesto a prueba tu resistencia tu defensa, despreocupándote de atacar, y así es muy difícil hacerle frente a un rival como el de ahora. Te ha ganado sin despeinarse.",
+									"Batalla fácil, dominada de principio a fin. El problema es que ha sido el rival quien te ha dominado a ti. Vas a tener que entrenar bastante más a partir de ahora.",
+									"Tus puntos de ataque no lo son todo... Te has centrado solo en atacar y tu rival ha tenido una autopista libre para enviarte golpes continuos. No has podido aguantar demasiados golpes."
+									);
+		$n = sizeof($storedStandardDefeat) - 1;
+		$n = rand(0,$n);
+		$msg = $storedStandardDefeat[$n];
+	} else {
+		$storedUnexpectedDefeat = array(
+									"Todo el combate a tu favor, te has defendido cuando debías, has atacado cuando tu rival menos se lo esperaba, eras muy superior, sin embargo un combo final del enemigo ha acabado contigo.",
+									"Tu fuerza es muy superior a la del rival, pero por algún motivo no lo has demostrado y has dejado pasar una gran oportunidad de ganar una buena experiencia...",
+									"Has dominado de cabo a rabo el combate, pero cuando ya tenías agotado rival has tropezado y has perdido cualquier opción de ganar. ¡Qué mala pata!",
+									"Tenías la victoria en el bolsillo pero has caído en el juego de tu rival, te has despistado y no has sabido aprovechar tu fuerza. Tendrás que concentrarte más.",
+									"Ardua batalla librada de tú a tú pese a que tu poder es mayor al de tu rival, sin embargo su estrategia de agotarte ha surtido efecto y no has podido con el enemigo.",
+									"¡Mamma mia! Todo el combate controlado como si estuvieras jugando a un videojuego y vas y te haces daño a ti mismo. Inexplicablemente has perdido la batalla por tu mala puntería.",
+									"Escueto resumen surge de esta batalla, bastante igualada, tú siendo superior al rival pero el rival aprovechando su defensa y contraataque, suficiente para ganarte.",
+									"Eres muy superior al rival, pero a veces pasan cosas. Esta vez no pasó nada... literalmente. Tu rival te ha asestado un golpe muy duro, no has sabido reaccionar, te has quedado quieto y has perdido toda tu ventaja.",
+									"El combate podría haberse decantado por cualquier lado. Tu fuerza es mayor que la del rival, sin embargo has luchado horrible y no has sabido cómo atacar a tu rival.",
+									"Batalla muy igualada, con combos y críticos por doquier, que al final se ha acabado llevando tu rival de auténtico milagro. Podría haber sido para cualquiera.",
+									"Tu rival se ha hecho el muerto, te has confiado y te ha atacado por la espalda. El enemigo sabía que tu fuerza era mayor, así que tampoco tenía más opciones para poder ganarte..."
+									);
+		$n = sizeof($storedUnexpectedDefeat) - 1;
+		$n = rand(0,$n);
+		$msg = $storedUnexpectedDefeat[$n];
+	}
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	sleep(2);
+	$msg = "<b>⚔ REPORTE DE BATALLA</b>"PHP_EOL.PHP_EOL."<b>".$playerName." 🆚 ".$bossName."</b>".PHP_EOL.PHP_EOL."<i>".$msg."</i>";
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+}
+
+function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
+	if($level < 5 || $level > 99) {
+		return 0;
+	} else {
+		$boss_id = chooseBoss($level);
+	}
+	$query = "SELECT exp_points, level, extra_points AS 'total_power', hp, attack, defense, critic, speed, avatar, extra_info FROM playerbattle WHERE user_id = ".$boss_id;
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	// mostrar la ficha del boss
+	$msg = "☠ <b>FICHA DE JEFE</b> ☠".PHP_EOL;
+	$bossName = substr($row['extra_info'], strpos($row['extra_info'], "(") + 1);
+	$bossName = substr($bossName, 0, strpos($bossName, ")") - 1);
+	$bossInfo = substr($row['extra_info'], strpos($row['extra_info'], ")") + 2);
+	$msg = $msg."<a href=\"".$row['avatar']."\">".$bossName."</a>".PHP_EOL.PHP_EOL;
+	$msg = $msg."<b>Descripción:</b>".PHP_EOL;
+	$msg = $msg."<i>".$bossInfo."</i>".PHP_EOL.PHP_EOL;
+	$msg = $msg."<b>Estadísticas</b>".PHP_EOL;
+	$msg = $msg."<pre>VID:";
+	switch(strlen($row['hp'])){
+		case 1: $msg = $msg."   ";
+				break;
+		case 2: $msg = $msg."  ";
+				break;
+		case 3: $msg = $msg." ";
+				break;
+	}
+	$msg = $msg.$row['hp']."</pre>".PHP_EOL;
+	$msg = $msg."<pre>ATA:";
+	switch(strlen($row['attack'])){
+		case 1: $msg = $msg."   ";
+				break;
+		case 2: $msg = $msg."  ";
+				break;
+		case 3: $msg = $msg." ";
+				break;
+	}
+	$msg = $msg.$row['attack']."</pre>".PHP_EOL;
+	$msg = $msg."<pre>DEF:";
+	switch(strlen($row['defense'])){
+		case 1: $msg = $msg."   ";
+				break;
+		case 2: $msg = $msg."  ";
+				break;
+		case 3: $msg = $msg." ";
+				break;
+	}
+	$msg = $msg.$row['defense']."</pre>".PHP_EOL;
+	$msg = $msg."<pre>CRÍ:";
+	switch(strlen($row['critic'])){
+		case 1: $msg = $msg."   ";
+				break;
+		case 2: $msg = $msg."  ";
+				break;
+		case 3: $msg = $msg." ";
+				break;
+	}
+	$msg = $msg.$row['critic']."</pre>".PHP_EOL;
+	$msg = $msg."<pre>VEL:";
+	switch(strlen($row['speed'])){
+		case 1: $msg = $msg."   ";
+				break;
+		case 2: $msg = $msg."  ";
+				break;
+		case 3: $msg = $msg." ";
+				break;
+	}
+	$msg = $msg.$row['speed']."</pre>".PHP_EOL.PHP_EOL;
+	$msg = $msg."<b>Puntos exp. por victoria:</b> ".$row['exp_points'];
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	sleep(1);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+	// calcular quien gana y si es con suerte o no
+	if($level < ($row['level'] - 2)) {
+		// si el pj es -3 niveles al del boss, 90% de palmar
+		$victoryTicket = rand(1,10);
+		if($victoryTicket == 10) {
+			$win = 1;
+			$lucky = 1;
+		} else {
+			$win = 0;
+			$lucky = 0;
+		}
+	} else if($level > ($row['level'] + 2)) {
+		// si es +3 al del boss, 90% de ganar
+		$victoryTicket = rand(1,10);
+		if($victoryTicket == 10) {
+			$win = 0;
+			$lucky = 1;
+		} else {
+			$win = 1;
+			$lucky = 0;
+		}	
+	} else {
+		// si esta ahí ahí, hora de usar el poder...
+		if($totalPower >= $row['total_power']) {
+			// si el poder del pj es >= que el del boss, 90% de ganar
+			$victoryTicket = rand(1,10);
+			if($victoryTicket == 10) {
+				$win = 0;
+				$lucky = 1;
+			} else {
+				$win = 1;
+				$lucky = 0;
+			}	
+		} else {
+			// si no, regla de tres, la exp del boss es el 100%, la exp del pj, el % -50% (y nunca < 0) que tiene de ganar
+			$victoryPercent = floor((($totalPower * 100) / $row['total_power']) - 50);
+			$victoryTicket = rand(1,100);
+			// aqui siempre sera una lucky victoria
+			if($victoryTicket > $victoryPercent) {
+				$win = 0;
+				$lucky = 0;
+			} else {
+				$win = 1;
+				$lucky = 1;
+			}
+		}
+	}
+	// mostrar reporte de batalla
+	bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName);
+	if($win == 1) {
+		$newExp = $row['exp_points'];
+	} else {
+		$newExp = 0;
+	}
+	mysql_free_result($result);
+	return $newExp;
+}
+
 function getClanLevel($id, $link) {
 	$query = "SELECT COUNT( group_id ) AS  'total' FROM playerbattle WHERE group_id = '".$id."' GROUP BY group_id";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -3068,7 +3436,7 @@ function getClanLevel($id, $link) {
 		$level = "【★★★☆☆】";
 	} else if($levelNumber > 6) {
 		$level = "【★★☆☆☆】";
-	} else if($levelNumber > 0) {
+	} else if($levelNumber > 1) {
 		$level = "【★☆☆☆☆】";
 	} else {
 		$level = "【☆☆☆☆☆】";
@@ -5107,6 +5475,21 @@ function greeting() {
 	$n = sizeof($storedGreeting) - 1;
 	$n = rand(0,$n);
 	return $storedGreeting[$n];
+}
+
+function getFullName($firstName, $userName) {
+	if($userName != "") {
+		if(strtolower($firstName) == strtolower($userName)) {
+			$finalName = $userName;
+		} else {
+			$finalName = $firstName." (".$userName.")";
+		}
+	} else {
+		$finalName = $firstName;
+	}
+	$finalName = str_replace("<", "", $finalName);
+	$finalName = str_replace(">", "", $finalName);
+	return $finalName;
 }
 
 function goodbye() {
@@ -7496,18 +7879,92 @@ function processMessage($message) {
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !atacar.");
 			// abrir db
+			$link = dbConnect();
 			// mirar si tiene pj
+			$query = "SELECT exp_points, critic, level, last_boss, (hp + attack + defense + (critic * 3) + speed + (helmet * 3) + body + boots + weapon + shield) AS total_power FROM playerbattle WHERE user_id = ".$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['level'])) {
 				// si tiene pj, mirar si cumple el nivel
-					// si cumple el nivel, mirar si hace mucho que ya se cargo al ultimo
-						// si hace mucho, atacar al boss que le toque, mirar por nivel cual le toca sacar de la db
-							// librar batalla y mostrar los datos del boss y que ocurre en ella
-								// si gana la batalla, avisar de que ha ganado, y darle la exp
-									// hacer aqui todo el rollaco de !exp...
-								// si no gana, avisar de mala suerte
-						// si hace poco, avisar de que se espere un rato
+				if($row['level'] > 4) {
+					if($row['level'] == 100) {
+						$spawnTime = time();
+						$spawnTime = $spawnTime - (3600 * 6);
+						if($spawnTime >= $row['last_boss']) {
+						// si cumple el nivel, mirar si hace mucho que ya se cargo al ultimo
+							// si hace mucho, atacar al boss que le toque, mirar por nivel cual le toca sacar de la db
+								// librar batalla y mostrar los datos del boss y que ocurre en ella
+									// si gana la batalla, avisar de que ha ganado, y darle la exp
+										// hacer aqui todo el rollaco de !exp...
+									// si no gana, avisar de mala suerte
+							$level = $row['level'];
+							$totalPower = $row['total_power'];
+							$expPoints = $row['exp_points'];
+							$critic = $row['critic'];
+							mysql_free_result($result);							
+							$playerName = getFullName($message['from']['first_name'], $message['from']['username']);
+							$bossExp = bossBattle($chat_id, $link, $level, $totalPower, $playerName);
+							$currTime = time();
+							if($bossExp > 0) {
+								$expPoints = $expPoints + $bossExp;
+								$newLevel = getLevelFromExp($expPoints);								
+								if($newLevel != $level){
+									error_log($logname." is now level ".$newLevel.".");
+									levelUp($newLevel, $expPoints, $critic, $link, $chat_id, 1);
+									//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
+										// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
+										// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
+								} else {
+									// sumar exp y last exp
+									$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `last_boss` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+								}
+							} else {
+								$query = 'UPDATE playerbattle SET last_boss = '.$currTime.' WHERE user_id = '.$chat_id;
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							}
+							mysql_free_result($result);	
+							getPlayerInfo(0, $link, $chat_id);
+						} else {
+							// si hace poco, avisar de que se espere un rato
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							$text = "<b>No hay ningún jefe a la vista, tendrás que esperar un poco más para librar una nueva batalla.</b>".PHP_EOL;
+							$hours = date(g, ($row['level'] - $spawnTime));
+							(string)$minutes = date(i, ($row['level'] - $spawnTime));
+							if($minutes[0] == "0") {
+								$minutes = $minutes[1];
+							}
+							(string)$seconds = date(s, ($row['level'] - $spawnTime));
+							if($seconds[0] == "0") {
+								$seconds = $seconds[1];
+							}
+							$text = $text."<b>Tiempo restante:</b> ".$hours." hora/s, ".$minutes." minuto/s, ".$seconds." segundo/s.";
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+						}
+					} else {
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$text = "<b>Como líder de rocosidad te has encargado de aniquilar el mal de la Tierra, ahora no quedan enemigos que vencer y descansas en paz.</b>";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+					}
+				} else {
 					// si no cumple el nivel, avisar de que suba un poco mas
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$text = "<b>Esta función todavía no está desbloqueada para tu personaje debido a su escaso poder, ¡entrena un poco más para estar a la altura!</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				}
+			} else {
 				// si no tiene pj, decir que use !exp
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$text = "<b>No se encuentra ningún personaje con el que atacar, utiliza la función !exp para entrenar a tu propio personaje.</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+			}
 			// cerrar db
+			mysql_free_result($result);
+			mysql_close($link);
 		}
 	} else if (strpos(strtolower($text), "!avatarpj") !== false) {
 		error_log($logname." triggered: !avatarpj.");

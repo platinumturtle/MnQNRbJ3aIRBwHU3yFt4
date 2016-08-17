@@ -3303,11 +3303,11 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	// mostrar la ficha del boss
-	$msg = "☠ <b>FICHA DE JEFE</b> ☠".PHP_EOL;
+	$msg = "☠ <b>FICHA DE JEFE</b> ☠".PHP_EOL.PHP_EOL;
 	$bossName = substr($row['extra_info'], strpos($row['extra_info'], "(") + 1);
 	$bossName = substr($bossName, 0, strpos($bossName, ")"));
 	$bossInfo = substr($row['extra_info'], strpos($row['extra_info'], ")") + 2);
-	$msg = $msg."<a href=\"".$row['avatar']."\">".$bossName."</a>".PHP_EOL.PHP_EOL;
+	$msg = $msg."<b>Nombre:</b> <a href=\"".$row['avatar']."\">".$bossName."</a>".PHP_EOL.PHP_EOL;
 	$msg = $msg."<b>Descripción:</b>".PHP_EOL;
 	$msg = $msg."<i>".$bossInfo."</i>".PHP_EOL.PHP_EOL;
 	$msg = $msg."<b>Estadísticas</b>".PHP_EOL;

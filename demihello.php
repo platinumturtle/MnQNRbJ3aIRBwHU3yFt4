@@ -3269,7 +3269,7 @@ function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
 		$n = sizeof($storedStandardDefeat) - 1;
 		$n = rand(0,$n);
 		$msg = $storedStandardDefeat[$n];
-	} else {
+	} else if ($win == 0 && $lucky == 1) {
 		$storedUnexpectedDefeat = array(
 									"Todo el combate a tu favor, te has defendido cuando debías, has atacado cuando tu rival menos se lo esperaba, eras muy superior, sin embargo un combo final del enemigo ha acabado contigo.",
 									"Tu fuerza es muy superior a la del rival, pero por algún motivo no lo has demostrado y has dejado pasar una gran oportunidad de ganar una buena experiencia...",
@@ -3286,6 +3286,8 @@ function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
 		$n = sizeof($storedUnexpectedDefeat) - 1;
 		$n = rand(0,$n);
 		$msg = $storedUnexpectedDefeat[$n];
+	} else {
+		$msg = "Una batalla realmente extraña, el rival ha expulsado una especie de gas que ha hecho de bola de humo y no se ha podido ver qué ha ocurrido.";
 	}
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	sleep(2);
@@ -3415,6 +3417,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 	}
 	// mostrar reporte de batalla
 	bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName);
+	error_log("Battle results (WINLUCKY): ".$win.$lucky);
 	if($win == 1) {
 		$newExp = $row['exp_points'];
 	} else {

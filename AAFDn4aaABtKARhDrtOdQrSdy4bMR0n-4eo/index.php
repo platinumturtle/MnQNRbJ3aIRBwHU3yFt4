@@ -132,7 +132,7 @@ function checkUserID($id) {
 
 function checkUsername($username) {
 	$bannedUsername = array(
-					"",
+					"Diegofa31",
 					""
 				);
 	for($i=0;$i<sizeof($bannedUsername);$i++) {

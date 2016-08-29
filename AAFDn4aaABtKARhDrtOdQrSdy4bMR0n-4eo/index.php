@@ -1999,6 +1999,8 @@ function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
 						"BQADBAADXAEAAtWlKAABd7dY2s4yLOEC",
+						"BQADBAADDAEAAkJ3TwABc_20T2z96xgC",
+						"BQADBAADlAADOBnzAvIbNYnp3J16Ag",
 						"BQADBAADhQcAApdgXwABmLF7Cmu2n5oC",
 						"BQADBAADFQEAAtWlKAAB_7dx_We3QPgC",
 						"BQADBAADWwEAAtWlKAABlsH5y7ZG0boC",

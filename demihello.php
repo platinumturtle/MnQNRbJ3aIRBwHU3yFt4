@@ -3576,6 +3576,8 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			$msg = $msg.$finalName.PHP_EOL.PHP_EOL;
 		}
 		$msg = $msg."<b>Nivel:</b> ".$level.PHP_EOL;
+		$currZone = getAreaName($level);
+		$msg = $msg."<b>Zona:</b> <i>".$currZone."</i>".PHP_EOL;
 		if(strlen($group_id) > 1) {
 			mysql_free_result($result);
 			$query = "SELECT name FROM groupbattle WHERE group_id = '".$group_id."'";
@@ -3593,7 +3595,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$msg = $msg.$expBar.PHP_EOL;
 		$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
 		$msg = $msg."<b>Puntos por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
-		$msg = $msg."<b>Estadísticas base [y con equipo]</b>".PHP_EOL;
+		$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
 		$msg = $msg."<pre>VID:";
 		switch(strlen($hp)){
 			case 1: $msg = $msg."   ";
@@ -8044,6 +8046,27 @@ function processMessage($message) {
 				// depende de como haga las batallas pvp habra que ir a buscar ese dato a otro lado
 			// si no hay, decir que no hay clanes
 		// cerrar db
+	} else if (strpos($text, "/getMyPower") === 0) {
+		if($message['from']['id'] == '6250647') {
+			error_log($logname." triggered: /getMyPower.");
+			$link = dbConnect();
+			$query = "SELECT level, extra_points, (hp + attack + defense + (critic * 3) + speed + (helmet * 3) + body + boots + weapon + shield) AS total_power FROM playerbattle WHERE user_id = ".$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			$level = $row['level'];
+			$totalPower = $row['total_power'];
+			$extraPower = $row['extra_points'];
+			mysql_free_result($result);
+			$query = "UPDATE `playerbattle` SET `last_exp` = '288', `last_boss` = '288' WHERE `user_id` = ".$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			mysql_free_result($result);
+			mysql_close($link);
+			$msg = "*Nivel:* ".$level.PHP_EOL;
+			$msg = $msg."*Poder total:* ".$totalPower.PHP_EOL;
+			$msg = $msg."*Puntos sin utilizar:* ".$extraPower.PHP_EOL;
+			$msg = $msg.PHP_EOL."_Se han reiniciado los tiempos de espera de !exp y !atacar._";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+		}
 	} else if (strpos(strtolower($text), "!atacar") !== false) {
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !atacar.");

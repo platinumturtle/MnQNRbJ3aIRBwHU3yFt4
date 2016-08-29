@@ -2311,13 +2311,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 90;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;
@@ -2344,13 +2344,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 80;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;
@@ -2377,13 +2377,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 70;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;
@@ -2410,13 +2410,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 60;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;
@@ -2443,13 +2443,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 50;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;
@@ -2476,13 +2476,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 40;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;
@@ -2509,13 +2509,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 30;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;
@@ -2542,13 +2542,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 20;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;
@@ -2575,13 +2575,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 			$newSp = $newSp + $extraTicketB;
 		}
 		$calcType = $newLevel - 10;
-		if($calcType == 0 || $calcType = 5) {
+		if($calcType == 0 || $calcType == 5) {
 			$newItemType = 4;
-		} else if($calcType == 1 || $calcType = 6) {
+		} else if($calcType == 1 || $calcType == 6) {
 			$newItemType = 5;
-		} else if($calcType == 2 || $calcType = 7) {
+		} else if($calcType == 2 || $calcType == 7) {
 			$newItemType = 1;
-		} else if($calcType == 3 || $calcType = 8) {
+		} else if($calcType == 3 || $calcType == 8) {
 			$newItemType = 2;
 		} else {
 			$newItemType = 3;

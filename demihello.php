@@ -2277,7 +2277,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		$newAt = 11;
 		$newDef = 11;
 		$newSp = 11;
-		$newExtraPoints = 100;
+		$newExtraPoints = 50;
 		$extraTicketA = rand(0,1);
 		$extraTicketB = rand(0,1);
 		$newCrit = 1;
@@ -2292,13 +2292,13 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		$newAt = 10;
 		$newDef = 10;
 		$newSp = 10;
-		$newExtraPoints = 70;
+		$newExtraPoints = 20;
 		$extraTicketA = rand(0,1);
 		$extraTicketB = rand(0,1);
-		if($newLevel > 90 && $newLevel < 99) {
-			$newExtraPoints = $newExtraPoints + ($newLevel - 90);
+		if($newLevel > 94 && $newLevel < 99) {
+			$newExtraPoints = $newExtraPoints + 5;
 		} else if($newLevel == 99) {
-			$newExtraPoints = $newExtraPoints + 20;
+			$newExtraPoints = $newExtraPoints + 10;
 		}
 		if($newLevel == 90 || $newLevel == 95) {
 			$newCrit = 1;
@@ -2327,12 +2327,9 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		$newAt = 9;
 		$newDef = 9;
 		$newSp = 9;
-		$newExtraPoints = 50;
+		$newExtraPoints = 16;
 		$extraTicketA = rand(0,1);
 		$extraTicketB = rand(0,1);
-		if($newLevel > 84) {
-			$newExtraPoints = $newExtraPoints + 3;
-		}
 		if($newLevel == 80 || $newLevel == 85) {
 			$newCrit = 1;
 		}
@@ -2360,12 +2357,9 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		$newAt = 8;
 		$newDef = 8;
 		$newSp = 8;
-		$newExtraPoints = 30;
+		$newExtraPoints = 15;
 		$extraTicketA = rand(0,1);
 		$extraTicketB = rand(0,1);
-		if($newLevel > 74) {
-			$newExtraPoints = $newExtraPoints + 2;
-		}
 		if($newLevel == 70 || $newLevel == 75) {
 			$newCrit = 1;
 		}
@@ -2393,12 +2387,9 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		$newAt = 7;
 		$newDef = 7;
 		$newSp = 7;
-		$newExtraPoints = 25;
+		$newExtraPoints = 15;
 		$extraTicketA = rand(0,1);
 		$extraTicketB = rand(0,1);
-		if($newLevel > 64) {
-			$newExtraPoints = $newExtraPoints + 2;
-		}
 		if($newLevel == 60 || $newLevel == 65) {
 			$newCrit = 1;
 		}
@@ -2426,12 +2417,9 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		$newAt = 6;
 		$newDef = 6;
 		$newSp = 6;
-		$newExtraPoints = 20;
+		$newExtraPoints = 15;
 		$extraTicketA = rand(0,1);
 		$extraTicketB = rand(0,1);
-		if($newLevel > 54) {
-			$newExtraPoints = $newExtraPoints + 2;
-		}
 		if($newLevel == 50 || $newLevel == 55) {
 			$newCrit = 1;
 		}
@@ -2462,9 +2450,6 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		$newExtraPoints = 15;
 		$extraTicketA = rand(0,1);
 		$extraTicketB = rand(0,1);
-		if($newLevel > 44) {
-			$newExtraPoints = $newExtraPoints + 2;
-		}
 		if($newLevel == 40 || $newLevel == 45) {
 			$newCrit = 1;
 		}

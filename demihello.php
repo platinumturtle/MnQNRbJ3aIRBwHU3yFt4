@@ -1578,7 +1578,7 @@ function getItemName($type, $power) {
 				// nivel 23
 				case 13: $name = "<i>Traje de cazador (Vida +13)</i>";
 						break;
-				case 14: $name = "Traje de cazador prfoesional (Vida +14)";
+				case 14: $name = "Traje de cazador profesional (Vida +14)";
 						break;
 				case 15: $name = "<b>Traje de nativo de la jungla (Vida +15)</b>";
 						break;
@@ -2716,7 +2716,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 20) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-		$msg = "<b>El bosque se ha quedado atrás, ¡te doy la bienvenida a la selva!.</b>".PHP_EOL;
+		$msg = "<b>El bosque se ha quedado atrás, ¡te doy la bienvenida a la selva!</b>".PHP_EOL;
 		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
@@ -3608,12 +3608,11 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$msg = $msg.$hp." [";
 		$fullHP = $hp + $body;
 		switch(strlen($fullHP)){
-			case 1: $msg = $msg."   ";
+			case 1: $msg = $msg."  ";
 					break;
-			case 2: $msg = $msg."  ";
+			case 2: $msg = $msg." ";
 					break;
-			case 3: $msg = $msg." ";
-					break;
+			default: break;
 		}
 		$msg = $msg.$fullHP."]</pre>".PHP_EOL;
 		$msg = $msg."<pre>ATA:";
@@ -3628,12 +3627,11 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$msg = $msg.$attack." [";
 		$fullAttack = $attack + $weapon;
 		switch(strlen($fullAttack)){
-			case 1: $msg = $msg."   ";
+			case 1: $msg = $msg."  ";
 					break;
-			case 2: $msg = $msg."  ";
+			case 2: $msg = $msg." ";
 					break;
-			case 3: $msg = $msg." ";
-					break;
+			default: break;
 		}
 		$msg = $msg.$fullAttack."]</pre>".PHP_EOL;
 		$msg = $msg."<pre>DEF:";
@@ -3648,12 +3646,11 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$msg = $msg.$defense." [";
 		$fullDefense = $defense + $shield;
 		switch(strlen($fullDefense)){
-			case 1: $msg = $msg."   ";
+			case 1: $msg = $msg."  ";
 					break;
-			case 2: $msg = $msg."  ";
+			case 2: $msg = $msg." ";
 					break;
-			case 3: $msg = $msg." ";
-					break;
+			default: break;
 		}
 		$msg = $msg.$fullDefense."]</pre>".PHP_EOL;
 		$msg = $msg."<pre>CRÍ:";
@@ -3668,12 +3665,11 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$msg = $msg.$critic." [";
 		$fullCritic = $critic + $helmet;
 		switch(strlen($fullCritic)){
-			case 1: $msg = $msg."   ";
+			case 1: $msg = $msg."  ";
 					break;
-			case 2: $msg = $msg."  ";
+			case 2: $msg = $msg." ";
 					break;
-			case 3: $msg = $msg." ";
-					break;
+			default: break;
 		}
 		$msg = $msg.$fullCritic."]</pre>".PHP_EOL;
 		$msg = $msg."<pre>VEL:";
@@ -3688,12 +3684,11 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$msg = $msg.$speed." [";
 		$fullSpeed = $speed + $boots;
 		switch(strlen($fullSpeed)){
-			case 1: $msg = $msg."   ";
+			case 1: $msg = $msg."  ";
 					break;
-			case 2: $msg = $msg."  ";
+			case 2: $msg = $msg." ";
 					break;
-			case 3: $msg = $msg." ";
-					break;
+			default: break;
 		}
 		$msg = $msg.$fullSpeed."]</pre>".PHP_EOL.PHP_EOL;
 		/*

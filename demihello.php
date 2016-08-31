@@ -1247,7 +1247,7 @@ function getLevelFromExp($exp) {
 			$level = 69;
 		} else if($exp > 1209344) {
 			$level = 68;
-		}  else if($exp > 1159899) {
+		}  else if($exp > 1159479) {
 			$level = 67;
 		}  else if($exp > 1110299) {
 			$level = 66;
@@ -2224,7 +2224,7 @@ function ratePower($power, $isCrit = 0) {
 			$res = "★★★★★";
 		} else if($power > 599) {
 			$res = "★★★★☆";
-		} else if($power > 299) {
+		} else if($power > 399) {
 			$res = "★★★☆☆";
 		} else if($power > 159) {
 			$res = "★★☆☆☆";

@@ -2217,6 +2217,36 @@ function getItemName($type, $power) {
 	return $name;
 }
 
+function ratePower($power, $isCrit = 0) {
+	$res = "☆☆☆☆☆";
+	if($isCrit == 0) {
+		if($power > 899) {
+			$res = "★★★★★";
+		} else if($power > 599) {
+			$res = "★★★★☆";
+		} else if($power > 299) {
+			$res = "★★★☆☆";
+		} else if($power > 159) {
+			$res = "★★☆☆☆";
+		} else if($power > 59) {
+			$res = "★☆☆☆☆";
+		}
+	} else {
+		if($power > 74) {
+			$res = "★★★★★";
+		} else if($power > 54) {
+			$res = "★★★★☆";
+		} else if($power > 39) {
+			$res = "★★★☆☆";
+		} else if($power > 24) {
+			$res = "★★☆☆☆";
+		} else if($power > 9) {
+			$res = "★☆☆☆☆";
+		}
+	}
+	return $res;
+}
+
 function getAreaName ($level) {
 	if($level == 100) {
 		$name = "Palacio Real del Inframundo";
@@ -3382,7 +3412,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['hp']."</pre>".PHP_EOL;
+	$msg = $msg.$row['hp']." ".ratePower($row['hp'])."</pre>".PHP_EOL;
 	$msg = $msg."<pre>ATA:";
 	switch(strlen($row['attack'])){
 		case 1: $msg = $msg."   ";
@@ -3392,7 +3422,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['attack']."</pre>".PHP_EOL;
+	$msg = $msg.$row['attack']." ".ratePower($row['attack'])."</pre>".PHP_EOL;
 	$msg = $msg."<pre>DEF:";
 	switch(strlen($row['defense'])){
 		case 1: $msg = $msg."   ";
@@ -3402,7 +3432,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['defense']."</pre>".PHP_EOL;
+	$msg = $msg.$row['defense']." ".ratePower($row['defense'])."</pre>".PHP_EOL;
 	$msg = $msg."<pre>CRÍ:";
 	switch(strlen($row['critic'])){
 		case 1: $msg = $msg."   ";
@@ -3412,7 +3442,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['critic']."</pre>".PHP_EOL;
+	$msg = $msg.$row['critic']." ".ratePower($row['critic'], 1)."</pre>".PHP_EOL;
 	$msg = $msg."<pre>VEL:";
 	switch(strlen($row['speed'])){
 		case 1: $msg = $msg."   ";
@@ -3422,7 +3452,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['speed']."</pre>".PHP_EOL.PHP_EOL;
+	$msg = $msg.$row['speed']." ".ratePower($row['speed'])."</pre>".PHP_EOL.PHP_EOL;
 	$msg = $msg."<b>Puntos exp. por victoria:</b> ".$row['exp_points'];
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	sleep(1);
@@ -3599,7 +3629,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 					break;
 			default: break;
 		}
-		$msg = $msg.$fullHP."]</pre>".PHP_EOL;
+		$msg = $msg.$fullHP."] ".ratePower($fullHP)."</pre>".PHP_EOL;
 		$msg = $msg."<pre>ATA:";
 		switch(strlen($attack)){
 			case 1: $msg = $msg."   ";
@@ -3618,7 +3648,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 					break;
 			default: break;
 		}
-		$msg = $msg.$fullAttack."]</pre>".PHP_EOL;
+		$msg = $msg.$fullAttack."] ".ratePower($fullAttack)."</pre>".PHP_EOL;
 		$msg = $msg."<pre>DEF:";
 		switch(strlen($defense)){
 			case 1: $msg = $msg."   ";
@@ -3637,7 +3667,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 					break;
 			default: break;
 		}
-		$msg = $msg.$fullDefense."]</pre>".PHP_EOL;
+		$msg = $msg.$fullDefense."] ".ratePower($fullDefense)."</pre>".PHP_EOL;
 		$msg = $msg."<pre>CRÍ:";
 		switch(strlen($critic)){
 			case 1: $msg = $msg."   ";
@@ -3656,7 +3686,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 					break;
 			default: break;
 		}
-		$msg = $msg.$fullCritic."]</pre>".PHP_EOL;
+		$msg = $msg.$fullCritic."] ".ratePower($fullCritic, 1)."</pre>".PHP_EOL;
 		$msg = $msg."<pre>VEL:";
 		switch(strlen($speed)){
 			case 1: $msg = $msg."   ";
@@ -3675,7 +3705,7 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 					break;
 			default: break;
 		}
-		$msg = $msg.$fullSpeed."]</pre>".PHP_EOL.PHP_EOL;
+		$msg = $msg.$fullSpeed."] ".ratePower($fullSpeed)."</pre>".PHP_EOL.PHP_EOL;
 		/*
 		$msg = $msg."<pre>ATA:";
 		switch(strlen($attack)){

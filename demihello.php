@@ -3256,7 +3256,7 @@ function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
 									"La lucha ha comenzado bastante igualada, pero enseguida te has puesto por delante y no has dejado opción al rival. Ha sido una victoria cómoda sin contratiempos.",
 									"No ha habido rival, has asestado el primer golpe del combate y casualmente ha sido un golpe crítico. A partir de ahí, coser y cantar, y victoria fácil.",
 									"Pan comido, se te ha visto con ganas de luchar sentado para darle emoción. Te has llevado la victoria de calle, y parece que no te importaría repetir.",
-									"Tu rival te ha asestado un par de golpes muy fuertes nada más comenzar la pelea que te han dejado grogui, pero tus ataque críticos le han dado la vuelta al combate y has salido victorioso.",
+									"Tu rival te ha asestado un par de golpes muy fuertes nada más comenzar la pelea que te han dejado grogui, pero tus ataques críticos le han dado la vuelta al combate y has salido victorioso.",
 									"Te has mostrado muy sólido en defensa, parece como si en lugar de luchar hubieras querido poner a prueba tu resistencia física, y tu rival prácticamente no te ha quitado puntos de vida. Prueba superada.",
 									"¡Cómo corres! Desde el principio del combate te has puesto a dar vueltas alrededor de tu rival y lo has desconcertado con tanto movimiento, lograste atacarle con un par de críticos por detrás y terminaste rápido el combate.",
 									"¡Eres un tanque! Has luchado de tal manera que parecía que tus puntos de vida no se iban a agotar nunca, tu rival incluso parecía desesperado por momentos, nunca vio ganada esta batalla.",
@@ -7956,6 +7956,7 @@ function processMessage($message) {
 						$newExp = $row['exp_points'] + $expAcquired;
 						$newLevel = getLevelFromExp($newExp);
 						mysql_free_result($result);	
+						error_log("COMPROBAR ".$expAcquired." ".$newExp." ".$newLevel." ".$row['exp_points']." ".$row['level']);
 						// comprobar si con la nueva exp sube de nivel
 						if($newLevel != $row['level']){
 							error_log($logname." is now level ".$newLevel.".");

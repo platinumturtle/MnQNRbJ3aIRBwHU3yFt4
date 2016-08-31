@@ -1269,7 +1269,7 @@ function getLevelFromExp($exp) {
 			$level = 59;
 		} else if($exp > 753619) {
 			$level = 58;
-		}  else if($exp > 7116729) {
+		}  else if($exp > 716729) {
 			$level = 57;
 		}  else if($exp > 680474) {
 			$level = 56;
@@ -7956,7 +7956,7 @@ function processMessage($message) {
 						$newExp = $row['exp_points'] + $expAcquired;
 						$newLevel = getLevelFromExp($newExp);
 						mysql_free_result($result);	
-						error_log("COMPROBAR ".$expAcquired." ".$newExp." ".$newLevel." ".$row['exp_points']." ".$row['level']);
+						//error_log("COMPROBAR ".$expAcquired." ".$newExp." ".$newLevel." ".$row['exp_points']." ".$row['level']);
 						// comprobar si con la nueva exp sube de nivel
 						if($newLevel != $row['level']){
 							error_log($logname." is now level ".$newLevel.".");

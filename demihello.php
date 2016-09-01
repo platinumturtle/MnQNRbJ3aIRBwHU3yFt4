@@ -2211,6 +2211,8 @@ function getItemName($type, $power) {
 						break;
 				case 57: $name = "<b>Escudo de Rocoso (Defensa +57)</b>";
 						break;
+				case 99: $name = "<b>Coraza flotante de administrador de Demisuke (Defensa +99)</b>";
+						break;
 			}
 		}
 	}
@@ -4329,8 +4331,9 @@ function getGroupBattle($owngroup) {
 		$row = mysql_fetch_array($result);
 		$safeGroup = rankedGroup($owngroup);
 		if($safeGroup == 1) {
+			$tempFormattedPoints = number_format($row['total'], 0, ',', '.');
 			$text = $text.
-					"<b>\"".$row['name']."\" tiene un total de ".$row['total']." puntos.</b>"
+					"<b>\"".$row['name']."\" tiene un total de ".$tempFormattedPoints." puntos.</b>"
 					.PHP_EOL.PHP_EOL;
 		} else {
 			$text = $text.
@@ -8011,7 +8014,7 @@ function processMessage($message) {
 						$available = 0;
 						$improveType = "extra_hp";
 						if(strtolower($checkStat) == "vid") {
-							if($row['extra_hp'] < 350) {
+							if($row['extra_hp'] < 330) {
 								$available = 1;								
 							}
 						} else if(strtolower($checkStat) == "ata") {
@@ -8070,7 +8073,7 @@ function processMessage($message) {
 							if($newHP < 10) {
 								$msg = $msg." ";
 							}
-							$msg = $msg.$newHP." / 350</pre>".PHP_EOL;
+							$msg = $msg.$newHP." / 330</pre>".PHP_EOL;
 							$msg = $msg."<pre>ATA: ";
 							if($newAt < 100) {
 								$msg = $msg." ";
@@ -8193,15 +8196,51 @@ function processMessage($message) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !unirme.");
 			// abrir db
+			$link = dbConnect();
+			$user_id = $message['from']['id'];
+			$query = "SELECT level FROM playerbattle WHERE user_id = '".$user_id."'";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
 			// mirar si quien lo usa tiene pj y de nivel correcto
+			if(isset($row['level']) && $row['level'] > 5) {
 				// si tiene pj, mirar si el clan existe en la base de datos de groupbattle
+				mysql_free_result($result);
+				$query = "SELECT gb_id FROM groupbattle WHERE group_id = '".$chat_id."'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if(isset($row['gb_id'])) {
 					// si existe, unirte (sin siquiera mirar si ya se esta en otro, sobreescritura a saco)
+					mysql_free_result($result);
+					$query = 'UPDATE playerbattle SET group_id = '.$chat_id.' WHERE user_id = '.$user_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "*¡Te acabas de unir al clan del grupo! A partir de ahora participarás en las batallas PvP que libre este grupo, ¡suerte!*";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+				} else {
 					// si no, decir que el grupo es nuevo y tal, que el bot no lo conoce, que cuando se hable mas por el grupo se podra
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "*Este grupo no está disponible para la batalla. Inténtalo de nuevo tras haber escrito otros mensajes en este grupo.*";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+				}
+			} else {
 				// si no tiene pj dejarlo en ridiculo en el grupo xD, no tiene un pj con minimo de nivel
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "*Para poder luchar en nombre de este grupo primero debes tener tu propio personaje a nivel 6 o superior. Utiliza las funciones !exp y !atacar en chat privado con el bot para aumentar la rocosidad de tu personaje.*";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+			}
 			// cerrar db
+			mysql_free_result($result);
+			mysql_close($link);
 		} else {
 			error_log($logname." triggered in private and failed: !unirme.");
 			// mensaje de que esto es para grupos, retarded
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$msg = "*La función !unirme es exclusiva para grupos. Recuerda utilizar en este mismo chat las funciones !exp y !atacar para entrenar a tu personaje. Si has alcanzado el nivel 6 utiliza !unirme en un grupo y te unirás al clan del grupo.*";
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		}
 	} else if (strpos(strtolower($text), "!clanes") !== false) {
 		error_log($logname." triggered: !clanes.");

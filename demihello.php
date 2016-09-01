@@ -3540,7 +3540,7 @@ function getClanLevel($id, $link) {
 	return $level;
 }
 
-function getPlayerInfo($fullInfo, $link, $user_id) {
+function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_wins FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
@@ -3736,13 +3736,13 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 		$msg = "<b>Todavía no has creado tu propio personaje. Utiliza la función !exp desde chat privado con el bot para comenzar a jugar.</b>";
 	}
 	mysql_free_result($result);
-	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	if($fullInfo == 1){
 		usleep(100000);
 	} else {
 		sleep(1);
 	}
-	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 }
 
 function failInsult() {
@@ -7953,7 +7953,8 @@ function processMessage($message) {
 						}
 						// mostrar mensaje del nivel, la exp total, una barra y la exp necesaria para subir de nivel
 						mysql_free_result($result);
-						getPlayerInfo(0, $link, $chat_id);
+						$user_id = $message['from']['id'];
+						getPlayerInfo(0, $link, $chat_id, $user_id);
 				} else {
 					// si no han pasado, avisar de que no corra, que se espere 5min
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -8186,7 +8187,8 @@ function processMessage($message) {
 		error_log($logname." triggered: !pj.");
 		// usar la funcion !pj maxi, en el !exp se usaba la mini
 		$link = dbConnect();
-		getPlayerInfo(1, $link, $chat_id);
+		$user_id = $message['from']['id'];
+		getPlayerInfo(1, $link, $chat_id, $user_id);
 	} else if (strpos(strtolower($text), "!guerras") !== false) {
 		error_log($logname." triggered: !guerras.");
 		// mostrar las cinco ultimas guerras entre clanes, con la fecha, los nombres de ambos, el resultado, y si eso una linea pequeña adicional, no se aun, quizas guardo en la base de datos si fue ajustada, paliza, demigrante, random... xD
@@ -8320,7 +8322,8 @@ function processMessage($message) {
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							}
 							mysql_free_result($result);	
-							getPlayerInfo(0, $link, $chat_id);
+							$user_id = $message['from']['id'];
+							getPlayerInfo(0, $link, $chat_id, $user_id);
 						} else {
 							// si hace poco, avisar de que se espere un rato
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

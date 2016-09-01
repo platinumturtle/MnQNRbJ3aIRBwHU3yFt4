@@ -8388,12 +8388,70 @@ function processMessage($message) {
 		}
 	} else if (strpos(strtolower($text), "!avatarpj") !== false) {
 		error_log($logname." triggered: !avatarpj.");
-		// revisar si es una url correcta (250 caracateres, http: y .jpg, .png o .gif)
+		// revisar si es una url correcta (250 caracateres, http:// o https:/ y .jpg, .png o .gif)
+		$start = strpos(strtolower($text), "!avatarpj") + 9;
+		$avatarURL = substr($text, $start);
+		$avatarURL = ltrim(rtrim($avatarURL));
+		if(strlen($avatarURL) < 251) {
+			$headerCheck = substr($avatarURL, 0, 7);
+			$headerCheck = strtolower($headerCheck);
+			$footerCheck = substr($avatarURL, strlen($avatarURL) - 4);
+			$footerCheck = strtolower($footerCheck);
+			$doubleCheck = 0;
+			$eraseMode = 0;
+			if($headerCheck == "http://" || $headerCheck == "https:/") {
+				$doubleCheck = $doubleCheck + 1;
+			}
+			if($footerCheck == ".jpg" || $footerCheck == ".png" || $footerCheck == ".gif") {
+				$doubleCheck = $doubleCheck + 1;
+			}
+			if(strtolower($avatarURL) == "borrar") {
+				$doubleCheck = 2;
+				$eraseMode = 1;
+			}
 			// si es correcta, abrir db y añadirla al avatar en caso de que sea lv2 (sobreescribiendo a saco)
-				// mostrar mensaje de que se ha guardado, que aparecera cada vez que use !pj
+			if($doubleCheck == 2) {
+				$user_id = $message['from']['id'];
+				$link = dbConnect();
+				$query = "SELECT level FROM playerbattle WHERE user_id = '".$user_id."'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				// si no es lv2 avisar tambien...
+				if(isset($row['level']) && $row['level'] > 1) {
+					// mostrar mensaje de que se ha guardado, que aparecera cada vez que use !pj
+					mysql_free_result($result);
+					if($eraseMode == 0) {
+						$query = "UPDATE playerbattle SET avatar = '".$avatarURL."' WHERE user_id = ".$user_id;
+					} else {
+						$query = "UPDATE playerbattle SET avatar = NULL WHERE user_id = ".$user_id;
+					}
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$text = "<b>Se ha actualizado el avatar de tu personaje. Utiliza la función !pj para comprobar su estado.</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				} else {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$text = "<b>Para utilizar esta función necesitas tener un personaje de nivel 2 o superior. Utiliza la función !exp en chat privado con el bot para entrenar a tu personaje y poder utilizar !avatarpj.</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				}
 				// cerrar db
-			  // si no es lv2 avisar tambien...
-			// si no es correcta, ayudarle con el formato				
+				mysql_free_result($result);
+				mysql_close($link);			  
+			} else {
+				// si no es correcta, ayudarle con el formato	
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$text = "<b>La dirección introducida no es compatible con Telegram. Asegúrate de que el enlace sea HTTP o HTTPS y que la imagen esté en formato .jpt, .png o .gif.</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+			}
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$text = "<b>La dirección introducida es muy larga, utiliza otro alojamiento de imágenes que te proporcione un enlace más corto.</b>";
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+		}			
 	} else if (strpos(strtolower($text), "!declararguerra") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !declararguerra.");

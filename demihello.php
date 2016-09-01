@@ -3624,6 +3624,9 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			}
 			$msg = $msg.$hp." [";
 			$fullHP = $hp + $body;
+			if($fullHP > 999) {
+				$fullHP = 999;
+			}
 			switch(strlen($fullHP)){
 				case 1: $msg = $msg."  ";
 						break;
@@ -3643,6 +3646,9 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			}
 			$msg = $msg.$attack." [";
 			$fullAttack = $attack + $weapon;
+			if($fullAttack > 999) {
+				$fullAttack = 999;
+			}
 			switch(strlen($fullAttack)){
 				case 1: $msg = $msg."  ";
 						break;
@@ -3662,6 +3668,9 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			}
 			$msg = $msg.$defense." [";
 			$fullDefense = $defense + $shield;
+			if($fullDefense > 999) {
+				$fullDefense = 999;
+			}
 			switch(strlen($fullDefense)){
 				case 1: $msg = $msg."  ";
 						break;
@@ -3681,6 +3690,9 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			}
 			$msg = $msg.$critic." [";
 			$fullCritic = $critic + $helmet;
+			if($fullCritic > 80) {
+				$fullCritic = 80;
+			}
 			switch(strlen($fullCritic)){
 				case 1: $msg = $msg."  ";
 						break;
@@ -3700,6 +3712,9 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 			}
 			$msg = $msg.$speed." [";
 			$fullSpeed = $speed + $boots;
+			if($fullSpeed > 999) {
+				$fullSpeed = 999;
+			}
 			switch(strlen($fullSpeed)){
 				case 1: $msg = $msg."  ";
 						break;
@@ -3708,47 +3723,6 @@ function getPlayerInfo($fullInfo, $link, $user_id) {
 				default: break;
 			}
 			$msg = $msg.$fullSpeed."] ".ratePower($fullSpeed)."</pre>".PHP_EOL.PHP_EOL;
-			/*
-			$msg = $msg."<pre>ATA:";
-			switch(strlen($attack)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
-			}
-			$msg = $msg.$attack."</pre>".PHP_EOL;
-			$msg = $msg."<pre>DEF:";
-			switch(strlen($defense)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
-			}
-			$msg = $msg.$defense."</pre>".PHP_EOL;
-			$msg = $msg."<pre>CRÍ:";
-			switch(strlen($critic)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
-			}
-			$msg = $msg.$critic."</pre>".PHP_EOL;
-			$msg = $msg."<pre>VEL:";
-			switch(strlen($speed)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
-			}
-			$msg = $msg.$speed."</pre>".PHP_EOL.PHP_EOL;*/
 			$msg = $msg."<b>Equipo:</b>".PHP_EOL;
 			$msg = $msg."🎩 ".getItemName(1, $helmet).PHP_EOL;
 			$msg = $msg."👔 ".getItemName(2, $body).PHP_EOL;
@@ -8020,15 +7994,189 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!gastarpunto") !== false) {
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !gastarpunto.");
-			// revisar si lo que hay despues de gastar punto es un stat valido
-				// si es valido, comenzar la chicha
-					// iniciar db y mirar si tiene pj
-						// si tiene pj, mirar si tiene puntos por gastar
-							// si tiene puntos, añadirlo donde dice y usar la funcion de ver los nuevos stats (un !pj mini quizas)
-							// si no le quedan puntos, mostrar aviso
-						// si no tiene pj, avisar de que use !exp en privado
-					// cerrar la db
-				// si no, avisar de que use bien eso, que mire la ayuda_rocosos si no se entera				
+			// abrir db y mirar si tiene pj
+			$link = dbConnect();
+			$query = "SELECT extra_points, extra_hp, extra_attack, extra_defense, extra_critic, extra_speed FROM playerbattle WHERE user_id = '".$chat_id."'";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['extra_points'])) {
+				// si tiene pj, revisar si lo que hay despues de gastar punto es un stat valido
+				$start = strpos(strtolower($text), "!gastarpunto") + 12;
+				$checkStat = substr($text, $start);
+				$checkStat = ltrim(rtrim($checkStat));
+				if(strtolower($checkStat) == "vid" || strtolower($checkStat) == "ata" || strtolower($checkStat) == "def" || strtolower($checkStat) == "cri" || strtolower($checkStat) == "crí" || strtolower($checkStat) == "crÍ" || strtolower($checkStat) == "vel") {
+					// si es valido,  mirar si tiene puntos por gastar
+					if($row['extra_points'] > 0) {
+						// si tiene puntos, revisar si le queda hueco donde indica
+						$available = 0;
+						$improveType = "extra_hp";
+						if(strtolower($checkStat) == "vid") {
+							if($row['extra_hp'] < 350) {
+								$available = 1;								
+							}
+						} else if(strtolower($checkStat) == "ata") {
+							if($row['extra_attack'] < 300) {
+								$available = 1;	
+								$improveType = "extra_attack";							
+							}
+						}  else if(strtolower($checkStat) == "def") {
+							if($row['extra_defense'] < 300) {
+								$available = 1;		
+								$improveType = "extra_defense";						
+							}
+						}  else if(strtolower($checkStat) == "cri" || strtolower($checkStat) == "crí" || strtolower($checkStat) == "crÍ") {
+							if($row['extra_critic'] < 20) {
+								$available = 1;		
+								$improveType = "extra_critic";						
+							}
+						}  else if(strtolower($checkStat) == "vel") {
+							if($row['extra_speed'] < 300) {
+								$available = 1;	
+								$improveType = "extra_speed";							
+							}
+						} 
+						if($available == 1) {							
+							// si le queda, añadirlo donde dice (update db), mostrar los huecos que le quedan y decirle que usar la funcion !pj si quiere
+							$newPoints = $row['extra_points'] - 1;
+							$newHP = $row['extra_hp'];
+							$newAt = $row['extra_attack'];
+							$newDef = $row['extra_defense'];
+							$newCrit = $row['extra_critic'];
+							$newSp = $row['extra_speed'];
+							switch($improveType) {
+								case "extra_hp": $newHP = $newHP + 1;
+										break;
+								case "extra_attack": $newAt = $newAt + 1;
+										break;
+								case "extra_defense": $newDef = $newDef + 1;
+										break;
+								case "extra_critic": $newCrit = $newCrit + 1;
+										break;
+								case "extra_speed": $newSp = $newSp + 1;
+										break;
+							}
+							mysql_free_result($result);
+							$query = 'UPDATE playerbattle SET '.$improveType.' = '.$improveType.' + 1 WHERE user_id = '.$chat_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));							
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							$msg = "<b>¡Has aumentado la rocosidad de tu personaje! Las estadísticas se han actualizado.</b> ".PHP_EOL.PHP_EOL;
+							$msg = $msg."<b>Puntos disponibles para utilizar:</b> ".$row['extra_points'].PHP_EOL;
+							$msg = $msg."<b>Lista de puntos utilizados y totales:</b>".PHP_EOL;
+							$msg = $msg."<pre>VID: ";
+							if($newHP < 100) {
+								$msg = $msg." ";
+							}
+							if($newHP < 10) {
+								$msg = $msg." ";
+							}
+							$msg = $msg.$newHP." / 350</pre>".PHP_EOL;
+							$msg = $msg."<pre>ATA: ";
+							if($newAt < 100) {
+								$msg = $msg." ";
+							}
+							if($newAt < 10) {
+								$msg = $msg." ";
+							}
+							$msg = $msg.$newAt." / 300</pre>".PHP_EOL;
+							$msg = $msg."<pre>DEF: ";
+							if($newDef < 100) {
+								$msg = $msg." ";
+							}
+							if($newDef < 10) {
+								$msg = $msg." ";
+							}
+							$msg = $msg.$newDef." / 300</pre>".PHP_EOL;
+							$msg = $msg."<pre>CRÍ: ";
+							if($newCrit < 100) {
+								$msg = $msg." ";
+							}
+							if($newCrit < 10) {
+								$msg = $msg." ";
+							}
+							$msg = $msg.$newCrit." / 20</pre>".PHP_EOL;
+							$msg = $msg."<pre>VEL: ";
+							if($newSp < 100) {
+								$msg = $msg." ";
+							}
+							if($newSp < 10) {
+								$msg = $msg." ";
+							}
+							$msg = $msg.$newSp." / 300</pre>";
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+						} else {
+							 // si no le queda, avisarle de que ahi no le quedan mas huecos, que escoja otro stat, y enseñarle los huecos
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							$msg = "*No puedes mejorar esta estadística porque ya está al máximo, elige otra para mejorar a tu personaje. Consulta tus puntos disponibles y utilizados escribiendo simplemente !gastarpunto.*";
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+						}
+					} else {
+						// si no le quedan puntos, mostrar aviso
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$msg = "*No puedes mejorar esta estadística porque no te quedan puntos por utilizar. Puedes conseguir más puntos utilizando !exp o !atacar y subiendo de nivel. Consulta tus puntos disponibles y utilizados escribiendo simplemente !gastarpunto.*";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+					}
+				} else {
+					// si no, avisar de que use bien eso, que mire la ayuda_rocosos si no se entera	y enseñarle los puntos	
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "<b>Puntos disponibles para utilizar:</b> ".$row['extra_points'].PHP_EOL;
+					$msg = $msg."<b>Lista de puntos utilizados y totales:</b>".PHP_EOL;
+					$msg = $msg."<pre>VID: ";
+					if($row['extra_hp'] < 100) {
+						$msg = $msg." ";
+					}
+					if($row['extra_hp'] < 10) {
+						$msg = $msg." ";
+					}
+					$msg = $msg.$row['extra_hp']." / 350</pre>".PHP_EOL;
+					$msg = $msg."<pre>ATA: ";
+					if($row['extra_attack'] < 100) {
+						$msg = $msg." ";
+					}
+					if($row['extra_attack'] < 10) {
+						$msg = $msg." ";
+					}
+					$msg = $msg.$row['extra_attack']." / 300</pre>".PHP_EOL;
+					$msg = $msg."<pre>DEF: ";
+					if($row['extra_defense'] < 100) {
+						$msg = $msg." ";
+					}
+					if($row['extra_defense'] < 10) {
+						$msg = $msg." ";
+					}
+					$msg = $msg.$row['extra_defense']." / 300</pre>".PHP_EOL;
+					$msg = $msg."<pre>CRÍ: ";
+					if($row['extra_critic'] < 100) {
+						$msg = $msg." ";
+					}
+					if($row['extra_critic'] < 10) {
+						$msg = $msg." ";
+					}
+					$msg = $msg.$row['extra_critic']." / 20</pre>".PHP_EOL;
+					$msg = $msg."<pre>VEL: ";
+					if($row['extra_speed'] < 100) {
+						$msg = $msg." ";
+					}
+					if($row['extra_speed'] < 10) {
+						$msg = $msg." ";
+					}
+					$msg = $msg.$row['extra_speed']." / 300</pre>".PHP_EOL.PHP_EOL;
+					$msg = $msg."<i>Utiliza !gastarpunto seguido del nombre de la estadística que quieras mejorar para utilizar uno de tus puntos, por ejemplo \"!gastarpunto VID\" o \"!gastarpunto CRI\". También puedes consultar</i> /ayuda_rocosos <i>para obtener ayuda acerca del juego.</i>".PHP_EOL.PHP_EOL;
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+				}
+			} else {					
+				// si no tiene pj decirle que primero use !exp y suba un nivel al menos...
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "*Todavía no has creado a tu propio personaje. Utiliza frecuente la función !exp para crear un personaje y entrenarlo, subirás de nivel y conseguirás puntos que utilizar con la función !gastarpunto.*";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
+			}
+			// cerrar la db
+			mysql_free_result($result);
+			mysql_close($link);
 		}
 	} else if (strpos(strtolower($text), "!pj") !== false) {
 		error_log($logname." triggered: !pj.");

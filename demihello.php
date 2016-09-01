@@ -8043,6 +8043,7 @@ function processMessage($message) {
 							$newDef = $row['extra_defense'];
 							$newCrit = $row['extra_critic'];
 							$newSp = $row['extra_speed'];
+							$newStat = str_replace("extra_", "", $improveType);
 							switch($improveType) {
 								case "extra_hp": $newHP = $newHP + 1;
 										break;
@@ -8056,11 +8057,11 @@ function processMessage($message) {
 										break;
 							}
 							mysql_free_result($result);
-							$query = 'UPDATE playerbattle SET '.$improveType.' = '.$improveType.' + 1 WHERE user_id = '.$chat_id;
+							$query = 'UPDATE playerbattle SET extra_points = extra_points - 1, '.$improveType.' = '.$improveType.' + 1, '.$newStat.' = '.$newStat.' + 1 WHERE user_id = '.$chat_id;
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));							
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 							$msg = "<b>¡Has aumentado la rocosidad de tu personaje! Las estadísticas se han actualizado.</b> ".PHP_EOL.PHP_EOL;
-							$msg = $msg."<b>Puntos disponibles para utilizar:</b> ".$row['extra_points'].PHP_EOL;
+							$msg = $msg."<b>Puntos disponibles para utilizar:</b> ".$newPoints.PHP_EOL;
 							$msg = $msg."<b>Lista de puntos utilizados y totales:</b>".PHP_EOL;
 							$msg = $msg."<pre>VID: ";
 							if($newHP < 100) {

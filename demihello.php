@@ -2222,7 +2222,7 @@ function ratePower($power, $isCrit = 0) {
 	if($isCrit == 0) {
 		if($power > 899) {
 			$res = "★★★★★";
-		} else if($power > 599) {
+		} else if($power > 649) {
 			$res = "★★★★☆";
 		} else if($power > 399) {
 			$res = "★★★☆☆";
@@ -2776,7 +2776,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 68) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-		$msg = "<b>Cada vez hay mas luz al fondo del pasaje. No por un sol que ilumine un cielo, si no por fuego que parece inundar el camino. A partir de ahora tendrás que tomar más medidas de precaución contra el fuego...</b>";
+		$msg = "<b>Cada vez hay más luz al fondo del pasaje. No por un sol que ilumine un cielo, sino por fuego que parece inundar el camino. A partir de ahora tendrás que tomar más medidas de precaución contra el fuego...</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 70) {
@@ -3537,222 +3537,227 @@ function getClanLevel($id, $link) {
 	mysql_free_result($result);
 	return $level;
 }
+
 function getPlayerInfo($fullInfo, $link, $user_id) {
 	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_wins FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
-	$msg = "";
-	if($fullInfo == 0) {
-		$msg = $msg."<b>Puntos totales de experiencia:</b> ".$row['exp_points'].PHP_EOL;
-		$msg = $msg."<b>Experiencia de nivel ".$row['level'].":</b>".PHP_EOL;
-		$expBar = getLevelBar($row['exp_points'], $row['level']);
-		$msg = $msg.$expBar.PHP_EOL.PHP_EOL;
-		$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
-	} else {		
-		// mostrar toooodos los stats posibles, con el monospace y eso
-		// no mostrar ayudas ni nada, que parezca una ficha de jugador REAL
-		$group_id = $row['group_id'];
-		$exp_points = $row['exp_points'];
-		$level = $row['level'];
-		$extra_points = $row['extra_points'];
-		$hp = $row['hp'];
-		$attack = $row['attack'];
-		$defense = $row['defense'];
-		$critic = $row['critic'];
-		$speed = $row['speed'];
-		$helmet = $row['helmet'];
-		$body = $row['body'];
-		$boots = $row['boots'];
-		$weapon = $row['weapon'];
-		$shield = $row['shield'];
-		$avatar = $row['avatar'];
-		$pvp_wins = $row['pvp_wins'];
-		mysql_free_result($result);
-		$query = "SELECT first_name, user_name FROM userbattle WHERE user_id = '".$user_id."'";
-		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$row = mysql_fetch_array($result);
-		$userFirstName = $row['first_name'];
-		$userNickName = $row['user_name'];
-		if($userNickName != "") {
-			if(strtolower($userFirstName) == strtolower($userNickName)) {
-				$finalName = $userNickName;
-			} else {
-				$finalName = $userFirstName." (".$userNickName.")";
-			}
-		} else {
-			$finalName = $userFirstName;
-		}
-		$finalName = str_replace("<", "", $finalName);
-		$finalName = str_replace(">", "", $finalName);
-		$msg = "⚔ <b>FICHA DE ROCOSIDAD</b> ⚔".PHP_EOL;
-		if(strlen($avatar) > 5) {
-			$msg = $msg."<a href=\"".$avatar."\">".$finalName."</a>".PHP_EOL.PHP_EOL;
-		} else {
-			$msg = $msg.$finalName.PHP_EOL.PHP_EOL;
-		}
-		$msg = $msg."<b>Nivel:</b> ".$level.PHP_EOL;
-		$currZone = getAreaName($level);
-		$msg = $msg."<b>Zona:</b> <i>".$currZone."</i>".PHP_EOL;
-		if(strlen($group_id) > 1) {
+	if(isset($row['level'])){
+		$msg = "";
+		if($fullInfo == 0) {
+			$msg = $msg."<b>Puntos totales de experiencia:</b> ".$row['exp_points'].PHP_EOL;
+			$msg = $msg."<b>Experiencia de nivel ".$row['level'].":</b>".PHP_EOL;
+			$expBar = getLevelBar($row['exp_points'], $row['level']);
+			$msg = $msg.$expBar.PHP_EOL.PHP_EOL;
+			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
+		} else {		
+			// mostrar toooodos los stats posibles, con el monospace y eso
+			// no mostrar ayudas ni nada, que parezca una ficha de jugador REAL
+			$group_id = $row['group_id'];
+			$exp_points = $row['exp_points'];
+			$level = $row['level'];
+			$extra_points = $row['extra_points'];
+			$hp = $row['hp'];
+			$attack = $row['attack'];
+			$defense = $row['defense'];
+			$critic = $row['critic'];
+			$speed = $row['speed'];
+			$helmet = $row['helmet'];
+			$body = $row['body'];
+			$boots = $row['boots'];
+			$weapon = $row['weapon'];
+			$shield = $row['shield'];
+			$avatar = $row['avatar'];
+			$pvp_wins = $row['pvp_wins'];
 			mysql_free_result($result);
-			$query = "SELECT name FROM groupbattle WHERE group_id = '".$group_id."'";
+			$query = "SELECT first_name, user_name FROM userbattle WHERE user_id = '".$user_id."'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
-			$clanName = $row['name'];
-			mysql_free_result($result);
-			$msg = $msg."<b>Clan:</b> <i>".getClanLevel($group_id, $link).$clanName."</i>".PHP_EOL;
-		} else {
-			$msg = $msg."<b>Clan:</b> <i>Ninguno</i>".PHP_EOL;
+			$userFirstName = $row['first_name'];
+			$userNickName = $row['user_name'];
+			if($userNickName != "") {
+				if(strtolower($userFirstName) == strtolower($userNickName)) {
+					$finalName = $userNickName;
+				} else {
+					$finalName = $userFirstName." (".$userNickName.")";
+				}
+			} else {
+				$finalName = $userFirstName;
+			}
+			$finalName = str_replace("<", "", $finalName);
+			$finalName = str_replace(">", "", $finalName);
+			$msg = "⚔ <b>FICHA DE ROCOSIDAD</b> ⚔".PHP_EOL;
+			if(strlen($avatar) > 5) {
+				$msg = $msg."<a href=\"".$avatar."\">".$finalName."</a>".PHP_EOL.PHP_EOL;
+			} else {
+				$msg = $msg.$finalName.PHP_EOL.PHP_EOL;
+			}
+			$msg = $msg."<b>Nivel:</b> ".$level.PHP_EOL;
+			$currZone = getAreaName($level);
+			$msg = $msg."<b>Zona:</b> <i>".$currZone."</i>".PHP_EOL;
+			if(strlen($group_id) > 1) {
+				mysql_free_result($result);
+				$query = "SELECT name FROM groupbattle WHERE group_id = '".$group_id."'";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				$clanName = $row['name'];
+				mysql_free_result($result);
+				$msg = $msg."<b>Clan:</b> <i>".getClanLevel($group_id, $link).$clanName."</i>".PHP_EOL;
+			} else {
+				$msg = $msg."<b>Clan:</b> <i>Ninguno</i>".PHP_EOL;
+			}
+			$msg = $msg."<b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL;
+			$msg = $msg."<b>Al siguiente nivel:</b>".PHP_EOL;
+			$expBar = getLevelBar($exp_points, $level);
+			$msg = $msg.$expBar.PHP_EOL;
+			$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
+			$msg = $msg."<b>Puntos por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
+			$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
+			$msg = $msg."<pre>VID:";
+			switch(strlen($hp)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$hp." [";
+			$fullHP = $hp + $body;
+			switch(strlen($fullHP)){
+				case 1: $msg = $msg."  ";
+						break;
+				case 2: $msg = $msg." ";
+						break;
+				default: break;
+			}
+			$msg = $msg.$fullHP."] ".ratePower($fullHP)."</pre>".PHP_EOL;
+			$msg = $msg."<pre>ATA:";
+			switch(strlen($attack)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$attack." [";
+			$fullAttack = $attack + $weapon;
+			switch(strlen($fullAttack)){
+				case 1: $msg = $msg."  ";
+						break;
+				case 2: $msg = $msg." ";
+						break;
+				default: break;
+			}
+			$msg = $msg.$fullAttack."] ".ratePower($fullAttack)."</pre>".PHP_EOL;
+			$msg = $msg."<pre>DEF:";
+			switch(strlen($defense)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$defense." [";
+			$fullDefense = $defense + $shield;
+			switch(strlen($fullDefense)){
+				case 1: $msg = $msg."  ";
+						break;
+				case 2: $msg = $msg." ";
+						break;
+				default: break;
+			}
+			$msg = $msg.$fullDefense."] ".ratePower($fullDefense)."</pre>".PHP_EOL;
+			$msg = $msg."<pre>CRÍ:";
+			switch(strlen($critic)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$critic." [";
+			$fullCritic = $critic + $helmet;
+			switch(strlen($fullCritic)){
+				case 1: $msg = $msg."  ";
+						break;
+				case 2: $msg = $msg." ";
+						break;
+				default: break;
+			}
+			$msg = $msg.$fullCritic."] ".ratePower($fullCritic, 1)."</pre>".PHP_EOL;
+			$msg = $msg."<pre>VEL:";
+			switch(strlen($speed)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$speed." [";
+			$fullSpeed = $speed + $boots;
+			switch(strlen($fullSpeed)){
+				case 1: $msg = $msg."  ";
+						break;
+				case 2: $msg = $msg." ";
+						break;
+				default: break;
+			}
+			$msg = $msg.$fullSpeed."] ".ratePower($fullSpeed)."</pre>".PHP_EOL.PHP_EOL;
+			/*
+			$msg = $msg."<pre>ATA:";
+			switch(strlen($attack)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$attack."</pre>".PHP_EOL;
+			$msg = $msg."<pre>DEF:";
+			switch(strlen($defense)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$defense."</pre>".PHP_EOL;
+			$msg = $msg."<pre>CRÍ:";
+			switch(strlen($critic)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$critic."</pre>".PHP_EOL;
+			$msg = $msg."<pre>VEL:";
+			switch(strlen($speed)){
+				case 1: $msg = $msg."   ";
+						break;
+				case 2: $msg = $msg."  ";
+						break;
+				case 3: $msg = $msg." ";
+						break;
+			}
+			$msg = $msg.$speed."</pre>".PHP_EOL.PHP_EOL;*/
+			$msg = $msg."<b>Equipo:</b>".PHP_EOL;
+			$msg = $msg."🎩 ".getItemName(1, $helmet).PHP_EOL;
+			$msg = $msg."👔 ".getItemName(2, $body).PHP_EOL;
+			$msg = $msg."👞 ".getItemName(3, $boots).PHP_EOL;
+			$msg = $msg."🗡 ".getItemName(4, $weapon).PHP_EOL;
+			$msg = $msg."🛡 ".getItemName(5, $shield);
 		}
-		$msg = $msg."<b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL;
-		$msg = $msg."<b>Al siguiente nivel:</b>".PHP_EOL;
-		$expBar = getLevelBar($exp_points, $level);
-		$msg = $msg.$expBar.PHP_EOL;
-		$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
-		$msg = $msg."<b>Puntos por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
-		$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
-		$msg = $msg."<pre>VID:";
-		switch(strlen($hp)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$hp." [";
-		$fullHP = $hp + $body;
-		switch(strlen($fullHP)){
-			case 1: $msg = $msg."  ";
-					break;
-			case 2: $msg = $msg." ";
-					break;
-			default: break;
-		}
-		$msg = $msg.$fullHP."] ".ratePower($fullHP)."</pre>".PHP_EOL;
-		$msg = $msg."<pre>ATA:";
-		switch(strlen($attack)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$attack." [";
-		$fullAttack = $attack + $weapon;
-		switch(strlen($fullAttack)){
-			case 1: $msg = $msg."  ";
-					break;
-			case 2: $msg = $msg." ";
-					break;
-			default: break;
-		}
-		$msg = $msg.$fullAttack."] ".ratePower($fullAttack)."</pre>".PHP_EOL;
-		$msg = $msg."<pre>DEF:";
-		switch(strlen($defense)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$defense." [";
-		$fullDefense = $defense + $shield;
-		switch(strlen($fullDefense)){
-			case 1: $msg = $msg."  ";
-					break;
-			case 2: $msg = $msg." ";
-					break;
-			default: break;
-		}
-		$msg = $msg.$fullDefense."] ".ratePower($fullDefense)."</pre>".PHP_EOL;
-		$msg = $msg."<pre>CRÍ:";
-		switch(strlen($critic)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$critic." [";
-		$fullCritic = $critic + $helmet;
-		switch(strlen($fullCritic)){
-			case 1: $msg = $msg."  ";
-					break;
-			case 2: $msg = $msg." ";
-					break;
-			default: break;
-		}
-		$msg = $msg.$fullCritic."] ".ratePower($fullCritic, 1)."</pre>".PHP_EOL;
-		$msg = $msg."<pre>VEL:";
-		switch(strlen($speed)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$speed." [";
-		$fullSpeed = $speed + $boots;
-		switch(strlen($fullSpeed)){
-			case 1: $msg = $msg."  ";
-					break;
-			case 2: $msg = $msg." ";
-					break;
-			default: break;
-		}
-		$msg = $msg.$fullSpeed."] ".ratePower($fullSpeed)."</pre>".PHP_EOL.PHP_EOL;
-		/*
-		$msg = $msg."<pre>ATA:";
-		switch(strlen($attack)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$attack."</pre>".PHP_EOL;
-		$msg = $msg."<pre>DEF:";
-		switch(strlen($defense)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$defense."</pre>".PHP_EOL;
-		$msg = $msg."<pre>CRÍ:";
-		switch(strlen($critic)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$critic."</pre>".PHP_EOL;
-		$msg = $msg."<pre>VEL:";
-		switch(strlen($speed)){
-			case 1: $msg = $msg."   ";
-					break;
-			case 2: $msg = $msg."  ";
-					break;
-			case 3: $msg = $msg." ";
-					break;
-		}
-		$msg = $msg.$speed."</pre>".PHP_EOL.PHP_EOL;*/
-		$msg = $msg."<b>Equipo:</b>".PHP_EOL;
-		$msg = $msg."🎩 ".getItemName(1, $helmet).PHP_EOL;
-		$msg = $msg."👔 ".getItemName(2, $body).PHP_EOL;
-		$msg = $msg."👞 ".getItemName(3, $boots).PHP_EOL;
-		$msg = $msg."🗡 ".getItemName(4, $weapon).PHP_EOL;
-		$msg = $msg."🛡 ".getItemName(5, $shield);
+	} else {
+		$msg = "<b>Todavía no has creado tu propio personaje. Utiliza la función !exp desde chat privado con el bot para comenzar a jugar.</b>";
 	}
 	mysql_free_result($result);
 	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));

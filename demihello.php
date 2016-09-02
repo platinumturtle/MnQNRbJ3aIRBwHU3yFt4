@@ -7018,9 +7018,11 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"➡️<b>!rechazarguerra</b>: <i>En construcción.</i>"
 				.PHP_EOL.
-				"➡️<b>!guerras</b>: <i>En construcción.</i>"
-				.PHP_EOL.PHP_EOL.
-				"<b>Reglas para un jugador:</b>"
+				"➡️<b>!guerras</b>: <i>En construcción.</i>";
+		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
+		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
+		usleep(500000);
+		$text = "<b>Reglas para un jugador:</b>"
 				.PHP_EOL.
 				"▶️<i>Puedes ganar experiencia cada cinco minutos realizando tareas utilizando !exp en chat privado con el bot. En caso de no haber pasado el tiempo necesario y utilizado de nuevo !exp, aparecerá el nivel de energía actual del personaje. Cuando llegue a 100% habrán pasado los cinco minutos y podrá volver a realizar tareas nuevas.</i>"
 				.PHP_EOL.
@@ -7052,9 +7054,11 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>Consultando tu personaje con !pj, junto al nombre del clan aparecerá la calidad de éste en formato de 0 a 5 estrellas, de la misma manera que aparecen las estadísticas del personaje más abajo.</i>"
 				.PHP_EOL.
-				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
-				.PHP_EOL.PHP_EOL.
-				"<b>Reglas para multijugador PvP:</b>"
+				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>";
+		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
+		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
+		usleep(500000);
+		$text = "<b>Reglas para multijugador PvP:</b>"
 				.PHP_EOL.
 				"▶️<i>En construcción.</i>"
 				.PHP_EOL.

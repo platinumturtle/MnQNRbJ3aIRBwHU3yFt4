@@ -6997,71 +6997,123 @@ function commandsList($send_id, $mode) {
 				"La vida en la Tierra parece estar siendo menos segura de lo habitual. Pero el origen del caos que se puede originar en el planeta si nadie lo impide está localizado: justo en el centro del mundo. El camino hasta allí es muy largo, y tan duro que todavía no se conoce un solo ser humano que haya llegado hasta allí y haya sobrevivido para contarlo. Si el planeta necesita volver a ser mucho más seguro, alguien debe iniciar su aventura más allá del Infierno y derrotar a los enemigos más poderosos del mundo, ¿lograrás tú devolver la paz al universo?"
 				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!exp</b>: <i>(Solo desde chat privado) Crea tu personaje y entrénalo frecuentemente utilizando esta función.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!gastarpunto</b>: <i>(Solo desde chat privado) Utiliza los puntos adicionales que recibes al subir de nivel escribiendo !gastarpunto seguido de la estadística a mejorar, por ejemplo \"!gastarpunto DEF\".</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!pj</b>: <i>Muestra tu ficha completa de jugador.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!unirme</b>: <i>Te permite convertirte en miembro del clan de un grupo al que pertenezcas.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!clanes</b>: <i>En construcción.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!atacar</b>: <i>En construcción.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!avatarpj</b>: <i>Asigna una foto de perfil en formato JPG, PNG o GIF a tu personaje con \"!avatarpj http://enlace_a_la_imagen\".</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!declararguerra</b>: <i>En construcción.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!aceptarguerra</b>: <i>En construcción.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!rechazarguerra</b>: <i>En construcción.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!guerras</b>: <i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas para un jugador:</b> Consulta /ayuda_1P_rocosos para ver todas las reglas."
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas para PvP multijugador:</b> Consulta /ayuda_PVP_rocosos para ver todas las reglas."		
+				/*
 				"➡️<b>!guerras</b>: <i>En construcción.</i>";
 		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
 		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
 		usleep(500000);
 		$text = "<b>Reglas para un jugador:</b>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Puedes ganar experiencia cada cinco minutos realizando tareas utilizando !exp en chat privado con el bot. En caso de no haber pasado el tiempo necesario y utilizado de nuevo !exp, aparecerá el nivel de energía actual del personaje. Cuando llegue a 100% habrán pasado los cinco minutos y podrá volver a realizar tareas nuevas.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Las tareas realizadas con !exp varían según el nivel del personaje y la zona donde éste se encuentra. Cuanto más subas de nivel, mejores recompensas de experiencia obtendrás.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>A partir del nivel 2 puedes añadir una foto de perfil a tu personaje con !avatarpj. Se deberá escribir el enlace completo donde se aloja la imagen (comenzando desde http:// o https://). Los formatos compatibles son .jpg, .png y .gif.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"<i>Ejemplo:</i> <pre>!avatarpj http://www.mipaginadeimagenes.com/imagen.jpg</pre>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Escribiendo \"!avatarpj borrar\" puedes eliminar tu foto de perfil.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cada estadística se puede mejorar a tu gusto un número limitado de veces con !gastarpunto. Escribiendo simplemente \"!gastarpunto\" verás los puntos que se pueden usar, los puntos ya usados y los puntos totales disponibles por cada estadística.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Para utilizar uno de tus puntos disponibles escribe la función seguido del nombre de la estadística, por ejemplo \"!gastarpunto VEL\".</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>El máximo de puntos que se pueden asignar por cada !gastarpunto es de 1.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los puntos adicionales son acumulables y no caducan. Puedes asignarlos cuando quieras, pero su uso es de vital importancia para poder derrotar a tus enemigos.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>La función !atacar está disponible para jugadores de nivel 5 y superior. Una vez utilizada, el siguiente jefe tardará seis horas en aparecer. Si durante ese tiempo de espera se utiliza la función !atacar, aparecerá el tiempo restante para que vuelva a estar disponible.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cada vez que cambies de zona los enemigos serán más poderosos y darán más puntos de experiencia al derrotarlos.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cuando subas de nivel con !exp o !atacar las estadísticas de tu personaje mejorarán, y también recibirás puntos adicionales para utilizar donde quieras y ganarás como premio una nueva arma o armadura. Es posible que también llegues a una nueva zona, más difícil que la anterior pero con mejores recompensas. El nombre de la zona actual lo puedes ver en todo momento con la función !pj.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cada objeto nuevo que recibas siempre será mejor que el anterior que ya tenía tu personaje, y se utilizará automáticamente. Un objeto con el nombre en cursiva es un objeto normal, un objeto con el nombre </i>regular <i>es un objeto mejorado, y un objeto con el nombre en</i> <b>negrita</b> <i>es un objeto único, más raro de conseguir y con mejor estadística.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>La función !unirme está disponible a partir del nivel 6. Se debe utilizar en el grupo al cual te quieres unir.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Consultando tu personaje con !pj, junto al nombre del clan aparecerá la calidad de éste en formato de 0 a 5 estrellas, de la misma manera que aparecen las estadísticas del personaje más abajo.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>";
 		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
 		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
 		usleep(500000);
 		$text = "<b>Reglas para multijugador PvP:</b>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>En construcción.</i>"
-				.PHP_EOL.
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"*/
+				;
+	} else if($mode == "1P_rocosos") {
+		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas para un jugador:</b>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Puedes ganar experiencia cada cinco minutos realizando tareas utilizando !exp en chat privado con el bot. En caso de no haber pasado el tiempo necesario y utilizado de nuevo !exp, aparecerá el nivel de energía actual del personaje. Cuando llegue a 100% habrán pasado los cinco minutos y podrá volver a realizar tareas nuevas.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Las tareas realizadas con !exp varían según el nivel del personaje y la zona donde éste se encuentra. Cuanto más subas de nivel, mejores recompensas de experiencia obtendrás.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>A partir del nivel 2 puedes añadir una foto de perfil a tu personaje con !avatarpj. Se deberá escribir el enlace completo donde se aloja la imagen (comenzando desde http:// o https://). Los formatos compatibles son .jpg, .png y .gif.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<i>Ejemplo:</i> <pre>!avatarpj http://www.mipaginadeimagenes.com/imagen.jpg</pre>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Escribiendo \"!avatarpj borrar\" puedes eliminar tu foto de perfil.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Cada estadística se puede mejorar a tu gusto un número limitado de veces con !gastarpunto. Escribiendo simplemente \"!gastarpunto\" verás los puntos que se pueden usar, los puntos ya usados y los puntos totales disponibles por cada estadística.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Para utilizar uno de tus puntos disponibles escribe la función seguido del nombre de la estadística, por ejemplo \"!gastarpunto VEL\".</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>El máximo de puntos que se pueden asignar por cada !gastarpunto es de 1.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Los puntos adicionales son acumulables y no caducan. Puedes asignarlos cuando quieras, pero su uso es de vital importancia para poder derrotar a tus enemigos.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>La función !atacar está disponible para jugadores de nivel 5 y superior. Una vez utilizada, el siguiente jefe tardará seis horas en aparecer. Si durante ese tiempo de espera se utiliza la función !atacar, aparecerá el tiempo restante para que vuelva a estar disponible.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Cada vez que cambies de zona los enemigos serán más poderosos y darán más puntos de experiencia al derrotarlos.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Cuando subas de nivel con !exp o !atacar las estadísticas de tu personaje mejorarán, y también recibirás puntos adicionales para utilizar donde quieras y ganarás como premio una nueva arma o armadura. Es posible que también llegues a una nueva zona, más difícil que la anterior pero con mejores recompensas. El nombre de la zona actual lo puedes ver en todo momento con la función !pj.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Cada objeto nuevo que recibas siempre será mejor que el anterior que ya tenía tu personaje, y se utilizará automáticamente. Un objeto con el nombre en cursiva es un objeto normal, un objeto con el nombre </i>regular <i>es un objeto mejorado, y un objeto con el nombre en</i> <b>negrita</b> <i>es un objeto único, más raro de conseguir y con mejor estadística.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>La función !unirme está disponible a partir del nivel 6. Se debe utilizar en el grupo al cual te quieres unir.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Consultando tu personaje con !pj, junto al nombre del clan aparecerá la calidad de éste en formato de 0 a 5 estrellas, de la misma manera que aparecen las estadísticas del personaje más abajo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
+				;
+	} else if($mode == "PVP_rocosos") {
+		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas para multijugador PvP:</b>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>En construcción.</i>"
 				;
 	}
@@ -7250,6 +7302,8 @@ function processMessage($message) {
 				strpos($text, "/ayuda_heroes") === 0 || strpos($text, "/ayuda_heroes@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_slots") === 0 || strpos($text, "/ayuda_slots@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_rocosos") === 0 || strpos($text, "/ayuda_rocosos@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_1P_rocosos") === 0 || strpos($text, "/ayuda_1P_rocosos@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_PVP_rocosos") === 0 || strpos($text, "/ayuda_PVP_rocosos@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_apuestas") === 0 || strpos($text, "/ayuda_apuestas@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
 		commandsList($chat_id, $text);

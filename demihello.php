@@ -7070,7 +7070,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>En construcción.</i>"*/
 				;
-	} else if($mode == "1P_rocosos") {
+	} else if($mode == "1p_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas para un jugador:</b>"
@@ -7107,7 +7107,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
 				;
-	} else if($mode == "PVP_rocosos") {
+	} else if($mode == "pvp_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas para multijugador PvP:</b>"

@@ -3308,78 +3308,6 @@ function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
 			$msg = $storedStandardDefeat[$n];
 		}
 	}
-	/*
-	if($win == 1 && $lucky == 0) {
-		$storedStandardVictory = array(
-								"La lucha ha comenzado bastante igualada, pero enseguida te has puesto por delante y no has dejado opción al rival. Ha sido una victoria cómoda sin contratiempos.",
-								"No ha habido rival, has asestado el primer golpe del combate y casualmente ha sido un golpe crítico. A partir de ahí, coser y cantar, y victoria fácil.",
-								"Pan comido, se te ha visto con ganas de luchar sentado para darle emoción. Te has llevado la victoria de calle, y parece que no te importaría repetir.",
-								"Tu rival te ha asestado un par de golpes muy fuertes nada más comenzar la pelea que te han dejado grogui, pero tus ataque críticos le han dado la vuelta al combate y has salido victorioso.",
-								"Te has mostrado muy sólido en defensa, parece como si en lugar de luchar hubieras querido poner a prueba tu resistencia física, y tu rival prácticamente no te ha quitado puntos de vida. Prueba superada.",
-								"¡Cómo corres! Desde el principio del combate te has puesto a dar vueltas alrededor de tu rival y lo has desconcertado con tanto movimiento, lograste atacarle con un par de críticos por detrás y terminaste rápido el combate.",
-								"¡Eres un tanque! Has luchado de tal manera que parecía que tus puntos de vida no se iban a agotar nunca, tu rival incluso parecía desesperado por momentos, nunca vio ganada esta batalla.",
-								"Tus puntos de ataque han sido vitales esta vez, por cada tres golpes que tu rival lograba acertar sobre ti, tú respondías con uno igual de fuerte. Te has marcado un combo final que ha decantado el combate a tu favor.",
-								"Combate extraño, primero parecía que te lo ibas a llevar de calle, pero luego tu rival cogió fuerza y te remontó hasta llevarte al límite, pero en cuanto se cansó del esfuerzo volviste a tomar el mando y la victoria cayó de tu bando.",
-								"Es inexplicable, pero tu rival te ha atacado con todo y ha llevado el peso del combate, hasta que ha llegado un punto en que parecía que no podía más, y desde ese momento no ha supuesto un rival digno paar ti. La victoria es tuya.",
-								"¡No hay color! Te has paseado por el campo de batalla, te has llevado la victoria prácticamente sin sudar. Si vienen más así mejorarás rápido tus estadísticas."
-								);
-		$n = sizeof($storedStandardVictory) - 1;
-		$n = rand(0,$n);
-		$msg = $storedStandardVictory[$n];
-	} else if($win == 1 && lucky == 1) {
-		$storedUnexpectedVictory = array(
-									"Tu rival era muy superior a ti, y lo ha visto tan fácil que se ha despistado y lo has aprovechado para pillarlo desprevenido y salir victorioso del combate.",
-									"Buen inicio de combate, dominando el ataque y protegiéndote bien con tu defensa, pero tu rival logró romper tu defensa y dejarte prácticamente K.O., aunque no llegó a tiempo y la victoria fue tuya.",
-									"Combate de tú a tú pese a ser inferior a tu rival. Has logrado intimidar a tu enemigo actuando de manera muy rápida, y te has llevado el combate por la mínima.",
-									"¡Quién lo iba a decir! Has estado todo el combate sufriendo y atacando de manera pésima, pero cuando ibas a sentir el golpe final en tu cuerpo te has marcado un combo que ha terminado con el rival.",
-									"Combate de críticos. Tu rival te ha golpeado con mucha dureza y tú has contraatacado con golpes críticos, de no ser por ellos ahora estarías mordiendo el polvo...",
-									"¡Tienes demasiado poder de ataque! Tu rival era superior a ti, pero has logrado luchar con el 120% de tu fuerza ignorando toda tu defensa. Te la has jugado a una carta y te has llevado la victoria.",
-									"Esto no era lo esperado, tu rival era bastante mas poderoso de lo habitual, has tenido que sudar sangre para ganar esta batalla, has estado todo el rato contra las cuerdas.",
-									"¡Heróica batalla! Tu rival era mejor que tú, y lo ha demostrado a lo largo de todo el combate, pero cuando ya estabas moribundo en el suelo has conseguido derribar al rival y le has dado la vuelta a la tortilla.",
-									"Combate muy igualado, las barras de vida de tu rival y tú disminuían a la misma velocidad. Eso beneficiaba al rival, algo superior a ti, pero aun así te has logrado llevar la victoria.",
-									"¡Menuda locura! Tu rival ha sido superior a ti, pero una serie de combos finales con golpes críticos ha logrado contrarrestar esa falta de poder y ha provocado que la victoria sea tuya."
-									);
-		$n = sizeof($storedUnexpectedVictory) - 1;
-		$n = rand(0,$n);
-		$msg = $storedUnexpectedVictory[$n];
-	} else if ($win == 0 && $lucky == 0) {
-		$storedStandardDefeat = array(
-									"Nada fuera de lo esperado, tu rival era muy superior a ti, y has sucumbido tal y como estaba escrito. Pero ahora sabes cómo se las gastan tus rivales por esta zona...",
-									"Parecía que te lo ibas a llevar de calle, pero nada más lejos de la realidad. Tu rival tiene demasiada fuerza como para hacerle frente, no has podido con sus ataques finales.",
-									"No eres rival para un enemigo de este nivel, te han dado una buena paliza. Vas a tener que mejorar un poco más tus habilidades si quieres ganar puntos de experiencia contra rivales así.",
-									"¡Menudos críticos has realizado! Has conseguido dar en el blanco varias veces. Pero tu rival era claramente superior y no ha sido suficiente para llevarte la victoria, es lo que hay.",
-									"Tu rival ha visto miedo en tus ojos y ha tenido un encuentro muy plácido, enseguida te ha visto tus puntos débiles y prácticamente no has opuesto resistencia.",
-									"Derrota clara, de principio a fin. No hay más, prácticamente no has hecho un solo rasguño a tu rival. Deberías planear venganza contra tu enemigo cuando tu rocosidad sea mayor.",
-									"Combate bastante igualado que se ha acabado decantando por la superioridad de tu rival. Tal vez entrenando un poco más logres oponer bastante más resistencia que la vivida en esta batalla...",
-									"¿Qué has hecho? Parecía como si estuvieras durmiendo, el rival no ha sudado para derrotarte. Vas a tener que mejorar mucho si quieres plantar cara a rivales así.",
-									"Has puesto a prueba tu resistencia tu defensa, despreocupándote de atacar, y así es muy difícil hacerle frente a un rival como el de ahora. Te ha ganado sin despeinarse.",
-									"Batalla fácil, dominada de principio a fin. El problema es que ha sido el rival quien te ha dominado a ti. Vas a tener que entrenar bastante más a partir de ahora.",
-									"Tus puntos de ataque no lo son todo... Te has centrado solo en atacar y tu rival ha tenido una autopista libre para enviarte golpes continuos. No has podido aguantar demasiados golpes."
-									);
-		$n = sizeof($storedStandardDefeat) - 1;
-		$n = rand(0,$n);
-		$msg = $storedStandardDefeat[$n];
-	} else if ($win == 0 && $lucky == 1) {
-		$storedUnexpectedDefeat = array(
-									"Todo el combate a tu favor, te has defendido cuando debías, has atacado cuando tu rival menos se lo esperaba, eras muy superior, sin embargo un combo final del enemigo ha acabado contigo.",
-									"Tu fuerza es muy superior a la del rival, pero por algún motivo no lo has demostrado y has dejado pasar una gran oportunidad de ganar una buena experiencia...",
-									"Has dominado de cabo a rabo el combate, pero cuando ya tenías agotado rival has tropezado y has perdido cualquier opción de ganar. ¡Qué mala pata!",
-									"Tenías la victoria en el bolsillo pero has caído en el juego de tu rival, te has despistado y no has sabido aprovechar tu fuerza. Tendrás que concentrarte más.",
-									"Ardua batalla librada de tú a tú pese a que tu poder es mayor al de tu rival, sin embargo su estrategia de agotarte ha surtido efecto y no has podido con el enemigo.",
-									"¡Mamma mia! Todo el combate controlado como si estuvieras jugando a un videojuego y vas y te haces daño a ti mismo. Inexplicablemente has perdido la batalla por tu mala puntería.",
-									"Escueto resumen surge de esta batalla, bastante igualada, tú siendo superior al rival pero el rival aprovechando su defensa y contraataque, suficiente para ganarte.",
-									"Eres muy superior al rival, pero a veces pasan cosas. Esta vez no pasó nada... literalmente. Tu rival te ha asestado un golpe muy duro, no has sabido reaccionar, te has quedado quieto y has perdido toda tu ventaja.",
-									"El combate podría haberse decantado por cualquier lado. Tu fuerza es mayor que la del rival, sin embargo has luchado horrible y no has sabido cómo atacar a tu rival.",
-									"Batalla muy igualada, con combos y críticos por doquier, que al final se ha acabado llevando tu rival de auténtico milagro. Podría haber sido para cualquiera.",
-									"Tu rival se ha hecho el muerto, te has confiado y te ha atacado por la espalda. El enemigo sabía que tu fuerza era mayor, así que tampoco tenía más opciones para poder ganarte..."
-									);
-		$n = sizeof($storedUnexpectedDefeat) - 1;
-		$n = rand(0,$n);
-		$msg = $storedUnexpectedDefeat[$n];
-	} else {
-		$msg = "Una batalla realmente extraña, el rival ha expulsado una especie de gas que ha hecho de bola de humo y no se ha podido ver qué ha ocurrido.";
-	}
-	*/
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	sleep(2);
 	$msg = "<b>⚔ REPORTE DE BATALLA</b>".PHP_EOL.PHP_EOL."<b>".$playerName." 🆚 ".$bossName."</b>".PHP_EOL.PHP_EOL."<i>".$msg."</i>";
@@ -7066,21 +6994,23 @@ function commandsList($send_id, $mode) {
 	} else if($mode == "rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
 				.PHP_EOL.PHP_EOL.
+				"La vida en la Tierra parece estar siendo menos segura de lo habitual. Pero el origen del caos que se puede originar en el planeta si nadie lo impide está localizado: justo en el centro del mundo. El camino hasta allí es muy largo, y tan duro que todavía no se conoce un solo ser humano que haya llegado hasta allí y haya sobrevivido para contarlo. Si el planeta necesita volver a ser mucho más seguro, alguien debe iniciar su aventura más allá del Infierno y derrotar a los enemigos más poderosos del mundo, ¿lograrás tú devolver la paz al universo?"
+				.PHP_EOL.PHP_EOL.
 				"<b>Funciones disponibles:</b>"
 				.PHP_EOL.
-				"➡️<b>!exp</b>: <i>En construcción.</i>"
+				"➡️<b>!exp</b>: <i>(Solo desde chat privado) Crea tu personaje y entrénalo frecuentemente utilizando esta función.</i>"
 				.PHP_EOL.
-				"➡️<b>!gastarpunto</b>: <i>En construcción.</i>"
+				"➡️<b>!gastarpunto</b>: <i>(Solo desde chat privado) Utiliza los puntos adicionales que recibes al subir de nivel escribiendo !gastarpunto seguido de la estadística a mejorar, por ejemplo \"!gastarpunto DEF\".</i>"
 				.PHP_EOL.
-				"➡️<b>!pj</b>: <i>En construcción.</i>"
+				"➡️<b>!pj</b>: <i>Muestra tu ficha completa de jugador.</i>"
 				.PHP_EOL.
-				"➡️<b>!unirme</b>: <i>En construcción.</i>"
+				"➡️<b>!unirme</b>: <i>Te permite convertirte en miembro del clan de un grupo al que pertenezcas.</i>"
 				.PHP_EOL.
 				"➡️<b>!clanes</b>: <i>En construcción.</i>"
 				.PHP_EOL.
 				"➡️<b>!atacar</b>: <i>En construcción.</i>"
 				.PHP_EOL.
-				"➡️<b>!avatarpj</b>: <i>En construcción.</i>"
+				"➡️<b>!avatarpj</b>: <i>Asigna una foto de perfil en formato JPG, PNG o GIF a tu personaje con \"!avatarpj http://enlace_a_la_imagen\".</i>"
 				.PHP_EOL.
 				"➡️<b>!declararguerra</b>: <i>En construcción.</i>"
 				.PHP_EOL.
@@ -7090,7 +7020,41 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"➡️<b>!guerras</b>: <i>En construcción.</i>"
 				.PHP_EOL.PHP_EOL.
-				"<b>Reglas:</b>"
+				"<b>Reglas para un jugador:</b>"
+				.PHP_EOL.
+				"▶️<i>Puedes ganar experiencia cada cinco minutos realizando tareas utilizando !exp en chat privado con el bot. En caso de no haber pasado el tiempo necesario y utilizado de nuevo !exp, aparecerá el nivel de energía actual del personaje. Cuando llegue a 100% habrán pasado los cinco minutos y podrá volver a realizar tareas nuevas.</i>"
+				.PHP_EOL.
+				"▶️<i>Las tareas realizadas con !exp varían según el nivel del personaje y la zona donde éste se encuentra. Cuanto más subas de nivel, mejores recompensas de experiencia obtendrás.</i>"
+				.PHP_EOL.
+				"▶️<i>A partir del nivel 2 puedes añadir una foto de perfil a tu personaje con !avatarpj. Se deberá escribir el enlace completo donde se aloja la imagen (comenzando desde http:// o https://). Los formatos compatibles son .jpg, .png y .gif.</i>"
+				.PHP_EOL.
+				"<i>Ejemplo:</i> <pre>!avatarpj http://www.mipaginadeimagenes.com/imagen.jpg</pre>"
+				.PHP_EOL.
+				"▶️<i>Escribiendo \"!avatarpj borrar\" puedes eliminar tu foto de perfil.</i>"
+				.PHP_EOL.
+				"▶️<i>Cada estadística se puede mejorar a tu gusto un número limitado de veces con !gastarpunto. Escribiendo simplemente \"!gastarpunto\" verás los puntos que se pueden usar, los puntos ya usados y los puntos totales disponibles por cada estadística.</i>"
+				.PHP_EOL.
+				"▶️<i>Para utilizar uno de tus puntos disponibles escribe la función seguido del nombre de la estadística, por ejemplo \"!gastarpunto VEL\".</i>"
+				.PHP_EOL.
+				"▶️<i>El máximo de puntos que se pueden asignar por cada !gastarpunto es de 1.</i>"
+				.PHP_EOL.
+				"▶️<i>Los puntos adicionales son acumulables y no caducan. Puedes asignarlos cuando quieras, pero su uso es de vital importancia para poder derrotar a tus enemigos.</i>"
+				.PHP_EOL.
+				"▶️<i>La función !atacar está disponible para jugadores de nivel 5 y superior. Una vez utilizada, el siguiente jefe tardará seis horas en aparecer. Si durante ese tiempo de espera se utiliza la función !atacar, aparecerá el tiempo restante para que vuelva a estar disponible.</i>"
+				.PHP_EOL.
+				"▶️<i>Cada vez que cambies de zona los enemigos serán más poderosos y darán más puntos de experiencia al derrotarlos.</i>"
+				.PHP_EOL.
+				"▶️<i>Cuando subas de nivel con !exp o !atacar las estadísticas de tu personaje mejorarán, y también recibirás puntos adicionales para utilizar donde quieras y ganarás como premio una nueva arma o armadura. Es posible que también llegues a una nueva zona, más difícil que la anterior pero con mejores recompensas. El nombre de la zona actual lo puedes ver en todo momento con la función !pj.</i>"
+				.PHP_EOL.
+				"▶️<i>Cada objeto nuevo que recibas siempre será mejor que el anterior que ya tenía tu personaje, y se utilizará automáticamente. Un objeto con el nombre en cursiva es un objeto normal, un objeto con el nombre </i>regular <i>es un objeto mejorado, y un objeto con el nombre en</i> <b>negrita</b> <i>es un objeto único, más raro de conseguir y con mejor estadística.</i>"
+				.PHP_EOL.
+				"▶️<i>La función !unirme está disponible a partir del nivel 6. Se debe utilizar en el grupo al cual te quieres unir.</i>"
+				.PHP_EOL.
+				"▶️<i>Consultando tu personaje con !pj, junto al nombre del clan aparecerá la calidad de éste en formato de 0 a 5 estrellas, de la misma manera que aparecen las estadísticas del personaje más abajo.</i>"
+				.PHP_EOL.
+				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas para multijugador PvP:</b>"
 				.PHP_EOL.
 				"▶️<i>En construcción.</i>"
 				.PHP_EOL.

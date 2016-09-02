@@ -3000,7 +3000,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"¿Te gusta el bot?  <a href=\"https://telegram.me/storebot?start=DemisukeBot\">¡Pulsa aquí y puntúalo ⭐️⭐️⭐️⭐️⭐️!</a>"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v2.3.2 creado por @Kamisuke."
+				"@DemisukeBot v2.3.2b creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"

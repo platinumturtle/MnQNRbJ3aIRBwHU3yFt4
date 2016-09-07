@@ -2726,6 +2726,12 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 11) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>Tu personaje se ha fortalecido bastante, has aprendido todo lo necesario para emprender tu aventura en solitario en cualquier rincón del mundo.</b>".PHP_EOL;
+		$msg = $msg."<b>A partir de ahora puedes luchar contra otros Rocosos de Demisuke utilizando !pvp seguido de su nombre de usuario. Consulta la  para más información.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 17) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 		$msg = "<b>Te acabas de adentrar en las profundidades del bosque tenebroso, ¡buena suerte!</b>";
@@ -3469,7 +3475,7 @@ function getClanLevel($id, $link) {
 }
 
 function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
-	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_wins FROM playerbattle WHERE user_id = '".$user_id."'";
+	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_allowed, pvp_wins, pvp_group_wins FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	if(isset($row['level'])){
@@ -3498,7 +3504,9 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$weapon = $row['weapon'];
 			$shield = $row['shield'];
 			$avatar = $row['avatar'];
+			$pvp_allowed = $row['pvp_allowed'];
 			$pvp_wins = $row['pvp_wins'];
+			$pvp_group_wins = $row['pvp_group_wins'];
 			mysql_free_result($result);
 			$query = "SELECT first_name, user_name FROM userbattle WHERE user_id = '".$user_id."'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -3536,7 +3544,10 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			} else {
 				$msg = $msg."<b>Clan:</b> <i>Ninguno</i>".PHP_EOL;
 			}
-			$msg = $msg."<b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL;
+			if($pvp_allowed == 1) {
+				$msg = $msg."<b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL;
+			}
+			$msg = $msg."<b>Guerras ganadas:</b> ".$pvp_group_wins.PHP_EOL;
 			$msg = $msg."<b>Al siguiente nivel:</b>".PHP_EOL;
 			$expBar = getLevelBar($exp_points, $level);
 			$msg = $msg.$expBar.PHP_EOL;
@@ -7022,7 +7033,9 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas para un jugador:</b> Consulta /ayuda_1P_rocosos para ver todas las reglas."
 				.PHP_EOL.PHP_EOL.
-				"<b>Reglas para PvP multijugador:</b> Consulta /ayuda_PVP_rocosos para ver todas las reglas."		
+				"<b>Reglas para PvP multijugador:</b> Consulta /ayuda_PVP_rocosos para ver todas las reglas."
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas para guerras entre clanes:</b> Consulta /ayuda_guerras_rocosos para ver todas las reglas."		
 				/*
 				"➡️<b>!guerras</b>: <i>En construcción.</i>";
 		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
@@ -7080,7 +7093,7 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Las tareas realizadas con !exp varían según el nivel del personaje y la zona donde éste se encuentra. Cuanto más subas de nivel, mejores recompensas de experiencia obtendrás.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>A partir del nivel 2 puedes añadir una foto de perfil a tu personaje con !avatarpj. Se deberá escribir el enlace completo donde se aloja la imagen (comenzando desde http:// o https://). Los formatos compatibles son .jpg, .png y .gif.</i>"
-				.PHP_EOL.PHP_EOL.
+				.PHP_EOL.
 				"<i>Ejemplo:</i> <pre>!avatarpj http://www.mipaginadeimagenes.com/imagen.jpg</pre>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Escribiendo \"!avatarpj borrar\" puedes eliminar tu foto de perfil.</i>"
@@ -7108,6 +7121,15 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
 				;
 	} else if($mode == "pvp_rocosos") {
+		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
+				.PHP_EOL.PHP_EOL.
+				"<b>Reglas para multijugador PvP:</b>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				;
+	} else if($mode == "guerras_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas para multijugador PvP:</b>"
@@ -7304,6 +7326,7 @@ function processMessage($message) {
 				strpos($text, "/ayuda_rocosos") === 0 || strpos($text, "/ayuda_rocosos@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_1P_rocosos") === 0 || strpos($text, "/ayuda_1P_rocosos@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_PVP_rocosos") === 0 || strpos($text, "/ayuda_PVP_rocosos@DemisukeBot") === 0 || 
+				strpos($text, "/ayuda_guerras_rocosos") === 0 || strpos($text, "/ayuda_guerras_rocosos@DemisukeBot") === 0 || 
 				strpos($text, "/ayuda_apuestas") === 0 || strpos($text, "/ayuda_apuestas@DemisukeBot") === 0) {
 		error_log($logname." triggered: ".$text.".");
 		commandsList($chat_id, $text);

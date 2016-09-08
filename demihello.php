@@ -3463,9 +3463,9 @@ function getClanLevel($id, $link) {
 		$level = "【★★★★☆】";
 	} else if($levelNumber > 14) {
 		$level = "【★★★☆☆】";
-	} else if($levelNumber > 6) {
+	} else if($levelNumber > 4) {
 		$level = "【★★☆☆☆】";
-	} else if($levelNumber > 1) {
+	} else if($levelNumber > 0) {
 		$level = "【★☆☆☆☆】";
 	} else {
 		$level = "【☆☆☆☆☆】";
@@ -4387,6 +4387,140 @@ function getUserBattle($myself, $global, $group = 0, $groupName = "grupo") {
 	return $text;
 }
 
+function getClanList($chat_id) {
+	//HTML Parse Mode
+	$link = dbConnect();
+	$text = "<b>⚔ Lista de clanes listos para la batalla:</b>";
+	$query = 'SELECT groupbattle.name AS "name", playerbattle.group_id AS "group_id", COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL  AND groupbattle.group_id = playerbattle.group_id AND  "members" > -1 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC';
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$text = $text.PHP_EOL.PHP_EOL;
+	for($i=0;$i<10;$i++) {
+		$row = mysql_fetch_array($result);
+		if(isset($row['name'])) {
+			if($row['total'] > 0) {
+				$number = $i + 1;
+				if(strlen($row['name']) > 60) {
+					$clanName = substr($row['name'], 0, 57);
+					$clanName = $clanName."...";
+				} else {
+					$clanName = $row['name'];
+				}
+				$text = $text."<pre>[".$number."] ".getClanLevel($row['members'])." ".$clanName."</pre>".PHP_EOL;
+			}
+		} else if($i==0) {
+			$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
+		}
+	}
+	mysql_free_result($result);
+	mysql_close($link);
+	$text = $text."<i>Utiliza el número que aparece entre corchetes al principio de cada línea para declararle la guerra a ese clan, por ejemplo con \"!declararguerra 1\".</i>";
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(100000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+}
+
+function getClanRank($chat_id) {
+	//HTML Parse Mode
+	/*
+	if($global == 0 && $group == 0) {
+		$text = "<b>La función !mensajesgrupo es exclusiva para grupos y supergrupos, ¡añádeme a alguno y utilízala allí!</b>";
+	}
+	else {
+		$link = dbConnect();
+		if($global == 1){
+			$text = "<b>🏁 TOP 10 de usuarios más activos en Telegram:</b>";
+			$query = "SELECT user_id, first_name, user_name, MAX(lastpoint) AS lastpoint, SUM(total) AS total FROM userbattle WHERE visible = TRUE GROUP BY user_id ORDER BY total DESC, lastpoint";
+		} else {
+			$text = "<b>🏁 TOP 10 de usuarios más activos de ".$groupName.":</b>";
+			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE group_id = '".$group."' ORDER BY total DESC, lastpoint";
+		}
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$text = $text.PHP_EOL.PHP_EOL;
+		for($i=0;$i<10;$i++) {
+			$row = mysql_fetch_array($result);
+			if(isset($row['total'])) {
+				if($row['total'] > 0) {
+					switch($i) {
+						case 0: $text = $text."<b>🏆 Líder </b>";
+								break;
+						case 1: $text = $text."<b>🎖2º </b>";
+								break;
+						case 2: $text = $text."<b>🏅3º </b>";
+								break;
+						case 3: $text = $text."4⃣ ";
+								break;
+						case 4: $text = $text."5⃣ ";
+								break;
+						case 5: $text = $text."6⃣ ";
+								break;
+						case 6: $text = $text."7⃣ ";
+								break;
+						case 7: $text = $text."8⃣ ";
+								break;
+						case 8: $text = $text."9⃣ ";
+								break;
+						case 9: $text = $text."🔟 ";
+								break;
+						default: break;
+					}
+					$text = $text.
+							"<b>".$row['first_name']."</b>";
+					if(strlen($row['user_name']) > 0) {
+						$text = $text.
+							"<b> (".$row['user_name'].")</b>";
+					}
+					$tempFormattedPoints = number_format($row['total'], 0, ',', '.');
+					$text = $text."<b>:</b> ".$tempFormattedPoints.PHP_EOL.PHP_EOL;
+				}
+			} else if($i==0) {
+				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
+			}
+		}
+		mysql_free_result($result);
+		if($global == 1) {
+			$query = "SELECT user_id, first_name, user_name, SUM(total) AS total FROM userbattle WHERE visible = TRUE AND user_id = '".$myself."' GROUP BY user_id";
+		} else {
+			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE user_id = '".$myself."' AND group_id = '".$group."'";
+		}
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		if(isset($row['user_id'])) {
+			$text = $text.
+			"<b>".$row['first_name'];
+			if(strlen($row['user_name']) > 0) {
+				$text = $text." (".$row['user_name'].")";
+			}
+			$text = $text." tiene un total de ".$row['total']." mensaje";
+			if($row['total'] > 1) {
+				$text = $text."s válidos";
+			} else {
+				$text = $text." válido";
+			}
+			if($global == 0) {
+				$text = $text." escrito";
+				if($row['total'] > 1) {
+					$text = $text."s";
+				}
+				$text = $text." en ".$groupName;
+			}
+			$text = $text.".</b>".PHP_EOL.PHP_EOL;
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		if($global == 1){
+			$text = $text."<i>Recuerda que para competir en este ránking debes apuntarte con la función !activame, siempre podrás ocultarte de nuevo con !desactivame.</i>".
+					PHP_EOL."<i>Consulta con !mensajesgrupo el ránking usuarios activos de este grupo.</i>";
+		} else {
+			$text = $text."<i>Consulta con !mensajes el ránking general de usuarios activos en Telegram.</i>";
+		}
+		//$text = $text.
+		//		"<i>(Sobrante) Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
+		//		"Recuerda que las puedes capturar con la función \"!pole\" y consultar el ránking global con \"!banderas\" y el de tu grupo con \"!banderasgrupo\".</i>";
+	}
+	return $text;
+	*/
+}
+
 function timeEmoji($time, $aHalf) {
 	if($aHalf == 0){
 		switch($time) {
@@ -4922,6 +5056,8 @@ function containsCommand($text) {
 						"!avatarpj",
 						"!declararguerra",
 						"!aceptarguerra",
+						"!pvp",
+						"!rocosos",
 						"!rechazarguerra",
 						"!guerras",
 						"!refrán",
@@ -7025,6 +7161,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!declararguerra</b>: <i>En construcción.</i>"
 				.PHP_EOL.PHP_EOL.
+				"➡️<b>!pvp</b>: <i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!rocosos</b>: <i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!aceptarguerra</b>: <i>En construcción.</i>"
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!rechazarguerra</b>: <i>En construcción.</i>"
@@ -8291,6 +8431,15 @@ function processMessage($message) {
 		}
 	} else if (strpos(strtolower($text), "!clanes") !== false) {
 		error_log($logname." triggered: !clanes.");
+		$start = strpos(strtolower($text), "!clanes") + 7;
+		$checkList = substr($text, $start);
+		$checkList = ltrim(rtrim($checkList));
+		$checkList = strtolower($checkList);
+		if($checkList == "lista") {
+			getClanList($chat_id);
+		} else {
+			getClanRank($chat_id);
+		}
 		// abrir db
 		// revisar si hay clanes con miembros (haciendo la suma de stats totales agrupando por el group id y quitando bosses y mierdas que haya metido se ve)
 			// si hay clanes, mostrar la tabla, aqui con los totales ya se calcularan las estrellas
@@ -8497,6 +8646,22 @@ function processMessage($message) {
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 		}			
+	} else if (strpos(strtolower($text), "!pvp") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !pvp.");
+			// hacer
+		} else {
+			error_log($logname." triggered in private: !pvp.");
+			// hacer
+		}
+	} else if (strpos(strtolower($text), "!rocosos") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !rocosos.");
+			// hacer
+		} else {
+			error_log($logname." triggered in private: !rocosos.");
+			// hacer
+		}
 	} else if (strpos(strtolower($text), "!declararguerra") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !declararguerra.");

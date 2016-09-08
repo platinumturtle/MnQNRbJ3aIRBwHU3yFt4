@@ -4397,16 +4397,14 @@ function getClanList($chat_id) {
 	for($i=0;$i<10;$i++) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['name'])) {
-			if($row['total'] > 0) {
-				$number = $i + 1;
-				if(strlen($row['name']) > 60) {
-					$clanName = substr($row['name'], 0, 57);
-					$clanName = $clanName."...";
-				} else {
-					$clanName = $row['name'];
-				}
-				$text = $text."<pre>[".$number."] ".getClanLevel($row['members'])." ".$clanName."</pre>".PHP_EOL;
+			$number = $i + 1;
+			if(strlen($row['name']) > 60) {
+				$clanName = substr($row['name'], 0, 57);
+				$clanName = $clanName."...";
+			} else {
+				$clanName = $row['name'];
 			}
+			$text = $text."<pre>[".$number."] ".getClanLevel($row['members'])." ".$clanName."</pre>".PHP_EOL;
 		} else if($i==0) {
 			$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
 		}

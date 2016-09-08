@@ -3474,6 +3474,23 @@ function getClanLevel($id, $link) {
 	return $level;
 }
 
+function getClanLevelByMembers($levelNumber) {
+	if($levelNumber > 49) {
+		$level = "【★★★★★】";
+	} else if($levelNumber > 29) {
+		$level = "【★★★★☆】";
+	} else if($levelNumber > 14) {
+		$level = "【★★★☆☆】";
+	} else if($levelNumber > 4) {
+		$level = "【★★☆☆☆】";
+	} else if($levelNumber > 0) {
+		$level = "【★☆☆☆☆】";
+	} else {
+		$level = "【☆☆☆☆☆】";
+	}
+	return $level;
+}
+
 function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_allowed, pvp_wins, pvp_group_wins FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -4404,7 +4421,7 @@ function getClanList($chat_id) {
 			} else {
 				$clanName = $row['name'];
 			}
-			$text = $text."<pre>[".$number."] ".getClanLevel($row['members'])." ".$clanName."</pre>".PHP_EOL;
+			$text = $text."<pre>【".$number."】".getClanLevelByMembers($row['members']).$clanName."</pre>".PHP_EOL;
 		} else if($i==0) {
 			$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
 		}

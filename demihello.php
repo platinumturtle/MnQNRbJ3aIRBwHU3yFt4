@@ -8738,7 +8738,7 @@ function processMessage($message) {
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								// avisar al equipo home
 								apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-								$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan ".getClanLevelByMembers($rivalMembers).$rivalName."!".PHP_EOL.PHP_EOL.
+								$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan".getClanLevelByMembers($rivalMembers).$rivalName."!".PHP_EOL.PHP_EOL.
 								"Si aceptan el desafío la batalla comenzará automáticamente y el resultado aparecerá en los grupos participantes.".PHP_EOL.
 								"En caso de que el clan rival rechace la invitación de guerra se enviará una notificación a este grupo.</b>";
 								usleep(250000);
@@ -8746,7 +8746,7 @@ function processMessage($message) {
 								// avisar al equipo away
 								$requestName = $message['chat']['title'];
 								apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-								$msg = "⚔ <b>¡El clan ".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!".PHP_EOL.PHP_EOL.
+								$msg = "⚔ <b>¡El clan".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!".PHP_EOL.PHP_EOL.
 								"Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.</b>";
 								usleep(250000);
 								apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
@@ -8815,20 +8815,54 @@ function processMessage($message) {
 		} else {
 			error_log($logname." triggered in private: !aceptarguerra.");
 			// mensaje de que esto es para grupos, retarded
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Las guerras entre clanes no se pueden aceptar desde chat privado, utiliza la función en el grupo participante.*"));
 		}
 	} else if (strpos(strtolower($text), "!rechazarguerra") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !rechazarguerra.");
 			// abrir db
-			// revisar si tiene alguna guerra pendiente
+			$link = dbConnect();
+			$query = 'SELECT groupbattlelog.gbl_id, groupbattlelog.home_group, groupbattle.name FROM groupbattlelog, groupbattle WHERE groupbattlelog.home_group = groupbattle.group_id AND status = "REQUESTED" AND away_group = '.$chat_id.' ORDER BY epoch_time ASC LIMIT 0, 1';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			// revisar si tiene alguna guerra pendiente (la pending mas old)
+			if(isset($row['gbl_id'])) {
 				// si la tiene rechazar guerra
-					// avisar en ambos clanes, y editar muchas db, la de guerra pendiente como rechazada
-					// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
+				$rowToUpdate = "";
+				(string)$rowToUpdate = $rowToUpdate.$row['gbl_id'];
+				$homeName = $row['name'];
+				$awayName = $message['chat']['title'];
+				$rival_id = $row['home_group'];
+				mysql_free_result($result);
+				// avisar en ambos clanes, y editar muchas db, la de guerra pendiente como rechazada
+				$query = "UPDATE groupbattlelog SET status = 'REJECTED' WHERE gbl_id = ".$rowToUpdate;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "❌ <b>La declaración de guerra recibida del clan ".$homeName." ha sido rechazada.</b>";
+				usleep(250000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+				apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
+				$msg = "❌ <b>El clan ".$awayName." ha rechazado la declaración de guerra pendiente emitida anteriormente desde este grupo.</b>";
+				usleep(250000);
+				apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+			} else {
 				// si no, avisar de que no tienes solicitudes de guerra pendientes
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Este grupo no tiene ninguna guerra pendiente.*"));
+			}
 			// cerrar db
+			mysql_free_result($result);
+			mysql_close($link);
 		} else {
 			error_log($logname." triggered in private: !rechazarguerra.");
 			// mensaje de que esto es para grupos, retarded
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Las guerras entre clanes no se pueden rechazar desde chat privado, utiliza la función en el grupo participante.*"));
 		}
 	} else if (strpos(strtolower($text), "!ludopata") !== false || strpos(strtolower($text), "!ludópata")) {
 		error_log($logname." triggered: !ludopata.");

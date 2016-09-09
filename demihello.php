@@ -8746,7 +8746,7 @@ function processMessage($message) {
 								// avisar al equipo away
 								$requestName = $message['chat']['title'];
 								apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-								$msg = "⚔ <b>¡El clan ".$getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!".PHP_EOL.PHP_EOL.
+								$msg = "⚔ <b>¡El clan ".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!".PHP_EOL.PHP_EOL.
 								"Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.</b>";
 								usleep(250000);
 								apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));

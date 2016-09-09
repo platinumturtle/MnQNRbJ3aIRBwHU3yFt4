@@ -3243,7 +3243,7 @@ function chooseBoss($level) {
 
 function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky) {
 	$log = "⚔ <b>REPORTE DE BATALLA INTERCLAN</b>".PHP_EOL.PHP_EOL;
-	$log = $log.getClanLevelByMembers($homeGroupMembers).$homeGroupName."  ".getClanLevelByMembers($awayGroupMembers).$awayGroupName.PHP_EOL.PHP_EOL;
+	$log = $log.getClanLevelByMembers($homeGroupMembers).$homeGroupName." 🆚 ".getClanLevelByMembers($awayGroupMembers).$awayGroupName.PHP_EOL.PHP_EOL;
 	if($lucky == 0) {
 			$storedStandardVictory = array(
 									"¡Vaya comienzo del clan ".$winnerName."! Parecía que llevaban días preparados para la guerra y han ido todos a una coordinados estupendamente, incluso uno de los rocosos de ".$loserName." ha salido corriendo. El resto sin embargo ha luchado por su honor y ha logrado derribar la defensa rival, pero no ha sido suficiente para llevarse la victoria...",
@@ -8710,11 +8710,197 @@ function processMessage($message) {
 		}			
 	} else if (strpos(strtolower($text), "!pvp") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
-			error_log($logname." triggered in a group: !pvp.");
-			// hacer
+			error_log($logname." triggered in a group and failed: !pvp.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$text = "<b>La función !pvp solo está disponible desde chat privado con el bot.</b>";
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 		} else {
 			error_log($logname." triggered in private: !pvp.");
-			// hacer
+			// abrir db
+			// sacar datos completos del chat id
+			$link = dbConnect();
+			$query = "SELECT level, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, pvp_allowed, pvp_wins FROM playerbattle WHERE user_id = '".$chat_id."'";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['hp']) && $row['level'] > 10) {
+				// mirar que quiere hacer	
+				$userFirstName = $message['from']['first_name'];
+				$userNickName = $message['from']['username'];
+				if($userNickName != "") {
+					if(strtolower($userFirstName) == strtolower($userNickName)) {
+						$playerName = $userNickName;
+					} else {
+						$playerName = $userFirstName." (".$userNickName.")";
+					}
+				} else {
+					$playerName = $userFirstName;
+				}
+				$playerName = str_replace("<", "", $playerName);
+				$playerName = str_replace(">", "", $playerName);
+				$playerLevel = $row['level'];
+				$playerHP = $row['hp'] + $row['body'];
+				$playerAt = $row['attack'] + $row['weapon'];
+				$playerDef = $row['defense'] + $row['shield'];
+				$playerCrit = ($row['critic'] * 3) + ($row['helmet'] * 3);
+				$playerSp = $row['speed'] + $row['boots'];
+				$playerPvpAllowed = $row['pvp_allowed'];
+				$playerPvpWins = $row['pvp_wins'];
+				mysql_free_result($result);
+				$start = strpos(strtolower($text), "!pvp") + 4;
+				$pvpAction = substr($text, $start);
+				$pvpAction = ltrim(rtrim($pvpAction));
+				$pvpAction = strtolower($pvpAction);
+				if($pvpAction == "") {
+					// switch allow 10
+					if($playerPvpAllowed == 1) {
+						$pvpSwitch = 0;
+					} else {
+						$pvpSwitch = 1;
+					}
+					$query = 'UPDATE playerbattle SET pvp_allowed = '.$pvpSwitch.' WHERE user_id = '.$chat_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					if($pvpSwitch == 1) {
+						$msg = "✅ <b>Acabas de activar el modo PvP de Los Rocosos de Demisuke. A partir de ahora podrás luchas contra tus amigos utilizando la función !pvp seguido del nombre de usuario de tu rival, además de poder aceptar duelos pendientes, aparecer en el ránking de !rocosos y mostrar tus victorias PvP en tu ficha de personaje (!pj).</b>";
+					} else {
+						$msg = "❌ <b>Acabas de desactivar el modo PvP de Los Rocosos de Demisuke. Deshabilitando este modo no podrás aceptar duelos pendientes ni retar a otras personas, además de que no aparecerás en la lista de !rocosos y tus victorias PvP no serán visibles en tu ficha de personaje (!pj). Si anteriormente enviaste petición de batalla a otros usuarios, tus rivales todavía podrán rechazar cualquier solicitud pendiente tuya.</b>";
+					}
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+				} else if($pvpAction == "aceptar") {
+					// aceptar guerra, tomar ideas... (que los dos sigan en allowed)
+				} else if($pvpAction == "rechazar") {
+					// rechazar guerra como en el grupo
+				} else {
+					if($playerPvpAllowed == 1) {
+						$pvpAction = str_replace("@", "", $pvpAction);
+						// buscar si existe el usuario en una LOWER SQL
+						$query = 'SELECT userbattle.user_id, userbattle.first_name, userbattle.user_name, playerbattle.level, ( playerbattle.hp + playerbattle.attack + playerbattle.defense + playerbattle.critic + playerbattle.critic + playerbattle.critic + playerbattle.speed + playerbattle.helmet + playerbattle.helmet + playerbattle.helmet + playerbattle.body + playerbattle.boots + playerbattle.weapon + playerbattle.shield ) AS  "power", playerbattle.pvp_allowed FROM playerbattle, userbattle WHERE playerbattle.user_id = userbattle.user_id AND LOWER( user_name ) =  "'.$pvpAction.'" LIMIT 0 , 1';
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						if(isset($row['level'])) {
+							// si existe, mirar que no seas tu mismo...
+							$isRival = 1;
+							if($row['user_id'] == $chat_id) {
+								$isRival = 0;
+							}
+							// mirar que este en allowed
+							if($row['pvp_allowed'] == 1 && $isRival == 1) {
+								// si esta, mirar si es lv11+
+								if($row['level'] > 10) {
+									$currTime = time();
+									$rival_id = $row['user_id'];
+									$rivalFirstName = $row['first_name'];
+									$rivalUserName = $row['user_name'];
+									$rivalLevel = $row['level'];
+									$rivalPower = $row['power'];
+									mysql_free_result($result);
+									$query = "SELECT epoch_time FROM playerbattlelog WHERE player = ".$chat_id." ORDER BY epoch_time DESC LIMIT 0, 1";
+									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+									$row = mysql_fetch_array($result);
+									if(isset($row['epoch_time'])) {
+										$lastPvp = $row['epoch_time'];
+									} else {
+										$lastPvp = 0;
+									}
+									// si esta, mirar la ultima peticion de pvp
+									if(($currTime - 18000) > $lastPvp) {
+										mysql_free_result($result);
+										$query = "SELECT epoch_time FROM playerbattlelog WHERE player = ".$chat_id." AND rival = ".$rival_id." ORDER BY epoch_time DESC LIMIT 0, 1";
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+										$row = mysql_fetch_array($result);
+										if(isset($row['epoch_time'])) {
+											$lastPvp = $row['epoch_time'];
+										} else {
+											$lastPvp = 0;
+										}
+										// si es de mas de 5h, mirar la ultima peticion de pvp contra ese usuario
+										if(($currTime - 86400) > $lastPvp) {
+											// si es de mas de 24h, declarar pvp guerra al usuario nuevo 
+											mysql_free_result($result);
+											$query = "INSERT INTO `playerbattlelog` (`player`, `rival`, `epoch_time`) VALUES ('".$chat_id."', '".$rival_id."', '".$currTime."')";
+											$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+											// avisar a ambos con sus mensajes, y que compruebe en !guerras
+											if($rivalUserName != "") {
+												if(strtolower($rivalFirstName) == strtolower($rivalUserName)) {
+													$rivalName = $rivalUserName;
+												} else {
+													$rivalName = $rivalFirstName." (".$rivalUserName.")";
+												}
+											} else {
+												$rivalName = $rivalFirstName;
+											}
+											$rivalName = str_replace("<", "", $rivalName);
+											$rivalName = str_replace(">", "", $rivalName);
+											apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+											$msg = "⚔ <b>¡Has retado a un duelo a ".$rivalName."!".PHP_EOL.PHP_EOL.
+											"Si acepta el desafío la batalla comenzará automáticamente y el resultado aparecerá en este mismo chat.".PHP_EOL.
+											"En caso de que el rival rechace la invitación de duelo recibirás una notificación.</b>".PHP_EOL.PHP_EOL.
+											"<i>Consulta con !guerras el número de duelos pendientes y las últimas guerras libradas en Telegram.</i>";
+											usleep(250000);
+											apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+											apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
+											$msg = "⚔ <b>¡".$playerName." te ha retado a un duelo PvP!</b>".PHP_EOL.PHP_EOL.
+											"<i>Utiliza !pvp aceptar para iniciar automáticamente la batalla o !pvp rechazar para desestimar la petición.".PHP_EOL.
+											"Consulta con !guerras el número de duelos pendientes y las últimas guerras libradas en Telegram.</i>";
+											usleep(250000);
+											apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+										} else {
+											// si no, avisar de que una vez al dia ese user
+											apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+											$msg = "<b>Solo puedes retar una vez al día a un mismo rival. Inténtalo de nuevo cuando hayan pasado 24 horas desde la última vez que lo hiciste.</b>";
+											usleep(100000);
+											apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+										}
+									} else {
+										// si no, avisar de que cada 5h puedes...
+										apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+										$msg = "<b>Solo puedes retar en duelo a un rival una vez cada cinco horas, inténtalo más tarde.</b>";
+										usleep(100000);
+										apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+									}
+								} else {
+									// si no, decir que es un crio el rival
+									apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+									$msg = "<b>El rival todavía no tiene el nivel suficiente para batirse en duelos PvP, inténtalo más tarde.</b>";
+									usleep(100000);
+									apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+								}
+							} else {
+								// si no esta, decir que no lo permite
+								apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+								if($isRival == 0) {
+									$msg = "<b>¡No puedes retarte en duelo a ti mismo!</b>";
+								} else {
+									$msg = "<b>El rival tiene bloqueadas las peticiones de duelo, elige a otro jugador.</b>";
+								}
+								usleep(100000);
+								apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+							}
+						} else {
+							// si no existe explicarle que ese user no se encuentra, las normas son tal y tal...
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							$msg = "<b>No se ha encontrado ningún jugador con ese nombre de usuario, comprueba que lo hayas escrito correctamente.</b>";
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+						}
+					} else {
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$msg = "<b>Actualmente tienes bloqueado el modo PvP de Los Rocosos de Demisuke. Escribe \"!pvp\" primero para habilitar esta función.</b>";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					}
+				}
+			} else {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "<b>La función !pvp solo está disponible para jugadores de nivel 11 o superior. ¡Entrena a tu personaje con la función !exp (o </b>/exp<b>) y desafía a tus amigos!</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+			}
+			// cerrar db
+			mysql_free_result($result);
+			mysql_close($link);	
 		}
 	} else if (strpos(strtolower($text), "!rocosos") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {

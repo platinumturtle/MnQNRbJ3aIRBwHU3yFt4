@@ -8702,6 +8702,7 @@ function processMessage($message) {
 				// revisar si el grupo tiene al menos 5 miembros
 				if(isset($row['members']) && $row['members'] > 0) { // REVISAR CUENTA					
 					// si tiene, mirar si el rival existe
+					$homeMembers = $row['members'];
 					mysql_free_result($result);
 					$number = $number - 1;
 					$query = 'SELECT groupbattle.name, playerbattle.group_id, COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL AND groupbattle.group_id = playerbattle.group_id AND  "members" > -1 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC LIMIT '.$number.' , 1'; // REVISAR CUENTA
@@ -8737,7 +8738,7 @@ function processMessage($message) {
 								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								// avisar al equipo home
 								apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-								$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan ".$rivalName."!".PHP_EOL.PHP_EOL.
+								$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan ".getClanLevelByMembers($rivalMembers).$rivalName."!".PHP_EOL.PHP_EOL.
 								"Si aceptan el desafío la batalla comenzará automáticamente y el resultado aparecerá en los grupos participantes.".PHP_EOL.
 								"En caso de que el clan rival rechace la invitación de guerra se enviará una notificación a este grupo.</b>";
 								usleep(250000);
@@ -8745,7 +8746,7 @@ function processMessage($message) {
 								// avisar al equipo away
 								$requestName = $message['chat']['title'];
 								apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-								$msg = "⚔ <b>¡El clan ".$requestName." os ha declarado la guerra!".PHP_EOL.PHP_EOL.
+								$msg = "⚔ <b>¡El clan ".$getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!".PHP_EOL.PHP_EOL.
 								"Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.</b>";
 								usleep(250000);
 								apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));

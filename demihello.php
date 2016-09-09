@@ -3241,6 +3241,45 @@ function chooseBoss($level) {
 	return $id;
 }
 
+function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky) {
+	$log = "⚔ <b>REPORTE DE BATALLA INTERCLAN</b>".PHP_EOL.PHP_EOL;
+	$log = $log.getClanLevelByMembers($homeGroupMembers).$homeGroupName."  ".getClanLevelByMembers($awayGroupMembers).$awayGroupName.PHP_EOL.PHP_EOL;
+	if($lucky == 0) {
+			$storedStandardVictory = array(
+									"¡Vaya comienzo del clan ".$winnerName."! Parecía que llevaban días preparados para la guerra y han ido todos a una coordinados estupendamente, incluso uno de los rocosos de ".$loserName." ha salido corriendo. El resto sin embargo ha luchado por su honor y ha logrado derribar la defensa rival, pero no ha sido suficiente para llevarse la victoria...",
+									"El clan ".$loserName." se ha aprovechado de su superior velocidad frente a los rivales y ha logrado cargarse a medio equipo en un santiamén. En cuanto se han visto muy superiores en la batalla, dos de sus miembros se han ido a descansar y han dejado que el resto hiciera el trabajo. ".$winnerName." se ha dado cuenta rápido de la situación y ha optado por jugárselo todo al ataque. No les ha ido mal, porque han logrado remontar y llevarse la victoria, eso sí, sudando más de lo que podían imaginar.",
+									"Una batalla muy igualada, parecía una partida de ajedrez, ".$winnerName." ha ido a buscar directamente los puntos débiles del enemigo mientras que ".$loserName." se ha organizado en subgrupos y han atacado por igual a todo el equipo rival. Pero un punto débil es un punto débil, el clan ".$winnerName." ha encontrado a tiempo lo que buscaba y ha logrado una serie de golpes críticos que le han dado la victoria.",
+									"El clan ".$winnerName." se ha refugiado en su defensa, ha utilizado al rocoso con más vida de sus filas como tanque y todos se han refugiado detrás de él para atacar. Parece que les ha salido bien, cuando ".$loserName." ha logrado acabar con el tanque no ha tenido fuerzas para terminar con el resto de miembros rivales y ha perdido la batalla.",
+									"¡Qué descontrol! Ambos clanes han ido a por su rival sin pensar de qué manera atacar o defender, y parecía una oda a la muerte aleatoria. Algunos miembros del clan ".$loserName." se han llegado a atacar entre sí, quizás por eso ".$winnerName." se ha llevado la victoria sin saber muy bien qué ha hecho para lograrlo. De hecho, uno de sus miembros está llegando ahora al lugar de la batalla. Un poco tarde, rocoso.",
+									"Al principio todo ha transcurrido como una guerra estándar, pero detrás de la masa de miembros de ".$loserName." se ha podido observar a dos de sus miembros echándose una siesta... ¡Vuestro clan os necesita! O al menos os necesitaba, porque ".$winnerName." ya se ha llevado la victoria.",
+									"Extraña batalla. De hecho, ni la ha habido. ".$loserName." se ha presentado ante el líder de ".$winnerName." con una especie de pergamino donde le entregaba la victoria y unos terrenos con cabras y huerta a cambio de huir sin un solo rasguño. El acuerdo se ha sellado con un abrazo, y ".$loserName." ha ganado... ha ganado volver a casa sano y salvo dejando por el camino una victoria gratis para su rival.",
+									"Cuando todo estaba a punto para comenzar, los miembros del clan ".$winnerName." se han puesto a bailar de manera coordinada sin descanso. ".$loserName." ha interpretado el ritual como una danza de guerra y ha intentado imitar sus movimientos, pero han acabado tan confusos que el rival ha lanzado su ataque al unísono cuando menos se lo esperaban. ¡El baile ha surtido efecto! ...Y la superioridad de fuerza también.",
+									"Batalla dominada de principio a fin por el clan ".$winnerName." que no ha encontrado rival en el clan ".$loserName.". En ningún momento parecía que iban a oponer resistencia seria, lo han intentado todo, pero necesitan ser más fuertes para ganar esta guerra.",
+									"El clan ".$winnerName." se ha aprovechado de que el clan ".$loserName." no parecía tener los miembros suficientes en sus filas como para atacar de manera organizada y se han concentrado en atacar sin parar, llevándose la victoria sin demasiada complicación."
+									);
+			$n = sizeof($storedStandardVictory) - 1;
+			$n = rand(0,$n);
+			$log = $log."<i>".$storedStandardVictory[$n]."</i>";
+	} else {
+			$storedUnexpectedVictory = array(
+										"¡Qué mala pata! ".$loserName." es muy superior al rival, y muchos de sus rocosos se toman esta batalla como un juego, atacando solo con una mano, pero han empezado los desastres... Uno de sus miembros ha tropezado y se ha caído al suelo, a otro se le ha caído el arma al suelo y otro se ha hecho daño a sí mismo, y el clan ".$winnerName." se ha llevado la victoria por sorpresa.",
+										"Inexplicable batalla en la que el clan ".$loserName." tenía todas las de ganar y sin embargo algunos de sus miembros han descubierto lo que es el fuego amigo y se han convertido ¿involuntariamente? en aliados del clan ".$winnerName." que se ha topado con una victoria que no se esperaba.",
+										"Dominio de principio a fin de ".$loserName.", quien ha llevado la manija de la guerra durante toda la batalla, hasta que cuando el rival ya estaba debilitado y comenzaba el camino de vuelta a casa para los rocosos, han caído en varias trampas de ".$winnerName." y se han debilitado antes que su rival, por lo que ha habido una remontada inesperada en la prórroga.",
+										"El clan ".$loserName." es superior al rival. Ha comenzado atacando con varios críticos y enseguida se han puesto por delante, pero en mitad de la batalla se ha puesto a llover y eso ha beneficiado a ".$winnerName.", que llegaban a la guerra mejor preparados para luchar bajo todo tipo de condiciones climáticas y se ha podido aprovechar de los resbalones del rival.",
+										"El clan ".$winnerName." es demasiado débil para luchar contra ".$loserName.". Lo sabe, y se ha aprovechado del terreno de batalla para esconderse en los lugares más inesperados. Esto ha desconcertado al rival, que no sabía donde atacar. ".$loserName." ha atacado a diestro y siniestro y su superior fuerza ha logrado terminar con medio equipo rival, pero en cuanto el rival ha salido de su escondite, se ha aprovechado del agotamiento sufrido al inicio para llevarse una inesperada victoria.",
+										"¿Por qué ".$loserName." no ha atacado? Parecían estatuas, se han visto muy superiores al rival, y han querido derrotar al clan ".$winnerName." con el menor esfuerzo posible. Se han confiado y no lo han conseguido.",
+										"Una batalla muy encarrilada para ".$loserName.", hasta que se ha distraído por los coloridos atuendos de ".$winnerName.". Una distracción que les ha costado la victoria. Ahora, el clan ".$winnerName." está pensando en utilizar armadura de clan reglamentaria chillona y utilizarlo como su arma secreta. Lo más probable es que no tenga éxito.",
+										"¡Aquí hay gato encerrado! ".$loserName." es infinitamente superior a ".$winnerName.", pero éstos últimos se han traído animales al campo de batalla y han logrado decantar la balanza por el lado más imprevisto. ¡Ahora el clan ".$loserName." reclama justicia!",
+										"No hay duda de que el clan ".$loserName." es muy superior al rival. Lo que sí que hay duda es en la manera que han tenido de perder ante el clan ".$winnerName.", que llegaban al campo de batalla asustados y sabiendo que eran el clan más débil y se llevan a casa una victoria inesperada.",
+										"El clan ".$loserName.", muy superior al clan ".$winnerName.", ha dominado la batalla sin problemas hasta que se han quedado sin provisiones y no han tenido fuerzas para derrotar a su rival. Tal vez alguno de sus miembros necesite mejorar un poco más su barra de vida..."
+										);
+			$n = sizeof($storedUnexpectedVictory) - 1;
+			$n = rand(0,$n);
+			$log = $log."<i>".$storedUnexpectedVictory[$n]."</i>";
+	}
+	return $log;
+}
+
 function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
 	if($win == 1) {
 		if($lucky == 1) {
@@ -3689,7 +3728,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$msg = $msg."🛡 ".getItemName(5, $shield);
 		}
 	} else {
-		$msg = "<b>Todavía no has creado tu propio personaje. Utiliza la función !exp desde chat privado con el bot para comenzar a jugar.</b>";
+		$msg = "<b>Todavía no has creado tu propio personaje. Utiliza la función !exp o </b>/exp<b> desde chat privado con el bot para comenzar a jugar.</b>";
 	}
 	mysql_free_result($result);
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -8740,14 +8779,18 @@ function processMessage($message) {
 								apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 								$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan".getClanLevelByMembers($rivalMembers).$rivalName."!".PHP_EOL.PHP_EOL.
 								"Si aceptan el desafío la batalla comenzará automáticamente y el resultado aparecerá en los grupos participantes.".PHP_EOL.
-								"En caso de que el clan rival rechace la invitación de guerra se enviará una notificación a este grupo.</b>";
+								"En caso de que el clan rival rechace la invitación de guerra se enviará una notificación a este grupo.</b>".PHP_EOL.PHP_EOL.
+								"<i>Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
 								usleep(250000);
 								apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 								// avisar al equipo away
 								$requestName = $message['chat']['title'];
+								$requestName = str_replace("<", "", $requestName);
+								$requestName = str_replace(">", "", $requestName);
 								apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-								$msg = "⚔ <b>¡El clan".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!".PHP_EOL.PHP_EOL.
-								"Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.</b>";
+								$msg = "⚔ <b>¡El clan".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!</b>".PHP_EOL.PHP_EOL.
+								"<i>Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.".PHP_EOL.
+								"Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
 								usleep(250000);
 								apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
 							} else {
@@ -8804,14 +8847,206 @@ function processMessage($message) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !aceptarguerra.");
 			// abrir db
+			$link = dbConnect();
+			$query = 'SELECT groupbattlelog.gbl_id, groupbattlelog.home_group, groupbattle.name FROM groupbattlelog, groupbattle WHERE groupbattlelog.home_group = groupbattle.group_id AND status = "REQUESTED" AND away_group = '.$chat_id.' ORDER BY epoch_time ASC LIMIT 0, 1';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
 			// revisar si tiene alguna guerra pendiente
-				// si la tiene revisar si tu grupo sigue siendo ***
-					// si sigue, aceptar la guerra, avisar en ambos clanes, y editar muchas db, la de guerra pendiente como aceptada, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
-						// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
-					// si no, decir que no tienes miembros para aceptarla, se autorechaza
-						// avisar de que se ha rechazado la guerra, y hacer lo de !rechazarguerra
+			if(isset($row['gbl_id'])) {
+				$logToUpdate = "";
+				(string)$logToUpdate = $logToUpdate.$row['gbl_id'];
+				$homegroup_id = $row['home_group'];
+				$awaygroup_id = $chat_id;
+				$homeGroupName = $row['name'];
+				$awayGroupName = $message['chat']['title'];
+				$awayGroupName = str_replace("<", "", $awayGroupName);
+				$awayGroupName = str_replace(">", "", $awayGroupName);
+				mysql_free_result($result);
+				$query = 'SELECT COUNT( * ) AS  "members", group_id, SUM( hp + attack + defense + critic + critic + critic + speed + helmet + helmet + helmet + body + boots + weapon + shield ) AS  "totalpower" FROM playerbattle WHERE group_id IN ( '.$homegroup_id.', '.$awaygroup_id.' ) GROUP BY group_id ORDER BY FIELD( group_id, '.$homegroup_id.', '.$awaygroup_id.' )';
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				if(isset($row['group_id'])) {
+					$homeGroupMembers = $row['members'];
+					$homeGroupPower = $row['totalpower'];
+				} else {
+					$homeGroupMembers = 0;
+					$homeGroupPower = 0;
+				}
+				$row = mysql_fetch_array($result);
+				if(isset($row['group_id'])) {
+					$awayGroupMembers = $row['members'];
+					$awayGroupPower = $row['totalpower'];
+				} else {
+					$awayGroupMembers = 0;
+					$awayGroupPower = 0;
+				}
+				// si la tiene revisar si tu grupo sigue siendo **, pillar los miembros y poder de ambos clanes, y tambien los nombres
+				if($homeGroupMembers > 0 && $awayGroupMembers > 0) { // REVISAR CUENTA
+					// si sigue, aceptar la guerra, avisar en ambos clanes
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(50000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
+					apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
+					usleep(50000);
+					apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
+					// y editar db, la de guerra pendiente como aceptada
+					mysql_free_result($result);
+					$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					mysql_free_result($result);
+					sleep(1);
+					// librar batalla
+					if($homeGroupPower >= $awayGroupPower) {
+						$homeIsStronger = 1;
+						$powerDiff = $homeGroupPower - $awayGroupPower;
+						$membersDiff = $homeGroupMembers - $awayGroupMembers;
+					} else {
+						$homeIsStronger = 0;
+						$powerDiff = $awayGroupPower - $homeGroupPower;
+						$membersDiff = $awayGroupMembers - $homeGroupMembers;
+					}
+					if($homeIsStronger == 1) {
+						$percentHigher = (($homeGroupPower * 100) / $awayGroupPower) - 100;
+					} else {
+						$percentHigher = (($awayGroupPower * 100) / $homeGroupPower) - 100;
+					}
+					error_log("PERCENTDIFF ".$percentHigher);
+					if($percentHigher < 15) {
+						// tener en cuenta los miembros
+						if($membersDiff >= 0) {
+							// 80
+							$battleTicket = rand(1,10);
+							if($battleTicket < 9) {
+								$win = 1;
+								$lucky = 0;
+							} else {
+								$win = 0;
+								$lucky = 1;
+							}
+						} else {
+							// 40
+							$battleTicket = rand(1,10);
+							if($battleTicket < 5) {
+								$win = 1;
+								$lucky = 0;
+							} else {
+								$win = 0;
+								$lucky = 1;
+							}
+						}
+					} else if($percentHigher > 300) {
+						// 99,99
+						$battleTicket = rand(1,10000);
+						if($battleTicket < 10000) {
+							$win = 1;
+							$lucky = 0;
+						} else {
+							$win = 0;
+							$lucky = 1;
+						}
+					} else if($percentHigher > 200) {
+						// 90
+						$battleTicket = rand(1,10);
+						if($battleTicket < 10) {
+							$win = 1;
+							$lucky = 0;
+						} else {
+							$win = 0;
+							$lucky = 1;
+						}
+					} else if($percentHigher > 100) {
+						// 80
+						$battleTicket = rand(1,10);
+						if($battleTicket < 9) {
+							$win = 1;
+							$lucky = 0;
+						} else {
+							$win = 0;
+							$lucky = 1;
+						}
+					} else if($percentHigher > 50) {
+						// 70
+						$battleTicket = rand(1,10);
+						if($battleTicket < 8) {
+							$win = 1;
+							$lucky = 0;
+						} else {
+							$win = 0;
+							$lucky = 1;
+						}
+					} else {
+						// 60
+						$battleTicket = rand(1,10);
+						if($battleTicket < 7) {
+							$win = 1;
+							$lucky = 0;
+						} else {
+							$win = 0;
+							$lucky = 1;
+						}
+					}
+					error_log("GROUPWINLUCKY ".$win.$lucky);
+					if($homeIsStronger == 1) {
+						if($win == 1) {
+							$winner_id = $homegroup_id;
+							$winnerName = $homeGroupName;
+							$loser_id = $awaygroup_id;
+							$loserName = $awayGroupName;
+						} else {
+							$winner_id = $awaygroup_id;
+							$winnerName = $awayGroupName;
+							$loser_id = $homegroup_id;
+							$loserName = $homeGroupName;
+						}
+					} else {
+						if($win == 0) {
+							$winner_id = $homegroup_id;
+							$winnerName = $homeGroupName;
+							$loser_id = $awaygroup_id;
+							$loserName = $awayGroupName;
+						} else {
+							$winner_id = $awaygroup_id;
+							$winnerName = $awayGroupName;
+							$loser_id = $homegroup_id;
+							$loserName = $homeGroupName;
+						}
+					}
+					sleep(1);
+					$currentTime = time();
+					$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
+					$fullDate = translateDate($fullDate);
+					// insert en groupbattleresults, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
+					$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$fullDate."');";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					mysql_free_result($result);
+					// sumarle +1 a las victorias de los playerbattle grupales
+					$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					mysql_free_result($result);
+					sleep(1);
+					// mostrar el resumen de batalla
+					$msg = getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky);
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(50000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
+					usleep(50000);
+					apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => $msg));
+				} else {
+					// si no, decir que no tienes miembros para aceptarla y sugerir lo de !rechazarguerra
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Uno de los dos clanes ha perdido varios miembros y no está disponible para la guerra, inténtalo más tarde o utiliza !rechazarguerra para eliminar la solicitud pendiente de guerra con el clan ".$homeGroupName.".</b>"));
+				}
+			} else {
 				// si no, avisar de que no tienes solicitudes de guerra pendientes
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Este grupo no tiene ninguna guerra pendiente.*"));
+			}
 			// cerrar db
+			mysql_free_result($result);
+			mysql_close($link);
 		} else {
 			error_log($logname." triggered in private: !aceptarguerra.");
 			// mensaje de que esto es para grupos, retarded
@@ -8834,6 +9069,8 @@ function processMessage($message) {
 				(string)$rowToUpdate = $rowToUpdate.$row['gbl_id'];
 				$homeName = $row['name'];
 				$awayName = $message['chat']['title'];
+				$awayName = str_replace("<", "", $awayName);
+				$awayName = str_replace(">", "", $awayName);
 				$rival_id = $row['home_group'];
 				mysql_free_result($result);
 				// avisar en ambos clanes, y editar muchas db, la de guerra pendiente como rechazada
@@ -8845,7 +9082,7 @@ function processMessage($message) {
 				usleep(250000);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 				apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-				$msg = "❌ <b>El clan ".$awayName." ha rechazado la declaración de guerra pendiente emitida anteriormente desde este grupo.</b>";
+				$msg = "❌ <b>El clan ".$awayName." ha rechazado la declaración de guerra pendiente emitida con anterioridad desde este grupo.</b>";
 				usleep(250000);
 				apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
 			} else {

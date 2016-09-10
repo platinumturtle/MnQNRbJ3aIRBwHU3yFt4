@@ -120,6 +120,7 @@ function checkUserID($id) {
 	$bannedID = array(
 					"119769161", // TaliBOT
 					"228805033", //German
+					"164798471",
 					"" // @JoGel 120644940
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {

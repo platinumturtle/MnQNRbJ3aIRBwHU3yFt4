@@ -8762,9 +8762,9 @@ function processMessage($message) {
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 					if($pvpSwitch == 1) {
-						$msg = "✅ <b>Acabas de activar el modo PvP de Los Rocosos de Demisuke. A partir de ahora podrás luchas contra tus amigos utilizando la función !pvp seguido del nombre de usuario de tu rival, además de poder aceptar duelos pendientes, aparecer en el ránking de !rocosos y mostrar tus victorias PvP en tu ficha de personaje (!pj).</b>";
+						$msg = "✅ <b>Acabas de activar el modo PvP de Los Rocosos de Demisuke.</b>".PHP_EOL.PHP_EOL."A partir de ahora podrás luchas contra tus amigos utilizando la función !pvp seguido del nombre de usuario de tu rival, además de poder aceptar duelos pendientes, aparecer en el ránking de !rocosos y mostrar tus victorias PvP en tu ficha de personaje (!pj).";
 					} else {
-						$msg = "❌ <b>Acabas de desactivar el modo PvP de Los Rocosos de Demisuke. Deshabilitando este modo no podrás aceptar duelos pendientes ni retar a otras personas, además de que no aparecerás en la lista de !rocosos y tus victorias PvP no serán visibles en tu ficha de personaje (!pj). Si anteriormente enviaste petición de batalla a otros usuarios, tus rivales todavía podrán rechazar cualquier solicitud pendiente tuya.</b>";
+						$msg = "❌ <b>Acabas de desactivar el modo PvP de Los Rocosos de Demisuke.</b>".PHP_EOL.PHP_EOL."Deshabilitando este modo no podrás aceptar duelos pendientes ni retar a otras personas, además de que no aparecerás en la lista de !rocosos y tus victorias PvP no serán visibles en tu ficha de personaje (!pj). Si anteriormente enviaste petición de batalla a otros usuarios, tus rivales todavía podrán rechazar cualquier solicitud pendiente tuya.";
 					}
 					usleep(100000);
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
@@ -8776,7 +8776,7 @@ function processMessage($message) {
 					if($playerPvpAllowed == 1) {
 						$pvpAction = str_replace("@", "", $pvpAction);
 						// buscar si existe el usuario en una LOWER SQL
-						$query = 'SELECT userbattle.user_id, userbattle.first_name, userbattle.user_name, playerbattle.level, ( playerbattle.hp + playerbattle.attack + playerbattle.defense + playerbattle.critic + playerbattle.critic + playerbattle.critic + playerbattle.speed + playerbattle.helmet + playerbattle.helmet + playerbattle.helmet + playerbattle.body + playerbattle.boots + playerbattle.weapon + playerbattle.shield ) AS  "power", playerbattle.pvp_allowed FROM playerbattle, userbattle WHERE playerbattle.user_id = userbattle.user_id AND LOWER( user_name ) =  "'.$pvpAction.'" LIMIT 0 , 1';
+						$query = 'SELECT userbattle.user_id, userbattle.first_name, userbattle.user_name, playerbattle.level, playerbattle.pvp_allowed FROM playerbattle, userbattle WHERE playerbattle.user_id = userbattle.user_id AND LOWER( user_name ) =  "'.$pvpAction.'" LIMIT 0 , 1';
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
 						if(isset($row['level'])) {
@@ -8794,7 +8794,6 @@ function processMessage($message) {
 									$rivalFirstName = $row['first_name'];
 									$rivalUserName = $row['user_name'];
 									$rivalLevel = $row['level'];
-									$rivalPower = $row['power'];
 									mysql_free_result($result);
 									$query = "SELECT epoch_time FROM playerbattlelog WHERE player = ".$chat_id." ORDER BY epoch_time DESC LIMIT 0, 1";
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -8843,7 +8842,13 @@ function processMessage($message) {
 											apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
 											$msg = "⚔ <b>¡".$playerName." te ha retado a un duelo PvP!</b>".PHP_EOL.PHP_EOL.
 											"<i>Utiliza !pvp aceptar para iniciar automáticamente la batalla o !pvp rechazar para desestimar la petición.".PHP_EOL.
-											"Consulta con !guerras el número de duelos pendientes y las últimas guerras libradas en Telegram.</i>";
+											"Consulta con !guerras el número de duelos pendientes y las últimas guerras libradas en Telegram.</i>".PHP_EOL.PHP_EOL.
+											"Resumen de estadísticas del rival:".PHP_EOL.
+											"<pre>VID: ".ratePower($playerHP).PHP_EOL.
+											"ATA: ".ratePower($playerAt).PHP_EOL.
+											"DEF: ".ratePower($playerDef).PHP_EOL.
+											"CRÍ: ".ratePower($playerCrit).PHP_EOL.
+											"VEL: ".ratePower($playerSp)."</pre>";
 											usleep(250000);
 											apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
 										} else {

@@ -1133,7 +1133,7 @@ function getPlayerExp($currLevel, $user_id) {
 			case 1: $text = "*Te has ido a meditar un rato bajo el agua de una cascada, has ganado 14 puntos de experiencia.*";
 					$exp = 14;
 					break;
-			case 2: $text = "*Te has adentrado en el bosque en busca de comida y ahs encontrado frutas silvestres. Te llevas 15 puntos de experiencia.*";
+			case 2: $text = "*Te has adentrado en el bosque en busca de comida y has encontrado frutas silvestres. Te llevas 15 puntos de experiencia.*";
 					$exp = 15;
 					break;
 			case 3: $text = "*Has investigado el bosque y has creado una ruta para viajar más fácilmente por su interior, has ganado 16 puntos de experiencia.*";
@@ -3239,6 +3239,45 @@ function chooseBoss($level) {
 		}
 	}
 	return $id;
+}
+
+function getPlayerBattleResult($playerName, $rivalName, $winnerName, $loserName, $lucky) {
+	$log = "⚔ <b>REPORTE DE BATALLA PVP</b>".PHP_EOL.PHP_EOL;
+	$log = $playerName." 🆚 ".$rivalName.PHP_EOL.PHP_EOL;
+	if($lucky == 0) {
+			$storedStandardVictory = array(
+									"¡Vaya comienzo del clan ".$winnerName."! Parecía que llevaban días preparados para la guerra y han ido todos a una coordinados estupendamente, incluso uno de los rocosos de ".$loserName." ha salido corriendo. El resto sin embargo ha luchado por su honor y ha logrado derribar la defensa rival, pero no ha sido suficiente para llevarse la victoria...",
+									"El clan ".$loserName." se ha aprovechado de su superior velocidad frente a los rivales y ha logrado cargarse a medio equipo en un santiamén. En cuanto se han visto muy superiores en la batalla, dos de sus miembros se han ido a descansar y han dejado que el resto hiciera el trabajo. ".$winnerName." se ha dado cuenta rápido de la situación y ha optado por jugárselo todo al ataque. No les ha ido mal, porque han logrado remontar y llevarse la victoria, eso sí, sudando más de lo que podían imaginar.",
+									"Una batalla muy igualada, parecía una partida de ajedrez, ".$winnerName." ha ido a buscar directamente los puntos débiles del enemigo mientras que ".$loserName." se ha organizado en subgrupos y han atacado por igual a todo el equipo rival. Pero un punto débil es un punto débil, el clan ".$winnerName." ha encontrado a tiempo lo que buscaba y ha logrado una serie de golpes críticos que le han dado la victoria.",
+									"El clan ".$winnerName." se ha refugiado en su defensa, ha utilizado al rocoso con más vida de sus filas como tanque y todos se han refugiado detrás de él para atacar. Parece que les ha salido bien, cuando ".$loserName." ha logrado acabar con el tanque no ha tenido fuerzas para terminar con el resto de miembros rivales y ha perdido la batalla.",
+									"¡Qué descontrol! Ambos clanes han ido a por su rival sin pensar de qué manera atacar o defender, y parecía una oda a la muerte aleatoria. Algunos miembros del clan ".$loserName." se han llegado a atacar entre sí, quizás por eso ".$winnerName." se ha llevado la victoria sin saber muy bien qué ha hecho para lograrlo. De hecho, uno de sus miembros está llegando ahora al lugar de la batalla. Un poco tarde, rocoso.",
+									"Al principio todo ha transcurrido como una guerra estándar, pero detrás de la masa de miembros de ".$loserName." se ha podido observar a dos de sus miembros echándose una siesta... ¡Vuestro clan os necesita! O al menos os necesitaba, porque ".$winnerName." ya se ha llevado la victoria.",
+									"Extraña batalla. De hecho, ni la ha habido. ".$loserName." se ha presentado ante el líder de ".$winnerName." con una especie de pergamino donde le entregaba la victoria y unos terrenos con cabras y huerta a cambio de huir sin un solo rasguño. El acuerdo se ha sellado con un abrazo, y ".$loserName." ha ganado... ha ganado volver a casa sano y salvo dejando por el camino una victoria gratis para su rival.",
+									"Cuando todo estaba a punto para comenzar, los miembros del clan ".$winnerName." se han puesto a bailar de manera coordinada sin descanso. ".$loserName." ha interpretado el ritual como una danza de guerra y ha intentado imitar sus movimientos, pero han acabado tan confusos que el rival ha lanzado su ataque al unísono cuando menos se lo esperaban. ¡El baile ha surtido efecto! ...Y la superioridad de fuerza también.",
+									"Batalla dominada de principio a fin por el clan ".$winnerName." que no ha encontrado rival en el clan ".$loserName.". En ningún momento parecía que iban a oponer resistencia seria, lo han intentado todo, pero necesitan ser más fuertes para ganar esta guerra.",
+									"El clan ".$winnerName." se ha aprovechado de que el clan ".$loserName." no parecía tener los miembros suficientes en sus filas como para atacar de manera organizada y se han concentrado en atacar sin parar, llevándose la victoria sin demasiada complicación."
+									);
+			$n = sizeof($storedStandardVictory) - 1;
+			$n = rand(0,$n);
+			$log = $log."<i>".$storedStandardVictory[$n]."</i>";
+	} else {
+			$storedUnexpectedVictory = array(
+										"¡Qué mala pata! ".$loserName." es muy superior al rival, y muchos de sus rocosos se toman esta batalla como un juego, atacando solo con una mano, pero han empezado los desastres... Uno de sus miembros ha tropezado y se ha caído al suelo, a otro se le ha caído el arma al suelo y otro se ha hecho daño a sí mismo, y el clan ".$winnerName." se ha llevado la victoria por sorpresa.",
+										"Inexplicable batalla en la que el clan ".$loserName." tenía todas las de ganar y sin embargo algunos de sus miembros han descubierto lo que es el fuego amigo y se han convertido ¿involuntariamente? en aliados del clan ".$winnerName." que se ha topado con una victoria que no se esperaba.",
+										"Dominio de principio a fin de ".$loserName.", quien ha llevado la manija de la guerra durante toda la batalla, hasta que cuando el rival ya estaba debilitado y comenzaba el camino de vuelta a casa para los rocosos, han caído en varias trampas de ".$winnerName." y se han debilitado antes que su rival, por lo que ha habido una remontada inesperada en la prórroga.",
+										"El clan ".$loserName." es superior al rival. Ha comenzado atacando con varios críticos y enseguida se han puesto por delante, pero en mitad de la batalla se ha puesto a llover y eso ha beneficiado a ".$winnerName.", que llegaban a la guerra mejor preparados para luchar bajo todo tipo de condiciones climáticas y se ha podido aprovechar de los resbalones del rival.",
+										"El clan ".$winnerName." es demasiado débil para luchar contra ".$loserName.". Lo sabe, y se ha aprovechado del terreno de batalla para esconderse en los lugares más inesperados. Esto ha desconcertado al rival, que no sabía donde atacar. ".$loserName." ha atacado a diestro y siniestro y su superior fuerza ha logrado terminar con medio equipo rival, pero en cuanto el rival ha salido de su escondite, se ha aprovechado del agotamiento sufrido al inicio para llevarse una inesperada victoria.",
+										"¿Por qué ".$loserName." no ha atacado? Parecían estatuas, se han visto muy superiores al rival, y han querido derrotar al clan ".$winnerName." con el menor esfuerzo posible. Se han confiado y no lo han conseguido.",
+										"Una batalla muy encarrilada para ".$loserName.", hasta que se ha distraído por los coloridos atuendos de ".$winnerName.". Una distracción que les ha costado la victoria. Ahora, el clan ".$winnerName." está pensando en utilizar armadura de clan reglamentaria chillona y utilizarlo como su arma secreta. Lo más probable es que no tenga éxito.",
+										"¡Aquí hay gato encerrado! ".$loserName." es infinitamente superior a ".$winnerName.", pero éstos últimos se han traído animales al campo de batalla y han logrado decantar la balanza por el lado más imprevisto. ¡Ahora el clan ".$loserName." reclama justicia!",
+										"No hay duda de que el clan ".$loserName." es muy superior al rival. Lo que sí que hay duda es en la manera que han tenido de perder ante el clan ".$winnerName.", que llegaban al campo de batalla asustados y sabiendo que eran el clan más débil y se llevan a casa una victoria inesperada.",
+										"El clan ".$loserName.", muy superior al clan ".$winnerName.", ha dominado la batalla sin problemas hasta que se han quedado sin provisiones y no han tenido fuerzas para derrotar a su rival. Tal vez alguno de sus miembros necesite mejorar un poco más su barra de vida..."
+										);
+			$n = sizeof($storedUnexpectedVictory) - 1;
+			$n = rand(0,$n);
+			$log = $log."<i>".$storedUnexpectedVictory[$n]."</i>";
+	}
+	return $log;
 }
 
 function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky) {
@@ -8770,6 +8809,215 @@ function processMessage($message) {
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 				} else if($pvpAction == "aceptar") {
 					// aceptar guerra, tomar ideas... (que los dos sigan en allowed)
+					$query = 'SELECT playerbattlelog.pbl_id, playerbattlelog.player, userbattle.first_name, userbattle.user_name FROM playerbattlelog, userbattle WHERE playerbattlelog.player = userbattle.user_id AND playerbattlelog.status =  "REQUESTED" AND playerbattlelog.rival = '.$chat_id.' ORDER BY playerbattlelog.epoch_time ASC LIMIT 0 , 1';
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					// revisar si tiene alguna pvp pendiente
+					if(isset($row['pbl_id'])) {
+						$logToUpdate = "";
+						(string)$logToUpdate = $logToUpdate.$row['pbl_id'];
+						$rivalFirstName = $row['first_name'];
+						$rivalUserName = $row['user_name'];
+						if($rivalUserName != "") {
+							if(strtolower($rivalFirstName) == strtolower($rivalUserName)) {
+								$rivalName = $rivalUserName;
+							} else {
+								$rivalName = $rivalFirstName." (".$rivalUserName.")";
+							}
+						} else {
+							$rivalName = $rivalFirstName;
+						}
+						$rivalName = str_replace("<", "", $rivalName);
+						$rivalName = str_replace(">", "", $rivalName);
+						$rival_id = $row['player'];
+						$playerFirstName = $message['from']['first_name'];
+						$playerUserName = $message['from']['username'];
+						if($playerUserName != "") {
+							if(strtolower($playerFirstName) == strtolower($playerUserName)) {
+								$playerName = $playerUserName;
+							} else {
+								$playerName = $playerFirstName." (".$playerUserName.")";
+							}
+						} else {
+							$playerName = $playerFirstName;
+						}
+						$playerName = str_replace("<", "", $playerName);
+						$playerName = str_replace(">", "", $playerName);						
+						mysql_free_result($result);
+						$query = 'SELECT exp_points, ( hp + attack + defense + critic + critic + critic + speed + helmet + helmet + helmet + body + boots + weapon + shield ) AS  "power", pvp_allowed FROM playerbattle WHERE user_id IN ( '.$chat_id.', '.$rival_id.' ) ORDER BY FIELD( user_id, '.$chat_id.', '.$rival_id.' )';
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						$playerExp = $row['exp_points'];
+						$playerPower = $row['power'];
+						$playerPermission = $row['pvp_allowed'];
+						$row = mysql_fetch_array($result);
+						$rivalExp = $row['exp_points'];
+						$rivalPower = $row['power'];
+						$rivalPermission = $row['pvp_allowed'];
+						// revisar si estan allowed
+						if($playerPermission == 1 && $rivalPermission == 1) {
+							// si si, aceptar la guerra, avisar en ambos jugadores
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(50000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado el duelo PvP contra ".$rivalName."! El resumen de la batalla aparecerá a continuación en los rocosos participantes en cuanto esté disponible.</b>"));
+							apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
+							usleep(50000);
+							apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => "<b>¡".$playerName." ha aceptado tu solicitud de duelo PvP pendiente! El resumen de la batalla aparecerá a continuación en los rocosos participantes en cuanto esté disponible.</b>"));
+							// y editar db, la de guerra pendiente como aceptada
+							mysql_free_result($result);							
+							$query = "UPDATE playerbattlelog SET status = 'ACCEPTED' WHERE pbl_id = ".$logToUpdate;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							sleep(1);
+							// librar batalla
+							if($playerPower >= $rivalPower) {
+								$playerIsStronger = 1;
+								$powerDiff = $playerPower - $rivalPower;
+								$expDiff = $playerExp - $rivalExp;
+							} else {
+								$playerIsStronger = 0;
+								$powerDiff = $rivalPower - $playerPower;
+								$expDiff = $rivalExp - $playerExp;
+							}
+							if($playerIsStronger == 1) {
+								$percentHigher = (($playerPower * 100) / $rivalPower) - 100;
+							} else {
+								$percentHigher = (($rivalPower * 100) / $playerPower) - 100;
+							}
+							error_log("PERCENTDIFF ".$percentHigher);
+							if($percentHigher < 15) {
+								// tener en cuenta la exp
+								if($expDiff >= 0) {
+									// 80
+									$battleTicket = rand(1,10);
+									if($battleTicket < 9) {
+										$win = 1;
+										$lucky = 0;
+									} else {
+										$win = 0;
+										$lucky = 1;
+									}
+								} else {
+									// 40
+									$battleTicket = rand(1,10);
+									if($battleTicket < 5) {
+										$win = 1;
+										$lucky = 0;
+									} else {
+										$win = 0;
+										$lucky = 1;
+									}
+								}
+							} else if($percentHigher > 300) {
+								// 99,99
+								$battleTicket = rand(1,10000);
+								if($battleTicket < 10000) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							} else if($percentHigher > 200) {
+								// 90
+								$battleTicket = rand(1,10);
+								if($battleTicket < 10) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							} else if($percentHigher > 100) {
+								// 80
+								$battleTicket = rand(1,10);
+								if($battleTicket < 9) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							} else if($percentHigher > 50) {
+								// 70
+								$battleTicket = rand(1,10);
+								if($battleTicket < 8) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							} else {
+								// 60
+								$battleTicket = rand(1,10);
+								if($battleTicket < 7) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							}
+							error_log("GROUPWINLUCKY ".$win.$lucky);
+							if($playerIsStronger == 1) {
+								if($win == 1) {
+									$winner_id = $chat_id;
+									$winnerName = $playerName;
+									$loser_id = $rival_id;
+									$loserName = $rivalName;
+								} else {
+									$winner_id = $rival_id;
+									$winnerName = $rivalNamerivalName;
+									$loser_id = $chat_id;
+									$loserName = $playerName;
+								}
+							} else {
+								if($win == 0) {
+									$winner_id = $chat_id;
+									$winnerName = $playerName;
+									$loser_id = $rival_id;
+									$loserName = $rivalName;
+								} else {
+									$winner_id = $rival_id;
+									$winnerName = $rivalName;
+									$loser_id = $chat_id;
+									$loserName = $playerName;
+								}
+							}
+							sleep(1);
+							$currentTime = time();
+							$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
+							$fullDate = translateDate($fullDate);
+							// insert en groupbattleresults, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
+							$query = "INSERT INTO `playerbattleresults` (`player`, `rival`, `winner`, `date`) VALUES ('".$chat_id."', '".$rival_id."', '".$winner_id."', '".$fullDate."');";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							// sumarle +1 a las victorias de los playerbattle grupales
+							$query = "UPDATE playerbattle SET pvp_wins = pvp_wins + 1 WHERE user_id = ".$winner_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							sleep(1);
+							// mostrar el resumen de batalla
+							$msg = getPlayerBattleResult($playerName, $rivalName, $winnerName, $loserName, $lucky);
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(50000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+							apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
+							usleep(50000);
+							apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+						} else {
+							// si no, decir que no tienes allowed para aceptarla 
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Uno de los dos jugadores no permite los duelos PvP, la batalla no se puede aceptar.</b>"));
+						}
+					} else {
+						// si no, avisar de que no tienes solicitudes de duelo pendientes
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No tienes ninguna solicitud de duelo PvP pendiente.*"));
+					}
 				} else if($pvpAction == "rechazar") {
 					// rechazar guerra como en el grupo
 					mysql_free_result($result);
@@ -8814,7 +9062,7 @@ function processMessage($message) {
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						$msg = "❌ <b>La petición de duelo PvP de ".$rivalName." ha sido rechazada.</b>";
+						$msg = "❌ <b>La petición pendiente de duelo PvP de ".$rivalName." ha sido rechazada.</b>";
 						usleep(250000);
 						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 						apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));

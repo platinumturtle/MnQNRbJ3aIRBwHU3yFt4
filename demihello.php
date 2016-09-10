@@ -2729,7 +2729,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 	} else if($newLevel == 11) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 		$msg = "<b>Tu personaje se ha fortalecido bastante, has aprendido todo lo necesario para emprender tu aventura en solitario en cualquier rincón del mundo.</b>".PHP_EOL;
-		$msg = $msg."<b>A partir de ahora puedes luchar contra otros Rocosos de Demisuke utilizando !pvp seguido de su nombre de usuario. Consulta la  para más información.</b>";
+		$msg = $msg."<b>A partir de ahora puedes luchar contra otros Rocosos de Demisuke utilizando !pvp seguido de su nombre de usuario. Consulta la </b>/ayuda_PVP_rocosos<b> para más información.</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 17) {
@@ -8772,6 +8772,61 @@ function processMessage($message) {
 					// aceptar guerra, tomar ideas... (que los dos sigan en allowed)
 				} else if($pvpAction == "rechazar") {
 					// rechazar guerra como en el grupo
+					mysql_free_result($result);
+					$query = 'SELECT playerbattlelog.pbl_id, playerbattlelog.player, userbattle.first_name, userbattle.user_name FROM playerbattlelog, userbattle WHERE playerbattlelog.player = userbattle.user_id AND playerbattlelog.status =  "REQUESTED" AND playerbattlelog.rival = '.$chat_id.' ORDER BY playerbattlelog.epoch_time ASC LIMIT 0 , 1';
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					// revisar si tiene alguna guerra pendiente (la pending mas old)
+					if(isset($row['pbl_id'])) {
+						// si la tiene rechazar duelo
+						$rowToUpdate = "";
+						(string)$rowToUpdate = $rowToUpdate.$row['pbl_id'];
+						$rivalFirstName = $row['first_name'];
+						$rivalUserName = $row['user_name'];
+						if($rivalUserName != "") {
+							if(strtolower($rivalFirstName) == strtolower($rivalUserName)) {
+								$rivalName = $rivalUserName;
+							} else {
+								$rivalName = $rivalFirstName." (".$rivalUserName.")";
+							}
+						} else {
+							$rivalName = $rivalFirstName;
+						}
+						$rivalName = str_replace("<", "", $rivalName);
+						$rivalName = str_replace(">", "", $rivalName);
+						$rival_id = $row['player'];
+						$playerFirstName = $message['from']['first_name'];
+						$playerUserName = $message['from']['username'];
+						if($playerUserName != "") {
+							if(strtolower($playerFirstName) == strtolower($playerUserName)) {
+								$playerName = $playerUserName;
+							} else {
+								$playerName = $playerFirstName." (".$playerUserName.")";
+							}
+						} else {
+							$playerName = $playerFirstName;
+						}
+						$playerName = str_replace("<", "", $playerName);
+						$playerName = str_replace(">", "", $playerName);						
+						mysql_free_result($result);
+						// avisar en ambos players, y editar db, la de duelo pendiente como rechazada						
+						$query = "UPDATE playerbattlelog SET status = 'REJECTED' WHERE pbl_id = ".$rowToUpdate;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$msg = "❌ <b>La petición de duelo PvP de ".$rivalName." ha sido rechazada.</b>";
+						usleep(250000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+						apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
+						$msg = "❌ <b>".$playerName." ha rechazado la petición de duelo PvP pendiente que le enviaste anteriormente.</b>";
+						usleep(250000);
+						apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+					} else {
+						// si no, avisar de que no tienes solicitudes de guerra pendientes
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No tienes ninguna petición de duelo PvP pendiente.*"));
+					}
 				} else {
 					if($playerPvpAllowed == 1) {
 						$pvpAction = str_replace("@", "", $pvpAction);
@@ -8841,13 +8896,13 @@ function processMessage($message) {
 											apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 											apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
 											$msg = "⚔ <b>¡".$playerName." te ha retado a un duelo PvP!</b>".PHP_EOL.PHP_EOL.
-											"<i>Utiliza !pvp aceptar para iniciar automáticamente la batalla o !pvp rechazar para desestimar la petición.".PHP_EOL.
+											"<i>Utiliza \"!pvp aceptar\" para iniciar automáticamente la batalla o \"!pvp rechazar\" para desestimar la petición.".PHP_EOL.
 											"Consulta con !guerras el número de duelos pendientes y las últimas guerras libradas en Telegram.</i>".PHP_EOL.PHP_EOL.
 											"Resumen de estadísticas del rival:".PHP_EOL.
 											"<pre>VID: ".ratePower($playerHP).PHP_EOL.
 											"ATA: ".ratePower($playerAt).PHP_EOL.
 											"DEF: ".ratePower($playerDef).PHP_EOL.
-											"CRÍ: ".ratePower($playerCrit).PHP_EOL.
+											"CRÍ: ".ratePower($playerCrit, 1).PHP_EOL.
 											"VEL: ".ratePower($playerSp)."</pre>";
 											usleep(250000);
 											apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));

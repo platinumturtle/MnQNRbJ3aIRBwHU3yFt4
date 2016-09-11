@@ -134,8 +134,8 @@ function checkUserID($id) {
 function checkUsername($username) {
 	$bannedUsername = array(
 					"Diegofa31",
-					"ADMlNISTRADOR",
-					"Moderador"
+					"Demisuke",
+					""
 				);
 	for($i=0;$i<sizeof($bannedUsername);$i++) {
 		if($bannedUsername[$i] == $username) {

@@ -3243,35 +3243,35 @@ function chooseBoss($level) {
 
 function getPlayerBattleResult($playerName, $rivalName, $winnerName, $loserName, $lucky) {
 	$log = "⚔ <b>REPORTE DE BATALLA PVP</b>".PHP_EOL.PHP_EOL;
-	$log = $playerName." 🆚 ".$rivalName.PHP_EOL.PHP_EOL;
+	$log = $log.$playerName." 🆚 ".$rivalName.PHP_EOL.PHP_EOL;
 	if($lucky == 0) {
 			$storedStandardVictory = array(
-									"¡Vaya comienzo del clan ".$winnerName."! Parecía que llevaban días preparados para la guerra y han ido todos a una coordinados estupendamente, incluso uno de los rocosos de ".$loserName." ha salido corriendo. El resto sin embargo ha luchado por su honor y ha logrado derribar la defensa rival, pero no ha sido suficiente para llevarse la victoria...",
-									"El clan ".$loserName." se ha aprovechado de su superior velocidad frente a los rivales y ha logrado cargarse a medio equipo en un santiamén. En cuanto se han visto muy superiores en la batalla, dos de sus miembros se han ido a descansar y han dejado que el resto hiciera el trabajo. ".$winnerName." se ha dado cuenta rápido de la situación y ha optado por jugárselo todo al ataque. No les ha ido mal, porque han logrado remontar y llevarse la victoria, eso sí, sudando más de lo que podían imaginar.",
-									"Una batalla muy igualada, parecía una partida de ajedrez, ".$winnerName." ha ido a buscar directamente los puntos débiles del enemigo mientras que ".$loserName." se ha organizado en subgrupos y han atacado por igual a todo el equipo rival. Pero un punto débil es un punto débil, el clan ".$winnerName." ha encontrado a tiempo lo que buscaba y ha logrado una serie de golpes críticos que le han dado la victoria.",
-									"El clan ".$winnerName." se ha refugiado en su defensa, ha utilizado al rocoso con más vida de sus filas como tanque y todos se han refugiado detrás de él para atacar. Parece que les ha salido bien, cuando ".$loserName." ha logrado acabar con el tanque no ha tenido fuerzas para terminar con el resto de miembros rivales y ha perdido la batalla.",
-									"¡Qué descontrol! Ambos clanes han ido a por su rival sin pensar de qué manera atacar o defender, y parecía una oda a la muerte aleatoria. Algunos miembros del clan ".$loserName." se han llegado a atacar entre sí, quizás por eso ".$winnerName." se ha llevado la victoria sin saber muy bien qué ha hecho para lograrlo. De hecho, uno de sus miembros está llegando ahora al lugar de la batalla. Un poco tarde, rocoso.",
-									"Al principio todo ha transcurrido como una guerra estándar, pero detrás de la masa de miembros de ".$loserName." se ha podido observar a dos de sus miembros echándose una siesta... ¡Vuestro clan os necesita! O al menos os necesitaba, porque ".$winnerName." ya se ha llevado la victoria.",
-									"Extraña batalla. De hecho, ni la ha habido. ".$loserName." se ha presentado ante el líder de ".$winnerName." con una especie de pergamino donde le entregaba la victoria y unos terrenos con cabras y huerta a cambio de huir sin un solo rasguño. El acuerdo se ha sellado con un abrazo, y ".$loserName." ha ganado... ha ganado volver a casa sano y salvo dejando por el camino una victoria gratis para su rival.",
-									"Cuando todo estaba a punto para comenzar, los miembros del clan ".$winnerName." se han puesto a bailar de manera coordinada sin descanso. ".$loserName." ha interpretado el ritual como una danza de guerra y ha intentado imitar sus movimientos, pero han acabado tan confusos que el rival ha lanzado su ataque al unísono cuando menos se lo esperaban. ¡El baile ha surtido efecto! ...Y la superioridad de fuerza también.",
-									"Batalla dominada de principio a fin por el clan ".$winnerName." que no ha encontrado rival en el clan ".$loserName.". En ningún momento parecía que iban a oponer resistencia seria, lo han intentado todo, pero necesitan ser más fuertes para ganar esta guerra.",
-									"El clan ".$winnerName." se ha aprovechado de que el clan ".$loserName." no parecía tener los miembros suficientes en sus filas como para atacar de manera organizada y se han concentrado en atacar sin parar, llevándose la victoria sin demasiada complicación."
+									"¡Menudo sprint inicial de ".$winnerName."! Parecía que estaba practicando contra un muñeco y ha ejecutado sus golpes como un reloj, ".$loserName." no ha podido oponer gran resistencia. Lo ha intentado, al menos.",
+									"Nada más comenzar ".$loserName." se ha aprovechado de su superior velocidad frente al rival y ha logrado esquivar muchos de los golpes de su enemigo. No obstante se ha agotado bastante rápido y ".$winnerName." ha podido contraatacar y derrotar a su rival. Una batalla muy dura e intensa que se ha decidido por el cansancio.",
+									"Una batalla muy igualada, de principio a fin, ".$winnerName." ha ido a buscar directamente los puntos débiles del enemigo mientras que ".$loserName." ha apostado por atacar sin parar. ".$winnerName." llevaba una mejor táctica, y varios golpes críticos seguidos le han dado la victoria.",
+									"La estrategia de ".$winnerName." ha sido refugiarse en su defensa, y ha aguantado las embestidas constantes del rival. ".$loserName." no ha podido con una defensa tan férrea, necesitará encontrar más puntos débiles para la próxima vez.",
+									"¡Duelo mano a mano! Parecía un duelo entre dos vaqueros que se juegan el destino de su vida a una sola bala. ".$loserName." ha estado mas lento que su rival, por lo que ".$winnerName." ha podido atacar primero y llevarse la victoria.",
+									"Batalla aburrida donde las haya, ".$loserName." parecía estar echándose una siesta incluso, y ".$winnerName." que parecía con algo menos de sueño se ha llevado la victoria.",
+									"La ley del más fuerte. ".$loserName." ha visto a ".$winnerName." de frente y muy de cerca y ha decidido que lo mejor era retirarse antes de empezar, así que ha perdido la oportunidad de ganar este duelo.",
+									"Guerra de miradas, ".$winnerName." y ".$loserName." se han quedado quietos y se han mirado fijamente un buen rato. ".$loserName." ha sido el primero en parpadear así que ".$winnerName." ha sido el primero en atacar. A partir de ahí coser y cantar, una victoria extraña pero que vale igual que cualquier otra.",
+									"Batalla dominada de principio a fin por ".$winnerName." que no ha encontrado rival en ".$loserName.". En ningún momento parecía que iba a oponer resistencia seria, pero al finalizar la batalla se ha escuchado una promesa al aire: la de aumentar su rocosidad para el próximo combate.",
+									"Parecía que ".$winnerName." era mucho más fuerte que ".$loserName." desde el primer minuto de la batalla, y el transcurso de la misma así lo ha demostrado. Se ha llevado una victoria que parecía escrita en un guion programado."
 									);
 			$n = sizeof($storedStandardVictory) - 1;
 			$n = rand(0,$n);
 			$log = $log."<i>".$storedStandardVictory[$n]."</i>";
 	} else {
 			$storedUnexpectedVictory = array(
-										"¡Qué mala pata! ".$loserName." es muy superior al rival, y muchos de sus rocosos se toman esta batalla como un juego, atacando solo con una mano, pero han empezado los desastres... Uno de sus miembros ha tropezado y se ha caído al suelo, a otro se le ha caído el arma al suelo y otro se ha hecho daño a sí mismo, y el clan ".$winnerName." se ha llevado la victoria por sorpresa.",
-										"Inexplicable batalla en la que el clan ".$loserName." tenía todas las de ganar y sin embargo algunos de sus miembros han descubierto lo que es el fuego amigo y se han convertido ¿involuntariamente? en aliados del clan ".$winnerName." que se ha topado con una victoria que no se esperaba.",
-										"Dominio de principio a fin de ".$loserName.", quien ha llevado la manija de la guerra durante toda la batalla, hasta que cuando el rival ya estaba debilitado y comenzaba el camino de vuelta a casa para los rocosos, han caído en varias trampas de ".$winnerName." y se han debilitado antes que su rival, por lo que ha habido una remontada inesperada en la prórroga.",
+										"¡Qué mala pata! ".$loserName." es muy superior al rival, pero se ha confiado y ".$winnerName." se ha aprovechado de ello y ha ido directo a atacar puntos débiles. Se ha llevado la victoria por sorpresa.",
+										"Inexplicable batalla en la ".$loserName." tenía todas las de ganar y sin embargo se ha hecho daño al intentar atacar a su rival y ha perdido cualquier oportunidad de ganar. ".$winnerName." se ha topado con una victoria que no se esperaba.",
+										"Dominio de principio a fin de ".$loserName.", quien ha llevado la manija de la guerra durante toda la batalla, hasta que cuando el rival ya estaba debilitado, ".$winnerName." ha golpeado desde el mismo suelo a las piernas de su rival, le ha hecho caer y se lo ha cargado desde el suelo, una remontada totalmente inesperada.",
 										"El clan ".$loserName." es superior al rival. Ha comenzado atacando con varios críticos y enseguida se han puesto por delante, pero en mitad de la batalla se ha puesto a llover y eso ha beneficiado a ".$winnerName.", que llegaban a la guerra mejor preparados para luchar bajo todo tipo de condiciones climáticas y se ha podido aprovechar de los resbalones del rival.",
-										"El clan ".$winnerName." es demasiado débil para luchar contra ".$loserName.". Lo sabe, y se ha aprovechado del terreno de batalla para esconderse en los lugares más inesperados. Esto ha desconcertado al rival, que no sabía donde atacar. ".$loserName." ha atacado a diestro y siniestro y su superior fuerza ha logrado terminar con medio equipo rival, pero en cuanto el rival ha salido de su escondite, se ha aprovechado del agotamiento sufrido al inicio para llevarse una inesperada victoria.",
-										"¿Por qué ".$loserName." no ha atacado? Parecían estatuas, se han visto muy superiores al rival, y han querido derrotar al clan ".$winnerName." con el menor esfuerzo posible. Se han confiado y no lo han conseguido.",
-										"Una batalla muy encarrilada para ".$loserName.", hasta que se ha distraído por los coloridos atuendos de ".$winnerName.". Una distracción que les ha costado la victoria. Ahora, el clan ".$winnerName." está pensando en utilizar armadura de clan reglamentaria chillona y utilizarlo como su arma secreta. Lo más probable es que no tenga éxito.",
-										"¡Aquí hay gato encerrado! ".$loserName." es infinitamente superior a ".$winnerName.", pero éstos últimos se han traído animales al campo de batalla y han logrado decantar la balanza por el lado más imprevisto. ¡Ahora el clan ".$loserName." reclama justicia!",
-										"No hay duda de que el clan ".$loserName." es muy superior al rival. Lo que sí que hay duda es en la manera que han tenido de perder ante el clan ".$winnerName.", que llegaban al campo de batalla asustados y sabiendo que eran el clan más débil y se llevan a casa una victoria inesperada.",
-										"El clan ".$loserName.", muy superior al clan ".$winnerName.", ha dominado la batalla sin problemas hasta que se han quedado sin provisiones y no han tenido fuerzas para derrotar a su rival. Tal vez alguno de sus miembros necesite mejorar un poco más su barra de vida..."
+										"Superioridad de ".$winnerName.", ".$loserName." no tiene nada que hacer contra un rival así. El problema es que sobre el papel el resultado parecía justo el contrario, ya que la diferencia entre los dos rivales era bastante clara.",
+										"¿Por qué ".$loserName." se movía lentamente? Ha intentado hacerlo bonito y se ha adornado demasiado. ".$winnerName.", que venía a esta batalla a lo que surgiera, ha tenido el viento a favor y se ha llevado la victoria sin despeinarse.",
+										"Una batalla muy encarrilada para ".$loserName.", hasta que se ha distraído con el paisaje y ".$winnerName." le ha hecho unos combos de críticos que ha dejado a su rival en el suelo.",
+										"¡Menuda broma! ".$loserName." es superior a ".$winnerName.", pero no lo ha demostrado y ha perdido una batalla que tenía ganada antes de empezar. ¡".$loserName." debería subir de nivel y espabilar más!",
+										"No hay duda de que ".$loserName." es muy superior al rival. Lo que sí que hay duda es en la manera que ha tenido de hacer el ridículo. ".$winnerName.", que se tropieza cada tres pasos que da, se ha olvidado de su débil condición física comparada con la de su rival y ha atacado como si no hubiera un mañana, llevándose así la victoria.",
+										"La velocidad de ".$loserName." es increíble, pero ".$winnerName." ha aprovechado su fuerza para contrarrestar lo mucho que le superaba en todo su rival. De algún modo se las ha arreglado para llevarse una victoria que no le correspondía."
 										);
 			$n = sizeof($storedUnexpectedVictory) - 1;
 			$n = rand(0,$n);
@@ -4512,106 +4512,66 @@ function getClanList($chat_id) {
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 }
 
-function getClanRank($chat_id) {
+function getClanRank($chat_id, $groupTitle = "Ninguno", $isGroup = 0) {
 	//HTML Parse Mode
-	/*
-	if($global == 0 && $group == 0) {
-		$text = "<b>La función !mensajesgrupo es exclusiva para grupos y supergrupos, ¡añádeme a alguno y utilízala allí!</b>";
-	}
-	else {
-		$link = dbConnect();
-		if($global == 1){
-			$text = "<b>🏁 TOP 10 de usuarios más activos en Telegram:</b>";
-			$query = "SELECT user_id, first_name, user_name, MAX(lastpoint) AS lastpoint, SUM(total) AS total FROM userbattle WHERE visible = TRUE GROUP BY user_id ORDER BY total DESC, lastpoint";
-		} else {
-			$text = "<b>🏁 TOP 10 de usuarios más activos de ".$groupName.":</b>";
-			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE group_id = '".$group."' ORDER BY total DESC, lastpoint";
-		}
-		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$text = $text.PHP_EOL.PHP_EOL;
-		for($i=0;$i<10;$i++) {
-			$row = mysql_fetch_array($result);
-			if(isset($row['total'])) {
-				if($row['total'] > 0) {
-					switch($i) {
-						case 0: $text = $text."<b>🏆 Líder </b>";
-								break;
-						case 1: $text = $text."<b>🎖2º </b>";
-								break;
-						case 2: $text = $text."<b>🏅3º </b>";
-								break;
-						case 3: $text = $text."4⃣ ";
-								break;
-						case 4: $text = $text."5⃣ ";
-								break;
-						case 5: $text = $text."6⃣ ";
-								break;
-						case 6: $text = $text."7⃣ ";
-								break;
-						case 7: $text = $text."8⃣ ";
-								break;
-						case 8: $text = $text."9⃣ ";
-								break;
-						case 9: $text = $text."🔟 ";
-								break;
-						default: break;
-					}
-					$text = $text.
-							"<b>".$row['first_name']."</b>";
-					if(strlen($row['user_name']) > 0) {
-						$text = $text.
-							"<b> (".$row['user_name'].")</b>";
-					}
-					$tempFormattedPoints = number_format($row['total'], 0, ',', '.');
-					$text = $text."<b>:</b> ".$tempFormattedPoints.PHP_EOL.PHP_EOL;
-				}
-			} else if($i==0) {
-				$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
+	$link = dbConnect();
+	$query = 'SELECT gb.name, COALESCE (pb.cnt, 0) AS "members", COALESCE (gbr.cnt, 0) AS "pvp_victories" FROM groupbattle gb LEFT JOIN ( SELECT group_id, COUNT( * ) AS cnt FROM playerbattle GROUP BY group_id ) pb ON pb.group_id = gb.group_id LEFT JOIN ( SELECT winner_group, COUNT( * ) AS  cnt FROM groupbattleresults GROUP BY winner_group ) gbr ON gb.group_id = gbr.winner_group HAVING pvp_victories > 0 ORDER BY pvp_victories DESC , members DESC , gb.group_id ASC LIMIT 0 , 10';
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$text = "<b>🏁 TOP 10 de clanes con victorias PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
+	for($i=0;$i<10;$i++) {
+		$row = mysql_fetch_array($result);
+		if(isset($row['name'])) {
+			switch($i) {
+				case 0: $text = $text."<b>🏆 Líder </b>";
+						break;
+				case 1: $text = $text."<b>🎖2º </b>";
+						break;
+				case 2: $text = $text."<b>🏅3º </b>";
+						break;
+				case 3: $text = $text."4⃣ ";
+						break;
+				case 4: $text = $text."5⃣ ";
+						break;
+				case 5: $text = $text."6⃣ ";
+						break;
+				case 6: $text = $text."7⃣ ";
+						break;
+				case 7: $text = $text."8⃣ ";
+						break;
+				case 8: $text = $text."9⃣ ";
+						break;
+				case 9: $text = $text."🔟 ";
+						break;
+				default: break;
 			}
+			$text = $text."<b>".getClanLevelByMembers($row['members']).$row['name']."</b>";
+			$tempFormattedPoints = number_format($row['pvp_victories'], 0, ',', '.');
+			$text = $text."<b>:</b> ".$tempFormattedPoints." victoria";
+			if($row['pvp_victories'] != 1) {
+				$text = $text."s";
+			}
+			$text = $text." PvP"PHP_EOL.PHP_EOL;
+		} else if($i==0) {
+			$text = $text."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
 		}
+	}
+	if($isGroup == 1) {
 		mysql_free_result($result);
-		if($global == 1) {
-			$query = "SELECT user_id, first_name, user_name, SUM(total) AS total FROM userbattle WHERE visible = TRUE AND user_id = '".$myself."' GROUP BY user_id";
-		} else {
-			$query = "SELECT user_id, first_name, user_name, total FROM userbattle WHERE user_id = '".$myself."' AND group_id = '".$group."'";
-		}
+		$query = 'SELECT COUNT( * ) AS  "wins" FROM  groupbattleresults WHERE winner_group = '.$chat_id;
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		if(isset($row['user_id'])) {
-			$text = $text.
-			"<b>".$row['first_name'];
-			if(strlen($row['user_name']) > 0) {
-				$text = $text." (".$row['user_name'].")";
-			}
-			$text = $text." tiene un total de ".$row['total']." mensaje";
-			if($row['total'] > 1) {
-				$text = $text."s válidos";
-			} else {
-				$text = $text." válido";
-			}
-			if($global == 0) {
-				$text = $text." escrito";
-				if($row['total'] > 1) {
-					$text = $text."s";
-				}
-				$text = $text." en ".$groupName;
-			}
-			$text = $text.".</b>".PHP_EOL.PHP_EOL;
+		$text = $text."<b>".$groupTitle." tiene ".$row['wins']." victoria";
+		if($row['wins'] != 1) {
+			$text = $text."s";
 		}
-		mysql_free_result($result);
-		mysql_close($link);
-		if($global == 1){
-			$text = $text."<i>Recuerda que para competir en este ránking debes apuntarte con la función !activame, siempre podrás ocultarte de nuevo con !desactivame.</i>".
-					PHP_EOL."<i>Consulta con !mensajesgrupo el ránking usuarios activos de este grupo.</i>";
-		} else {
-			$text = $text."<i>Consulta con !mensajes el ránking general de usuarios activos en Telegram.</i>";
-		}
-		//$text = $text.
-		//		"<i>(Sobrante) Cada hora se planta una nueva bandera en el bot.".PHP_EOL.
-		//		"Recuerda que las puedes capturar con la función \"!pole\" y consultar el ránking global con \"!banderas\" y el de tu grupo con \"!banderasgrupo\".</i>";
+		$text = $text." PvP"PHP_EOL.PHP_EOL;
 	}
-	return $text;
-	*/
+	mysql_free_result($result);
+	mysql_close($link);
+	$text = $text."<i>Utiliza \"!clanes lista\" para saber a qué grupos les puedes !declararguerra.</i>";
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(100000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 }
 
 function timeEmoji($time, $aHalf) {
@@ -8538,15 +8498,17 @@ function processMessage($message) {
 			error_log($logname." triggered: !clanes lista.");
 			getClanList($chat_id);
 		} else {
-			error_log($logname." triggered: !clanes.");
-			getClanRank($chat_id);
+			if($message['chat']['type'] == "private") {
+				error_log($logname." triggered in private: !clanes.");
+				getClanRank($chat_id);
+			} else {
+				error_log($logname." triggered: !clanes.");
+				$grouptitle = $message['chat']['title'];
+				$grouptitle = str_replace("<","",$grouptitle);
+				$grouptitle = str_replace(">","",$grouptitle);
+				getClanRank($chat_id, $grouptitle, 1);
+			}
 		}
-		// abrir db
-		// revisar si hay clanes con miembros (haciendo la suma de stats totales agrupando por el group id y quitando bosses y mierdas que haya metido se ve)
-			// si hay clanes, mostrar la tabla, aqui con los totales ya se calcularan las estrellas
-				// depende de como haga las batallas pvp habra que ir a buscar ese dato a otro lado
-			// si no hay, decir que no hay clanes
-		// cerrar db
 	} else if (strpos($text, "/getMyPower") === 0) {
 		if($message['from']['id'] == '6250647') {
 			error_log($logname." triggered: /getMyPower.");

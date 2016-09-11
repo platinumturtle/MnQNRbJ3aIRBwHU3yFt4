@@ -4347,7 +4347,9 @@ function getRockMan($chat_id) {
 				default: break;
 			}
 			$text = $text."<b>".getFullName($row['first_name'], $row['user_name'])."</b>".PHP_EOL;
-			$text = $text."<b>Del clan ".$row['name']."</b>".PHP_EOL;
+			if(strlen($row['name']) > 0) {
+				$text = $text."<b>Del clan ".$row['name']."</b>".PHP_EOL;
+			}
 			$text = $text."<b>Nivel: </b>".$row['level'].PHP_EOL;
 			$tempFormattedPoints = number_format($row['pvp_wins'], 0, ',', '.');
 			$text = $text."<b>Victorias PvP:</b> ".$tempFormattedPoints.PHP_EOL;

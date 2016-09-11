@@ -2000,6 +2000,7 @@ function goodbye() {
 function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
+						"BQADBAADjQAD_2-vAAH0blw-pAABgIQC",
 						"BQADBAAD7gcAApdgXwABDIGKu1t4To4C",
 						"BQADBAADDAgAApdgXwABtRHIDTFw_W0C",
 						"BQADBAADXAEAAtWlKAABd7dY2s4yLOEC",

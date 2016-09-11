@@ -3981,6 +3981,25 @@ function getEnjuto() {
 	return $result;
 }
 
+function getRandomResultSentence() {
+	$storedSentence = array(
+						"Victoria contundente de",
+						"Con sufrimiento, la victoria ha sido para",
+						"Esta batalla la ha ganado",
+						"Victoria fácil para",
+						"Inesperada victoria de",
+						"Ha ganado",
+						"La victoria se la ha llevado",
+						"No ha habido sorpresas, victoria de",
+						"Batalla rápida, victoria de",
+						"Sin sobresaltos, el ganador ha sido"
+						);
+	$n = sizeof($storedSentence) - 1;
+	$n = rand(0,$n);
+	$result = $storedSentence[$n]." ";
+	return $result;
+}
+
 function yesNoQuestion() {
 	$storedReply = array(
 						"Claro, por supuesto",
@@ -4360,12 +4379,12 @@ function getRockMan($chat_id) {
 			$text = $text."<pre>CRÍ: ".ratePower($row['critic_points'], 1)."</pre>".PHP_EOL;
 			$text = $text."<pre>VEL: ".ratePower($row['speed_points'])."</pre>".PHP_EOL.PHP_EOL;
 		} else if($i==0) {
-			$text = $text."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
+			$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
 		}
 	}
 	mysql_free_result($result);
 	mysql_close($link);
-	$text = $text."<i>En esta lista tan solo aparecerán aquellos rocosos que tengan permitidos los duelos PvP y hayan logrado al menos una victoria.</i>";
+	$text = $text."<i>En esta lista tan solo aparecerán aquellos rocosos que se hayan unido a algún clan, que tengan permitidos los duelos PvP y que hayan logrado al menos una victoria.</i>";
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	usleep(100000);
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
@@ -4373,14 +4392,16 @@ function getRockMan($chat_id) {
 
 function getRockManGroup($chat_id) {
 	$link = dbConnect();
-	$query = 'SELECT ub.first_name, ub.user_name, gb.name, pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.group_id = gb.group_id AND pb.group_id = '.$chat_id.' GROUP BY pb.id_player ORDER BY pb.exp_points LIMIT 0 , 10';
+	$query = 'SELECT ub.first_name, ub.user_name, gb.name, pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.group_id = gb.group_id AND pb.group_id = '.$chat_id.' GROUP BY pb.id_player ORDER BY pb.exp_points DESC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = "";
+	$hasMembers = 0;
 	for($i=0;$i<10;$i++) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['level'])) {
 			switch($i) {
 				case 0: $text = $text."<b>🏁 TOP 10 de jugadores más rocosos de ".$row['name'].":</b>".PHP_EOL.PHP_EOL."<b>🏆 Líder </b>";
+						$hasMembers = 1;
 						break;
 				case 1: $text = $text."<b>🎖2º </b>";
 						break;
@@ -4413,15 +4434,17 @@ function getRockManGroup($chat_id) {
 			$text = $text."<pre>CRÍ: ".ratePower($row['critic_points'], 1)."</pre>".PHP_EOL;
 			$text = $text."<pre>VEL: ".ratePower($row['speed_points'])."</pre>".PHP_EOL.PHP_EOL;
 		} else if($i==0) {
-			$text = $text."<b>🏁 TOP 10 de jugadores más rocosos del grupo:</b>".PHP_EOL.PHP_EOL."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
+			$text = $text."<b>🏁 TOP 10 de jugadores más rocosos del grupo:</b>".PHP_EOL.PHP_EOL."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
 		}
 	}
 	mysql_free_result($result);
-	$query = 'SELECT COUNT( * ) AS  "members" FROM playerbattle WHERE group_id = '.$chat_id.' GROUP BY group_id ';
-	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-	$row = mysql_fetch_array($result);
-	$text = $text."<b>Miembros totales del clan: </b>".$row['members'].PHP_EOL.PHP_EOL;
-	mysql_free_result($result);
+	if($hasMembers == 1) {
+		$query = 'SELECT COUNT( * ) AS  "members" FROM playerbattle WHERE group_id = '.$chat_id.' GROUP BY group_id ';
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$text = $text."<b>Miembros totales del clan: </b>".$row['members'].PHP_EOL.PHP_EOL;
+		mysql_free_result($result);
+	}
 	mysql_close($link);
 	$text = $text."<i>¡Recuerda que si el clan tiene al menos cinco rocosos entre sus filas puedes utilizar la función !declararguerra para luchar contra otros grupos! Utiliza la función !unirme si tienes creado un personaje y quieres unirte al clan.</i>";
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -8548,11 +8571,132 @@ function processMessage($message) {
 		$link = dbConnect();
 		$user_id = $message['from']['id'];
 		getPlayerInfo(1, $link, $chat_id, $user_id);
-	} else if (strpos(strtolower($text), "!guerras") !== false) {
-		error_log($logname." triggered: !guerras.");
-		// mostrar las cinco ultimas guerras entre clanes, con la fecha, los nombres de ambos, el resultado, y si eso una linea pequeña adicional, no se aun, quizas guardo en la base de datos si fue ajustada, paliza, demigrante, random... xD
-		// que sea esquematica, que si no aburre y sale un tochaco
-		// si aun no se ha librado ninguna guerra, avisar
+	} else if (strpos(strtolower($text), "!guerras") !== false) {		
+		$link = dbConnect();
+		$msg = "";
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !guerras.");
+			// calcular batallas pendientes del clan
+			$checkGroup = $chat_id;
+			$query = 'SELECT COUNT( * ) as "result" FROM groupbattlelog WHERE status = "REQUESTED" AND away_group = '.$chat_id.' GROUP BY away_group';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['result'])) {
+				$res = $row['result'];
+			} else {
+				$res = "Ninguna";
+			}
+			$text = $text."<b>Peticiones de guerra pendientes de responder:</b> ".$res.PHP_EOL;
+			mysql_free_result($result);
+			$query = 'SELECT COUNT( * ) as "result" FROM groupbattlelog WHERE status = "REQUESTED" AND home_group = '.$chat_id.' GROUP BY home_group';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['result'])) {
+				$res = $row['result'];
+			} else {
+				$res = "Ninguna";
+			}
+			$text = $text."<b>Guerras declaradas pendientes de respuesta del rival:</b> ".$res.PHP_EOL.PHP_EOL;
+		} else {
+			error_log($logname." triggered in private: !guerras.");
+			// calcular batallas pendientes del jugador
+			$checkGroup = 0;
+			$query = 'SELECT COUNT( * ) as "result" FROM playerbattlelog WHERE status = "REQUESTED" AND rival = '.$chat_id.' GROUP BY rival';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['result'])) {
+				$res = $row['result'];
+			} else {
+				$res = "Ninguna";
+			}
+			$text = $text."<b>Peticiones de duelo PvP pendientes de responder:</b> ".$res.PHP_EOL;
+			mysql_free_result($result);
+			$query = 'SELECT COUNT( * ) as "result" FROM playerbattlelog WHERE status = "REQUESTED" AND player = '.$chat_id.' GROUP BY player';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			if(isset($row['result'])) {
+				$res = $row['result'];
+			} else {
+				$res = "Ninguno";
+			}
+			$text = $text."<b>Duelos PvP pendientes de respuesta del rival:</b> ".$res.PHP_EOL.PHP_EOL;
+		}
+		$user_id = $message['from']['id'];
+		mysql_free_result($result);
+		$query = "SELECT lastwarcheck FROM userbattle WHERE user_id = ".$user_id." ORDER BY lastwarcheck DESC LIMIT 0, 1";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$currTime = time();
+		if(($currTime - 60) > $row['lastwarcheck']) {
+			mysql_free_result($result);
+			$query = "UPDATE userbattle SET lastwarcheck = '".$currTime."' WHERE group_id = ".$checkGroup." AND user_id = ".$user_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			mysql_free_result($result);
+			$msg = $msg."⚔ <b>Registro de las cinco últimas batallas entre clanes libradas en Telegram:</b>".PHP_EOL.PHP_EOL;
+			$query = 'SELECT a.gbr_id, GROUP_CONCAT( b.name ) home_group, GROUP_CONCAT( c.name ) away_group, GROUP_CONCAT( d.name ) winner_group, a.date FROM groupbattleresults a LEFT JOIN groupbattle b ON FIND_IN_SET( b.group_id, a.home_group ) LEFT JOIN groupbattle c ON FIND_IN_SET( c.group_id, a.away_group ) LEFT JOIN groupbattle d ON FIND_IN_SET( d.group_id, a.winner_group ) GROUP BY a.gbr_id ORDER BY a.gbr_id DESC LIMIT 0, 5';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			for($i=0;$i<5;$i++) {
+				$row = mysql_fetch_array($result);
+				if(isset($row['gbr_id'])) {
+					switch($i) {
+						case 0: $text = $text."1⃣ ";
+								break;
+						case 1: $text = $text."2⃣ ";
+								break;
+						case 2: $text = $text."3⃣ ";
+								break;
+						case 3: $text = $text."4⃣ ";
+								break;
+						case 4: $text = $text."5⃣ ";
+								break;
+						default: break;
+					}
+					$text = $text.$row['home_group']." 🆚 ".$row['away_group'].PHP_EOL;
+					$text = $text."<b>Fecha:</b> ".$row['date'].PHP_EOL;
+					$text = $text."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$row['winner_group']."</i>".PHP_EOL.PHP_EOL;
+				} else if($i==0) {
+					$text = $text."<i>Ninguna.</i>".PHP_EOL.PHP_EOL;
+				}
+			}
+			mysql_free_result($result);
+			$msg = $msg."⚔ <b>Registro de los cinco últimos duelos PvP entre Rocosos de Demisuke:</b>".PHP_EOL.PHP_EOL;
+			$query = 'SELECT a.pbr_id, GROUP_CONCAT( DISTINCT b.first_name ) player_name, GROUP_CONCAT( DISTINCT b.user_name ) player_user, GROUP_CONCAT( DISTINCT c.first_name ) rival_name, GROUP_CONCAT( DISTINCT c.user_name ) rival_user, GROUP_CONCAT( DISTINCT d.first_name ) winner_name, GROUP_CONCAT( DISTINCT d.user_name ) winner_user, a.date FROM playerbattleresults a LEFT JOIN userbattle b ON FIND_IN_SET( b.user_id, a.player ) LEFT JOIN userbattle c ON FIND_IN_SET( c.user_id, a.rival ) LEFT JOIN userbattle d ON FIND_IN_SET( d.user_id, a.winner ) GROUP BY a.pbr_id ORDER BY a.pbr_id DESC LIMIT 0 , 5';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			for($i=0;$i<5;$i++) {
+				$row = mysql_fetch_array($result);
+				if(isset($row['pbr_id'])) {
+					switch($i) {
+						case 0: $text = $text."1⃣ ";
+								break;
+						case 1: $text = $text."2⃣ ";
+								break;
+						case 2: $text = $text."3⃣ ";
+								break;
+						case 3: $text = $text."4⃣ ";
+								break;
+						case 4: $text = $text."5⃣ ";
+								break;
+						default: break;
+					}
+					$playerName = getFullName($row['player_name'], $row['player_user']);
+					$rivalName = getFullName($row['rival_name'], $row['rival_user']);
+					$winnerName = getFullName($row['winner_name'], $row['winner_user']);
+					$text = $text.$playerName." 🆚 ".$rivalName.PHP_EOL;
+					$text = $text."<b>Fecha:</b> ".$row['date'].PHP_EOL;
+					$text = $text."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$winnerName."</i>".PHP_EOL.PHP_EOL;
+				} else if($i==0) {
+					$text = $text."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
+				}
+			}
+		} else {
+			$text = $text."<i>El registro de batallas está disponible una vez por minuto, podrás consultarlo de nuevo en unos segundos.</i>";
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		$text = $text."<i>¡Participa tú en la próxima batalla con !pvp o !declararguerra!</i>";
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(100000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if (strpos(strtolower($text), "!unirme") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !unirme.");

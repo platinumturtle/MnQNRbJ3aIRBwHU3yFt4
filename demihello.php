@@ -4315,6 +4315,131 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	exit;
 }
 
+function getFullName($firstName, $userName = "") {
+	if($userName != "") {
+		if(strtolower($firstName) == strtolower($userName)) {
+			$fullName = $userName;
+		} else {
+			$fullName = $firstName." (".$userName.")";
+		}
+	} else {
+		$fullName = $firstName;
+	}
+	return $fullName;
+}
+
+function getRockMan($chat_id) {
+	$link = dbConnect();
+	$query = 'SELECT ub.first_name, ub.user_name, gb.name, pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE pb.group_id = gb.group_id AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.pvp_wins >0 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
+	for($i=0;$i<10;$i++) {
+		$row = mysql_fetch_array($result);
+		if(isset($row['level'])) {
+			switch($i) {
+				case 0: $text = $text."<b>🏆 Líder </b>";
+						break;
+				case 1: $text = $text."<b>🎖2º </b>";
+						break;
+				case 2: $text = $text."<b>🏅3º </b>";
+						break;
+				case 3: $text = $text."4⃣ ";
+						break;
+				case 4: $text = $text."5⃣ ";
+						break;
+				case 5: $text = $text."6⃣ ";
+						break;
+				case 6: $text = $text."7⃣ ";
+						break;
+				case 7: $text = $text."8⃣ ";
+						break;
+				case 8: $text = $text."9⃣ ";
+						break;
+				case 9: $text = $text."🔟 ";
+						break;
+				default: break;
+			}
+			$text = $text."<b>".getFullName($row['first_name'], $row['user_name'])."</b>".PHP_EOL;
+			$text = $text."<b>Del clan ".$row['name']."</b>".PHP_EOL;
+			$text = $text."<b>Nivel: </b>".$row['level'].PHP_EOL;
+			$tempFormattedPoints = number_format($row['pvp_wins'], 0, ',', '.');
+			$text = $text."<b>Victorias PvP:</b> ".$tempFormattedPoints.PHP_EOL;
+			$text = $text."<b>Estadísticas:</b>".PHP_EOL;
+			$text = $text."<pre>VID: ".ratePower($row['hp_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>ATA: ".ratePower($row['attack_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>DEF: ".ratePower($row['defense_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>CRÍ: ".ratePower($row['critic_points'], 1)."</pre>".PHP_EOL;
+			$text = $text."<pre>VEL: ".ratePower($row['speed_points'])."</pre>".PHP_EOL.PHP_EOL;
+		} else if($i==0) {
+			$text = $text."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
+		}
+	}
+	mysql_free_result($result);
+	mysql_close($link);
+	$text = $text."<i>En esta lista tan solo aparecerán aquellos rocosos que tengan permitidos los duelos PvP y hayan logrado al menos una victoria.</i>";
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(100000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+}
+
+function getRockManGroup($chat_id) {
+	$link = dbConnect();
+	$query = 'SELECT ub.first_name, ub.user_name, gb.name, pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.group_id = gb.group_id AND pb.group_id = '.$chat_id.' GROUP BY pb.id_player ORDER BY pb.exp_points LIMIT 0 , 10';
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$text = "";
+	for($i=0;$i<10;$i++) {
+		$row = mysql_fetch_array($result);
+		if(isset($row['level'])) {
+			switch($i) {
+				case 0: $text = $text."<b>🏁 TOP 10 de jugadores más rocosos de ".$row['name'].":</b>".PHP_EOL.PHP_EOL."<b>🏆 Líder </b>";
+						break;
+				case 1: $text = $text."<b>🎖2º </b>";
+						break;
+				case 2: $text = $text."<b>🏅3º </b>";
+						break;
+				case 3: $text = $text."4⃣ ";
+						break;
+				case 4: $text = $text."5⃣ ";
+						break;
+				case 5: $text = $text."6⃣ ";
+						break;
+				case 6: $text = $text."7⃣ ";
+						break;
+				case 7: $text = $text."8⃣ ";
+						break;
+				case 8: $text = $text."9⃣ ";
+						break;
+				case 9: $text = $text."🔟 ";
+						break;
+				default: break;
+			}
+			$text = $text."<b>".getFullName($row['first_name'], $row['user_name'])."</b>".PHP_EOL;
+			$text = $text."<b>Nivel: </b>".$row['level'].PHP_EOL;
+			$tempFormattedPoints = number_format($row['pvp_wins'], 0, ',', '.');
+			$text = $text."<b>Victorias PvP:</b> ".$tempFormattedPoints.PHP_EOL;
+			$text = $text."<b>Estadísticas:</b>".PHP_EOL;
+			$text = $text."<pre>VID: ".ratePower($row['hp_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>ATA: ".ratePower($row['attack_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>DEF: ".ratePower($row['defense_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>CRÍ: ".ratePower($row['critic_points'], 1)."</pre>".PHP_EOL;
+			$text = $text."<pre>VEL: ".ratePower($row['speed_points'])."</pre>".PHP_EOL.PHP_EOL;
+		} else if($i==0) {
+			$text = $text."<b>🏁 TOP 10 de jugadores más rocosos del grupo:</b>".PHP_EOL.PHP_EOL."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
+		}
+	}
+	mysql_free_result($result);
+	$query = 'SELECT COUNT( * ) AS  "members" FROM playerbattle WHERE group_id = '.$chat_id.' GROUP BY group_id ';
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	$text = $text."<b>Miembros totales del clan: </b>".$row['members'].PHP_EOL.PHP_EOL;
+	mysql_free_result($result);
+	mysql_close($link);
+	$text = $text."<i>¡Recuerda que si el clan tiene al menos cinco rocosos entre sus filas puedes utilizar la función !declararguerra para luchar contra otros grupos! Utiliza la función !unirme si tienes creado un personaje y quieres unirte al clan.</i>";
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(100000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+}
+
 function getGroupBattle($owngroup) {
 	//HTML Parse Mode
 	$link = dbConnect();
@@ -9173,12 +9298,20 @@ function processMessage($message) {
 			mysql_close($link);	
 		}
 	} else if (strpos(strtolower($text), "!rocosos") !== false) {
-		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
-			error_log($logname." triggered in a group: !rocosos.");
-			// hacer
+		if (strpos(strtolower($text), "!rocososgrupo") !== false) {
+			if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+				error_log($logname." triggered in a group: !rocososgrupo.");
+				getRockManGroup($chat_id);
+			} else {
+				error_log($logname." triggered in private and failed: !rocososgrupo.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "<b>La función !rocososgrupo solo está disponible para grupos, ¡añádeme al bot a tu grupo favorito!</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+			}
 		} else {
-			error_log($logname." triggered in private: !rocosos.");
-			// hacer
+			error_log($logname." triggered: !rocosos.");
+			getRockMan($chat_id);
 		}
 	} else if (strpos(strtolower($text), "!declararguerra") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {

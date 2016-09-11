@@ -4550,7 +4550,7 @@ function getClanRank($chat_id, $groupTitle = "Ninguno", $isGroup = 0) {
 			if($row['pvp_victories'] != 1) {
 				$text = $text."s";
 			}
-			$text = $text." PvP"PHP_EOL.PHP_EOL;
+			$text = $text." PvP".PHP_EOL.PHP_EOL;
 		} else if($i==0) {
 			$text = $text."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
 		}
@@ -4564,7 +4564,7 @@ function getClanRank($chat_id, $groupTitle = "Ninguno", $isGroup = 0) {
 		if($row['wins'] != 1) {
 			$text = $text."s";
 		}
-		$text = $text." PvP"PHP_EOL.PHP_EOL;
+		$text = $text." PvP".PHP_EOL.PHP_EOL;
 	}
 	mysql_free_result($result);
 	mysql_close($link);

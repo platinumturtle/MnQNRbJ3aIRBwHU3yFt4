@@ -4315,19 +4315,6 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	exit;
 }
 
-function getFullName($firstName, $userName = "") {
-	if($userName != "") {
-		if(strtolower($firstName) == strtolower($userName)) {
-			$fullName = $userName;
-		} else {
-			$fullName = $firstName." (".$userName.")";
-		}
-	} else {
-		$fullName = $firstName;
-	}
-	return $fullName;
-}
-
 function getRockMan($chat_id) {
 	$link = dbConnect();
 	$query = 'SELECT ub.first_name, ub.user_name, gb.name, pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE pb.group_id = gb.group_id AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.pvp_wins >0 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';

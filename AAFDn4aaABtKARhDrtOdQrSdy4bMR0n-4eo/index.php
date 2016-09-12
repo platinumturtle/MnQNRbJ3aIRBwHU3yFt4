@@ -7305,30 +7305,6 @@ function processMessage($message) {
 				apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 			}
 		}
-	} else if (strpos(strtolower($text), "demisuke") !== false) {
-		if($randomTicket > -2) {
-			error_log($logname." triggered: Bot mention.");
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
-				usleep(500000);
-				if(isset($message['from']['username'])) {
-					$name = "@".$message['from']['username'];
-					$text = gotMention($name,true);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
-				} else if (isset($message['from']['first_name'])) {
-					$text = gotMention($message['from']['first_name'],false);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
-				} else {
-					$text = gotMention("compi de grupo",false);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
-				}
-			} else {
-				usleep(500000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Hola, jefe</b> @".$message['from']['username']." 😊"));
-			}
-		} else {
-				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
-		}
 	} else if (strpos(strtolower($text), "!invoca") !== false) {
 		error_log($logname." triggered: !invocar.");
 		$sentence = randomSentence(true);
@@ -9706,7 +9682,31 @@ function processMessage($message) {
 			exit;
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: !boton.");
-		}		
+		}	
+	} else if (strpos(strtolower($text), "demisuke") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Bot mention.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
+				usleep(500000);
+				if(isset($message['from']['username'])) {
+					$name = "@".$message['from']['username'];
+					$text = gotMention($name,true);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				} else if (isset($message['from']['first_name'])) {
+					$text = gotMention($message['from']['first_name'],false);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				} else {
+					$text = gotMention("compi de grupo",false);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				}
+			} else {
+				usleep(500000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Hola, jefe</b> @".$message['from']['username']." 😊"));
+			}
+		} else {
+				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
+		}
 	} else if (strpos(strtolower($text), "/botfamily_verification_code") === 0) {
 		error_log($logname." triggered: /botfamily_verification_code.");
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "FC42AC7F14A98AE8C0ADD4DE443CB8AD"));

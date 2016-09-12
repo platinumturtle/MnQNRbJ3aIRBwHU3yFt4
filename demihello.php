@@ -6206,7 +6206,7 @@ function getJoke() {
 						"Hace tiempo fui a un restaurante, comí y me fui sin pagar. Pensé: esto mola. Al día siguiente fui a un buffet, pagué y me fui corriendo sin comer. Hice el 'sinpa' de las anoréxicas.",
 						"Me gusta la sopa de fideos, la sopa de letras y la sopa de puntos, que es como la de letras pero en Braille para los ciegos.",
 						"Vendí mi sidecar para pagar las multas que me pusieron por aparcar en doble fila",
-						"De una relación entre una mujer y un amigo imaginario puede durgir un embarazo psicológico",
+						"De una relación entre una mujer y un amigo imaginario puede surgir un embarazo psicológico",
 						"Lo bueno de ser estéril es que no es hereditario",
 						"Cuando a la pregunta \"¿Qué llevas puesto?\" te respondan: un camisón y nada debajo, ¡cuidado! es un fantasma",
 						"Me matriculé en una universidad a distancia porque veía mal de cerca",
@@ -7249,7 +7249,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>La tabla de !héroes mostrará solamente aquellos héroes o heroínas que tengan un minimo de 120 puntos de heroicidad.</i>"
 				.PHP_EOL.
-				"▶️<i>Por las noches se comprobará quién ha utilizado !boton durante el día. Los héroes que no lo hayan utilizado una sola vez perderán 30 puntos.</i>"
+				"▶️<i>Por las noches se comprobará quién ha utilizado !boton durante el día. Los héroes que no lo hayan utilizado una sola vez y tengan más de 200 puntos perderán 30 puntos.</i>"
 				.PHP_EOL.
 				"▶️<i>La tabla de !héroesgrupo mostrará todos aquellos usuarios que hayan pulsado el !botón al menos una vez, sin importar su puntuación o la ventana de chat desde donde lo pulsaron.</i>"
 				;
@@ -7462,7 +7462,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Un jugador podría no responder con \"!pvp aceptar\" ni \"!pvp rechazar\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>Las guerras pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza desde chat privado con el bot.</i>"
+				"▶️<i>Los duelos pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza desde chat privado con el bot.</i>"
 				;
 	} else if($mode == "guerras_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -7493,29 +7493,25 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>No puedes enviar dos solicitudes de guerra seguidas al mismo clan, sin embargo puedes enviar una solicitud a un clan y que éste te envíe otra al tuyo, ambas solicitudes se podrán aceptar seguidas sin problemas.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>kkkkkkkkkkkkkkkkkkkkk.</i>"
+				"▶️<i>Con la función !rocososgrupo podrás ver el número de miembros que luchan por tu clan y un resumen de estadísticas de los mejores Rocosos.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Utilizando !clanes verás el ránking de los clanes con más victorias de Telegram.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Para declarar la guerra a un grupo utiliza primero !declararguerra (o \"!clanes lista\") y revisa qué número identificativo tiene asignado a su izquierda el clan al que quieras derrotar. Si por ejemplo aparece con el número 3, la función se utilizará como \"!declararguerra 3\".</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Todos los miembros del clan ganador sumarán una victoria en guerras a su ficha de personaje. Si el jugador se une posteriormente a otro clan, todas las victorias anteriores se mantienen.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>El número de derrotas en guerra de un clan no aparecerá en ninguna lista de clanes ni se verá reflejada en los datos de ninguno de sus participantes. ¡Lucha sin temor!</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Una vez termine la batalla ambos clanes recibirán el resultado de la guerra, y un resumen más escueto aparecerá en !guerras para todos los usuarios del bot.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Un clan podría no responder con \"!aceptarguerra\" ni \"!rechazarguerra\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Las guerras pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza en un grupo.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Si un grupo es convertido a supergrupo, todos sus miembros deberán utilizar la función !unirme para volver a formar parte del clan. Tanto las solicitudes pendientes de guerra como las victorias de guerras del clan serán reiniciadas. Los usuarios, en cambio, no perderán ninguna victoria en guerras en sus fichas de personaje.</i>"
 				;
 	}
 	if(strlen($text) > 5){
@@ -8409,7 +8405,7 @@ function processMessage($message) {
 				$text = "<b>¡Bienvenido/a a 'Los Rocosos de Demisuke'!</b>".PHP_EOL.PHP_EOL;
 				$text = $text."<i>Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura.</i>".PHP_EOL;
 				$text = $text."<i>Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!</i>".PHP_EOL;
-				$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar !exp para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
+				$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar /exp (o !exp)  para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
 				$text = $text."<i>Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!</i>".PHP_EOL;
 				$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
 				usleep(100000);
@@ -8674,6 +8670,11 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		$currTime = time();
 		if(($currTime - 60) > $row['lastwarcheck']) {
+			$showLog = 1;
+		} else {
+			$showLog = 0;
+		}
+		if($showLog == 1) {
 			mysql_free_result($result);
 			$query = "UPDATE userbattle SET lastwarcheck = '".$currTime."' WHERE group_id = ".$checkGroup." AND user_id = ".$user_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -8733,13 +8734,15 @@ function processMessage($message) {
 				} else if($i==0) {
 					$msg = $msg."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
 				}
-				$msg = $msg."<i>La zona horaria utilizada en las fechas mostradas es la hora peninsular española actual.</i>".PHP_EOL;
 			}
 		} else {
 			$msg = $msg."<i>El registro de batallas está disponible una vez por minuto, podrás consultarlo de nuevo en unos segundos.</i>".PHP_EOL;
 		}
 		mysql_free_result($result);
 		mysql_close($link);
+		if($showLog == 1) {
+			$msg = $msg."<i>La zona horaria utilizada en las fechas mostradas es la hora peninsular española actual.</i>".PHP_EOL;
+		}
 		$msg = $msg."<i>¡Participa tú en la próxima batalla con !pvp o !declararguerra!</i>";
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(100000);
@@ -9928,6 +9931,7 @@ function processMessage($message) {
 				$time = $time + 60;
 				$query = "UPDATE `flipcoin` SET `user_id` = '".$message['from']['id']."', `group_id` = '".$chat_id."', `last_flip` = '".$time."', `times_flipped` = `times_flipped` + 1 WHERE `fc_id` = '01'";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				mysql_free_result($result);		
 				mysql_close($link);
 				$keyboardButton = (object) ["text" => "Girar la moneda", "callback_data" => "FLIPCOINqGq3Z6yf1guhfgFdwkzt"];
 				apiRequestJson("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*¿Cara o cruz? ¡Piensa en un resultado y pulsa el botón para girar la moneda!*", "reply_markup" => ["inline_keyboard" => [[$keyboardButton,]] ]));
@@ -10629,7 +10633,7 @@ function processMessage($message) {
 			mysql_free_result($result);
 			mysql_close($link);
 		} else {
-			error_log($logname." tried to trigger in private: !modoadmin.");
+			error_log($logname." tried to trigger in private and failed: !cambiarmodo.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*La configuración del bot es exclusiva para grupos, ¡añádeme a uno!*"));
@@ -11689,5 +11693,4 @@ if (isset($update["message"])) {
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "text" => $message, "show_alert" => TRUE));	
 	}
 }
-
 ?>

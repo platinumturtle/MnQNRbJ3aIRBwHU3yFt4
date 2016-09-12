@@ -10904,7 +10904,11 @@ function processMessage($message) {
 		$query = "SELECT mode, welcome_text FROM groupbattle WHERE group_id = '".$chat_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		$mode = $row['mode'];
+		if(isset(row['mode'])) {
+			$mode = $row['mode'];
+		} else {
+			$mode = 0;
+		}
 		$welcomeText = $row['welcome_text'];
 		if($welcomeText != "") {
 			$mode = 0;

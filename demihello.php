@@ -4623,7 +4623,7 @@ function getClanList($chat_id) {
 	//HTML Parse Mode
 	$link = dbConnect();
 	$text = "<b>⚔ Lista de clanes listos para la batalla:</b>";
-	$query = 'SELECT groupbattle.name AS "name", playerbattle.group_id AS "group_id", COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL  AND groupbattle.group_id = playerbattle.group_id AND  "members" > -1 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC'; // REVISAR CUENTA
+	$query = 'SELECT groupbattle.name AS "name", playerbattle.group_id AS "group_id", COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL  AND groupbattle.group_id = playerbattle.group_id AND  "members" > 4 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = $text.PHP_EOL.PHP_EOL;
 	for($i=0;$i<10;$i++) {
@@ -4701,7 +4701,7 @@ function getClanRank($chat_id, $groupTitle = "Ninguno", $isGroup = 0) {
 		if($row['wins'] != 1) {
 			$text = $text."s";
 		}
-		$text = $text." PvP".PHP_EOL.PHP_EOL;
+		$text = $text." PvP</b>".PHP_EOL.PHP_EOL;
 	}
 	mysql_free_result($result);
 	mysql_close($link);
@@ -6968,7 +6968,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v2.5 creado por @Kamisuke."
+				"@DemisukeBot v3.0 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -7249,6 +7249,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>La tabla de !héroes mostrará solamente aquellos héroes o heroínas que tengan un minimo de 120 puntos de heroicidad.</i>"
 				.PHP_EOL.
+				"▶️<i>Por las noches se comprobará quién ha utilizado !boton durante el día. Los héroes que no lo hayan utilizado una sola vez perderán 30 puntos.</i>"
+				.PHP_EOL.
 				"▶️<i>La tabla de !héroesgrupo mostrará todos aquellos usuarios que hayan pulsado el !botón al menos una vez, sin importar su puntuación o la ventana de chat desde donde lo pulsaron.</i>"
 				;
 	} else if($mode == "apuestas") {
@@ -7346,75 +7348,41 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!unirme</b>: <i>Te permite convertirte en miembro del clan de un grupo al que pertenezcas.</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!clanes</b>: <i>En construcción.</i>"
+				"➡️<b>!clanes</b>: <i>Muestra los diez clanes con más victorias PvP en guerras entre grupos.</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!atacar</b>: <i>En construcción.</i>"
+				"➡️<b>!clanes lista (o !declararguerra)</b>: <i>Muestra la lista de clanes a los que declararle la guerra junto a su número de identificación correspondiente.</i>"
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!atacar</b>: <i>Entablas una lucha con alguno de los jefes de tu zona.</i>"
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!avatarpj</b>: <i>Asigna una foto de perfil en formato JPG, PNG o GIF a tu personaje con \"!avatarpj http://enlace_a_la_imagen\".</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!declararguerra</b>: <i>En construcción.</i>"
+				"➡️<b>!declararguerra 1 (u otro número)</b>: <i>Envias una petición de guerra al clan con el número identificativo escrito.</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!pvp</b>: <i>En construcción.</i>"
+				"➡️<b>!pvp</b>: <i>Activa o desactiva la posibilidad de participar en duelos PvP entre jugadores.</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!rocosos</b>: <i>En construcción.</i>"
+				"➡️<b>!pvp @nombredeusuario</b>: <i>Envía una solicitud de duelo PvP al usuario.</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!aceptarguerra</b>: <i>En construcción.</i>"
+				"➡️<b>!pvp aceptar</b>: <i>Acepta la solicitud de duelo PvP más antigua pendiente.</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!rechazarguerra</b>: <i>En construcción.</i>"
+				"➡️<b>!pvp rechazar</b>: <i>Declina la solicitud de duelo PvP más antigua pendiente.</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!guerras</b>: <i>En construcción.</i>"
+				"➡️<b>!rocosos</b>: <i>Muestra el ránking de los 10 Rocosos con más victorias en duelos PvP de Telegram.</i>"
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!rocososgrupo</b>: <i>Muestra cuántos rocosos se han unido a tu clan y un resumen de estadísticas de los diez más fuertes.</i>"
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!aceptarguerra</b>: <i>Acepta la solicitud de guerra entre grupos más antigua pendiente.</i>"
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!rechazarguerra</b>: <i>Desestima la solicitud de guerra entre grupos más antigua pendiente.</i>"
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!guerras (desde chat privado)</b>: <i>Muestra el número de solicitudes entrantes y salientes de duelos PvP pendientes, además de un resumen de las cinco últimas batallas entre guerras y duelos PvP.</i>"
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!guerras (desde grupos)</b>: <i>Muestra el número de solicitudes entrantes y salientes de guerras entre clanes pendientes del grupo, además de un resumen de las cinco últimas batallas entre guerras y duelos PvP.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas para un jugador:</b> Consulta /ayuda_1P_rocosos para ver todas las reglas."
 				.PHP_EOL.PHP_EOL.
-				"<b>Reglas para PvP multijugador:</b> Consulta /ayuda_PVP_rocosos para ver todas las reglas."
+				"<b>Reglas para duelos PvP entre jugadores:</b> Consulta /ayuda_PVP_rocosos para ver todas las reglas."
 				.PHP_EOL.PHP_EOL.
-				"<b>Reglas para guerras entre clanes:</b> Consulta /ayuda_guerras_rocosos para ver todas las reglas."		
-				/*
-				"➡️<b>!guerras</b>: <i>En construcción.</i>";
-		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
-		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
-		usleep(500000);
-		$text = "<b>Reglas para un jugador:</b>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Puedes ganar experiencia cada cinco minutos realizando tareas utilizando !exp en chat privado con el bot. En caso de no haber pasado el tiempo necesario y utilizado de nuevo !exp, aparecerá el nivel de energía actual del personaje. Cuando llegue a 100% habrán pasado los cinco minutos y podrá volver a realizar tareas nuevas.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Las tareas realizadas con !exp varían según el nivel del personaje y la zona donde éste se encuentra. Cuanto más subas de nivel, mejores recompensas de experiencia obtendrás.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>A partir del nivel 2 puedes añadir una foto de perfil a tu personaje con !avatarpj. Se deberá escribir el enlace completo donde se aloja la imagen (comenzando desde http:// o https://). Los formatos compatibles son .jpg, .png y .gif.</i>"
-				.PHP_EOL.PHP_EOL.
-				"<i>Ejemplo:</i> <pre>!avatarpj http://www.mipaginadeimagenes.com/imagen.jpg</pre>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Escribiendo \"!avatarpj borrar\" puedes eliminar tu foto de perfil.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Cada estadística se puede mejorar a tu gusto un número limitado de veces con !gastarpunto. Escribiendo simplemente \"!gastarpunto\" verás los puntos que se pueden usar, los puntos ya usados y los puntos totales disponibles por cada estadística.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Para utilizar uno de tus puntos disponibles escribe la función seguido del nombre de la estadística, por ejemplo \"!gastarpunto VEL\".</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>El máximo de puntos que se pueden asignar por cada !gastarpunto es de 1.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Los puntos adicionales son acumulables y no caducan. Puedes asignarlos cuando quieras, pero su uso es de vital importancia para poder derrotar a tus enemigos.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>La función !atacar está disponible para jugadores de nivel 5 y superior. Una vez utilizada, el siguiente jefe tardará seis horas en aparecer. Si durante ese tiempo de espera se utiliza la función !atacar, aparecerá el tiempo restante para que vuelva a estar disponible.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Cada vez que cambies de zona los enemigos serán más poderosos y darán más puntos de experiencia al derrotarlos.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Cuando subas de nivel con !exp o !atacar las estadísticas de tu personaje mejorarán, y también recibirás puntos adicionales para utilizar donde quieras y ganarás como premio una nueva arma o armadura. Es posible que también llegues a una nueva zona, más difícil que la anterior pero con mejores recompensas. El nombre de la zona actual lo puedes ver en todo momento con la función !pj.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Cada objeto nuevo que recibas siempre será mejor que el anterior que ya tenía tu personaje, y se utilizará automáticamente. Un objeto con el nombre en cursiva es un objeto normal, un objeto con el nombre </i>regular <i>es un objeto mejorado, y un objeto con el nombre en</i> <b>negrita</b> <i>es un objeto único, más raro de conseguir y con mejor estadística.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>La función !unirme está disponible a partir del nivel 6. Se debe utilizar en el grupo al cual te quieres unir.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Consultando tu personaje con !pj, junto al nombre del clan aparecerá la calidad de éste en formato de 0 a 5 estrellas, de la misma manera que aparecen las estadísticas del personaje más abajo.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>";
-		apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", 'disable_web_page_preview' => true, "text" => $text));
-		apiRequest("sendChatAction", array('chat_id' => $send_id, 'action' => "typing"));			
-		usleep(500000);
-		$text = "<b>Reglas para multijugador PvP:</b>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"*/
+				"<b>Reglas para guerras PvP entre clanes:</b> Consulta /ayuda_guerras_rocosos para ver todas las reglas."		
 				;
 	} else if($mode == "1p_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -7451,21 +7419,99 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Consultando tu personaje con !pj, junto al nombre del clan aparecerá la calidad de éste en formato de 0 a 5 estrellas, de la misma manera que aparecen las estadísticas del personaje más abajo.</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>A partir del nivel 11 podrás entablar duelos PvP. Si utilizas \"!pvp\" activarás o desactivarás esta opción.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
 				;
 	} else if($mode == "pvp_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
 				.PHP_EOL.PHP_EOL.
-				"<b>Reglas para multijugador PvP:</b>"
+				"<b>Reglas para duelos PvP entre jugadores:</b>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Nada más alcanzar el nivel 11 con tu personaje habilitarás automáticamente los duelos PvP. Los puedes deshabilitar con !pvp.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>En construcción.</i>"
+				"▶️<i>Solo se pueden retara duelos PvP a personas que tengan nombre de usuario. Es aconsejable utilizar la función como, por ejemplo, \"!pvp @usuario\", pero el símbolo de arroba no es necesario escribirlo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En caso de tener varios duelos pendientes, aceptarás o rechazarás el más antiguo. Consulta tu lista de duelos pendientes desde chat privado con el bot mediante la función !guerres.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Puedes enviar una solicitud de batalla cada cinco horas.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Puedes enviar una solicitud de batalla hacia un mismo jugador cada 24 horas.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>No puedes enviarte solicitudes de duelos PvP a ti mismo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Por cada duelo que ganes se te añadirá una victoria al marcador, el cual aparece en tu ficha de personaje (!pj o </i>/pj<i>).</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En caso de tener los duelos PvP deshabilitados, no recibirás ni podrás enviar ninguna solicitud de batalla, y tampoco verás tus victorias en la ficha de personaje.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Las derrotas de duelos PvP no se guardarán ni mostrarán en tu personaje. ¡Reta a tus amigos sin miedo!</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Puedes retar a duelos PvP a jugadores con nivel muchísimo más alto que el tuyo siempre y cuando ambos sean mínimo de nivel 11.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Como es lógico, cuanto más fuerte seas, más fácil tendrás la victoria.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Los duelos PvP se reservan un 0,01% de suerte en los combates, por lo que un jugador de nivel muy alto tendrá la victoria asegurada en un 99,99% ante jugadores de nivel bajo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Antes de aceptar o rechazar una solicitud de duelo, el rival podrá visualizar un resumen aproximado de las estadísticas del otro jugador.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Una vez termine la batalla ambos jugadores recibirán el resultado del duelo, y un resumen más escueto aparecerá en !guerras para todos los usuarios del bot.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Si tienes habilitado los duelos PvP, ganas al menos uno y te unes a un clan, tu personaje podría aparecer en el ránking de !rocosos.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Un jugador podría no responder con \"!pvp aceptar\" ni \"!pvp rechazar\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Las guerras pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza desde chat privado con el bot.</i>"
 				;
 	} else if($mode == "guerras_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
 				.PHP_EOL.PHP_EOL.
-				"<b>Reglas para multijugador PvP:</b>"
+				"<b>Reglas para guerras PvP entre clanes:</b>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Para participar en ellas debes utilizar la función !unirme en tu grupo favorito una vez alcances el nivel 6.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Una vez te unas a un clan puedes cambiarte a otro clan utilizando !unirme en otro grupo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Puedes cambiar de clan todas las veces que quieras, sin embargo una vez te has unido a tu primer clan, tu personaje no podrá volver a estar sin clan asignado.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En caso de necesidad muy alta de volver a tener tu personaje desligado a ningún clan puedes contactar con la administración del bot con la función !sugerencia y explicar tu caso para reestablecer este apartado.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Solo los clanes con al menos cinco miembros entre sus filas podrán entablar guerras PvP contra otros clanes.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>La única restricción para pertenecer a un clan es alcanzar el nivel 6.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Dependiendo del número de miembros el clan tendrá un rango u otro, el cual se mostrará frecuentemente a la izquierda del nombre a modo de rango entre 0 y 5 estrellas.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Cuando un clan le declare la guerra a otro, el clan rival podrá ver el rango de quien envia la solicitud de guerra antes de aceptarla o rechazarla.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>No podrás entablar guerras PvP contra tu propio clan ni podrás utilizar sus funciones si no te has unido antes.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Cualquier miembro del clan podrá enviar una solicitud de guerra a otro clan desde el mismo chat de grupo.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Puedes enviar solicitudes de guerra una vez cada cinco horas.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>No puedes enviar dos solicitudes de guerra seguidas al mismo clan, sin embargo puedes enviar una solicitud a un clan y que éste te envíe otra al tuyo, ambas solicitudes se podrán aceptar seguidas sin problemas.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>kkkkkkkkkkkkkkkkkkkkk.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>En construcción.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>En construcción.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -8586,7 +8632,7 @@ function processMessage($message) {
 			} else {
 				$res = "Ninguna";
 			}
-			$text = $text."<b>Peticiones de guerra pendientes de responder:</b> ".$res.PHP_EOL;
+			$msg = $msg."<b>Peticiones de guerra pendientes de responder:</b> ".$res.PHP_EOL;
 			mysql_free_result($result);
 			$query = 'SELECT COUNT( * ) as "result" FROM groupbattlelog WHERE status = "REQUESTED" AND home_group = '.$chat_id.' GROUP BY home_group';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -8596,7 +8642,7 @@ function processMessage($message) {
 			} else {
 				$res = "Ninguna";
 			}
-			$text = $text."<b>Guerras declaradas pendientes de respuesta del rival:</b> ".$res.PHP_EOL.PHP_EOL;
+			$msg = $msg."<b>Guerras declaradas pendientes de respuesta del rival:</b> ".$res.PHP_EOL.PHP_EOL;
 		} else {
 			error_log($logname." triggered in private: !guerras.");
 			// calcular batallas pendientes del jugador
@@ -8609,7 +8655,7 @@ function processMessage($message) {
 			} else {
 				$res = "Ninguna";
 			}
-			$text = $text."<b>Peticiones de duelo PvP pendientes de responder:</b> ".$res.PHP_EOL;
+			$msg = $msg."<b>Peticiones de duelo PvP pendientes de responder:</b> ".$res.PHP_EOL;
 			mysql_free_result($result);
 			$query = 'SELECT COUNT( * ) as "result" FROM playerbattlelog WHERE status = "REQUESTED" AND player = '.$chat_id.' GROUP BY player';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -8619,7 +8665,7 @@ function processMessage($message) {
 			} else {
 				$res = "Ninguno";
 			}
-			$text = $text."<b>Duelos PvP pendientes de respuesta del rival:</b> ".$res.PHP_EOL.PHP_EOL;
+			$msg = $msg."<b>Duelos PvP pendientes de respuesta del rival:</b> ".$res.PHP_EOL.PHP_EOL;
 		}
 		$user_id = $message['from']['id'];
 		mysql_free_result($result);
@@ -8639,23 +8685,23 @@ function processMessage($message) {
 				$row = mysql_fetch_array($result);
 				if(isset($row['gbr_id'])) {
 					switch($i) {
-						case 0: $text = $text."1⃣ ";
+						case 0: $msg = $msg."1⃣ ";
 								break;
-						case 1: $text = $text."2⃣ ";
+						case 1: $msg = $msg."2⃣ ";
 								break;
-						case 2: $text = $text."3⃣ ";
+						case 2: $msg = $msg."3⃣ ";
 								break;
-						case 3: $text = $text."4⃣ ";
+						case 3: $msg = $msg."4⃣ ";
 								break;
-						case 4: $text = $text."5⃣ ";
+						case 4: $msg = $msg."5⃣ ";
 								break;
 						default: break;
 					}
-					$text = $text.$row['home_group']." 🆚 ".$row['away_group'].PHP_EOL;
-					$text = $text."<b>Fecha:</b> ".$row['date'].PHP_EOL;
-					$text = $text."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$row['winner_group']."</i>".PHP_EOL.PHP_EOL;
+					$msg = $msg.$row['home_group']." 🆚 ".$row['away_group'].PHP_EOL;
+					$msg = $msg."<b>Fecha:</b> ".$row['date'].PHP_EOL;
+					$msg = $msg."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$row['winner_group']."</i>".PHP_EOL.PHP_EOL;
 				} else if($i==0) {
-					$text = $text."<i>Ninguna.</i>".PHP_EOL.PHP_EOL;
+					$msg = $msg."<i>Ninguna.</i>".PHP_EOL.PHP_EOL;
 				}
 			}
 			mysql_free_result($result);
@@ -8666,34 +8712,35 @@ function processMessage($message) {
 				$row = mysql_fetch_array($result);
 				if(isset($row['pbr_id'])) {
 					switch($i) {
-						case 0: $text = $text."1⃣ ";
+						case 0: $msg = $msg."1⃣ ";
 								break;
-						case 1: $text = $text."2⃣ ";
+						case 1: $msg = $msg."2⃣ ";
 								break;
-						case 2: $text = $text."3⃣ ";
+						case 2: $msg = $msg."3⃣ ";
 								break;
-						case 3: $text = $text."4⃣ ";
+						case 3: $msg = $msg."4⃣ ";
 								break;
-						case 4: $text = $text."5⃣ ";
+						case 4: $msg = $msg."5⃣ ";
 								break;
 						default: break;
 					}
 					$playerName = getFullName($row['player_name'], $row['player_user']);
 					$rivalName = getFullName($row['rival_name'], $row['rival_user']);
 					$winnerName = getFullName($row['winner_name'], $row['winner_user']);
-					$text = $text.$playerName." 🆚 ".$rivalName.PHP_EOL;
-					$text = $text."<b>Fecha:</b> ".$row['date'].PHP_EOL;
-					$text = $text."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$winnerName."</i>".PHP_EOL.PHP_EOL;
+					$msg = $msg.$playerName." 🆚 ".$rivalName.PHP_EOL;
+					$msg = $msg."<b>Fecha:</b> ".$row['date'].PHP_EOL;
+					$msg = $msg."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$winnerName."</i>".PHP_EOL.PHP_EOL;
 				} else if($i==0) {
-					$text = $text."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
+					$msg = $msg."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
 				}
+				$msg = $msg."<i>La zona horaria utilizada en las fechas mostradas es la hora peninsular española actual.</i>".PHP_EOL;
 			}
 		} else {
-			$text = $text."<i>El registro de batallas está disponible una vez por minuto, podrás consultarlo de nuevo en unos segundos.</i>";
+			$msg = $msg."<i>El registro de batallas está disponible una vez por minuto, podrás consultarlo de nuevo en unos segundos.</i>".PHP_EOL;
 		}
 		mysql_free_result($result);
 		mysql_close($link);
-		$text = $text."<i>¡Participa tú en la próxima batalla con !pvp o !declararguerra!</i>";
+		$msg = $msg."<i>¡Participa tú en la próxima batalla con !pvp o !declararguerra!</i>";
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(100000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
@@ -9461,84 +9508,97 @@ function processMessage($message) {
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				// revisar si el grupo tiene al menos 5 miembros
-				if(isset($row['members']) && $row['members'] > 0) { // REVISAR CUENTA					
-					// si tiene, mirar si el rival existe
+				if(isset($row['members']) && $row['members'] > 4) {
 					$homeMembers = $row['members'];
 					mysql_free_result($result);
-					$number = $number - 1;
-					$query = 'SELECT groupbattle.name, playerbattle.group_id, COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL AND groupbattle.group_id = playerbattle.group_id AND  "members" > -1 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC LIMIT '.$number.' , 1'; // REVISAR CUENTA
+					$user_id = $message['from']['id'];
+					$query = 'SELECT group_id FROM playerbattle WHERE user_id = '.$user_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
-					$ownGroup = 0;
-					if($row['group_id'] == $chat_id) {
-						$ownGroup = 1;
-					}
-					// si existe, mirar si tiene al menos 5 miembros y no eres tu mismo
-					if(isset($row['group_id']) && $row['members'] > 0 && $ownGroup == 0) { // REVISAR CUENTA
-						$rival_id = $row['group_id'];
-						$rivalMembers = $row['members'];
-						$rivalName = $row['name'];
+					// si existe, revisar que quien usa esta función pertenezca al clan
+					if($chat_id == $row['group_id']) {
+						// si tiene, mirar si el rival existe
 						mysql_free_result($result);
-						// si tiene, revisar la ultima batalla librada para ver si es vieja
-						$query = "SELECT epoch_time, away_group FROM groupbattlelog WHERE home_group = ".$chat_id." ORDER BY epoch_time DESC LIMIT 0, 1";
+						$number = $number - 1;
+						$query = 'SELECT groupbattle.name, playerbattle.group_id, COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL AND groupbattle.group_id = playerbattle.group_id AND  "members" > 4 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC LIMIT '.$number.' , 1';
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
-						if(isset($row['epoch_time'])) {
-							$lastWar = $row['epoch_time'];
-						} else {
-							$lastWar = 0;
+						$ownGroup = 0;
+						if($row['group_id'] == $chat_id) {
+							$ownGroup = 1;
 						}
-						$currTime = time();
-						if(($currTime - 18000) > $lastWar) {
-							// si es vieja, revisar que el grupo que quiere petar es diferente al ultimo de la anterior vez
-							if($row['away_group'] != $rival_id) {
-								// si lo es, lanzar en la db la guerra pendiente y avisar a ambos grupos de que acepten o rechacen o ignoren
-								// crear un pending en la groupbattlelog
-								mysql_free_result($result);
-								$query = "INSERT INTO `groupbattlelog` (`home_group`, `away_group`, `epoch_time`) VALUES ('".$chat_id."', '".$rival_id."', '".$currTime."')";
-								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-								// avisar al equipo home
-								apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-								$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan".getClanLevelByMembers($rivalMembers).$rivalName."!".PHP_EOL.PHP_EOL.
-								"Si aceptan el desafío la batalla comenzará automáticamente y el resultado aparecerá en los grupos participantes.".PHP_EOL.
-								"En caso de que el clan rival rechace la invitación de guerra se enviará una notificación a este grupo.</b>".PHP_EOL.PHP_EOL.
-								"<i>Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
-								usleep(250000);
-								apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
-								// avisar al equipo away
-								$requestName = $message['chat']['title'];
-								$requestName = str_replace("<", "", $requestName);
-								$requestName = str_replace(">", "", $requestName);
-								apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-								$msg = "⚔ <b>¡El clan".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!</b>".PHP_EOL.PHP_EOL.
-								"<i>Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.".PHP_EOL.
-								"Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
-								usleep(250000);
-								apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+						// si existe, mirar si tiene al menos 5 miembros y no eres tu mismo
+						if(isset($row['group_id']) && $row['members'] > 4 && $ownGroup == 0) {
+							$rival_id = $row['group_id'];
+							$rivalMembers = $row['members'];
+							$rivalName = $row['name'];
+							mysql_free_result($result);
+							// si tiene, revisar la ultima batalla librada para ver si es vieja
+							$query = "SELECT epoch_time, away_group FROM groupbattlelog WHERE home_group = ".$chat_id." ORDER BY epoch_time DESC LIMIT 0, 1";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$row = mysql_fetch_array($result);
+							if(isset($row['epoch_time'])) {
+								$lastWar = $row['epoch_time'];
 							} else {
-								// si no avisar de que luchen contra otro
+								$lastWar = 0;
+							}
+							$currTime = time();
+							if(($currTime - 18000) > $lastWar) {
+								// si es vieja, revisar que el grupo que quiere petar es diferente al ultimo de la anterior vez
+								if($row['away_group'] != $rival_id) {
+									// si lo es, lanzar en la db la guerra pendiente y avisar a ambos grupos de que acepten o rechacen o ignoren
+									// crear un pending en la groupbattlelog
+									mysql_free_result($result);
+									$query = "INSERT INTO `groupbattlelog` (`home_group`, `away_group`, `epoch_time`) VALUES ('".$chat_id."', '".$rival_id."', '".$currTime."')";
+									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+									// avisar al equipo home
+									apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+									$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan".getClanLevelByMembers($rivalMembers).$rivalName."!".PHP_EOL.PHP_EOL.
+									"Si aceptan el desafío la batalla comenzará automáticamente y el resultado aparecerá en los grupos participantes.".PHP_EOL.
+									"En caso de que el clan rival rechace la invitación de guerra se enviará una notificación a este grupo.</b>".PHP_EOL.PHP_EOL.
+									"<i>Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
+									usleep(250000);
+									apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+									// avisar al equipo away
+									$requestName = $message['chat']['title'];
+									$requestName = str_replace("<", "", $requestName);
+									$requestName = str_replace(">", "", $requestName);
+									apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
+									$msg = "⚔ <b>¡El clan".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!</b>".PHP_EOL.PHP_EOL.
+									"<i>Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.".PHP_EOL.
+									"Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
+									usleep(250000);
+									apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+								} else {
+									// si no avisar de que luchen contra otro
+									apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+									$msg = "<b>No puedes declarar la guerra al mismo clan dos veces seguidas, elige otro de la lista.</b>";
+									usleep(250000);
+									apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+								}
+							} else {
+								// si no, decir que te esperes un rato
 								apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-								$msg = "<b>No puedes declarar la guerra al mismo clan dos veces seguidas, elige otro de la lista.</b>";
+								$msg = "<b>Solo puedes declarar la guerra a otro clan una vez cada cinco horas, inténtalo más tarde.</b>";
 								usleep(250000);
 								apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 							}
 						} else {
-							// si no, decir que te esperes un rato
+							// si no existe decir que no se encuentra rival o es menos de 5
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-							$msg = "<b>Solo puedes declarar la guerra a otro clan una vez cada cinco horas, inténtalo más tarde.</b>";
+							if($ownGroup == 0) {
+								$msg = "<b>El grupo escogido no existe o no tiene los miembros suficientes para luchar.</b>";
+							} else {
+								$msg = "<b>¡No puedes declararte la guerra a ti mismo!</b>";
+							}
 							usleep(250000);
 							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 						}
 					} else {
-						// si no existe decir que no se encuentra rival o es menos de 5
+						// si no, decir que no perteneces a este clan
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						if($ownGroup == 0) {
-							$msg = "<b>El grupo escogido no existe o no tiene los miembros suficientes para luchar.</b>";
-						} else {
-							$msg = "<b>¡No puedes declararte la guerra a ti mismo!</b>";
-						}
 						usleep(250000);
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Para poder utilizar esta función debes pertenecer al clan. Utiliza !unirme y vuelve a intentarlo.*"));
 					}
 				} else {
 					// si no, decir que tu grupo es peque, que se una mas gente primero
@@ -9584,58 +9644,106 @@ function processMessage($message) {
 				$awayGroupName = str_replace("<", "", $awayGroupName);
 				$awayGroupName = str_replace(">", "", $awayGroupName);
 				mysql_free_result($result);
-				$query = 'SELECT COUNT( * ) AS  "members", group_id, SUM( hp + attack + defense + critic + critic + critic + speed + helmet + helmet + helmet + body + boots + weapon + shield ) AS  "totalpower" FROM playerbattle WHERE group_id IN ( '.$homegroup_id.', '.$awaygroup_id.' ) GROUP BY group_id ORDER BY FIELD( group_id, '.$homegroup_id.', '.$awaygroup_id.' )';
+				$user_id = $message['from']['id'];
+				$query = 'SELECT group_id FROM playerbattle WHERE user_id = '.$user_id;
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
-				if(isset($row['group_id'])) {
-					$homeGroupMembers = $row['members'];
-					$homeGroupPower = $row['totalpower'];
-				} else {
-					$homeGroupMembers = 0;
-					$homeGroupPower = 0;
-				}
-				$row = mysql_fetch_array($result);
-				if(isset($row['group_id'])) {
-					$awayGroupMembers = $row['members'];
-					$awayGroupPower = $row['totalpower'];
-				} else {
-					$awayGroupMembers = 0;
-					$awayGroupPower = 0;
-				}
-				// si la tiene revisar si tu grupo sigue siendo **, pillar los miembros y poder de ambos clanes, y tambien los nombres
-				if($homeGroupMembers > 0 && $awayGroupMembers > 0) { // REVISAR CUENTA
-					// si sigue, aceptar la guerra, avisar en ambos clanes
-					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					usleep(50000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
-					apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
-					usleep(50000);
-					apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
-					// y editar db, la de guerra pendiente como aceptada
+				// si existe, revisar que quien usa esta función pertenezca al clan
+				if($chat_id == $row['group_id']) {
 					mysql_free_result($result);
-					$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
+					$query = 'SELECT COUNT( * ) AS  "members", group_id, SUM( hp + attack + defense + critic + critic + critic + speed + helmet + helmet + helmet + body + boots + weapon + shield ) AS  "totalpower" FROM playerbattle WHERE group_id IN ( '.$homegroup_id.', '.$awaygroup_id.' ) GROUP BY group_id ORDER BY FIELD( group_id, '.$homegroup_id.', '.$awaygroup_id.' )';
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					mysql_free_result($result);
-					sleep(1);
-					// librar batalla
-					if($homeGroupPower >= $awayGroupPower) {
-						$homeIsStronger = 1;
-						$powerDiff = $homeGroupPower - $awayGroupPower;
-						$membersDiff = $homeGroupMembers - $awayGroupMembers;
+					$row = mysql_fetch_array($result);
+					if(isset($row['group_id'])) {
+						$homeGroupMembers = $row['members'];
+						$homeGroupPower = $row['totalpower'];
 					} else {
-						$homeIsStronger = 0;
-						$powerDiff = $awayGroupPower - $homeGroupPower;
-						$membersDiff = $awayGroupMembers - $homeGroupMembers;
+						$homeGroupMembers = 0;
+						$homeGroupPower = 0;
 					}
-					if($homeIsStronger == 1) {
-						$percentHigher = (($homeGroupPower * 100) / $awayGroupPower) - 100;
+					$row = mysql_fetch_array($result);
+					if(isset($row['group_id'])) {
+						$awayGroupMembers = $row['members'];
+						$awayGroupPower = $row['totalpower'];
 					} else {
-						$percentHigher = (($awayGroupPower * 100) / $homeGroupPower) - 100;
+						$awayGroupMembers = 0;
+						$awayGroupPower = 0;
 					}
-					error_log("PERCENTDIFF ".$percentHigher);
-					if($percentHigher < 15) {
-						// tener en cuenta los miembros
-						if($membersDiff >= 0) {
+					// si la tiene revisar si tu grupo sigue siendo **, pillar los miembros y poder de ambos clanes, y tambien los nombres
+					if($homeGroupMembers > 4 && $awayGroupMembers > 4) {
+						// si sigue, aceptar la guerra, avisar en ambos clanes
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(50000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
+						apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
+						usleep(50000);
+						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
+						// y editar db, la de guerra pendiente como aceptada
+						mysql_free_result($result);
+						$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						sleep(1);
+						// librar batalla
+						if($homeGroupPower >= $awayGroupPower) {
+							$homeIsStronger = 1;
+							$powerDiff = $homeGroupPower - $awayGroupPower;
+							$membersDiff = $homeGroupMembers - $awayGroupMembers;
+						} else {
+							$homeIsStronger = 0;
+							$powerDiff = $awayGroupPower - $homeGroupPower;
+							$membersDiff = $awayGroupMembers - $homeGroupMembers;
+						}
+						if($homeIsStronger == 1) {
+							$percentHigher = (($homeGroupPower * 100) / $awayGroupPower) - 100;
+						} else {
+							$percentHigher = (($awayGroupPower * 100) / $homeGroupPower) - 100;
+						}
+						error_log("PERCENTDIFF ".$percentHigher);
+						if($percentHigher < 15) {
+							// tener en cuenta los miembros
+							if($membersDiff >= 0) {
+								// 80
+								$battleTicket = rand(1,10);
+								if($battleTicket < 9) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							} else {
+								// 40
+								$battleTicket = rand(1,10);
+								if($battleTicket < 5) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							}
+						} else if($percentHigher > 300) {
+							// 99,99
+							$battleTicket = rand(1,10000);
+							if($battleTicket < 10000) {
+								$win = 1;
+								$lucky = 0;
+							} else {
+								$win = 0;
+								$lucky = 1;
+							}
+						} else if($percentHigher > 200) {
+							// 90
+							$battleTicket = rand(1,10);
+							if($battleTicket < 10) {
+								$win = 1;
+								$lucky = 0;
+							} else {
+								$win = 0;
+								$lucky = 1;
+							}
+						} else if($percentHigher > 100) {
 							// 80
 							$battleTicket = rand(1,10);
 							if($battleTicket < 9) {
@@ -9645,10 +9753,20 @@ function processMessage($message) {
 								$win = 0;
 								$lucky = 1;
 							}
-						} else {
-							// 40
+						} else if($percentHigher > 50) {
+							// 70
 							$battleTicket = rand(1,10);
-							if($battleTicket < 5) {
+							if($battleTicket < 8) {
+								$win = 1;
+								$lucky = 0;
+							} else {
+								$win = 0;
+								$lucky = 1;
+							}
+						} else {
+							// 60
+							$battleTicket = rand(1,10);
+							if($battleTicket < 7) {
 								$win = 1;
 								$lucky = 0;
 							} else {
@@ -9656,109 +9774,63 @@ function processMessage($message) {
 								$lucky = 1;
 							}
 						}
-					} else if($percentHigher > 300) {
-						// 99,99
-						$battleTicket = rand(1,10000);
-						if($battleTicket < 10000) {
-							$win = 1;
-							$lucky = 0;
+						error_log("GROUPWINLUCKY ".$win.$lucky);
+						if($homeIsStronger == 1) {
+							if($win == 1) {
+								$winner_id = $homegroup_id;
+								$winnerName = $homeGroupName;
+								$loser_id = $awaygroup_id;
+								$loserName = $awayGroupName;
+							} else {
+								$winner_id = $awaygroup_id;
+								$winnerName = $awayGroupName;
+								$loser_id = $homegroup_id;
+								$loserName = $homeGroupName;
+							}
 						} else {
-							$win = 0;
-							$lucky = 1;
+							if($win == 0) {
+								$winner_id = $homegroup_id;
+								$winnerName = $homeGroupName;
+								$loser_id = $awaygroup_id;
+								$loserName = $awayGroupName;
+							} else {
+								$winner_id = $awaygroup_id;
+								$winnerName = $awayGroupName;
+								$loser_id = $homegroup_id;
+								$loserName = $homeGroupName;
+							}
 						}
-					} else if($percentHigher > 200) {
-						// 90
-						$battleTicket = rand(1,10);
-						if($battleTicket < 10) {
-							$win = 1;
-							$lucky = 0;
-						} else {
-							$win = 0;
-							$lucky = 1;
-						}
-					} else if($percentHigher > 100) {
-						// 80
-						$battleTicket = rand(1,10);
-						if($battleTicket < 9) {
-							$win = 1;
-							$lucky = 0;
-						} else {
-							$win = 0;
-							$lucky = 1;
-						}
-					} else if($percentHigher > 50) {
-						// 70
-						$battleTicket = rand(1,10);
-						if($battleTicket < 8) {
-							$win = 1;
-							$lucky = 0;
-						} else {
-							$win = 0;
-							$lucky = 1;
-						}
+						sleep(1);
+						$currentTime = time();
+						$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
+						$fullDate = translateDate($fullDate);
+						// insert en groupbattleresults, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
+						$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$fullDate."');";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						// sumarle +1 a las victorias de los playerbattle grupales
+						$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						sleep(1);
+						// mostrar el resumen de batalla
+						$msg = getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky);
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(50000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+						apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
+						usleep(50000);
+						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => $msg));
 					} else {
-						// 60
-						$battleTicket = rand(1,10);
-						if($battleTicket < 7) {
-							$win = 1;
-							$lucky = 0;
-						} else {
-							$win = 0;
-							$lucky = 1;
-						}
+						// si no, decir que no tienes miembros para aceptarla y sugerir lo de !rechazarguerra
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Uno de los dos clanes ha perdido varios miembros y no está disponible para la guerra, inténtalo más tarde o utiliza !rechazarguerra para eliminar la solicitud pendiente de guerra con el clan ".$homeGroupName.".</b>"));
 					}
-					error_log("GROUPWINLUCKY ".$win.$lucky);
-					if($homeIsStronger == 1) {
-						if($win == 1) {
-							$winner_id = $homegroup_id;
-							$winnerName = $homeGroupName;
-							$loser_id = $awaygroup_id;
-							$loserName = $awayGroupName;
-						} else {
-							$winner_id = $awaygroup_id;
-							$winnerName = $awayGroupName;
-							$loser_id = $homegroup_id;
-							$loserName = $homeGroupName;
-						}
-					} else {
-						if($win == 0) {
-							$winner_id = $homegroup_id;
-							$winnerName = $homeGroupName;
-							$loser_id = $awaygroup_id;
-							$loserName = $awayGroupName;
-						} else {
-							$winner_id = $awaygroup_id;
-							$winnerName = $awayGroupName;
-							$loser_id = $homegroup_id;
-							$loserName = $homeGroupName;
-						}
-					}
-					sleep(1);
-					$currentTime = time();
-					$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
-					$fullDate = translateDate($fullDate);
-					// insert en groupbattleresults, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
-					$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$fullDate."');";
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					mysql_free_result($result);
-					// sumarle +1 a las victorias de los playerbattle grupales
-					$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					mysql_free_result($result);
-					sleep(1);
-					// mostrar el resumen de batalla
-					$msg = getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky);
-					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					usleep(50000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
-					apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
-					usleep(50000);
-					apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => $msg));
 				} else {
-					// si no, decir que no tienes miembros para aceptarla y sugerir lo de !rechazarguerra
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					usleep(100000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Uno de los dos clanes ha perdido varios miembros y no está disponible para la guerra, inténtalo más tarde o utiliza !rechazarguerra para eliminar la solicitud pendiente de guerra con el clan ".$homeGroupName.".</b>"));
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Para poder utilizar esta función debes pertenecer al clan. Utiliza !unirme y vuelve a intentarlo.*"));
 				}
 			} else {
 				// si no, avisar de que no tienes solicitudes de guerra pendientes
@@ -9795,18 +9867,31 @@ function processMessage($message) {
 				$awayName = str_replace(">", "", $awayName);
 				$rival_id = $row['home_group'];
 				mysql_free_result($result);
-				// avisar en ambos clanes, y editar muchas db, la de guerra pendiente como rechazada
-				$query = "UPDATE groupbattlelog SET status = 'REJECTED' WHERE gbl_id = ".$rowToUpdate;
+				$user_id = $message['from']['id'];
+				$query = 'SELECT group_id FROM playerbattle WHERE user_id = '.$user_id;
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				$msg = "❌ <b>La declaración de guerra recibida del clan ".$homeName." ha sido rechazada.</b>";
-				usleep(250000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
-				apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-				$msg = "❌ <b>El clan ".$awayName." ha rechazado la declaración de guerra pendiente emitida con anterioridad desde este grupo.</b>";
-				usleep(250000);
-				apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+				$row = mysql_fetch_array($result);
+				// si existe, revisar que quien usa esta función pertenezca al clan
+				if($chat_id == $row['group_id']) {	
+					mysql_free_result($result);
+					// avisar en ambos clanes, y editar muchas db, la de guerra pendiente como rechazada
+					$query = "UPDATE groupbattlelog SET status = 'REJECTED' WHERE gbl_id = ".$rowToUpdate;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "❌ <b>La declaración de guerra recibida del clan ".$homeName." ha sido rechazada.</b>";
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
+					$msg = "❌ <b>El clan ".$awayName." ha rechazado la declaración de guerra pendiente emitida con anterioridad desde este grupo.</b>";
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+				} else {
+					// si no, decir que no perteneces a este clan
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(250000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Para poder utilizar esta función debes pertenecer al clan. Utiliza !unirme y vuelve a intentarlo.*"));
+				}
 			} else {
 				// si no, avisar de que no tienes solicitudes de guerra pendientes
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

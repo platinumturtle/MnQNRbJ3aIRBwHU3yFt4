@@ -3106,7 +3106,15 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 20) {
-		$bossTicket = rand(1,5);
+		if($level < 12) {
+			$bossTicket = 1;
+		} else if($level < 14) {
+			$bossTicket = rand(1,2);
+		} else if($level < 16) {
+			$bossTicket = rand(1,4);
+		} else {
+			$bossTicket = rand(1,5);
+		}
 		switch($bossTicket) {
 			case 1: $id = -11;
 					break;
@@ -3120,7 +3128,13 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 30) {
-		$bossTicket = rand(1,5);
+		if($level < 23) {
+			$bossTicket = rand(1,2);
+		} else if($level < 25) {
+			$bossTicket = rand(1,4);
+		} else {
+			$bossTicket = rand(1,5);
+		}
 		switch($bossTicket) {
 			case 1: $id = -21;
 					break;
@@ -3134,7 +3148,15 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 40) {
-		$bossTicket = rand(1,5);
+		if($level < 12) {
+			$bossTicket = 1;
+		} else if($level < 32) {
+			$bossTicket = rand(1,2);
+		} else if($level < 35) {
+			$bossTicket = rand(1,4);
+		} else {
+			$bossTicket = rand(1,5);
+		}
 		switch($bossTicket) {
 			case 1: $id = -31;
 					break;
@@ -3570,7 +3592,7 @@ function getClanLevelByMembers($levelNumber) {
 }
 
 function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
-	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_allowed, pvp_wins, pvp_group_wins FROM playerbattle WHERE user_id = '".$user_id."'";
+	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_allowed, pvp_wins, pvp_group_wins, last_boss, avatar FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	if(isset($row['level'])){
@@ -3580,6 +3602,30 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$msg = $msg."<b>Experiencia de nivel ".$row['level'].":</b>".PHP_EOL;
 			$expBar = getLevelBar($row['exp_points'], $row['level']);
 			$msg = $msg.$expBar.PHP_EOL.PHP_EOL;
+			if($row['last_boss'] == 0 && $row['level'] > 5) {
+				$tipTicket = rand(1,2);
+				if($tipTicket == 2) {
+					$msg = $msg."<b>Consejo:</b> utiliza !atacar para luchar contra jefes de la zona, ¡podrás conseguir mucha más experiencia!".PHP_EOL;
+				}
+			}
+			if(strlen($row['avatar']) < 5) {
+				$tipTicket = rand(1,20);
+				if($tipTicket == 8) {
+					$msg = $msg."<b>Consejo:</b> puedes utilizar !avatarpj para personalizar tu ficha de personaje con una imagen personal.".PHP_EOL;
+				}
+			}
+			if(strlen($row['extra_points']) > 0) {
+				$tipTicket = rand(1,3);
+				if($tipTicket == 1) {
+					$msg = $msg."<b>Consejo:</b> puedes mejorar a tu personaje si utilizas la función !gastarpunto. ¡Todavía te quedan puntos extra de rocosidad por consumir!".PHP_EOL;
+				}
+			}
+			if(strlen($row['group_id']) > 1 && $row['level'] > 6) {
+				$tipTicket = rand(1,10);
+				if($tipTicket == 4) {
+					$msg = $msg."<b>Consejo:</b> puedes luchar junto a tus amigos contra otros enemigos si añades al bot a tu grupo de amigos y usas la función !unirme.".PHP_EOL;
+				}
+			}
 			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
 		} else {		
 			// mostrar toooodos los stats posibles, con el monospace y eso
@@ -4336,7 +4382,7 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 
 function getRockMan($chat_id) {
 	$link = dbConnect();
-	$query = 'SELECT ub.first_name, ub.user_name, gb.name, pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE pb.group_id = gb.group_id AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.pvp_wins >0 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
+	$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
 	for($i=0;$i<10;$i++) {
@@ -4384,7 +4430,7 @@ function getRockMan($chat_id) {
 	}
 	mysql_free_result($result);
 	mysql_close($link);
-	$text = $text."<i>En esta lista tan solo aparecerán aquellos rocosos que se hayan unido a algún clan, que tengan permitidos los duelos PvP y que hayan logrado al menos una victoria.</i>";
+	$text = $text."<i>En esta lista tan solo aparecerán aquellos rocosos que tengan permitidos los duelos PvP ordenados por victorias.</i>";
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	usleep(100000);
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
@@ -4638,7 +4684,7 @@ function getClanList($chat_id) {
 			}
 			$text = $text."<pre>【".$number."】".getClanLevelByMembers($row['members']).$clanName."</pre>".PHP_EOL;
 		} else if($i==0) {
-			$text = $text."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
+			$text = $text."<i>Ninguno.</i>".PHP_EOL;
 		}
 	}
 	mysql_free_result($result);
@@ -4857,7 +4903,7 @@ function getLudo($myself) {
 	//HTML Parse Mode
 	$link = dbConnect();
 	$text = "<b>🏁 Ránking de los más ludópatas de Telegram:</b>";
-	$query = "SELECT userbet.user_id, userbet.tokens, userbattle.user_name, userbattle.first_name FROM `userbet`, `userbattle` WHERE userbet.user_id = userbattle.user_id AND userbet.group_id = 0 GROUP BY userbet.user_id LIMIT 10";
+	$query = "SELECT userbet.user_id, userbet.tokens, userbattle.user_name, userbattle.first_name FROM `userbet`, `userbattle` WHERE userbet.user_id = userbattle.user_id AND userbet.group_id = 0 GROUP BY userbet.user_id ORDER BY tokens DESC LIMIT 0, 10";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = $text.PHP_EOL.PHP_EOL.
 			"<b>🏆 POLE ABSOLUTA 🏆</b>"
@@ -6968,7 +7014,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0 creado por @Kamisuke."
+				"@DemisukeBot v3.0.1 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -7458,7 +7504,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>Si tienes habilitado los duelos PvP, ganas al menos uno y te unes a un clan, tu personaje podría aparecer en el ránking de !rocosos.</i>"
+				"▶️<i>Si tienes habilitado los duelos PvP tu personaje podría aparecer en el ránking de !rocosos.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Un jugador podría no responder con \"!pvp aceptar\" ni \"!pvp rechazar\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -10247,8 +10293,15 @@ function processMessage($message) {
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		$totalUsers = $row['total_users'];
+		mysql_free_result($result);
+		$query = "SELECT COUNT( user_id ) AS 'total_users' FROM playerbattle WHERE user_id >0";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$totalRockMan = $row['total_users'];
+		mysql_free_result($result);
 		mysql_close($link);
 		$text = "*".$totalUsers." personas están usando el bot.".PHP_EOL;
+		$text = $text.$totalRockMan." personas luchan por ser Rocosos de Demisuke.".PHP_EOL;
 		$text = $text.$totalGroups." grupos han probado ya el bot.".PHP_EOL;
 		$text = $text.$totalActive." grupos participan en los minijuegos.*";
 		usleep(250000);
@@ -11417,7 +11470,11 @@ function processMessage($message) {
 		$query = "SELECT mode, welcome_text FROM groupbattle WHERE group_id = '".$chat_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
-		$mode = $row['mode'];
+		if(isset($row['mode'])) {
+			$mode = $row['mode'];
+		} else {
+			$mode = 0;
+		}
 		$welcomeText = $row['welcome_text'];
 		if($welcomeText != "") {
 			$mode = 0;

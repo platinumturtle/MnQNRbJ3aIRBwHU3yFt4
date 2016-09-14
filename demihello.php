@@ -1148,6 +1148,11 @@ function getPlayerExp($currLevel, $user_id) {
 		}
 	} else {
 		$luckyExp = rand(1,5);
+		if($luckyExp < 4) {
+			$luckyWait = rand(100, 400);
+			usleep($luckyWait);
+			$luckyExp = rand(1,5);
+		}
 		switch($luckyExp) {
 			case 1: $text = "*Has salido a dar un paseo y ahora conoces más la zona, has ganado 2 puntos de experiencia.*";
 					$exp = 2;
@@ -2712,12 +2717,12 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 	} else if($newLevel == 5) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 		$msg = "<b>Acabas de obtener un arma nueva, y con ella has desbloqueado la función !atacar, ¡ya puedes enfrentarte a los jefes de las zonas en las que te encuentres!".PHP_EOL;
-		$msg = $msg."Como sigues en el área de entrenamiento, cuando uses la función podrás practicar con una babosa sencilla de eliminar. ¡Practica tantas veces como quieras!</b>";
+		$msg = $msg."Como sigues en el área de entrenamiento, cuando uses la función podrás practicar con una babosa sencilla de eliminar. Al ser de prácticas, el tiempo de reaparición del enemigo será mucho menor de lo habitual, ¡practica tantas veces como quieras!</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 6) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-		$msg = "<b>Acabas de obtener un escudo nuevo, y con él se te permite llegar al área de entrenamiento avanzado. A partir de ahora te enfrentarás a los verdaderos jefes de entrenamiento con la función !atacar, además de poder unirte a un clan con la función !unirme. ¡Buena suerte en tu aventura!</b>";
+		$msg = "<b>Acabas de obtener un escudo nuevo, y con él se te permite llegar al área de entrenamiento avanzado. A partir de ahora te enfrentarás a los verdaderos jefes de entrenamiento con la función !atacar (también con tiempo de reaparición reducido), además de poder unirte a un clan con la función !unirme. ¡Buena suerte en tu aventura!</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 10) {
@@ -3094,7 +3099,13 @@ function chooseBoss($level) {
 	if($level == 5) {
 		$id = -4;
 	} else if ($level < 10) {
-		$bossTicket = rand(1,4);
+		if($level == 6) {
+			$bossTicket = rand(1,2);
+		} else if($level == 7) {
+			$bossTicket = rand(1,3);
+		} else {
+			$bossTicket = rand(1,4);
+		}
 		switch($bossTicket) {
 			case 1: $id = -6;
 					break;
@@ -3170,7 +3181,17 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 50) {
-		$bossTicket = rand(1,5);
+		if($level < 42) {
+			$bossTicket = 1;
+		} else if($level < 43) {
+			$bossTicket = rand(1,2);
+		} else if($level < 45) {
+			$bossTicket = rand(1,3);
+		} else if($level < 47) {
+			$bossTicket = rand(1,4);
+		} else {
+			$bossTicket = rand(1,5);
+		}
 		switch($bossTicket) {
 			case 1: $id = -41;
 					break;
@@ -3184,7 +3205,17 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 60) {
-		$bossTicket = rand(1,5);
+		if($level < 52) {
+			$bossTicket = 1;
+		} else if($level < 53) {
+			$bossTicket = rand(1,2);
+		} else if($level < 55) {
+			$bossTicket = rand(1,3);
+		} else if($level < 57) {
+			$bossTicket = rand(1,4);
+		} else {
+			$bossTicket = rand(1,5);
+		}
 		switch($bossTicket) {
 			case 1: $id = -51;
 					break;
@@ -3198,7 +3229,17 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 70) {
-		$bossTicket = rand(1,5);
+		if($level < 62) {
+			$bossTicket = 1;
+		} else if($level < 63) {
+			$bossTicket = rand(1,2);
+		} else if($level < 65) {
+			$bossTicket = rand(1,3);
+		} else if($level < 67) {
+			$bossTicket = rand(1,4);
+		} else {
+			$bossTicket = rand(1,5);
+		}
 		switch($bossTicket) {
 			case 1: $id = -61;
 					break;
@@ -3212,7 +3253,17 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 80) {
-		$bossTicket = rand(1,5);
+		if($level < 72) {
+			$bossTicket = 1;
+		} else if($level < 72) {
+			$bossTicket = rand(1,2);
+		} else if($level < 75) {
+			$bossTicket = rand(1,3);
+		} else if($level < 78) {
+			$bossTicket = rand(1,4);
+		} else {
+			$bossTicket = rand(1,5);
+		}
 		switch($bossTicket) {
 			case 1: $id = -71;
 					break;
@@ -3226,7 +3277,15 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 90) {
-		$bossTicket = rand(1,5);
+		if($level < 83) {
+			$bossTicket = rand(1,2);
+		} else if($level < 85) {
+			$bossTicket = rand(1,3);
+		} else if($level < 87) {
+			$bossTicket = rand(1,4);
+		} else {
+			$bossTicket = rand(1,5);
+		}
 		switch($bossTicket) {
 			case 1: $id = -81;
 					break;
@@ -3240,7 +3299,13 @@ function chooseBoss($level) {
 					break;
 		}
 	} else if ($level < 98) {
-		$bossTicket = rand(1,4);
+		if($level < 94) {
+			$bossTicket = rand(1,2);
+		} else if($level < 97) {
+			$bossTicket = rand(1,3);
+		} else {
+			$bossTicket = rand(1,4);
+		}
 		switch($bossTicket) {
 			case 1: $id = -91;
 					break;
@@ -3686,14 +3751,14 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 				$msg = $msg."<b>Clan:</b> <i>Ninguno</i>".PHP_EOL;
 			}
 			if($pvp_allowed == 1) {
-				$msg = $msg."<b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL;
+				$msg = $msg."🏆 <b>Victorias PvP:</b> ".$pvp_wins.PHP_EOL;
 			}
-			$msg = $msg."<b>Guerras ganadas:</b> ".$pvp_group_wins.PHP_EOL;
+			$msg = $msg."🏆 <b>Guerras ganadas:</b> ".$pvp_group_wins.PHP_EOL;
 			$msg = $msg."<b>Al siguiente nivel:</b>".PHP_EOL;
 			$expBar = getLevelBar($exp_points, $level);
 			$msg = $msg.$expBar.PHP_EOL;
 			$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
-			$msg = $msg."<b>Puntos por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
+			$msg = $msg."💎 <b>Puntos extra por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
 			$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
 			$msg = $msg."<pre>VID:";
 			switch(strlen($hp)){
@@ -4669,8 +4734,8 @@ function getClanList($chat_id) {
 	//HTML Parse Mode
 	$link = dbConnect();
 	$text = "<b>⚔ Lista de clanes listos para la batalla:</b>";
-	$query = 'SELECT groupbattle.name AS "name", playerbattle.group_id AS "group_id", COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL  AND groupbattle.group_id = playerbattle.group_id AND  "members" > 4 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC';
-	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$query = "SELECT gb.name, pb.group_id, COUNT( pb.user_id ) AS  'members' FROM playerbattle pb, groupbattle gb WHERE pb.group_id IS NOT NULL AND gb.group_id = pb.group_id GROUP BY pb.group_id HAVING COUNT( pb.user_id ) >4 ORDER BY CASE WHEN pb.user_id =0 THEN -1 ELSE COUNT( pb.user_id ) END DESC , pb.group_id DESC";
+ 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = $text.PHP_EOL.PHP_EOL;
 	for($i=0;$i<10;$i++) {
 		$row = mysql_fetch_array($result);
@@ -7014,7 +7079,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.1 creado por @Kamisuke."
+				"@DemisukeBot v3.0.2 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -7453,7 +7518,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los puntos adicionales son acumulables y no caducan. Puedes asignarlos cuando quieras, pero su uso es de vital importancia para poder derrotar a tus enemigos.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>La función !atacar está disponible para jugadores de nivel 5 y superior. Una vez utilizada, el siguiente jefe tardará seis horas en aparecer. Si durante ese tiempo de espera se utiliza la función !atacar, aparecerá el tiempo restante para que vuelva a estar disponible.</i>"
+				"▶️<i>La función !atacar está disponible para jugadores de nivel 5 y superior. Una vez utilizada, el siguiente jefe tardará seis horas en aparecer, salvo en las zonas de entrenamiento donde el tiempo de espera será más reducido. Si durante ese tiempo de espera se utiliza la función !atacar, aparecerá el tiempo restante para que vuelva a estar disponible.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cada vez que cambies de zona los enemigos serán más poderosos y darán más puntos de experiencia al derrotarlos.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -8898,7 +8963,13 @@ function processMessage($message) {
 				if($row['level'] > 4) {
 					if($row['level'] < 100) {
 						$spawnTime = time();
-						$spawnTime = $spawnTime - (3600 * 6);
+						if($row['level'] == 5) {
+							$spawnTime = $spawnTime - (3600 * 1);
+						} else if($row['level'] < 11) {
+							$spawnTime = $spawnTime - (3600 * 2);
+						} else {
+							$spawnTime = $spawnTime - (3600 * 6);
+						}
 						if($spawnTime >= $row['last_boss']) {
 						// si cumple el nivel, mirar si hace mucho que ya se cargo al ultimo
 							// si hace mucho, atacar al boss que le toque, mirar por nivel cual le toca sacar de la db
@@ -9569,7 +9640,8 @@ function processMessage($message) {
 						// si tiene, mirar si el rival existe
 						mysql_free_result($result);
 						$number = $number - 1;
-						$query = 'SELECT groupbattle.name, playerbattle.group_id, COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL AND groupbattle.group_id = playerbattle.group_id AND  "members" > 4 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC LIMIT '.$number.' , 1';
+						//$query = 'SELECT groupbattle.name, playerbattle.group_id, COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL AND groupbattle.group_id = playerbattle.group_id AND  "members" > 4 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC LIMIT '.$number.' , 1';
+						$query = "SELECT gb.name, pb.group_id, COUNT( pb.user_id ) AS  'members' FROM playerbattle pb, groupbattle gb WHERE pb.group_id IS NOT NULL AND gb.group_id = pb.group_id GROUP BY pb.group_id HAVING COUNT( pb.user_id ) >4 ORDER BY CASE WHEN pb.user_id =0 THEN -1 ELSE COUNT( pb.user_id ) END DESC , pb.group_id DESC LIMIT ".$number." , 1";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
 						$ownGroup = 0;
@@ -10300,7 +10372,7 @@ function processMessage($message) {
 		$totalRockMan = $row['total_users'];
 		mysql_free_result($result);
 		mysql_close($link);
-		$text = "*".$totalUsers." personas están usando el bot.".PHP_EOL;
+		$text = "*".$totalUsers." personas han utilizado ya el bot.".PHP_EOL;
 		$text = $text.$totalRockMan." personas luchan por ser Rocosos de Demisuke.".PHP_EOL;
 		$text = $text.$totalGroups." grupos han probado ya el bot.".PHP_EOL;
 		$text = $text.$totalActive." grupos participan en los minijuegos.*";
@@ -11134,6 +11206,32 @@ function processMessage($message) {
 			launchVaporwave($chat_id);
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: !vaporwave.");
+		}
+	} else if (strpos($text, "/topPlayers") === 0) {
+		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
+			error_log($logname." triggered: /topPlayers.");
+			$link = dbConnect();
+			$query = 'SELECT pb.user_id, IF( pb.group_id IS NOT NULL , gb.name,  "Ninguno" ) AS  "clan", ub.first_name, ub.User_name, pb.level, pb.exp_points, pb.last_exp, pb.last_boss, pb.extra_points FROM playerbattle pb, userbattle ub, groupbattle gb WHERE ub.user_id = pb.user_id AND ( pb.group_id IS NULL OR gb.group_id = pb.group_id ) AND pb.user_id >0 GROUP BY pb.id_player ORDER BY pb.exp_points DESC LIMIT 0 , 30';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$msg = "<b>TOP 30 Rocosos</b>".PHP_EOL.PHP_EOL;
+			$number = 1;
+			while($row = mysql_fetch_array($result)) {
+				$expDate = date("l, j F Y. (H:i:s)", $row['last_exp']);
+				$expDate = translateDate($expDate);
+				$bossDate = date("l, j F Y. (H:i:s)", $row['last_boss']);
+				$bossDate = translateDate($bossDate);
+				$msg = $msg."<b>".$number." - ".getFullName($row['first_name'], $row['user_name'])." Nv. ".$row['level']." (".number_format($row['exp_points'], 0, ',', '.').")</b>".PHP_EOL.
+						"<b>Clan:</b> ".$row['clan'].PHP_EOL.
+						"<b>Last Exp:</b> ".$expDate.PHP_EOL.
+						"<b>Last Boss:</b> ".$bossDate.PHP_EOL.
+						"<b>Extra Points Left:</b> ".PHP_EOL.PHP_EOL;
+				$number = $number + 1;
+			}
+			mysql_free_result($result);
+			mysql_close($link);
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 		}
 	} else if (strpos($text, "%%CONNTRY%%") !== false) {
 		apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => "VOY"));

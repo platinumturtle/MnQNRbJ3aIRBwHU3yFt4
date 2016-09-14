@@ -9029,7 +9029,8 @@ function processMessage($message) {
 						// si tiene, mirar si el rival existe
 						mysql_free_result($result);
 						$number = $number - 1;
-						$query = 'SELECT groupbattle.name, playerbattle.group_id, COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL AND groupbattle.group_id = playerbattle.group_id AND  "members" > 4 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC LIMIT '.$number.' , 1';
+						//$query = 'SELECT groupbattle.name, playerbattle.group_id, COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL AND groupbattle.group_id = playerbattle.group_id AND  "members" > 4 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC LIMIT '.$number.' , 1';
+						$query = "SELECT gb.name, pb.group_id, COUNT( pb.user_id ) AS  'members' FROM playerbattle pb, groupbattle gb WHERE pb.group_id IS NOT NULL AND gb.group_id = pb.group_id GROUP BY pb.group_id HAVING COUNT( pb.user_id ) >4 ORDER BY CASE WHEN pb.user_id =0 THEN -1 ELSE COUNT( pb.user_id ) END DESC , pb.group_id DESC LIMIT ".$number." , 1";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
 						$ownGroup = 0;

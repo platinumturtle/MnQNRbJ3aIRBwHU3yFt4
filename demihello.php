@@ -11226,6 +11226,12 @@ function processMessage($message) {
 						"<b>Last Boss:</b> ".$bossDate.PHP_EOL.
 						"<b>Extra Points Left:</b> ".PHP_EOL.PHP_EOL;
 				$number = $number + 1;
+				if($number == 10 || $number == 20) {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					$msg = "<b>TOP 30 Rocosos</b>".PHP_EOL.PHP_EOL;
+				}
 			}
 			mysql_free_result($result);
 			mysql_close($link);

@@ -4212,7 +4212,7 @@ function getGroupTokens($myself, $group, $groupName) {
 	//HTML Parse Mode
 	$link = dbConnect();
 	$text = "<b>🏁 Ránking de fichas de ".$groupName.":</b>";
-	$query = "SELECT userbet.user_id, userbet.tokens, userbattle.user_name, userbattle.first_name FROM `userbet`, `userbattle` WHERE userbet.user_id = userbattle.user_id AND userbet.group_id = ".$group." GROUP BY userbet.user_id";
+	$query = "SELECT userbet.user_id, userbet.tokens, userbattle.user_name, userbattle.first_name FROM `userbet`, `userbattle` WHERE userbet.user_id = userbattle.user_id AND userbet.group_id = ".$group." GROUP BY userbet.user_id ORDER BY tokens DESC";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = $text.PHP_EOL.PHP_EOL.
 			"<b>🏆 POLE ABSOLUTA 🏆</b>"
@@ -10736,7 +10736,7 @@ function processMessage($message) {
 		if($message['chat']['type'] == "private" && $message['from']['id'] == 6250647) {
 			error_log($logname." triggered: /topPlayers.");
 			$link = dbConnect();
-			$query = 'SELECT pb.user_id, IF( pb.group_id IS NOT NULL , gb.name,  "Ninguno" ) AS  "clan", ub.first_name, ub.User_name, pb.level, pb.exp_points, pb.last_exp, pb.last_boss, pb.extra_points FROM playerbattle pb, userbattle ub, groupbattle gb WHERE ub.user_id = pb.user_id AND ( pb.group_id IS NULL OR gb.group_id = pb.group_id ) AND pb.user_id >0 GROUP BY pb.id_player ORDER BY pb.exp_points DESC LIMIT 0 , 30';
+			$query = 'SELECT pb.user_id, IF( pb.group_id IS NOT NULL , gb.name,  "Ninguno" ) AS  "clan", ub.first_name, ub.user_name, pb.level, pb.exp_points, pb.last_exp, pb.last_boss, pb.extra_points FROM playerbattle pb, userbattle ub, groupbattle gb WHERE ub.user_id = pb.user_id AND ( pb.group_id IS NULL OR gb.group_id = pb.group_id ) AND pb.user_id >0 GROUP BY pb.id_player ORDER BY pb.exp_points DESC LIMIT 0 , 30';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$msg = "<b>TOP 30 Rocosos</b>".PHP_EOL.PHP_EOL;
 			$number = 1;
@@ -10749,8 +10749,14 @@ function processMessage($message) {
 						"<b>Clan:</b> ".$row['clan'].PHP_EOL.
 						"<b>Last Exp:</b> ".$expDate.PHP_EOL.
 						"<b>Last Boss:</b> ".$bossDate.PHP_EOL.
-						"<b>Extra Points Left:</b> ".PHP_EOL.PHP_EOL;
+						"<b>Extra Points Left:</b> ".$row['extra_points'].PHP_EOL.PHP_EOL;
 				$number = $number + 1;
+				if($number == 10 || $number == 20) {
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					$msg = "";
+				}
 			}
 			mysql_free_result($result);
 			mysql_close($link);

@@ -3435,7 +3435,7 @@ function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
 									"¡Eres un tanque! Has luchado de tal manera que parecía que tus puntos de vida no se iban a agotar nunca, tu rival incluso parecía desesperado por momentos, nunca vio ganada esta batalla.",
 									"Tus puntos de ataque han sido vitales esta vez, por cada tres golpes que tu rival lograba acertar sobre ti, tú respondías con uno igual de fuerte. Te has marcado un combo final que ha decantado el combate a tu favor.",
 									"Combate extraño, primero parecía que te lo ibas a llevar de calle, pero luego tu rival cogió fuerza y te remontó hasta llevarte al límite, pero en cuanto se cansó del esfuerzo volviste a tomar el mando y la victoria cayó de tu bando.",
-									"Es inexplicable, pero tu rival te ha atacado con todo y ha llevado el peso del combate, hasta que ha llegado un punto en que parecía que no podía más, y desde ese momento no ha supuesto un rival digno paar ti. La victoria es tuya.",
+									"Es inexplicable, pero tu rival te ha atacado con todo y ha llevado el peso del combate, hasta que ha llegado un punto en que parecía que no podía más, y desde ese momento no ha supuesto un rival digno para ti. La victoria es tuya.",
 									"¡No hay color! Te has paseado por el campo de batalla, te has llevado la victoria prácticamente sin sudar. Si vienen más así mejorarás rápido tus estadísticas."
 									);
 			$n = sizeof($storedStandardVictory) - 1;
@@ -3559,6 +3559,10 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 	sleep(1);
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 	// calcular quien gana y si es con suerte o no
+	if($level == 5) {
+		$win = 1;
+		$lucky = 0;
+	} else 
 	if($level < ($row['level'] - 2)) {
 		// si el pj es -3 niveles al del boss, 90% de palmar
 		$victoryTicket = rand(1,10);
@@ -4890,7 +4894,7 @@ function getGroupTokens($myself, $group, $groupName) {
 	//HTML Parse Mode
 	$link = dbConnect();
 	$text = "<b>🏁 Ránking de fichas de ".$groupName.":</b>";
-	$query = "SELECT userbet.user_id, userbet.tokens, userbattle.user_name, userbattle.first_name FROM `userbet`, `userbattle` WHERE userbet.user_id = userbattle.user_id AND userbet.group_id = ".$group." GROUP BY userbet.user_id";
+	$query = "SELECT userbet.user_id, userbet.tokens, userbattle.user_name, userbattle.first_name FROM `userbet`, `userbattle` WHERE userbet.user_id = userbattle.user_id AND userbet.group_id = ".$group." GROUP BY userbet.user_id ORDER BY tokens DESC";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = $text.PHP_EOL.PHP_EOL.
 			"<b>🏆 POLE ABSOLUTA 🏆</b>"
@@ -7321,7 +7325,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>El actual poseedor del último mástil reclamado no podrá reclamar el siguiente.</i>"
 				.PHP_EOL.
-				"▶️<i>Cada participante tendrá un inventario inicial para veinte mástiles, y un inventario adicional con un hueco extra por cada uno de los mástiles que haya capturado el usuario que aparece en la posición 10 de la clasificación del grupo.</i>"
+				"▶️<i>Cada participante tendrá un inventario inicial para veinte mástiles, y un inventario adicional con un hueco extra por cada uno de los mástiles que haya capturado el usuario que aparece en la posición 3 de la clasificación del grupo.</i>"
 				.PHP_EOL.
 				"▶️<i>El uso de la función !pole es compatible con los grupos que tengan un número considerable de participantes.</i>"
 				.PHP_EOL.
@@ -8811,7 +8815,7 @@ function processMessage($message) {
 					}
 					$msg = $msg.$row['home_group']." 🆚 ".$row['away_group'].PHP_EOL;
 					$msg = $msg."<b>Fecha:</b> ".$row['date'].PHP_EOL;
-					$msg = $msg."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$row['winner_group']."</i>".PHP_EOL.PHP_EOL;
+					$msg = $msg."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$row['winner_group'].".</i>".PHP_EOL.PHP_EOL;
 				} else if($i==0) {
 					$msg = $msg."<i>Ninguna.</i>".PHP_EOL.PHP_EOL;
 				}
@@ -8841,7 +8845,7 @@ function processMessage($message) {
 					$winnerName = getFullName($row['winner_name'], $row['winner_user']);
 					$msg = $msg.$playerName." 🆚 ".$rivalName.PHP_EOL;
 					$msg = $msg."<b>Fecha:</b> ".$row['date'].PHP_EOL;
-					$msg = $msg."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$winnerName."</i>".PHP_EOL.PHP_EOL;
+					$msg = $msg."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$winnerName.".</i>".PHP_EOL.PHP_EOL;
 				} else if($i==0) {
 					$msg = $msg."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
 				}
@@ -9271,7 +9275,7 @@ function processMessage($message) {
 							} else {
 								$percentHigher = (($rivalPower * 100) / $playerPower) - 100;
 							}
-							error_log("PERCENTDIFF ".$percentHigher);
+							error_log("Percent diff. +".$percentHigher);
 							if($percentHigher < 15) {
 								// tener en cuenta la exp
 								if($expDiff >= 0) {
@@ -9674,7 +9678,7 @@ function processMessage($message) {
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 									// avisar al equipo home
 									apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-									$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan".getClanLevelByMembers($rivalMembers).$rivalName."!".PHP_EOL.PHP_EOL.
+									$msg = "⚔ <b>¡Le acabas de declarar la guerra al clan ".getClanLevelByMembers($rivalMembers).$rivalName."!".PHP_EOL.PHP_EOL.
 									"Si aceptan el desafío la batalla comenzará automáticamente y el resultado aparecerá en los grupos participantes.".PHP_EOL.
 									"En caso de que el clan rival rechace la invitación de guerra se enviará una notificación a este grupo.</b>".PHP_EOL.PHP_EOL.
 									"<i>Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
@@ -9820,7 +9824,7 @@ function processMessage($message) {
 						} else {
 							$percentHigher = (($awayGroupPower * 100) / $homeGroupPower) - 100;
 						}
-						error_log("PERCENTDIFF ".$percentHigher);
+						error_log("Percent diff. +".$percentHigher);
 						if($percentHigher < 15) {
 							// tener en cuenta los miembros
 							if($membersDiff >= 0) {

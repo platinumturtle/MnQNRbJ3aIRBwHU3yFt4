@@ -9913,7 +9913,7 @@ function processMessage($message) {
 					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 					if($newLevel != $row['level']){
 						error_log($logname." is now level ".$newLevel.".");
-						levelUp($newLevel, $newExp, $critic, $link, $chat_id);
+						levelUp($newLevel, $newExp, $critic, $newBottles, $link, $chat_id);
 						mysql_free_result($result);
 						$query = "UPDATE `playerbattle` SET `bottles` = '".$newBottles."' WHERE `user_id` = '".$chat_id."'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

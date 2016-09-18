@@ -1778,7 +1778,7 @@ function getAreaName ($level) {
 	return $name;
 }
 
-function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) {
+function levelUp($newLevel, $newExp, $currCrit, $bottles, $link, $user_id, $fromBoss = 0) {
 	$currTime = time();
 	$newHP = 0;
 	$newAt = 0;
@@ -2151,7 +2151,16 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 	} else {
 		$respawnType = "last_exp";
 	}
-	$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `level` = '".$newLevel."', `extra_points` = `extra_points` + ".$newExtraPoints.", `hp` = `hp` + ".$newHP.", `attack` = `attack` + ".$newAt.", `defense` = `defense` + ".$newDef.", `critic` = `critic` + ".$newCrit.", `speed` = `speed` + ".$newSp.", `".$newItemTypeName."` = ".$newItemPower.", `".$respawnType."` = ".$currTime." WHERE `user_id` = '".$user_id."'";
+	if($newLevel == 100) {
+		$updateBottles = ", `bottles`= 0";
+	} else if($newLevel > 19) {
+		if($bottles < 10) {
+			$updateBottles = ", `bottles` = `bottles` + 1";
+		}
+	} else {
+		$updateBottles = "";
+	}
+	$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `level` = '".$newLevel."', `extra_points` = `extra_points` + ".$newExtraPoints.", `hp` = `hp` + ".$newHP.", `attack` = `attack` + ".$newAt.", `defense` = `defense` + ".$newDef.", `critic` = `critic` + ".$newCrit.", `speed` = `speed` + ".$newSp.", `".$newItemTypeName."` = ".$newItemPower.", `".$respawnType."` = ".$currTime.$updateBottles." WHERE `user_id` = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	mysql_free_result($result);		
 	// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
@@ -2186,6 +2195,17 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 				break;
 	}
 	$msg = $msg." ".$itemName;
+	if($newLevel > 19) {
+		if($newLevel < 100) {
+			if($bottles < 10) {
+				$msg = $msg.PHP_EOL."🍾 ¡Has obtenido una botella de experiencia!";
+			} else {
+				$msg = $msg.PHP_EOL."🍾 ¡Tu inventario de botellas de experiencia está lleno!";
+			}
+		} else {
+			$msg = $msg.PHP_EOL."🍾 Has deshechado tus botellas de experiencia.";
+		}
+	}
 	sleep(1);
 	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	// (al 10 avisar de que se cambia la exp ganada )
@@ -3141,7 +3161,7 @@ function getClanLevelByMembers($levelNumber) {
 }
 
 function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
-	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_allowed, pvp_wins, pvp_group_wins, last_boss, avatar FROM playerbattle WHERE user_id = '".$user_id."'";
+	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, bottles, pvp_allowed, pvp_wins, pvp_group_wins, last_boss FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	if(isset($row['level'])){
@@ -3175,6 +3195,21 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 					$msg = $msg."<b>Consejo:</b> puedes luchar junto a tus amigos contra otros enemigos si añades al bot a tu grupo de amigos y usas la función !unirme.".PHP_EOL;
 				}
 			}
+			if($row['bottles'] > 0) {
+				$tipTicket = rand(1,10);
+				if($tipTicket == 2) {
+					$msg = $msg."<b>Consejo:</b> utiliza !botella para usar las botellas de experiencia que tienes. ¡Si acumulas diez botellas en tu inventario no podrás recibir más!".PHP_EOL;
+				}
+			}
+			$tipTicket = rand(1,20);
+			if($tipTicket == 17) {
+				$subTipTicket = rand(1, 2);
+				if($subTipTicket == 1) {
+					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase. ¡No te pierdas ninguno!".PHP_EOL;
+				//} else {
+				//	$msg = $msg."<b>Consejo:</b> utiliza !rol si no quieres esperar tanto tiempo a conseguir nueva experiencia, ¡podrías obtener buenas recompensas para tu personaje!".PHP_EOL;
+				}
+			}
 			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
 		} else {		
 			// mostrar toooodos los stats posibles, con el monospace y eso
@@ -3194,6 +3229,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$weapon = $row['weapon'];
 			$shield = $row['shield'];
 			$avatar = $row['avatar'];
+			$bottles = $row['bottles'];
 			$pvp_allowed = $row['pvp_allowed'];
 			$pvp_wins = $row['pvp_wins'];
 			$pvp_group_wins = $row['pvp_group_wins'];
@@ -3242,7 +3278,8 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$expBar = getLevelBar($exp_points, $level);
 			$msg = $msg.$expBar.PHP_EOL;
 			$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
-			$msg = $msg."💎 <b>Puntos extra por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
+			$msg = $msg."💎 <b>Puntos extra por utilizar:</b> ".$extra_points.PHP_EOL;
+			$msg = $msg."🍾 <b>Botellas de experiencia:</b> ".$bottles.PHP_EOL.PHP_EOL;
 			$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
 			$msg = $msg."<pre>VID:";
 			switch(strlen($hp)){
@@ -6711,7 +6748,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.3 creado por @Kamisuke."
+				"@DemisukeBot v3.0.4 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -7089,6 +7126,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!pj (o </b>/pj<b>)</b>: <i>Muestra tu ficha completa de jugador.</i>"
 				.PHP_EOL.PHP_EOL.
+				"➡️<b>!botella</b>: <i>Utiliza el objeto \"botella de experiencia\".</i>"
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!unirme</b>: <i>Te permite convertirte en miembro del clan de un grupo al que pertenezcas.</i>"
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!clanes</b>: <i>Muestra los diez clanes con más victorias PvP en guerras entre grupos.</i>"
@@ -7165,6 +7204,10 @@ function commandsList($send_id, $mode) {
 				"▶️<i>A partir del nivel 11 podrás entablar duelos PvP. Si utilizas \"!pvp\" activarás o desactivarás esta opción.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>El número máximo de botellas disponibles en tu inventario es 10, ¡utilízalas desde chat privado cuanto antes para poder recibir más!</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Se pueden usar varias botellas de manera seguida, sin embargo tu personaje perderá energía bebiendo y deberá esperar unos minutos para volver a usar !exp.</i>"
 				;
 	} else if($mode == "pvp_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -8195,7 +8238,7 @@ function processMessage($message) {
 			error_log($logname." triggered: !exp.");
 			// iniciar db y mirar si tiene pj
 			$link = dbConnect();
-			$query = "SELECT last_exp, level, exp_points, critic FROM playerbattle WHERE user_id = ".$chat_id;
+			$query = "SELECT last_exp, level, exp_points, critic, bottles FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['last_exp'])){
@@ -8207,12 +8250,14 @@ function processMessage($message) {
 						$expAcquired = getPlayerExp($row['level'], $chat_id);
 						$newExp = $row['exp_points'] + $expAcquired;
 						$newLevel = getLevelFromExp($newExp);
+						$critic = $row['critic'];
+						$bottles = $row['bottles'];
 						mysql_free_result($result);	
 						//error_log("COMPROBAR ".$expAcquired." ".$newExp." ".$newLevel." ".$row['exp_points']." ".$row['level']);
 						// comprobar si con la nueva exp sube de nivel
 						if($newLevel != $row['level']){
 							error_log($logname." is now level ".$newLevel.".");
-							levelUp($newLevel, $newExp, $row['critic'], $link, $chat_id);
+							levelUp($newLevel, $newExp, $critic, $bottles, $link, $chat_id);
 							//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
 								// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
 								// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
@@ -8694,7 +8739,7 @@ function processMessage($message) {
 			// abrir db
 			$link = dbConnect();
 			// mirar si tiene pj
-			$query = "SELECT exp_points, critic, level, last_boss, (hp + attack + defense + (critic * 3) + speed + (helmet * 3) + body + boots + weapon + shield) AS total_power FROM playerbattle WHERE user_id = ".$chat_id;
+			$query = "SELECT exp_points, critic, level, last_boss, (hp + attack + defense + (critic * 3) + speed + (helmet * 3) + body + boots + weapon + shield) AS total_power, bottles FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['level'])) {
@@ -8720,6 +8765,7 @@ function processMessage($message) {
 							$totalPower = $row['total_power'];
 							$expPoints = $row['exp_points'];
 							$critic = $row['critic'];
+							$bottles = $row['bottles'];
 							mysql_free_result($result);							
 							$playerName = getFullName($message['from']['first_name'], $message['from']['username']);
 							$bossExp = bossBattle($chat_id, $link, $level, $totalPower, $playerName);
@@ -8729,7 +8775,7 @@ function processMessage($message) {
 								$newLevel = getLevelFromExp($expPoints);								
 								if($newLevel != $level){
 									error_log($logname." is now level ".$newLevel.".");
-									levelUp($newLevel, $expPoints, $critic, $link, $chat_id, 1);
+									levelUp($newLevel, $expPoints, $critic, $bottles, $link, $chat_id, 1);
 									//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
 										// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
 										// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
@@ -9352,6 +9398,69 @@ function processMessage($message) {
 		} else {
 			error_log($logname." triggered: !rocosos.");
 			getRockMan($chat_id);
+		}
+	} else if (strpos(strtolower($text), "!botella") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group and failed: !botella.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$msg = "<b>La función !botella solo está disponible desde chat privado con el bot.</b>";
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else {
+			error_log($logname." triggered: !botella.");
+			// abrir db
+			$link = dbConnect();
+			$query = "SELECT level, critic, exp_points, bottles FROM playerbattle WHERE user_id = '".$chat_id."'";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			// mirar si tiene pj
+			if(isset($row['bottles'])) {
+				// si tiene, mirar si tiene botellas
+				if($row['bottles'] > 0) {
+					// si tiene, usar una botella, restarle 1 al total y avisar
+					$currExp = $row['exp_points'];
+					$currLevel = $row['level'];
+					$newBottles = $row['bottles'] - 1;
+					$critic = $row['critic'];
+					$currTime = time();
+					mysql_free_result($result);
+					$expAcquired = useBottleExp($currLevel);
+					$newExp = $currExp + $expAcquired;
+					$newLevel = getLevelFromExp($newExp);
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "🍾 <b>Te has bebido una botella de experiencia hasta cansarte y has ganado ".$expAcquired." puntos de experiencia.</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					if($newLevel != $row['level']){
+						error_log($logname." is now level ".$newLevel.".");
+						levelUp($newLevel, $newExp, $critic, $newBottles, $link, $chat_id);
+						mysql_free_result($result);
+						$query = "UPDATE `playerbattle` SET `bottles` = '".$newBottles."' WHERE `user_id` = '".$chat_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					} else {
+						$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `bottles` = '".$newBottles."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					}
+					mysql_free_result($result);
+					$user_id = $message['from']['id'];
+					getPlayerInfo(0, $link, $chat_id, $user_id);
+				} else {
+					// si no tiene, decirle que no le quedan botellas
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "<b>No te queda ninguna botella por utilizar en tu inventario.</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+				}
+			} else {
+				// si no tiene, que use /exp
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "<b>Para utilizar una botella debes jugar a los Rocosos de Demisuke, utiliza</b> /exp <b>para entrenar a tu personaje.</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+			}
+			mysql_free_result($result);
+			// cerrar db
+			mysql_close($link);
 		}
 	} else if (strpos(strtolower($text), "!declararguerra") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {

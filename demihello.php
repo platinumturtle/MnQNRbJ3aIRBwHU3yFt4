@@ -970,6 +970,241 @@ function reverseString ($message) {
 	return $message;
 }
 
+function useBottleExp($level) {
+	if($level == 100) {
+		$exp = 0;
+	} else if($level > 89) {
+		switch($level) {
+			case 99: $exp = rand(4300, 4360);
+					break;
+			case 98: $exp = rand(7710, 7720);
+					break;
+			case 97: $exp = rand(6710, 6720);
+					break;
+			case 96: $exp = rand(5710, 5720);
+					break;
+			case 95: $exp = rand(4710, 4720);
+					break;
+			case 94: $exp = rand(3710, 3720);
+					break;
+			case 93: $exp = rand(2710, 2720);
+					break;
+			case 92: $exp = rand(1710, 1720);
+					break;
+			case 91: $exp = rand(1010, 1020);
+					break;
+			case 90: $exp = rand(840, 850);
+					break;
+		}
+	}else if($level > 79) {
+		switch($level) {
+			case 89: $exp = rand(2060, 2065);
+					break;
+			case 88: $exp = rand(2040, 2045);
+					break;
+			case 87: $exp = rand(2020, 2025);
+					break;
+			case 86: $exp = rand(2000, 2005);
+					break;
+			case 85: $exp = rand(1980, 1985);
+					break;
+			case 84: $exp = rand(1960, 1970);
+					break;
+			case 83: $exp = rand(1940, 1950);
+					break;
+			case 82: $exp = rand(1920, 1930);
+					break;
+			case 81: $exp = rand(1900, 1910);
+					break;
+			case 80: $exp = rand(1650, 1660);
+					break;
+		}
+	}else if($level > 69) {
+		switch($level) {
+			case 79: $exp = rand(3270, 3280);
+					break;
+			case 78: $exp = rand(3235, 3245);
+					break;
+			case 77: $exp = rand(3200, 3210);
+					break;
+			case 76: $exp = rand(3160, 3170);
+					break;
+			case 75: $exp = rand(3125, 3135);
+					break;
+			case 74: $exp = rand(3090, 3100);
+					break;
+			case 73: $exp = rand(3050, 3060);
+					break;
+			case 72: $exp = rand(3020, 3030);
+					break;
+			case 71: $exp = rand(2980, 2990);
+					break;
+			case 70: $exp = rand(2560, 2570);
+					break;
+		}
+	}else if($level > 59) {
+		switch($level) {
+			case 69: $exp = rand(2520, 2535);
+					break;
+			case 68: $exp = rand(2490, 2500);
+					break;
+			case 67: $exp = rand(2450, 2465);
+					break;
+			case 66: $exp = rand(2420, 2430);
+					break;
+			case 65: $exp = rand(2380, 2395);
+					break;
+			case 64: $exp = rand(2350, 2365);
+					break;
+			case 63: $exp = rand(2315, 2330);
+					break;
+			case 62: $exp = rand(2280, 2295);
+					break;
+			case 61: $exp = rand(2250, 2265);
+					break;
+			case 60: $exp = rand(1900, 1915);
+					break;
+		}
+	}else if($level > 49) {
+		switch($level) {
+			case 59: $exp = rand(1870, 1880);
+					break;
+			case 58: $exp = rand(1840, 1850);
+					break;
+			case 57: $exp = rand(1810, 1820);
+					break;
+			case 56: $exp = rand(1770, 1790);
+					break;
+			case 55: $exp = rand(1740, 1760);
+					break;
+			case 54: $exp = rand(1710, 1730);
+					break;
+			case 53: $exp = rand(1680, 1695);
+					break;
+			case 52: $exp = rand(1650, 1665);
+					break;
+			case 51: $exp = rand(1620, 1635);
+					break;
+			case 50: $exp = rand(1320, 1330);
+					break;
+		}
+	}else if($level > 39) {
+		switch($level) {
+			case 49: $exp = rand(2650, 2660);
+					break;
+			case 48: $exp = rand(2590, 2600);
+					break;
+			case 47: $exp = rand(2530, 2550);
+					break;
+			case 46: $exp = rand(2470, 2490);
+					break;
+			case 45: $exp = rand(2410, 2430);
+					break;
+			case 44: $exp = rand(2360, 2370);
+					break;
+			case 43: $exp = rand(2290, 2310);
+					break;
+			case 42: $exp = rand(2240, 2260);
+					break;
+			case 41: $exp = rand(2190, 2200);
+					break;
+			case 40: $exp = rand(2130, 2150);
+					break;
+		}
+	}else if($level > 29) {
+		switch($level) {
+			case 39: $exp = rand(1680, 1690);
+					break;
+			case 38: $exp = rand(1630, 1640);
+					break;
+			case 37: $exp = rand(1570, 1590);
+					break;
+			case 36: $exp = rand(1520, 1530);
+					break;
+			case 35: $exp = rand(1460, 1480);
+					break;
+			case 34: $exp = rand(1410, 1430);
+					break;
+			case 33: $exp = rand(1360, 1380);
+					break;
+			case 32: $exp = rand(1310, 1325);
+					break;
+			case 31: $exp = rand(1260, 1280);
+					break;
+			case 30: $exp = rand(1210, 1230);
+					break;
+		}
+	}else if($level > 19) {
+		switch($level) {
+			case 29: $exp = rand(880, 900);
+					break;
+			case 28: $exp = rand(820, 840);
+					break;
+			case 27: $exp = rand(780, 800);
+					break;
+			case 26: $exp = rand(730, 750);
+					break;
+			case 25: $exp = rand(690, 705);
+					break;
+			case 24: $exp = rand(650, 660);
+					break;
+			case 23: $exp = rand(600, 625);
+					break;
+			case 22: $exp = rand(570, 600);
+					break;
+			case 21: $exp = rand(420, 550);
+					break;
+			case 20: $exp = rand(490, 510);
+					break;
+		}
+	} else if($level > 9) {
+		switch($level) {
+			case 19: $exp = rand(380, 420);
+					break;
+			case 18: $exp = rand(320, 350);
+					break;
+			case 17: $exp = rand(310, 340);
+					break;
+			case 16: $exp = rand(290, 310);
+					break;
+			case 15: $exp = rand(290, 310);
+					break;
+			case 14: $exp = rand(260, 280);
+					break;
+			case 13: $exp = rand(240, 260);
+					break;
+			case 12: $exp = rand(200, 250);
+					break;
+			case 11: $exp = rand(200, 220);
+					break;
+			case 10: $exp = rand(200, 270);
+					break;
+		}
+	} else {
+		switch($level) {
+			case 9: $exp = rand(110, 125);
+					break;
+			case 8: $exp = rand(90, 110);
+					break;
+			case 7: $exp = rand(70, 85);
+					break;
+			case 6: $exp = rand(50, 65);
+					break;
+			case 5: $exp = rand(45, 60);
+					break;
+			case 4: $exp = rand(40, 50);
+					break;
+			case 3: $exp = rand(30, 40);
+					break;
+			case 2: $exp = rand(45, 65);
+					break;
+			case 1: $exp = 29;
+					break;
+		}
+	}
+	return $exp;
+}
+
 function getPlayerExp($currLevel, $user_id) {
 	$exp = 0;
 	$text = "*Te has quedado dormido y has perdido la oportunidad, el personaje no reacciona.*";
@@ -2297,7 +2532,7 @@ function getAreaName ($level) {
 	return $name;
 }
 
-function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) {
+function levelUp($newLevel, $newExp, $currCrit, $bottles, $link, $user_id, $fromBoss = 0) {
 	$currTime = time();
 	$newHP = 0;
 	$newAt = 0;
@@ -2670,7 +2905,16 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 	} else {
 		$respawnType = "last_exp";
 	}
-	$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `level` = '".$newLevel."', `extra_points` = `extra_points` + ".$newExtraPoints.", `hp` = `hp` + ".$newHP.", `attack` = `attack` + ".$newAt.", `defense` = `defense` + ".$newDef.", `critic` = `critic` + ".$newCrit.", `speed` = `speed` + ".$newSp.", `".$newItemTypeName."` = ".$newItemPower.", `".$respawnType."` = ".$currTime." WHERE `user_id` = '".$user_id."'";
+	if($newLevel == 100) {
+		$updateBottles = ", `bottles`= 0";
+	} else if($newLevel > 19) {
+		if($bottles < 10) {
+			$updateBottles = ", `bottles` = `bottles` + 1";
+		}
+	} else {
+		$updateBottles = "";
+	}
+	$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `level` = '".$newLevel."', `extra_points` = `extra_points` + ".$newExtraPoints.", `hp` = `hp` + ".$newHP.", `attack` = `attack` + ".$newAt.", `defense` = `defense` + ".$newDef.", `critic` = `critic` + ".$newCrit.", `speed` = `speed` + ".$newSp.", `".$newItemTypeName."` = ".$newItemPower.", `".$respawnType."` = ".$currTime.$updateBottles." WHERE `user_id` = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	mysql_free_result($result);		
 	// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
@@ -2705,6 +2949,17 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 				break;
 	}
 	$msg = $msg." ".$itemName;
+	if($newLevel > 19) {
+		if($newLevel < 100) {
+			if($bottles < 10) {
+				$msg = $msg.PHP_EOL."🍾 ¡Has obtenido una botella de experiencia!";
+			} else {
+				$msg = $msg.PHP_EOL."🍾 ¡Tu inventario de botellas de experiencia está lleno!";
+			}
+		} else {
+			$msg = $msg.PHP_EOL."🍾 Has deshechado tus botellas de experiencia.";
+		}
+	}
 	sleep(1);
 	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	// (al 10 avisar de que se cambia la exp ganada )
@@ -2745,7 +3000,7 @@ function levelUp($newLevel, $newExp, $currCrit, $link, $user_id, $fromBoss = 0) 
 	} else if($newLevel == 20) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 		$msg = "<b>El bosque se ha quedado atrás, ¡te doy la bienvenida a la selva!</b>".PHP_EOL;
-		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones. Además, obtendrás una botella de experiencia gratis al subir de nivel.</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 28) {
@@ -3562,8 +3817,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 	if($level == 5) {
 		$win = 1;
 		$lucky = 0;
-	} else 
-	if($level < ($row['level'] - 2)) {
+	} else if($level < ($row['level'] - 2)) {
 		// si el pj es -3 niveles al del boss, 90% de palmar
 		$victoryTicket = rand(1,10);
 		if($victoryTicket == 10) {
@@ -3661,7 +3915,7 @@ function getClanLevelByMembers($levelNumber) {
 }
 
 function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
-	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, pvp_allowed, pvp_wins, pvp_group_wins, last_boss, avatar FROM playerbattle WHERE user_id = '".$user_id."'";
+	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, bottles, pvp_allowed, pvp_wins, pvp_group_wins, last_boss FROM playerbattle WHERE user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	if(isset($row['level'])){
@@ -3695,6 +3949,21 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 					$msg = $msg."<b>Consejo:</b> puedes luchar junto a tus amigos contra otros enemigos si añades al bot a tu grupo de amigos y usas la función !unirme.".PHP_EOL;
 				}
 			}
+			if($row['bottles'] > 0) {
+				$tipTicket = rand(1,10);
+				if($tipTicket == 2) {
+					$msg = $msg."<b>Consejo:</b> utiliza !botella para usar las botellas de experiencia que tienes. ¡Si acumulas diez botellas en tu inventario no podrás recibir más!".PHP_EOL;
+				}
+			}
+			$tipTicket = rand(1,20);
+			if($tipTicket == 17) {
+				$subTipTicket = rand(1, 2);
+				if($subTipTicket == 1) {
+					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase. ¡No te pierdas ninguno!".PHP_EOL;
+				//} else {
+				//	$msg = $msg."<b>Consejo:</b> utiliza !rol si no quieres esperar tanto tiempo a conseguir nueva experiencia, ¡podrías obtener buenas recompensas para tu personaje!".PHP_EOL;
+				}
+			}
 			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
 		} else {		
 			// mostrar toooodos los stats posibles, con el monospace y eso
@@ -3714,6 +3983,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$weapon = $row['weapon'];
 			$shield = $row['shield'];
 			$avatar = $row['avatar'];
+			$bottles = $row['bottles'];
 			$pvp_allowed = $row['pvp_allowed'];
 			$pvp_wins = $row['pvp_wins'];
 			$pvp_group_wins = $row['pvp_group_wins'];
@@ -3762,7 +4032,8 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$expBar = getLevelBar($exp_points, $level);
 			$msg = $msg.$expBar.PHP_EOL;
 			$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
-			$msg = $msg."💎 <b>Puntos extra por utilizar:</b> ".$extra_points.PHP_EOL.PHP_EOL;
+			$msg = $msg."💎 <b>Puntos extra por utilizar:</b> ".$extra_points.PHP_EOL;
+			$msg = $msg."🍾 <b>Botellas de experiencia:</b> ".$bottles.PHP_EOL.PHP_EOL;
 			$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
 			$msg = $msg."<pre>VID:";
 			switch(strlen($hp)){
@@ -4451,7 +4722,7 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 
 function getRockMan($chat_id) {
 	$link = dbConnect();
-	$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
+	$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
 	for($i=0;$i<10;$i++) {
@@ -4507,7 +4778,7 @@ function getRockMan($chat_id) {
 
 function getRockManGroup($chat_id) {
 	$link = dbConnect();
-	$query = 'SELECT ub.first_name, ub.user_name, gb.name, pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + critic + critic + helmet + helmet + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.group_id = gb.group_id AND pb.group_id = '.$chat_id.' GROUP BY pb.id_player ORDER BY pb.exp_points DESC LIMIT 0 , 10';
+	$query = 'SELECT ub.first_name, ub.user_name, gb.name, pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.group_id = gb.group_id AND pb.group_id = '.$chat_id.' GROUP BY pb.id_player ORDER BY pb.exp_points DESC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = "";
 	$hasMembers = 0;
@@ -4738,7 +5009,7 @@ function getClanList($chat_id) {
 	//HTML Parse Mode
 	$link = dbConnect();
 	$text = "<b>⚔ Lista de clanes listos para la batalla:</b>";
-	$query = "SELECT gb.name, pb.group_id, COUNT( pb.user_id ) AS  'members' FROM playerbattle pb, groupbattle gb WHERE pb.group_id IS NOT NULL AND gb.group_id = pb.group_id GROUP BY pb.group_id HAVING COUNT( pb.user_id ) >4 ORDER BY CASE WHEN pb.user_id =0 THEN -1 ELSE COUNT( pb.user_id ) END DESC , pb.group_id DESC";
+	$query = "SELECT gb.name, pb.group_id, COUNT( pb.user_id ) AS  'members' FROM playerbattle pb, groupbattle gb WHERE pb.group_id IS NOT NULL AND gb.group_id = pb.group_id AND gb.lastpoint >0 GROUP BY pb.group_id HAVING COUNT( pb.user_id ) >4 ORDER BY CASE WHEN pb.user_id =0 THEN -1 ELSE COUNT( pb.user_id ) END DESC , pb.group_id DESC";
  	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = $text.PHP_EOL.PHP_EOL;
 	for($i=0;$i<10;$i++) {
@@ -4767,7 +5038,7 @@ function getClanList($chat_id) {
 function getClanRank($chat_id, $groupTitle = "Ninguno", $isGroup = 0) {
 	//HTML Parse Mode
 	$link = dbConnect();
-	$query = 'SELECT gb.name, COALESCE (pb.cnt, 0) AS "members", COALESCE (gbr.cnt, 0) AS "pvp_victories" FROM groupbattle gb LEFT JOIN ( SELECT group_id, COUNT( * ) AS cnt FROM playerbattle GROUP BY group_id ) pb ON pb.group_id = gb.group_id LEFT JOIN ( SELECT winner_group, COUNT( * ) AS  cnt FROM groupbattleresults GROUP BY winner_group ) gbr ON gb.group_id = gbr.winner_group HAVING pvp_victories > 0 ORDER BY pvp_victories DESC , members DESC , gb.group_id ASC LIMIT 0 , 10';
+	$query = 'SELECT gb.name, COALESCE (pb.cnt, 0) AS "members", COALESCE (gbr.cnt, 0) AS "pvp_victories" FROM groupbattle gb LEFT JOIN ( SELECT group_id, COUNT( * ) AS cnt FROM playerbattle GROUP BY group_id ) pb ON pb.group_id = gb.group_id LEFT JOIN ( SELECT winner_group, COUNT( * ) AS  cnt FROM groupbattleresults GROUP BY winner_group ) gbr ON gb.group_id = gbr.winner_group WHERE gb.lastpoint >0 HAVING pvp_victories > 0 ORDER BY pvp_victories DESC , members DESC , gb.group_id ASC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = "<b>🏁 TOP 10 de clanes con victorias PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
 	for($i=0;$i<10;$i++) {
@@ -5358,6 +5629,7 @@ function containsCommand($text) {
 						"/exp",
 						"!pj",
 						"/pj",
+						"!botella",
 						"!unirme",
 						"!clanes",
 						"!atacar",
@@ -6265,7 +6537,8 @@ function getSaying() {
 						"En casa del herrero",
 						"Sin prisa",
 						"Mal de muchos",
-						"Tanto va el cántaro a la fuente"
+						"Tanto va el cántaro a la fuente",
+						"Después de la tempestad"
 						);
 	$n = sizeof($storedPartA) - 1;
 	$n = rand(0,$n);
@@ -6307,7 +6580,8 @@ function getSaying() {
 						"cuchara de palo",
 						"pero sin pausa",
 						"consuelo de tontos",
-						"que al final se ahoga"
+						"que al final se ahoga",
+						"llega la calma"
 						);
 	$n = sizeof($storedPartB) - 1;
 	$n = rand(0,$n);
@@ -7083,7 +7357,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.2 creado por @Kamisuke."
+				"@DemisukeBot v3.0.4 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -7171,7 +7445,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<i>Además contará de manera indirecta en cuántos grupos está instalado y te dará pistas sobre funciones ocultas como huevos de pascua o palabras clave.</i>"
 				.PHP_EOL.PHP_EOL.
-				"<i>Si utilizas la función </i><b>!infomini</b><i> el bot se limitará a responder cuántos usuarios usan a</i> @DemisukeBot<i>, en cuántos grupos ha estado y en cuántos sigue activo.</i>"
+				"<i>Si utilizas la función </i><b>!infomini</b><i> el bot se limitará a responder cuántos usuarios usan a</i> @DemisukeBot<i>, en cuántos grupos ha estado y en cuántos sigue activo, además del número de jugadores de Los Rocosos de Demisuke.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<i>La información acerca del número de usuarios y grupos que utilizan el bot se actualiza a tiempo real, sin embargo el número de grupos que participan en los minijuegos se actualiza con frecuencia variable y los resultados exactos pueden variar ligeramente.</i>"
 				;
@@ -7461,6 +7735,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!pj (o </b>/pj<b>)</b>: <i>Muestra tu ficha completa de jugador.</i>"
 				.PHP_EOL.PHP_EOL.
+				"➡️<b>!botella</b>: <i>Utiliza el objeto \"botella de experiencia\".</i>"
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!unirme</b>: <i>Te permite convertirte en miembro del clan de un grupo al que pertenezcas.</i>"
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!clanes</b>: <i>Muestra los diez clanes con más victorias PvP en guerras entre grupos.</i>"
@@ -7537,6 +7813,10 @@ function commandsList($send_id, $mode) {
 				"▶️<i>A partir del nivel 11 podrás entablar duelos PvP. Si utilizas \"!pvp\" activarás o desactivarás esta opción.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>El número máximo de botellas disponibles en tu inventario es 10, ¡utilízalas desde chat privado cuanto antes para poder recibir más!</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Se pueden usar varias botellas de manera seguida, sin embargo tu personaje perderá energía bebiendo y deberá esperar unos minutos para volver a usar !exp.</i>"
 				;
 	} else if($mode == "pvp_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -7619,6 +7899,8 @@ function commandsList($send_id, $mode) {
 				"▶️<i>El número de derrotas en guerra de un clan no aparecerá en ninguna lista de clanes ni se verá reflejada en los datos de ninguno de sus participantes. ¡Lucha sin temor!</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Una vez termine la batalla ambos clanes recibirán el resultado de la guerra, y un resumen más escueto aparecerá en !guerras para todos los usuarios del bot.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Los clanes que eliminen al bot del grupo no aparecerán en la lista de clanes con más victorias en guerras.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
 				.PHP_EOL.PHP_EOL.
@@ -7935,30 +8217,6 @@ function processMessage($message) {
 				$gif = "BQADBAADow4AAksYZAfIQMmy5CaN7gI";
 				apiRequest("sendDocument", array('chat_id' => $chat_id, 'document' => $gif));
 			}
-		}
-	} else if (strpos(strtolower($text), "demisuke") !== false) {
-		if($randomTicket > -2) {
-			error_log($logname." triggered: Bot mention.");
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
-				usleep(500000);
-				if(isset($message['from']['username'])) {
-					$name = "@".$message['from']['username'];
-					$text = gotMention($name,true);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
-				} else if (isset($message['from']['first_name'])) {
-					$text = gotMention($message['from']['first_name'],false);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
-				} else {
-					$text = gotMention("compi de grupo",false);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
-				}
-			} else {
-				usleep(500000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Hola, jefe</b> @".$message['from']['username']." 😊"));
-			}
-		} else {
-				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
 		}
 	} else if (strpos(strtolower($text), "!invoca") !== false) {
 		error_log($logname." triggered: !invocar.");
@@ -8460,7 +8718,7 @@ function processMessage($message) {
 			error_log($logname." triggered: !exp.");
 			// iniciar db y mirar si tiene pj
 			$link = dbConnect();
-			$query = "SELECT last_exp, level, exp_points, critic FROM playerbattle WHERE user_id = ".$chat_id;
+			$query = "SELECT last_exp, level, exp_points, critic, bottles FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['last_exp'])){
@@ -8472,12 +8730,14 @@ function processMessage($message) {
 						$expAcquired = getPlayerExp($row['level'], $chat_id);
 						$newExp = $row['exp_points'] + $expAcquired;
 						$newLevel = getLevelFromExp($newExp);
+						$critic = $row['critic'];
+						$bottles = $row['bottles'];
 						mysql_free_result($result);	
 						//error_log("COMPROBAR ".$expAcquired." ".$newExp." ".$newLevel." ".$row['exp_points']." ".$row['level']);
 						// comprobar si con la nueva exp sube de nivel
 						if($newLevel != $row['level']){
 							error_log($logname." is now level ".$newLevel.".");
-							levelUp($newLevel, $newExp, $row['critic'], $link, $chat_id);
+							levelUp($newLevel, $newExp, $critic, $bottles, $link, $chat_id);
 							//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
 								// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
 								// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
@@ -8959,7 +9219,7 @@ function processMessage($message) {
 			// abrir db
 			$link = dbConnect();
 			// mirar si tiene pj
-			$query = "SELECT exp_points, critic, level, last_boss, (hp + attack + defense + (critic * 3) + speed + (helmet * 3) + body + boots + weapon + shield) AS total_power FROM playerbattle WHERE user_id = ".$chat_id;
+			$query = "SELECT exp_points, critic, level, last_boss, (hp + attack + defense + (critic * 3) + speed + (helmet * 3) + body + boots + weapon + shield) AS total_power, bottles FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['level'])) {
@@ -8985,6 +9245,7 @@ function processMessage($message) {
 							$totalPower = $row['total_power'];
 							$expPoints = $row['exp_points'];
 							$critic = $row['critic'];
+							$bottles = $row['bottles'];
 							mysql_free_result($result);							
 							$playerName = getFullName($message['from']['first_name'], $message['from']['username']);
 							$bossExp = bossBattle($chat_id, $link, $level, $totalPower, $playerName);
@@ -8994,7 +9255,7 @@ function processMessage($message) {
 								$newLevel = getLevelFromExp($expPoints);								
 								if($newLevel != $level){
 									error_log($logname." is now level ".$newLevel.".");
-									levelUp($newLevel, $expPoints, $critic, $link, $chat_id, 1);
+									levelUp($newLevel, $expPoints, $critic, $bottles, $link, $chat_id, 1);
 									//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
 										// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
 										// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
@@ -9173,6 +9434,7 @@ function processMessage($message) {
 				$playerAt = $row['attack'] + $row['weapon'];
 				$playerDef = $row['defense'] + $row['shield'];
 				$playerCrit = ($row['critic'] * 3) + ($row['helmet'] * 3);
+				$playerCritInfo = $row['critic'] + $row['helmet'];
 				$playerSp = $row['speed'] + $row['boots'];
 				$playerPvpAllowed = $row['pvp_allowed'];
 				$playerPvpWins = $row['pvp_wins'];
@@ -9541,7 +9803,7 @@ function processMessage($message) {
 											"<pre>VID: ".ratePower($playerHP).PHP_EOL.
 											"ATA: ".ratePower($playerAt).PHP_EOL.
 											"DEF: ".ratePower($playerDef).PHP_EOL.
-											"CRÍ: ".ratePower($playerCrit, 1).PHP_EOL.
+											"CRÍ: ".ratePower($playerCritInfo, 1).PHP_EOL.
 											"VEL: ".ratePower($playerSp)."</pre>";
 											usleep(250000);
 											apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
@@ -9617,6 +9879,69 @@ function processMessage($message) {
 			error_log($logname." triggered: !rocosos.");
 			getRockMan($chat_id);
 		}
+	} else if (strpos(strtolower($text), "!botella") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group and failed: !botella.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$msg = "<b>La función !botella solo está disponible desde chat privado con el bot.</b>";
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else {
+			error_log($logname." triggered: !botella.");
+			// abrir db
+			$link = dbConnect();
+			$query = "SELECT level, critic, exp_points, bottles FROM playerbattle WHERE user_id = '".$chat_id."'";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			// mirar si tiene pj
+			if(isset($row['bottles'])) {
+				// si tiene, mirar si tiene botellas
+				if($row['bottles'] > 0) {
+					// si tiene, usar una botella, restarle 1 al total y avisar
+					$currExp = $row['exp_points'];
+					$currLevel = $row['level'];
+					$newBottles = $row['bottles'] - 1;
+					$critic = $row['critic'];
+					$currTime = time();
+					mysql_free_result($result);
+					$expAcquired = useBottleExp($currLevel);
+					$newExp = $currExp + $expAcquired;
+					$newLevel = getLevelFromExp($newExp);
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "🍾 <b>Te has bebido una botella de experiencia hasta cansarte y has ganado ".$expAcquired." puntos de experiencia.</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					if($newLevel != $row['level']){
+						error_log($logname." is now level ".$newLevel.".");
+						levelUp($newLevel, $newExp, $critic, $link, $chat_id);
+						mysql_free_result($result);
+						$query = "UPDATE `playerbattle` SET `bottles` = '".$newBottles."' WHERE `user_id` = '".$chat_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					} else {
+						$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `bottles` = '".$newBottles."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					}
+					mysql_free_result($result);
+					$user_id = $message['from']['id'];
+					getPlayerInfo(0, $link, $chat_id, $user_id);
+				} else {
+					// si no tiene, decirle que no le quedan botellas
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "<b>No te queda ninguna botella por utilizar en tu inventario.</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+				}
+			} else {
+				// si no tiene, que use /exp
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "<b>Para utilizar una botella debes jugar a los Rocosos de Demisuke, utiliza</b> /exp <b>para entrenar a tu personaje.</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+			}
+			mysql_free_result($result);
+			// cerrar db
+			mysql_close($link);
+		}
 	} else if (strpos(strtolower($text), "!declararguerra") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			// revisar que este bien escrito el comando
@@ -9644,8 +9969,7 @@ function processMessage($message) {
 						// si tiene, mirar si el rival existe
 						mysql_free_result($result);
 						$number = $number - 1;
-						//$query = 'SELECT groupbattle.name, playerbattle.group_id, COUNT( * ) AS  "members" FROM playerbattle, groupbattle WHERE playerbattle.group_id IS NOT NULL AND groupbattle.group_id = playerbattle.group_id AND  "members" > 4 GROUP BY playerbattle.group_id ORDER BY  "members" DESC , playerbattle.group_id DESC LIMIT '.$number.' , 1';
-						$query = "SELECT gb.name, pb.group_id, COUNT( pb.user_id ) AS  'members' FROM playerbattle pb, groupbattle gb WHERE pb.group_id IS NOT NULL AND gb.group_id = pb.group_id GROUP BY pb.group_id HAVING COUNT( pb.user_id ) >4 ORDER BY CASE WHEN pb.user_id =0 THEN -1 ELSE COUNT( pb.user_id ) END DESC , pb.group_id DESC LIMIT ".$number." , 1";
+						$query = "SELECT gb.name, pb.group_id, COUNT( pb.user_id ) AS  'members' FROM playerbattle pb, groupbattle gb WHERE pb.group_id IS NOT NULL AND gb.group_id = pb.group_id AND gb.lastpoint >0 GROUP BY pb.group_id HAVING COUNT( pb.user_id ) >4 ORDER BY CASE WHEN pb.user_id =0 THEN -1 ELSE COUNT( pb.user_id ) END DESC , pb.group_id DESC LIMIT ".$number." , 1";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
 						$ownGroup = 0;
@@ -10344,7 +10668,31 @@ function processMessage($message) {
 			exit;
 		} else {
 			error_log($logname." tried to trigger and failed due to group restrictions: !boton.");
-		}		
+		}	
+	} else if (strpos(strtolower($text), "demisuke") !== false) {
+		if($randomTicket > -2) {
+			error_log($logname." triggered: Bot mention.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			if($message['from']['username'] !== "Kamisuke"/* && $message['from']['username'] !== "OsvaldoPaniccia"*/) {
+				usleep(500000);
+				if(isset($message['from']['username'])) {
+					$name = "@".$message['from']['username'];
+					$text = gotMention($name,true);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				} else if (isset($message['from']['first_name'])) {
+					$text = gotMention($message['from']['first_name'],false);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				} else {
+					$text = gotMention("compi de grupo",false);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>".$text."</b>"));
+				}
+			} else {
+				usleep(500000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Hola, jefe</b> @".$message['from']['username']." 😊"));
+			}
+		} else {
+				error_log($logname." tried to trigger and failed due to group restrictions: Bot mention.");
+		}
 	} else if (strpos(strtolower($text), "!temazo") !== false || strpos(strtolower($text), "!cancion") !== false || strpos(strtolower($text), "!canción") !== false) {
 		error_log($logname." triggered: !cancion.");
 		$song = getSong();

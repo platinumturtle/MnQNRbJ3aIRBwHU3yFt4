@@ -121,7 +121,7 @@ function checkUserID($id) {
 					"119769161", // TaliBOT
 					"228805033", //German
 					"164798471",
-					"" // @JoGel 120644940
+					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
 		if($bannedID[$i] == $id) {
@@ -3183,13 +3183,13 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 					$msg = $msg."<b>Consejo:</b> puedes utilizar !avatarpj para personalizar tu ficha de personaje con una imagen personal.".PHP_EOL;
 				}
 			}
-			if(strlen($row['extra_points']) > 0) {
+			if($row['extra_points'] > 0) {
 				$tipTicket = rand(1,3);
 				if($tipTicket == 1) {
 					$msg = $msg."<b>Consejo:</b> puedes mejorar a tu personaje si utilizas la función !gastarpunto. ¡Todavía te quedan puntos extra de rocosidad por consumir!".PHP_EOL;
 				}
 			}
-			if(strlen($row['group_id']) > 1 && $row['level'] > 6) {
+			if($row['group_id'] > 1 && $row['level'] > 6) {
 				$tipTicket = rand(1,10);
 				if($tipTicket == 4) {
 					$msg = $msg."<b>Consejo:</b> puedes luchar junto a tus amigos contra otros enemigos si añades al bot a tu grupo de amigos y usas la función !unirme.".PHP_EOL;
@@ -7480,7 +7480,8 @@ function processMessage($message) {
 					$row = mysql_fetch_array($result);
 					$oldTotalActive = $row['total_active'];
 					mysql_free_result($result);
-					$query = 'SELECT group_id, name, lastpoint FROM `groupbattle`';
+					//$query = 'SELECT group_id, name, lastpoint FROM `groupbattle`';
+					$query = 'SELECT group_id, name, lastpoint FROM `groupbattle` WHERE lastpoint >0';
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$total = 0;
 					$totalActive = 0;
@@ -8909,7 +8910,7 @@ function processMessage($message) {
 			} else {
 				// si no es correcta, ayudarle con el formato	
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				$text = "<b>La dirección introducida no es compatible con Telegram. Asegúrate de que el enlace sea HTTP o HTTPS y que la imagen esté en formato .jpt, .png o .gif.</b>";
+				$text = "<b>La dirección introducida no es compatible con Telegram. Asegúrate de que el enlace sea HTTP o HTTPS y que la imagen esté en formato .jpg, .png o .gif.</b>";
 				usleep(100000);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 			}
@@ -9533,7 +9534,7 @@ function processMessage($message) {
 									$requestName = str_replace("<", "", $requestName);
 									$requestName = str_replace(">", "", $requestName);
 									apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-									$msg = "⚔ <b>¡El clan".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!</b>".PHP_EOL.PHP_EOL.
+									$msg = "⚔ <b>¡El clan ".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!</b>".PHP_EOL.PHP_EOL.
 									"<i>Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.".PHP_EOL.
 									"Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
 									usleep(250000);

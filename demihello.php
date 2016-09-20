@@ -2992,6 +2992,11 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $link, $user_id, $from
 		$msg = $msg."<b>A partir de ahora puedes luchar contra otros Rocosos de Demisuke utilizando !pvp seguido de su nombre de usuario. Consulta la </b>/ayuda_PVP_rocosos<b> para más información.</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 15) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>A partir de ahora tus puntos de heroicidad otorgarán mayor poder a la hora de combatir. ¡No te olvides de usar !boton con frecuencia!</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 17) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 		$msg = "<b>Te acabas de adentrar en las profundidades del bosque tenebroso, ¡buena suerte!</b>";
@@ -3001,6 +3006,11 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $link, $user_id, $from
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 		$msg = "<b>El bosque se ha quedado atrás, ¡te doy la bienvenida a la selva!</b>".PHP_EOL;
 		$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones. Además, obtendrás una botella de experiencia gratis al subir de nivel.</b>";
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 25) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>A partir de ahora tus puntos de heroicidad otorgarán aun más poder a la hora de combatir. ¡No te olvides de usar !boton con frecuencia!</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 28) {
@@ -3937,13 +3947,13 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 					$msg = $msg."<b>Consejo:</b> puedes utilizar !avatarpj para personalizar tu ficha de personaje con una imagen personal.".PHP_EOL;
 				}
 			}
-			if(strlen($row['extra_points']) > 0) {
+			if($row['extra_points'] > 0) {
 				$tipTicket = rand(1,3);
 				if($tipTicket == 1) {
 					$msg = $msg."<b>Consejo:</b> puedes mejorar a tu personaje si utilizas la función !gastarpunto. ¡Todavía te quedan puntos extra de rocosidad por consumir!".PHP_EOL;
 				}
 			}
-			if(strlen($row['group_id']) > 1 && $row['level'] > 6) {
+			if($row['group_id'] > 1 && $row['level'] > 6) {
 				$tipTicket = rand(1,10);
 				if($tipTicket == 4) {
 					$msg = $msg."<b>Consejo:</b> puedes luchar junto a tus amigos contra otros enemigos si añades al bot a tu grupo de amigos y usas la función !unirme.".PHP_EOL;
@@ -9389,7 +9399,7 @@ function processMessage($message) {
 			} else {
 				// si no es correcta, ayudarle con el formato	
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				$text = "<b>La dirección introducida no es compatible con Telegram. Asegúrate de que el enlace sea HTTP o HTTPS y que la imagen esté en formato .jpt, .png o .gif.</b>";
+				$text = "<b>La dirección introducida no es compatible con Telegram. Asegúrate de que el enlace sea HTTP o HTTPS y que la imagen esté en formato .jpg, .png o .gif.</b>";
 				usleep(100000);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 			}
@@ -10013,7 +10023,7 @@ function processMessage($message) {
 									$requestName = str_replace("<", "", $requestName);
 									$requestName = str_replace(">", "", $requestName);
 									apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-									$msg = "⚔ <b>¡El clan".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!</b>".PHP_EOL.PHP_EOL.
+									$msg = "⚔ <b>¡El clan ".getClanLevelByMembers($homeMembers).$requestName." os ha declarado la guerra!</b>".PHP_EOL.PHP_EOL.
 									"<i>Utiliza !aceptarguerra para iniciar automáticamente la batalla o !rechazarguerra para desestimar la petición.".PHP_EOL.
 									"Consulta con !guerras el número de batallas pendientes del clan y las últimas guerras libradas en Telegram.</i>";
 									usleep(250000);

@@ -1205,6 +1205,27 @@ function useBottleExp($level) {
 	return $exp;
 }
 
+function getHeroPower($level, $power) {
+	if($power < 200) {
+		$result = 0;
+	} else if($level < 14) {
+		$division = $power - 200;
+		$division = $division / 25;
+		$division = $division / 4;
+		$result = floor($division);
+	} else if($level < 24) {
+		$division = $power - 200;
+		$division = $division / 25;
+		$division = $division / 2;
+		$result = floor($division);
+	} else {
+		$division = $power - 200;
+		$division = $division / 25;
+		$result = floor($division);
+	}
+	return $result;
+}
+
 function getPlayerExp($currLevel, $user_id) {
 	$exp = 0;
 	$text = "*Te has quedado dormido y has perdido la oportunidad, el personaje no reacciona.*";
@@ -3925,7 +3946,7 @@ function getClanLevelByMembers($levelNumber) {
 }
 
 function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
-	$query = "SELECT group_id, exp_points, level, extra_points, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, avatar, bottles, pvp_allowed, pvp_wins, pvp_group_wins, last_boss FROM playerbattle WHERE user_id = '".$user_id."'";
+	$query = "SELECT pb.group_id, pb.exp_points, pb.level, pb.extra_points, pb.hp, pb.attack, pb.defense, pb.critic, pb.speed, pb.helmet, pb.body, pb.boots, pb.weapon, pb.shield, pb.avatar, pb.bottles, pb.pvp_allowed, pb.pvp_wins, pb.pvp_group_wins, pb.last_boss, COALESCE( hb.total, 0 ) AS 'hero_power' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	if(isset($row['level'])){
@@ -3965,13 +3986,16 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 					$msg = $msg."<b>Consejo:</b> utiliza !botella para usar las botellas de experiencia que tienes. ¡Si acumulas diez botellas en tu inventario no podrás recibir más!".PHP_EOL;
 				}
 			}
-			$tipTicket = rand(1,20);
-			if($tipTicket == 17) {
-				$subTipTicket = rand(1, 2);
+			$tipTicket = rand(1,10);
+			if($tipTicket == 7) {
+				$subTipTicket = rand(1, 3);
 				if($subTipTicket == 1) {
 					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase. ¡No te pierdas ninguno!".PHP_EOL;
-				//} else {
+				//} else if($subTipTicket == 2) {
 				//	$msg = $msg."<b>Consejo:</b> utiliza !rol si no quieres esperar tanto tiempo a conseguir nueva experiencia, ¡podrías obtener buenas recompensas para tu personaje!".PHP_EOL;
+				} else if($subTipTicket == 3) {
+					$msg = $msg."<b>Consejo:</b> si consigues más de 200 puntos de heroicidad tu personaje será aún más fuerte a la hora de luchar contra jefes de zona y en duelos PvP. ¡Recuerda usar !boton ocasionalmente!".PHP_EOL;
+
 				}
 			}
 			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
@@ -3997,6 +4021,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$pvp_allowed = $row['pvp_allowed'];
 			$pvp_wins = $row['pvp_wins'];
 			$pvp_group_wins = $row['pvp_group_wins'];
+			$heroPower = $row['hero_power'];
 			mysql_free_result($result);
 			$query = "SELECT first_name, user_name FROM userbattle WHERE user_id = '".$user_id."'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -4043,7 +4068,8 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$msg = $msg.$expBar.PHP_EOL;
 			$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
 			$msg = $msg."💎 <b>Puntos extra por utilizar:</b> ".$extra_points.PHP_EOL;
-			$msg = $msg."🍾 <b>Botellas de experiencia:</b> ".$bottles.PHP_EOL.PHP_EOL;
+			$msg = $msg."🍾 <b>Botellas de experiencia:</b> ".$bottles.PHP_EOL;
+			$msg = $msg."🎖 <b>Puntos de heroicidad:</b> ".$heroPower.PHP_EOL.PHP_EOL;
 			$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
 			$msg = $msg."<pre>VID:";
 			switch(strlen($hp)){
@@ -7367,7 +7393,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.4 creado por @Kamisuke."
+				"@DemisukeBot v3.0.5 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -7648,6 +7674,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>La tabla de !héroes mostrará solamente aquellos héroes o heroínas que tengan un minimo de 120 puntos de heroicidad.</i>"
 				.PHP_EOL.
+				"▶️<i>Los puntos de heroicidad también aparecerán en tu ficha de personaje !pj y te otorgarán poder adicional a la hora de luchar contra jefes o rivales en duelos PvP.</i>"
+				.PHP_EOL.
 				"▶️<i>Por las noches se comprobará quién ha utilizado !boton durante el día. Los héroes que no lo hayan utilizado una sola vez y tengan más de 200 puntos perderán 30 puntos.</i>"
 				.PHP_EOL.
 				"▶️<i>La tabla de !héroesgrupo mostrará todos aquellos usuarios que hayan pulsado el !botón al menos una vez, sin importar su puntuación o la ventana de chat desde donde lo pulsaron.</i>"
@@ -7822,6 +7850,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>A partir del nivel 11 podrás entablar duelos PvP. Si utilizas \"!pvp\" activarás o desactivarás esta opción.</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>Si tienes más de 200 puntos de heroicidad ganados en el minijuego \"Héroes de Telegram\", serás más fuerte a la hora de luchar contra jefes.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>El poder de los puntos de heroicidad dependerá del nivel de tu personaje. A mayor nivel, más poder obtendrás a cambio.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cuantos más miembros se unan al clan, mayor rango de estrellas aparecerá junto a su nombre.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>El número máximo de botellas disponibles en tu inventario es 10, ¡utilízalas desde chat privado cuanto antes para poder recibir más!</i>"
@@ -7858,6 +7890,10 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Los duelos PvP se reservan un 0,01% de suerte en los combates, por lo que un jugador de nivel muy alto tendrá la victoria asegurada en un 99,99% ante jugadores de nivel bajo.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Antes de aceptar o rechazar una solicitud de duelo, el rival podrá visualizar un resumen aproximado de las estadísticas del otro jugador.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Si tienes más de 200 puntos de heroicidad ganados en el minijuego \"Aprende a volar\", serás más fuerte a la hora de luchar contra un rival.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>El poder de los puntos de heroicidad dependerá del nivel de tu personaje. A mayor nivel, más poder obtendrás a cambio.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Una vez termine la batalla ambos jugadores recibirán el resultado del duelo, y un resumen más escueto aparecerá en !guerras para todos los usuarios del bot.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -9229,7 +9265,7 @@ function processMessage($message) {
 			// abrir db
 			$link = dbConnect();
 			// mirar si tiene pj
-			$query = "SELECT exp_points, critic, level, last_boss, (hp + attack + defense + (critic * 3) + speed + (helmet * 3) + body + boots + weapon + shield) AS total_power, bottles FROM playerbattle WHERE user_id = ".$chat_id;
+			$query = "SELECT pb.exp_points, pb.critic, pb.level, pb.last_boss, ( pb.hp + pb.attack + pb.defense + ( pb.critic *3 ) + pb.speed + ( pb.helmet *3 ) + pb.body + pb.boots + pb.weapon + pb.shield ) AS total_power, pb.bottles, COALESCE( hb.total, 0 ) AS  'hero_power' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['level'])) {
@@ -9256,6 +9292,9 @@ function processMessage($message) {
 							$expPoints = $row['exp_points'];
 							$critic = $row['critic'];
 							$bottles = $row['bottles'];
+							$heroPower = $row['hero_power'];
+							$heroPower = getHeroPower($level, $heroPower);
+							$totalPower = $totalPower + $heroPower;
 							mysql_free_result($result);							
 							$playerName = getFullName($message['from']['first_name'], $message['from']['username']);
 							$bossExp = bossBattle($chat_id, $link, $level, $totalPower, $playerName);
@@ -9421,7 +9460,7 @@ function processMessage($message) {
 			// abrir db
 			// sacar datos completos del chat id
 			$link = dbConnect();
-			$query = "SELECT level, hp, attack, defense, critic, speed, helmet, body, boots, weapon, shield, pvp_allowed, pvp_wins FROM playerbattle WHERE user_id = '".$chat_id."'";
+			$query = "SELECT pb.level, pb.hp, pb.attack, pb.defense, pb.critic, pb.speed, pb.helmet, pb.body, pb.boots, pb.weapon, pb.shield, pb.pvp_allowed, pb.pvp_wins, COALESCE( hb.total, 0 ) AS  'hero_power' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = '".$chat_id."'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['hp']) && $row['level'] > 10) {
@@ -9448,6 +9487,8 @@ function processMessage($message) {
 				$playerSp = $row['speed'] + $row['boots'];
 				$playerPvpAllowed = $row['pvp_allowed'];
 				$playerPvpWins = $row['pvp_wins'];
+				$playerHeroPower = $row['hero_power'];
+				$playerHeroPower = getHeroPower($playerLevel, $playerHeroPower);
 				mysql_free_result($result);
 				$start = strpos(strtolower($text), "!pvp") + 4;
 				$pvpAction = substr($text, $start);
@@ -9507,16 +9548,20 @@ function processMessage($message) {
 						$playerName = str_replace("<", "", $playerName);
 						$playerName = str_replace(">", "", $playerName);						
 						mysql_free_result($result);
-						$query = 'SELECT exp_points, ( hp + attack + defense + critic + critic + critic + speed + helmet + helmet + helmet + body + boots + weapon + shield ) AS  "power", pvp_allowed FROM playerbattle WHERE user_id IN ( '.$chat_id.', '.$rival_id.' ) ORDER BY FIELD( user_id, '.$chat_id.', '.$rival_id.' )';
+						$query = 'SELECT pb.exp_points, ( pb.hp + pb.attack + pb.defense + pb.critic + pb.critic + pb.critic + pb.speed + pb.helmet + pb.helmet + pb.helmet + pb.body + pb.boots + pb.weapon + pb.shield ) AS  "power", pb.pvp_allowed, COALESCE( hb.total, 0 ) AS  "hero_power" FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id IN ( '.$chat_id.', '.$rival_id.' ) ORDER BY FIELD( pb.user_id, '.$chat_id.', '.$rival_id.' )';
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
 						$playerExp = $row['exp_points'];
 						$playerPower = $row['power'];
+						$playerHeroPower = $row['hero_power'];
+						$playerHeroPower = getHeroPower($playerLevel, $playerHeroPower);
 						$playerPermission = $row['pvp_allowed'];
 						$row = mysql_fetch_array($result);
 						$rivalExp = $row['exp_points'];
 						$rivalPower = $row['power'];
 						$rivalPermission = $row['pvp_allowed'];
+						$rivalHeroPower = $row['hero_power'];
+						$rivalHeroPower = getHeroPower($playerLevel, $rivalHeroPower);
 						// revisar si estan allowed
 						if($playerPermission == 1 && $rivalPermission == 1) {
 							// si si, aceptar la guerra, avisar en ambos jugadores
@@ -9532,6 +9577,8 @@ function processMessage($message) {
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							mysql_free_result($result);
 							sleep(1);
+							$playerPower = $playerPower + $playerHeroPower;
+							$rivalPower = $rivalPower + $rivalHeroPower;
 							// librar batalla
 							if($playerPower >= $rivalPower) {
 								$playerIsStronger = 1;

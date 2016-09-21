@@ -9142,7 +9142,7 @@ function processMessage($message) {
 									$loserName = $rivalName;
 								} else {
 									$winner_id = $rival_id;
-									$winnerName = $rivalNamerivalName;
+									$winnerName = $rivalName;
 									$loser_id = $chat_id;
 									$loserName = $playerName;
 								}

@@ -2990,6 +2990,11 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $link, $user_id, $from
 		$msg = "<b>Acabas de desbloquear la función !avatarpj, ¡ya puedes utilizar un avatar personalizado para tu personaje!</b>";
 		sleep(1);
 		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+	} else if($newLevel == 3) {
+		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		$msg = "<b>A partir de ahora podrás conseguir botellas de experiencia para tu personaje con la función !slots (o !777). Consulta la tabla de premios bonus con</b> /ayuda_slots".PHP_EOL;
+		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if($newLevel == 5) {
 		apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 		$msg = "<b>Acabas de obtener un arma nueva, y con ella has desbloqueado la función !atacar, ¡ya puedes enfrentarte a los jefes de las zonas en las que te encuentres!".PHP_EOL;
@@ -3988,14 +3993,15 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			}
 			$tipTicket = rand(1,10);
 			if($tipTicket == 7) {
-				$subTipTicket = rand(1, 3);
+				$subTipTicket = rand(1, 4);
 				if($subTipTicket == 1) {
 					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase. ¡No te pierdas ninguno!".PHP_EOL;
 				//} else if($subTipTicket == 2) {
 				//	$msg = $msg."<b>Consejo:</b> utiliza !rol si no quieres esperar tanto tiempo a conseguir nueva experiencia, ¡podrías obtener buenas recompensas para tu personaje!".PHP_EOL;
 				} else if($subTipTicket == 3) {
 					$msg = $msg."<b>Consejo:</b> si consigues más de 200 puntos de heroicidad tu personaje será aún más fuerte a la hora de luchar contra jefes de zona y en duelos PvP. ¡Recuerda usar !boton ocasionalmente!".PHP_EOL;
-
+				} else if($subTipTicket == 4) {
+					$msg = $msg."<b>Consejo:</b> si utilizas la función !slots (o !777) podrás conseguir premios bonus como por ejemplo una botella de experiencia para tu personaje. Puedes ver la lista de premios bonus en /ayuda_slots".PHP_EOL;
 				}
 			}
 			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
@@ -7736,6 +7742,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"▶️<i>Si logras detener la máquina obteniendo los mismos símbolos en las tres casillas de la fila horizontal central recibirás el premio de la tabla de premios correspondiente a ese resultado.</i>"
 				.PHP_EOL.
+				"▶️<i>Para conseguir los premios bonus debes haber utilizado al menos una vez la función !exp.</i>"
+				.PHP_EOL.
 				"▶️<i>Hacer líneas diagonales con los mismos resultados no tendrá premio, el premio se recibirá si se realiza en la fila horizontal central.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Tabla de premios:</b>"
@@ -7759,6 +7767,20 @@ function commandsList($send_id, $mode) {
 				"💙💙💙 <i>25 fichas</i>"
 				.PHP_EOL.
 				"⚡️⚡️⚡️ <i>10 fichas</i>"
+				.PHP_EOL.PHP_EOL.
+				"<b>Tabla de premios bonus:</b>"
+				.PHP_EOL.
+				"7⃣7⃣7⃣ <i>1 botella de experiencia (si el inventario no está lleno)</i>"
+				.PHP_EOL.
+				"💎💎💎 <i>Reinicio del contador de la función !atacar</i>"
+				.PHP_EOL.
+				"🍒🍒🍒 <i>Reinicio del contador de la función !atacar</i>"
+				.PHP_EOL.
+				"🍓🍓🍓 <i>Reinicio del contador de la función !exp</i>"
+				.PHP_EOL.
+				"🍉🍉🍉 <i>Reinicio del contador de la función !exp</i>"
+				.PHP_EOL.
+				"🍋🍋🍋 <i>Reinicio del contador de la función !exp</i>"
 				;
 	} else if($mode == "rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -7859,6 +7881,12 @@ function commandsList($send_id, $mode) {
 				"▶️<i>El número máximo de botellas disponibles en tu inventario es 10, ¡utilízalas desde chat privado cuanto antes para poder recibir más!</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Se pueden usar varias botellas de manera seguida, sin embargo tu personaje perderá energía bebiendo y deberá esperar unos minutos para volver a usar !exp.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Los jugadores de nivel 3 o superior pueden conseguir botellas de experiencia como premio con la función !slots (o !777).</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Los jugadores de nivel 5 o superior pueden reiniciar su contados de jefes como premio con la función !slots (o !777).</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Consulta los premios bonus de las tragaperras con la función</i> /ayuda_slots"
 				;
 	} else if($mode == "pvp_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -8627,9 +8655,11 @@ function processMessage($message) {
 						// calcular resultado
 						$slotA = rand(1,10);
 						usleep(rand(10,50));
-						$slotB = rand(1,10);
+						//$slotB = rand(1,10);
+						$slotB = $slotA;
 						usleep(rand(10,50));
-						$slotC = rand(1,10);
+						// $slotC = rand(1,10);
+						$slotC = $slotA;
 						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
 						$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
 						$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
@@ -8664,6 +8694,82 @@ function processMessage($message) {
 										break;
 							}
 							$text = $text.$prize." fichas.".PHP_EOL;
+							if($slotA > 4) {
+								$query = 'SELECT level, bottles, last_exp, last_boss FROM playerbattle WHERE user_id = '.$chat_id;
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+								$row = mysql_fetch_array($result);
+								if(isset($row['level'])) {
+									$level = $row['level'];
+									$bottles = $row['bottles'];
+									$lastExp = $row['last_exp'];
+									$lastBoss = $row['last_boss'];
+									mysql_free_result($result);
+									if($level < 100) {
+										if($slotA < 8) {
+											$lastExp = $lastExp - 3600;
+											if($lastExp < 0) {
+												$lastExp = 0;
+											}
+											$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
+											$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+											$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
+										} else if($slotA < 10) {
+											if($level > 4) {
+												$lastBoss = $lastBoss - (3600 * 24);
+												if($lastBoss < 0) {
+													$lastBoss = 0;
+												}
+												$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
+												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
+
+											} else {
+												$lastExp = $lastExp - 3600;
+												if($lastExp < 0) {
+													$lastExp = 0;
+												}
+												$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
+												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
+											}
+										} else {
+											//botella o boss o exp
+											if($level > 2 && $bottles == 10) {
+												$text = $text."🎰 ¡Tienes el inventario de botellas lleno!".PHP_EOL;
+												$lastBoss = $lastBoss - (3600 * 24);
+												if($lastBoss < 0) {
+													$lastBoss = 0;
+												}
+												$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
+												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
+											} else if($level > 2 && $bottles < 10) {
+												$bottles = $bottles + 1;
+												$query = "UPDATE `playerbattle` SET `bottles` = '".$bottles."' WHERE `user_id` = '".$chat_id."'";
+												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+												$text = $text."🎰 Bonus adicional: ¡Has ganado una botella de experiencia! Puedes utilizarla con la función !botella.".PHP_EOL;
+											} else if($level > 4) {
+												$lastBoss = $lastBoss - (3600 * 24);
+												if($lastBoss < 0) {
+													$lastBoss = 0;
+												}
+												$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
+												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
+											} else {
+												$lastExp = $lastExp - 3600;
+												if($lastExp < 0) {
+													$lastExp = 0;
+												}
+												$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
+												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
+											}
+										}
+										mysql_free_result($result);
+									}
+								}								
+							}
 						} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
 							$prize = 3;
 							$text = $text."💪 ¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
@@ -9678,7 +9784,7 @@ function processMessage($message) {
 									$loserName = $rivalName;
 								} else {
 									$winner_id = $rival_id;
-									$winnerName = $rivalNamerivalName;
+									$winnerName = $rivalName;
 									$loser_id = $chat_id;
 									$loserName = $playerName;
 								}

@@ -2512,43 +2512,43 @@ function ratePower($power, $isCrit = 0) {
 
 function getAreaName ($level) {
 	if($level == 100) {
-		$name = "Palacio Real del Inframundo";
+		$name = "👑 Palacio Real del Inframundo";
 	} else if($level > 89) {
-		$name = "Inframundo";
+		$name = "💀 Inframundo";
 	} else if($level > 87) {
-		$name = "Límites del Infierno";
+		$name = "👿 Límites del Infierno";
 	} else if($level > 79) {
-		$name = "Infierno";
+		$name = "🔥 Infierno";
 	} else if($level > 78) {
-		$name = "Protección final de selección de Elegidos";
+		$name = "🏯 Protección final de selección de Elegidos";
 	} else if($level > 69) {
-		$name = "Portal protegido de los Elegidos";
+		$name = "🏵 Portal protegido de los Elegidos";
 	} else if($level > 67) {
-		$name = "Final del pasaje ancestral";
+		$name = "🏰 Final del pasaje ancestral";
 	} else if($level > 59) {
-		$name = "Pasaje ancestral hacia el Infierno";
+		$name = "🏮 Pasaje ancestral hacia el Infierno";
 	} else if($level > 54) {
-		$name = "Profundidades de la cueva mitológica";
+		$name = "🏺 Profundidades de la cueva mitológica";
 	} else if($level > 49) {
-		$name = "Cueva mitológica";
+		$name = "♨️ Cueva mitológica";
 	} else if($level > 39) {
-		$name = "Portal del mundo real hacia el Inframundo";
+		$name = "⛩ Portal del mundo real hacia el Inframundo";
 	} else if($level > 36) {
-		$name = "Fondo del glaciar";
+		$name = "☃ Fondo del glaciar";
 	} else if($level > 29) {
-		$name = "Glaciar oculto bajo tierra";
+		$name = "❄️ Glaciar oculto bajo tierra";
 	} else if($level > 27) {
-		$name = "Selva fría";
+		$name = "🌱 Selva fría";
 	} else if($level > 19) {
-		$name = "Selva profunda";
+		$name = "🍄 Selva profunda";
 	} else if($level > 16) {
-		$name = "Profundidad del bosque tenebroso";
+		$name = "🌳 Profundidad del bosque tenebroso";
 	} else if($level > 9) {
-		$name = "Bosque tenebroso";
+		$name = "🌲 Bosque tenebroso";
 	} else if($level > 5) {
-		$name = "Área de entrenamiento avanzado";
+		$name = "🎓 Área de entrenamiento avanzado";
 	} else {
-		$name = "Área de entrenamiento";
+		$name = "⛑ Área de entrenamiento";
 	}
 	return $name;
 }
@@ -3951,7 +3951,7 @@ function getClanLevelByMembers($levelNumber) {
 }
 
 function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
-	$query = "SELECT pb.group_id, pb.exp_points, pb.level, pb.extra_points, pb.hp, pb.attack, pb.defense, pb.critic, pb.speed, pb.helmet, pb.body, pb.boots, pb.weapon, pb.shield, pb.avatar, pb.bottles, pb.pvp_allowed, pb.pvp_wins, pb.pvp_group_wins, pb.last_boss, COALESCE( hb.total, 0 ) AS 'hero_power' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = '".$user_id."'";
+	$query = "SELECT pb.group_id, pb.exp_points, pb.level, pb.extra_points, pb.hp, pb.attack, pb.defense, pb.critic, pb.speed, pb.helmet, pb.body, pb.boots, pb.weapon, pb.shield, pb.avatar, pb.bottles, pb.pvp_allowed, pb.pvp_wins, pb.pvp_group_wins, pb.last_boss, COALESCE( hb.total, 0 ) AS  'hero_power', COALESCE( ub.tokens, 0 ) AS  'tokens' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id LEFT JOIN ( SELECT tokens, user_id, group_id FROM userbet )ub ON pb.user_id = ub.user_id AND ub.group_id =0 WHERE pb.user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	if(isset($row['level'])){
@@ -4028,6 +4028,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$pvp_wins = $row['pvp_wins'];
 			$pvp_group_wins = $row['pvp_group_wins'];
 			$heroPower = $row['hero_power'];
+			$tokens = $row['tokens'];
 			mysql_free_result($result);
 			$query = "SELECT first_name, user_name FROM userbattle WHERE user_id = '".$user_id."'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -4075,7 +4076,8 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$msg = $msg."<b>Experiencia total:</b> ".$exp_points.PHP_EOL;
 			$msg = $msg."💎 <b>Puntos extra por utilizar:</b> ".$extra_points.PHP_EOL;
 			$msg = $msg."🍾 <b>Botellas de experiencia:</b> ".$bottles.PHP_EOL;
-			$msg = $msg."🎖 <b>Puntos de heroicidad:</b> ".$heroPower.PHP_EOL.PHP_EOL;
+			$msg = $msg."🎖 <b>Puntos de heroicidad:</b> ".$heroPower.PHP_EOL;
+			$msg = $msg."🎰 <b>Fichas de casino:</b> ".$tokens.PHP_EOL.PHP_EOL;
 			$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
 			$msg = $msg."<pre>VID:";
 			switch(strlen($hp)){
@@ -8655,11 +8657,9 @@ function processMessage($message) {
 						// calcular resultado
 						$slotA = rand(1,10);
 						usleep(rand(10,50));
-						//$slotB = rand(1,10);
-						$slotB = $slotA;
+						$slotB = rand(1,10);
 						usleep(rand(10,50));
-						// $slotC = rand(1,10);
-						$slotC = $slotA;
+						$slotC = rand(1,10);
 						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
 						$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
 						$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;

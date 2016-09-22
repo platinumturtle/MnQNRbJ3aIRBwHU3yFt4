@@ -10074,18 +10074,23 @@ function processMessage($message) {
 				header('Content-type: image/jpeg');
 				$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 				$home_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
+				$away_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
 				$textColor = imagecolorallocate($jpg_image, 90, 57, 22);
 				$font_path = dirname(__FILE__)."/img/calibri.ttf";
 				
 				
 				list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 				list($home_width, $home_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
+				list($away_width, $away_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
 				$res_image = imagecreatetruecolor($base_width, $base_height);
 				imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $home_width, $home_height, $base_width, $base_height);
-				imagecopyresampled($res_image, $home_image, 0, 0, 0, 0, 100, 100, $home_width, $home_height);
+				imagecopyresampled($res_image, $home_image, 250, 250, 0, 0, 100, 100, $home_width, $home_height);
+				imagecopyresampled($res_image, $away_image, 950, 250, 0, 0, 100, 100, $away_width, $away_height);
+				$home_name = "POLE";
+				imagettftext($res_image, 72, 0, 100, 400, $textColor, $font_path, $home_name);
 				imagejpeg($res_image, $imageURL, 100);
 				
-				$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+				$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 				$file_name_with_full_path = realpath($imageURL);
 				$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
 				$ch = curl_init();

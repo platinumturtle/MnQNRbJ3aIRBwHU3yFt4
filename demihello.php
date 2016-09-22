@@ -10082,7 +10082,7 @@ function processMessage($message) {
 				list($home_width, $home_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
 				$res_image = imagecreatetruecolor($base_width, $base_height);
 				imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $home_width, $home_height, $base_width, $base_height);
-				imagecopyresampled($res_image, $home_image, 0, 0, 0, 0, $home_width, $home_height, $home_width, $home_height);
+				imagecopyresampled($res_image, $home_image, 0, 0, 0, 0, 100, 100, $home_width, $home_height);
 				imagejpeg($res_image, $imageURL, 100);
 				
 				$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";

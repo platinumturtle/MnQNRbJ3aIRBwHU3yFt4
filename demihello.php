@@ -10084,10 +10084,15 @@ function processMessage($message) {
 				list($away_width, $away_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
 				$res_image = imagecreatetruecolor($base_width, $base_height);
 				imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $home_width, $home_height, $base_width, $base_height);
-				imagecopyresampled($res_image, $home_image, 250, 250, 0, 0, 100, 100, $home_width, $home_height);
-				imagecopyresampled($res_image, $away_image, 950, 250, 0, 0, 100, 100, $away_width, $away_height);
-				$home_name = "POLE";
-				imagettftext($res_image, 72, 0, 100, 400, $textColor, $font_path, $home_name);
+				imagecopyresampled($res_image, $home_image, 180, 100, 0, 0, 250, 250, $home_width, $home_height);
+				imagecopyresampled($res_image, $away_image, 850, 100, 0, 0, 250, 250, $away_width, $away_height);
+				$home_name = "✌ Un clavicordio se balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. Un clavicordio se balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. ";
+				$home_name = wordwrap($home_name, 33, "\n", false);
+				if(strlen($home_name) > 100) {
+					$home_name = substr($home_name, 0, 97);
+					$home_name = $home_name."...";
+				}
+				imagettftext($res_image, 72, 0, 180, 400, $textColor, $font_path, $home_name);
 				imagejpeg($res_image, $imageURL, 100);
 				
 				$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";

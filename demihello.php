@@ -10076,7 +10076,7 @@ function processMessage($message) {
 				$home_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
 				$away_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
 				$textColor = imagecolorallocate($jpg_image, 90, 57, 22);
-				$font_path = dirname(__FILE__)."/img/calibri.ttf";
+				$font_path = dirname(__FILE__)."/img/segoe.ttf";
 				
 				
 				list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
@@ -10092,7 +10092,14 @@ function processMessage($message) {
 					$home_name = substr($home_name, 0, 97);
 					$home_name = $home_name."...";
 				}
-				imagettftext($res_image, 72, 0, 180, 400, $textColor, $font_path, $home_name);
+				$away_name = "refresco 🏆 fresco de búfalo¡¿çÑà ";
+				$away_name = wordwrap($away_name, 33, "\n", false);
+				if(strlen($away_name) > 100) {
+					$home_name = substr($away_name, 0, 97);
+					$away_name = $away_name."...";
+				}
+				imagettftext($res_image, 16, 0, 180, 450, $textColor, $font_path, $home_name);
+				imagettftext($res_image, 24, 0, 880, 450, $textColor, $font_path, $away_name);
 				imagejpeg($res_image, $imageURL, 100);
 				
 				$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";

@@ -10076,6 +10076,7 @@ function processMessage($message) {
 				$home_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
 				$away_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
 				$textColor = imagecolorallocate($jpg_image, 90, 57, 22);
+				$starsColor = imagecolorallocate($jpg_image, 255, 255, 100);
 				$font_path = dirname(__FILE__)."/img/segoe.ttf";
 				
 				
@@ -10086,20 +10087,25 @@ function processMessage($message) {
 				imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $home_width, $home_height, $base_width, $base_height);
 				imagecopyresampled($res_image, $home_image, 180, 100, 0, 0, 250, 250, $home_width, $home_height);
 				imagecopyresampled($res_image, $away_image, 850, 100, 0, 0, 250, 250, $away_width, $away_height);
-				$home_name = "✌ Un clavicordio se balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. Un clavicordio se balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. ";
+				$home_name = "✌ Un clavicordio se 🏆 balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. Un clavicordio se balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. ";
 				$home_name = wordwrap($home_name, 33, "\n", false);
-				if(strlen($home_name) > 100) {
-					$home_name = substr($home_name, 0, 97);
+				if(strlen($home_name) > 90) {
+					$home_name = substr($home_name, 0, 87);
+					$home_name = rtrim($home_name);
 					$home_name = $home_name."...";
 				}
-				$away_name = "refresco 🏆 fresco de búfalo¡¿çÑà ";
+				$away_name = "refresco fresco de 🎤👾😁😡☠🚨🌔👹🌔 búfalo";
 				$away_name = wordwrap($away_name, 33, "\n", false);
-				if(strlen($away_name) > 100) {
-					$home_name = substr($away_name, 0, 97);
+				if(strlen($away_name) > 90) {
+					$away_name = substr($away_name, 0, 87);
+					$away_name = rtrim($away_name);
 					$away_name = $away_name."...";
 				}
-				imagettftext($res_image, 16, 0, 180, 450, $textColor, $font_path, $home_name);
-				imagettftext($res_image, 24, 0, 880, 450, $textColor, $font_path, $away_name);
+				$home_stars = "【★★★☆☆】";
+				$home_stars = substr($home_stars, 1, 5);
+				imagettftext($res_image, 22, 0, 200, 350, $starsColor, $font_path, $home_stars);
+				imagettftext($res_image, 16, 0, 155, 400, $textColor, $font_path, $home_name);
+				imagettftext($res_image, 16, 0, 880, 420, $textColor, $font_path, $away_name);
 				imagejpeg($res_image, $imageURL, 100);
 				
 				$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";

@@ -4811,6 +4811,12 @@ function getRockMan($chat_id) {
 		} else if($i==0) {
 			$text = $text."<i>Nadie.</i>".PHP_EOL.PHP_EOL;
 		}
+		if($i == 4) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+			$text = "";
+		}
 	}
 	mysql_free_result($result);
 	mysql_close($link);
@@ -5069,6 +5075,12 @@ function getClanList($chat_id) {
 			$text = $text."<pre>【".$number."】".getClanLevelByMembers($row['members']).$clanName."</pre>".PHP_EOL;
 		} else if($i==0) {
 			$text = $text."<i>Ninguno.</i>".PHP_EOL;
+		}
+		if(strlen($text) > 3000) {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+			$text = "";
 		}
 	}
 	mysql_free_result($result);
@@ -5681,6 +5693,7 @@ function containsCommand($text) {
 						"!declararguerra",
 						"!aceptarguerra",
 						"!pvp",
+						"!listapvp",
 						"!rocosos",
 						"!rechazarguerra",
 						"!guerras",
@@ -10037,6 +10050,57 @@ function processMessage($message) {
 				$msg = "<b>La función !rocososgrupo solo está disponible para grupos, ¡añádeme al bot a tu grupo favorito!</b>";
 				usleep(100000);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+			}
+		} else {
+			error_log($logname." triggered: !rocosos.");
+			getRockMan($chat_id);
+		}
+	} else if (strpos(strtolower($text), "!listapvp") !== false) {
+		if (strpos(strtolower($text), "!listapvp") !== false) {
+			if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+				error_log($logname." triggered in a group and failed: !listapvp.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "<b>La función !listapvp solo está disponible en chat privado con el bot.</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+			} else {
+				error_log($logname." triggered in private: !listapvp.");
+				// betatesting
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+				usleep(250000);
+				$imageURL = rand(0,29);
+				$imageShortURL = "/img/battle_".$imageURL.".jpg";
+				$imageURL = dirname(__FILE__).$imageShortURL;
+				header('Content-type: image/jpeg');
+				$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
+				$home_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
+				$textColor = imagecolorallocate($jpg_image, 90, 57, 22);
+				$font_path = dirname(__FILE__)."/img/calibri.ttf";
+				
+				
+				list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
+				list($home_width, $home_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
+				$res_image = imagecreatetruecolor($base_width, $base_height);
+				imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $home_width, $home_height, $base_width, $base_height);
+				imagecopyresampled($res_image, $home_image, 0, 0, 0, 0, $home_width, $home_height, $home_width, $home_height);
+				imagejpeg($res_image, $imageURL, 100);
+				
+				$target_url    = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+				$file_name_with_full_path = realpath($imageURL);
+				$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL,$target_url);
+				curl_setopt($ch, CURLOPT_POST,1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+				$result=curl_exec ($ch);
+				curl_close ($ch);
+				imagedestroy($res_image);
+				
+				
+				
+				
+				// end betatesting
 			}
 		} else {
 			error_log($logname." triggered: !rocosos.");

@@ -10101,11 +10101,14 @@ function processMessage($message) {
 					$away_name = rtrim($away_name);
 					$away_name = $away_name."...";
 				}
+				$removeEmoji = "/[\x{1F600}-\x{1F64F}]/u";
+				$away_name = preg_replace($removeEmoji, "", $away_name);
 				$home_stars = "【★★★☆☆】";
-				$home_stars = substr($home_stars, 1, 5);
-				imagettftext($res_image, 22, 0, 200, 350, $starsColor, $font_path, $home_stars);
+				$home_stars = str_replace("【", "", $home_stars);
+				$home_stars = str_replace("】", "", $home_stars);
+				imagettftext($res_image, 26, 0, 250, 375, $starsColor, $font_path, $home_stars);
 				imagettftext($res_image, 16, 0, 155, 400, $textColor, $font_path, $home_name);
-				imagettftext($res_image, 16, 0, 880, 420, $textColor, $font_path, $away_name);
+				imagettftext($res_image, 16, 0, 800, 420, $textColor, $font_path, $away_name);
 				imagejpeg($res_image, $imageURL, 100);
 				
 				$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";

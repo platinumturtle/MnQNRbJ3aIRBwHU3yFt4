@@ -10106,9 +10106,18 @@ function processMessage($message) {
 				$home_stars = "【★★★☆☆】";
 				$home_stars = str_replace("【", "", $home_stars);
 				$home_stars = str_replace("】", "", $home_stars);
-				imagettftext($res_image, 26, 0, 250, 375, $starsColor, $font_path, $home_stars);
-				imagettftext($res_image, 16, 0, 155, 400, $textColor, $font_path, $home_name);
-				imagettftext($res_image, 16, 0, 800, 420, $textColor, $font_path, $away_name);
+				$away_stars = "【★★☆☆☆】";
+				$away_stars = str_replace("【", "", $away_stars);
+				$away_stars = str_replace("】", "", $away_stars);
+				$result_title = "RESULTADO";
+				$result_text = "El clan Un clavicordio salanceaba sobre la tela de una araña, y comose ha aprovechado de su superior velocidad frente a los rivales y ha logrado cargarse a medio equipo en un santiamén. En cuanto se han visto muy superiores en la batalla, dos de sus miembros se han ido a descansar y han dejado que el resto hiciera el trabajoUn clavicordio lanceaba sobre la tela de una araña, y comoha dado cuenta rápido de la situación y ha optado por jugárselo todo al ataque. No les ha ido mal, porque han logrado remontar y llevarse la victoria, eso sí, sudando más de lo que podían imaginar.";
+				$result_text = wordwrap($result_text, 140, "\n", false);
+				imagettftext($res_image, 26, 0, 230, 380, $starsColor, $font_path, $home_stars);
+				imagettftext($res_image, 26, 0, 910, 380, $starsColor, $font_path, $away_stars);
+				imagettftext($res_image, 16, 0, 155, 410, $textColor, $font_path, $home_name);
+				imagettftext($res_image, 16, 0, 800, 410, $textColor, $font_path, $away_name);
+				imagettftext($res_image, 26, 0, 560, 540, $textColor, $font_path, $result_title);
+				imagettftext($res_image, 12, 0, 120, 580, $textColor, $font_path, $result_text);
 				imagejpeg($res_image, $imageURL, 100);
 				
 				$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";

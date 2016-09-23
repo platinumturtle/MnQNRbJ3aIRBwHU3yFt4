@@ -3762,7 +3762,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$home_scalewidth = 250 * $home_ratio;
 		$home_scaleheight = 250;
 	}
-	$home_position = $home_width - $home_height;
+	$home_position = $home_scalewidth - $home_scaleheight;
 	if($home_position == 0) {
 		$home_x = 180;
 		$home_y = 100;
@@ -3784,7 +3784,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$away_scalewidth = 250 * $away_ratio;
 		$away_scaleheight = 250;
 	}
-	$away_position = $away_width - $away_height;
+	$away_position = $away_scalewidth - $away_scaleheight;
 	if($away_position == 0) {
 		$away_x = 850;
 		$away_y = 100;
@@ -10619,7 +10619,8 @@ function processMessage($message) {
 						$awayGroupPower = 0;
 					}
 					// si la tiene revisar si tu grupo sigue siendo **, pillar los miembros y poder de ambos clanes, y tambien los nombres
-					if($homeGroupMembers > 4 && $awayGroupMembers > 4) {
+					// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+					if($homeGroupMembers < 100 && $awayGroupMembers < 100) { // if($homeGroupMembers > 4 && $awayGroupMembers > 4) {
 						// si sigue, aceptar la guerra, avisar en ambos clanes
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						usleep(50000);

@@ -10283,7 +10283,7 @@ function processMessage($message) {
 				if($home_position == 0) {
 					$home_x = 180;
 					$home_y = 100;
-				} else if{$home_position > 0} {
+				} else if($home_position > 0) {
 					$home_x = 180;
 					$home_y = 100 + floor($home_position / 2);
 				} else {
@@ -10305,7 +10305,7 @@ function processMessage($message) {
 				if($away_position == 0) {
 					$away_x = 850;
 					$away_y = 100;
-				} else if{$away_position > 0} {
+				} else if($away_position > 0) {
 					$away_x = 850;
 					$away_y = 100 + floor($away_position / 2);
 				} else {

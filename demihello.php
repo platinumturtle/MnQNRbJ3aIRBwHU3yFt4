@@ -3742,7 +3742,16 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($home_width, $home_height) = getimagesize($homeAvatar);
 	list($away_width, $away_height) = getimagesize($awayAvatar);
-
+	if($home_width == 0) {
+		$home_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$homeAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		list($home_width, $home_height) = getimagesize($homeAvatar);
+	}
+	if($away_width == 0) {
+		$away_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$awayAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		list($away_width, $away_height) = getimagesize($awayAvatar);
+	}
 
 	$home_ratio = $home_width / $home_height;
 	if($home_ratio > 1) {
@@ -3757,7 +3766,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	if($home_position == 0) {
 		$home_x = 180;
 		$home_y = 100;
-	} else if{$home_position > 0} {
+	} else if($home_position > 0) {
 		$home_x = 180;
 		$home_y = 100 + floor($home_position / 2);
 	} else {
@@ -3779,7 +3788,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	if($away_position == 0) {
 		$away_x = 850;
 		$away_y = 100;
-	} else if{$away_position > 0} {
+	} else if($away_position > 0) {
 		$away_x = 850;
 		$away_y = 100 + floor($away_position / 2);
 	} else {

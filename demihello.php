@@ -3658,9 +3658,10 @@ function getPlayerBattleResult($playerName, $rivalName, $winnerName, $loserName,
 	return $log;
 }
 
-function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky) {
-	$log = "⚔ <b>REPORTE DE BATALLA INTERCLAN</b>".PHP_EOL.PHP_EOL;
-	$log = $log.getClanLevelByMembers($homeGroupMembers).$homeGroupName." 🆚 ".getClanLevelByMembers($awayGroupMembers).$awayGroupName.PHP_EOL.PHP_EOL;
+function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $homeAvatar, $awayAvatar, $home_id, $away_id) {
+	//$log = "⚔ <b>REPORTE DE BATALLA INTERCLAN</b>".PHP_EOL.PHP_EOL;
+	//$log = $log.getClanLevelByMembers($homeGroupMembers).$homeGroupName." 🆚 ".getClanLevelByMembers($awayGroupMembers).$awayGroupName.PHP_EOL.PHP_EOL;
+	$log = "";
 	if($lucky == 0) {
 			$storedStandardVictory = array(
 									"¡Vaya comienzo del clan ".$winnerName."! Parecía que llevaban días preparados para la guerra y han ido todos a una coordinados estupendamente, incluso uno de los rocosos de ".$loserName." ha salido corriendo. El resto sin embargo ha luchado por su honor y ha logrado derribar la defensa rival, pero no ha sido suficiente para llevarse la victoria...",
@@ -3694,7 +3695,182 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 			$n = rand(0,$n);
 			$log = $log."<i>".$storedUnexpectedVictory[$n]."</i>";
 	}
-	return $log;
+	
+
+
+	
+	
+	$imageURL = rand(0,29);
+	$imageShortURL = "/img/battle_".$imageURL.".jpg";
+	$imageURL = dirname(__FILE__).$imageShortURL;
+	header('Content-type: image/jpeg');
+	$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
+	if(strlen($homeAvatar) > 5) {
+		$homeAvatarType = substr(strtolower($homeAvatar), strlen($homeAvatar) - 3);
+		if($homeAvatarType == "jpg") {
+			$home_image = imagecreatefromjpeg($homeAvatar);
+		} else if($homeAvatarType == "png") {
+			$home_image = imagecreatefrompng($homeAvatar);
+		} else {
+			$home_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+			$homeAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		}
+	} else {
+		$home_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$homeAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+	}
+	if(strlen($awayAvatar) > 5) {
+		$awayAvatarType = substr(strtolower($awayAvatar), strlen($awayAvatar) - 3);
+		if($awayAvatarType == "jpg") {
+			$away_image = imagecreatefromjpeg($awayAvatar);
+		} else if($awayAvatarType == "png") {
+			$away_image = imagecreatefrompng($awayAvatar);
+		} else {
+			$away_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+			$awayAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		}
+	} else {
+		$away_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$awayAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+	}
+	
+	$textColor = imagecolorallocate($jpg_image, 90, 57, 22);
+	$starsColor = imagecolorallocate($jpg_image, 255, 255, 100);
+	$font_path = dirname(__FILE__)."/img/segoe.ttf";
+
+
+	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
+	list($home_width, $home_height) = getimagesize($homeAvatar);
+	list($away_width, $away_height) = getimagesize($awayAvatar);
+
+
+	$home_ratio = $home_width / $home_height;
+	if($home_ratio > 1) {
+		$home_scalewidth = 250;
+		$home_scaleheight = floor(250 / $home_ratio);
+	}
+	else {
+		$home_scalewidth = 250 * $home_ratio;
+		$home_scaleheight = 250;
+	}
+	$home_position = $home_width - $home_height;
+	if($home_position == 0) {
+		$home_x = 180;
+		$home_y = 100;
+	} else if{$home_position > 0} {
+		$home_x = 180;
+		$home_y = 100 + floor($home_position / 2);
+	} else {
+		$home_x = 180 + floor(($home_position * -1) / 2);
+		$home_y = 100;
+	}
+
+
+	$away_ratio = $away_width / $away_height;
+	if($away_ratio > 1) {
+		$away_scalewidth = 250;
+		$away_scaleheight = floor(250 / $away_ratio);
+	}
+	else {
+		$away_scalewidth = 250 * $away_ratio;
+		$away_scaleheight = 250;
+	}
+	$away_position = $away_width - $away_height;
+	if($away_position == 0) {
+		$away_x = 850;
+		$away_y = 100;
+	} else if{$away_position > 0} {
+		$away_x = 850;
+		$away_y = 100 + floor($away_position / 2);
+	} else {
+		$away_x = 850 + floor(($away_position * -1) / 2);
+		$away_y = 100;
+	}
+
+
+
+
+	$res_image = imagecreatetruecolor($base_width, $base_height);
+	imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $home_width, $home_height, $base_width, $base_height);
+	imagecopyresampled($res_image, $home_image, $home_x, $home_y, 0, 0, $home_scalewidth, $home_scaleheight, $home_width, $home_height);
+	imagecopyresampled($res_image, $away_image, $away_x, $away_y, 0, 0, $away_scalewidth, $away_scaleheight, $away_width, $away_height);
+	// llllllllllllllll
+	$home_name = $homeGroupName;
+	$home_name = wordwrap($home_name, 33, "\n", false);
+	$removeEmoji = "/\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x81-\x83][\x80-\xBF]/";
+	$home_name = preg_replace($removeEmoji, "", $home_name);
+	if(strlen($home_name) > 90) {
+		$home_name = substr($home_name, 0, 87);
+		$home_name = rtrim($home_name);
+		$home_name = $home_name."...";
+	}
+	$away_name = $awayGroupName;
+	$removeEmoji = "/[^[:print:]]/";
+	//$removeEmoji = "/\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x81-\x83][\x80-\xBF]/";
+	$away_name = preg_replace($removeEmoji, "", $away_name);
+	$away_name = wordwrap($away_name, 33, "\n", false);
+	if(strlen($away_name) > 90) {
+		$away_name = substr($away_name, 0, 87);
+		$away_name = rtrim($away_name);
+		$away_name = $away_name."...";
+	}
+	$home_stars = getClanLevelByMembers($homeGroupMembers);
+	$home_stars = str_replace("【", "", $home_stars);
+	$home_stars = str_replace("】", "", $home_stars);
+	$away_stars = getClanLevelByMembers($awayGroupMembers);
+	$away_stars = str_replace("【", "", $away_stars);
+	$away_stars = str_replace("】", "", $away_stars);
+	$result_title = "RESULTADO";
+	$result_text = $log;
+	$result_text = wordwrap($result_text, 140, "\n", false);
+	imagettftext($res_image, 26, 0, 230, 380, $starsColor, $font_path, $home_stars);
+	imagettftext($res_image, 26, 0, 910, 380, $starsColor, $font_path, $away_stars);
+	imagettftext($res_image, 16, 0, 155, 410, $textColor, $font_path, $home_name);
+	imagettftext($res_image, 16, 0, 800, 410, $textColor, $font_path, $away_name);
+	imagettftext($res_image, 26, 0, 560, 540, $textColor, $font_path, $result_title);
+	imagettftext($res_image, 12, 0, 140, 565, $textColor, $font_path, $result_text);
+	imagejpeg($res_image, $imageURL, 100);
+
+	$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+	$file_name_with_full_path = realpath($imageURL);
+	apiRequest("sendChatAction", array('chat_id' => $home_id, 'action' => "upload_photo"));
+	usleep(50000);
+	$post = array('chat_id' => $home_id, 'photo' =>'@'.$file_name_with_full_path);
+	apiRequest("sendChatAction", array('chat_id' => $away_id, 'action' => "upload_photo"));
+	usleep(50000);
+	$post = array('chat_id' => $away_id, 'photo' =>'@'.$file_name_with_full_path);
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL,$target_url);
+	curl_setopt($ch, CURLOPT_POST,1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+	$result=curl_exec ($ch);
+	curl_close ($ch);
+	imagedestroy($res_image);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//return $log;
 }
 
 function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
@@ -10083,26 +10259,77 @@ function processMessage($message) {
 				list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 				list($home_width, $home_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
 				list($away_width, $away_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
+				
+				
+				$home_ratio = $home_width / $home_height;
+				if($home_ratio > 1) {
+					$home_scalewidth = 250;
+					$home_scaleheight = floor(250 / $home_ratio);
+				}
+				else {
+					$home_scalewidth = 250 * $home_ratio;
+					$home_scaleheight = 250;
+				}
+				$home_position = $home_width - $home_height;
+				if($home_position == 0) {
+					$home_x = 180;
+					$home_y = 100;
+				} else if{$home_position > 0} {
+					$home_x = 180;
+					$home_y = 100 + floor($home_position / 2);
+				} else {
+					$home_x = 180 + floor(($home_position * -1) / 2);
+					$home_y = 100;
+				}
+				
+				
+				$away_ratio = $away_width / $away_height;
+				if($away_ratio > 1) {
+					$away_scalewidth = 250;
+					$away_scaleheight = floor(250 / $away_ratio);
+				}
+				else {
+					$away_scalewidth = 250 * $away_ratio;
+					$away_scaleheight = 250;
+				}
+				$away_position = $away_width - $away_height;
+				if($away_position == 0) {
+					$away_x = 850;
+					$away_y = 100;
+				} else if{$away_position > 0} {
+					$away_x = 850;
+					$away_y = 100 + floor($away_position / 2);
+				} else {
+					$away_x = 850 + floor(($away_position * -1) / 2);
+					$away_y = 100;
+				}
+				
+				
+				
+				
 				$res_image = imagecreatetruecolor($base_width, $base_height);
 				imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $home_width, $home_height, $base_width, $base_height);
-				imagecopyresampled($res_image, $home_image, 180, 100, 0, 0, 250, 250, $home_width, $home_height);
-				imagecopyresampled($res_image, $away_image, 850, 100, 0, 0, 250, 250, $away_width, $away_height);
-				$home_name = "✌ Un clavicordio se 🏆 balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. Un clavicordio se balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. ";
+				imagecopyresampled($res_image, $home_image, $home_x, $home_y, 0, 0, $home_scalewidth, $home_scaleheight, $home_width, $home_height);
+				imagecopyresampled($res_image, $away_image, $away_x, $away_y, 0, 0, $away_scalewidth, $away_scaleheight, $away_width, $away_height);
+				$home_name = "✌ Un clavicordio se 🏆 balanceaba sobre😁😡☠ la tela de una araña, y como veía que no se rompía lo cantó otra vez. Un clavicordio se balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. ";
 				$home_name = wordwrap($home_name, 33, "\n", false);
+				$removeEmoji = "/\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x81-\x83][\x80-\xBF]/";
+				$home_name = preg_replace($removeEmoji, "", $home_name);
 				if(strlen($home_name) > 90) {
 					$home_name = substr($home_name, 0, 87);
 					$home_name = rtrim($home_name);
 					$home_name = $home_name."...";
 				}
 				$away_name = "refresco fresco de 🎤👾😁😡☠🚨🌔👹🌔 búfalo";
+				$removeEmoji = "/[^[:print:]]/";
+				//$removeEmoji = "/\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x81-\x83][\x80-\xBF]/";
+				$away_name = preg_replace($removeEmoji, "", $away_name);
 				$away_name = wordwrap($away_name, 33, "\n", false);
 				if(strlen($away_name) > 90) {
 					$away_name = substr($away_name, 0, 87);
 					$away_name = rtrim($away_name);
 					$away_name = $away_name."...";
 				}
-				$removeEmoji = "/[\x{1F600}-\x{1F64F}]/u";
-				$away_name = preg_replace($removeEmoji, "", $away_name);
 				$home_stars = "【★★★☆☆】";
 				$home_stars = str_replace("【", "", $home_stars);
 				$home_stars = str_replace("】", "", $home_stars);
@@ -10117,7 +10344,7 @@ function processMessage($message) {
 				imagettftext($res_image, 16, 0, 155, 410, $textColor, $font_path, $home_name);
 				imagettftext($res_image, 16, 0, 800, 410, $textColor, $font_path, $away_name);
 				imagettftext($res_image, 26, 0, 560, 540, $textColor, $font_path, $result_title);
-				imagettftext($res_image, 12, 0, 120, 580, $textColor, $font_path, $result_text);
+				imagettftext($res_image, 12, 0, 140, 565, $textColor, $font_path, $result_text);
 				imagejpeg($res_image, $imageURL, 100);
 				
 				$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
@@ -10362,12 +10589,13 @@ function processMessage($message) {
 				// si existe, revisar que quien usa esta función pertenezca al clan
 				if($chat_id == $row['group_id']) {
 					mysql_free_result($result);
-					$query = 'SELECT COUNT( * ) AS  "members", group_id, SUM( hp + attack + defense + critic + critic + critic + speed + helmet + helmet + helmet + body + boots + weapon + shield ) AS  "totalpower" FROM playerbattle WHERE group_id IN ( '.$homegroup_id.', '.$awaygroup_id.' ) GROUP BY group_id ORDER BY FIELD( group_id, '.$homegroup_id.', '.$awaygroup_id.' )';
+					$query = 'SELECT COUNT( pb.user_id ) AS  "members", pb.group_id, SUM( pb.hp + pb.attack + pb.defense + pb.critic + pb.critic + pb.critic + pb.speed + pb.helmet + pb.helmet + pb.helmet + pb.body + pb.boots + pb.weapon + pb.shield ) AS  "totalpower", gb.clan_avatar FROM playerbattle pb, groupbattle gb WHERE pb.group_id IN ( '.$homegroup_id.',  '.$awaygroup_id.' ) AND pb.group_id = gb.group_id GROUP BY pb.group_id ORDER BY FIELD( pb.group_id, '.$homegroup_id.',  '.$awaygroup_id.' )';
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
 					if(isset($row['group_id'])) {
 						$homeGroupMembers = $row['members'];
 						$homeGroupPower = $row['totalpower'];
+						$homeGroupAvatar = $row['clan_avatar'];
 					} else {
 						$homeGroupMembers = 0;
 						$homeGroupPower = 0;
@@ -10376,6 +10604,7 @@ function processMessage($message) {
 					if(isset($row['group_id'])) {
 						$awayGroupMembers = $row['members'];
 						$awayGroupPower = $row['totalpower'];
+						$awayGroupAvatar = $row['clan_avatar'];
 					} else {
 						$awayGroupMembers = 0;
 						$awayGroupPower = 0;
@@ -10391,9 +10620,10 @@ function processMessage($message) {
 						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
 						// y editar db, la de guerra pendiente como aceptada
 						mysql_free_result($result);
-						$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						mysql_free_result($result);
+						// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+						//$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
+						//$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						//mysql_free_result($result);
 						sleep(1);
 						// librar batalla
 						if($homeGroupPower >= $awayGroupPower) {
@@ -10516,15 +10746,19 @@ function processMessage($message) {
 						$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
 						$fullDate = translateDate($fullDate);
 						// insert en groupbattleresults, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
-						$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$fullDate."');";
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						mysql_free_result($result);
+						// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+						//$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$fullDate."');";
+						//$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						//mysql_free_result($result);
 						// sumarle +1 a las victorias de los playerbattle grupales
-						$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						mysql_free_result($result);
+						// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+						// $query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
+						// $result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						// mysql_free_result($result);
 						sleep(1);
 						// mostrar el resumen de batalla
+						getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $homeGroupAvatar, $awayGroupAvatar, $homegroup_id, $chat_id);
+						/*
 						$msg = getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky);
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						usleep(50000);
@@ -10532,6 +10766,7 @@ function processMessage($message) {
 						apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
 						usleep(50000);
 						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => $msg));
+						*/
 					} else {
 						// si no, decir que no tienes miembros para aceptarla y sugerir lo de !rechazarguerra
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

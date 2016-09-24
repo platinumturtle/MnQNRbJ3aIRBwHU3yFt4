@@ -698,6 +698,7 @@ function insult($name) {
 						"por mucho que vayas al gim esa cara que tienes no se arregla ni con cirugía, déjalo ya",
 						"te voy a partir el cráneo con una bolsa de kikos",
 						"me cuesco en las cuencas de tus ojos",
+						"voy a cortarte la cara en rodajas para escanearlas y hacer fotocopias con las que prender una hoguera para quemar tu cuerpo",
 						"que una nutria te arranque una pierna y la use de paragüero, así por lo menos sirves para algo",
 						"voy a entrar a tu móvil por el puerto 288 y a ponerte la música de los gemeliers en bucle hasta que te reviente un tímpano",
 						"eres tan popular que la gente desea verte insultado, te aconsejo que mañana no abras tu buzón aunque te llegue el aroma a tu sobaco desde su interior",
@@ -4395,7 +4396,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			if($tipTicket == 7) {
 				$subTipTicket = rand(1, 4);
 				if($subTipTicket == 1) {
-					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase. ¡No te pierdas ninguno!".PHP_EOL;
+					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke y actualizaciones del bot, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase o conocer las nuevas funciones del bot. ¡No te pierdas nada!".PHP_EOL;
 				//} else if($subTipTicket == 2) {
 				//	$msg = $msg."<b>Consejo:</b> utiliza !rol si no quieres esperar tanto tiempo a conseguir nueva experiencia, ¡podrías obtener buenas recompensas para tu personaje!".PHP_EOL;
 				} else if($subTipTicket == 3) {
@@ -7823,7 +7824,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.5 creado por @Kamisuke."
+				"@DemisukeBot v3.0.6 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -8286,6 +8287,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cada vez que cambies de zona los enemigos serán más poderosos y darán más puntos de experiencia al derrotarlos.</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>Los avatares en .GIF no aparecerán en el resultado de las batallas.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cuando subas de nivel con !exp o !atacar las estadísticas de tu personaje mejorarán, y también recibirás puntos adicionales para utilizar donde quieras y ganarás como premio una nueva arma o armadura. Es posible que también llegues a una nueva zona, más difícil que la anterior pero con mejores recompensas. El nombre de la zona actual lo puedes ver en todo momento con la función !pj.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cada objeto nuevo que recibas siempre será mejor que el anterior que ya tenía tu personaje, y se utilizará automáticamente. Un objeto con el nombre en cursiva es un objeto normal, un objeto con el nombre </i>regular <i>es un objeto mejorado, y un objeto con el nombre en</i> <b>negrita</b> <i>es un objeto único, más raro de conseguir y con mejor estadística.</i>"
@@ -8356,6 +8359,8 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Un jugador podría no responder con \"!pvp aceptar\" ni \"!pvp rechazar\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los duelos pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza desde chat privado con el bot.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Además de poder obtener la victoria en batalla, el jugador más rocoso del combate recibirá un punto de líder en rocosidad, visible en la ficha de personaje..</i>"
 				;
 	} else if($mode == "guerras_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -10097,6 +10102,7 @@ function processMessage($message) {
 						$rivalPower = $row['power'];
 						$rivalPermission = $row['pvp_allowed'];
 						$rivalHeroPower = $row['hero_power'];
+						$rivalHeroPower = getHeroPower($rivalLevel, $rivalHeroPower);
 						$rivalLevel = $row['level'];
 						$rivalAvatar = $row['avatar'];
 						$rivalHP = $row['total_hp'];
@@ -10104,7 +10110,6 @@ function processMessage($message) {
 						$rivalDef = $row['total_defense'];
 						$rivalCrit = $row['total_critic'];
 						$rivalSp = $row['total_speed'];
-						$rivalHeroPower = getHeroPower($rivalLevel, $rivalHeroPower);
 						// revisar si estan allowed
 						if($playerPermission == 1 && $rivalPermission == 1) {
 							// si si, aceptar la guerra, avisar en ambos jugadores
@@ -10712,141 +10717,18 @@ function processMessage($message) {
 			getRockMan($chat_id);
 		}
 	} else if (strpos(strtolower($text), "!listapvp") !== false) {
-		if (strpos(strtolower($text), "!listapvp") !== false) {
-			if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
-				error_log($logname." triggered in a group and failed: !listapvp.");
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				$msg = "<b>La función !listapvp solo está disponible en chat privado con el bot.</b>";
-				usleep(100000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
-			} else {
-				error_log($logname." triggered in private: !listapvp.");
-				// betatesting
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
-				usleep(250000);
-				$imageURL = rand(0,29);
-				$imageShortURL = "/img/battle_".$imageURL.".jpg";
-				$imageURL = dirname(__FILE__).$imageShortURL;
-				header('Content-type: image/jpeg');
-				$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
-				$home_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
-				$away_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
-				$textColor = imagecolorallocate($jpg_image, 90, 57, 22);
-				$starsColor = imagecolorallocate($jpg_image, 255, 255, 100);
-				$font_path = dirname(__FILE__)."/img/segoe.ttf";
-				
-				
-				list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
-				list($home_width, $home_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/squirtle.jpg');
-				list($away_width, $away_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/madrid.jpg');
-				
-				
-				$home_ratio = $home_width / $home_height;
-				if($home_ratio > 1) {
-					$home_scalewidth = 250;
-					$home_scaleheight = floor(250 / $home_ratio);
-				}
-				else {
-					$home_scalewidth = 250 * $home_ratio;
-					$home_scaleheight = 250;
-				}
-				$home_position = $home_width - $home_height;
-				if($home_position == 0) {
-					$home_x = 180;
-					$home_y = 100;
-				} else if($home_position > 0) {
-					$home_x = 180;
-					$home_y = 100 + floor($home_position / 2);
-				} else {
-					$home_x = 180 + floor(($home_position * -1) / 2);
-					$home_y = 100;
-				}
-				
-				
-				$away_ratio = $away_width / $away_height;
-				if($away_ratio > 1) {
-					$away_scalewidth = 250;
-					$away_scaleheight = floor(250 / $away_ratio);
-				}
-				else {
-					$away_scalewidth = 250 * $away_ratio;
-					$away_scaleheight = 250;
-				}
-				$away_position = $away_width - $away_height;
-				if($away_position == 0) {
-					$away_x = 850;
-					$away_y = 100;
-				} else if($away_position > 0) {
-					$away_x = 850;
-					$away_y = 100 + floor($away_position / 2);
-				} else {
-					$away_x = 850 + floor(($away_position * -1) / 2);
-					$away_y = 100;
-				}
-				
-				
-				
-				
-				$res_image = imagecreatetruecolor($base_width, $base_height);
-				imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $home_width, $home_height, $base_width, $base_height);
-				imagecopyresampled($res_image, $home_image, $home_x, $home_y, 0, 0, $home_scalewidth, $home_scaleheight, $home_width, $home_height);
-				imagecopyresampled($res_image, $away_image, $away_x, $away_y, 0, 0, $away_scalewidth, $away_scaleheight, $away_width, $away_height);
-				$home_name = "✌ Un clavicordio se 🏆 balanceaba sobre😁😡☠ la tela de una araña, y como veía que no se rompía lo cantó otra vez. Un clavicordio se balanceaba sobre la tela de una araña, y como veía que no se rompía lo cantó otra vez. ";
-				$home_name = wordwrap($home_name, 33, "\n", false);
-				$removeEmoji = "/\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x81-\x83][\x80-\xBF]/";
-				$home_name = preg_replace($removeEmoji, "", $home_name);
-				if(strlen($home_name) > 90) {
-					$home_name = substr($home_name, 0, 87);
-					$home_name = rtrim($home_name);
-					$home_name = $home_name."...";
-				}
-				$away_name = "refresco fresco de 🎤👾😁😡☠🚨🌔👹🌔 búfalo";
-				$removeEmoji = "/[^[:print:]]/";
-				//$removeEmoji = "/\xEE[\x80-\xBF][\x80-\xBF]|\xEF[\x81-\x83][\x80-\xBF]/";
-				$away_name = preg_replace($removeEmoji, "", $away_name);
-				$away_name = wordwrap($away_name, 33, "\n", false);
-				if(strlen($away_name) > 90) {
-					$away_name = substr($away_name, 0, 87);
-					$away_name = rtrim($away_name);
-					$away_name = $away_name."...";
-				}
-				$home_stars = "【★★★☆☆】";
-				$home_stars = str_replace("【", "", $home_stars);
-				$home_stars = str_replace("】", "", $home_stars);
-				$away_stars = "【★★☆☆☆】";
-				$away_stars = str_replace("【", "", $away_stars);
-				$away_stars = str_replace("】", "", $away_stars);
-				$result_title = "RESULTADO";
-				$result_text = "El clan Un clavicordio salanceaba sobre la tela de una araña, y comose ha aprovechado de su superior velocidad frente a los rivales y ha logrado cargarse a medio equipo en un santiamén. En cuanto se han visto muy superiores en la batalla, dos de sus miembros se han ido a descansar y han dejado que el resto hiciera el trabajoUn clavicordio lanceaba sobre la tela de una araña, y comoha dado cuenta rápido de la situación y ha optado por jugárselo todo al ataque. No les ha ido mal, porque han logrado remontar y llevarse la victoria, eso sí, sudando más de lo que podían imaginar.";
-				$result_text = wordwrap($result_text, 140, "\n", false);
-				imagettftext($res_image, 26, 0, 230, 380, $starsColor, $font_path, $home_stars);
-				imagettftext($res_image, 26, 0, 910, 380, $starsColor, $font_path, $away_stars);
-				imagettftext($res_image, 16, 0, 155, 410, $textColor, $font_path, $home_name);
-				imagettftext($res_image, 16, 0, 800, 410, $textColor, $font_path, $away_name);
-				imagettftext($res_image, 26, 0, 560, 540, $textColor, $font_path, $result_title);
-				imagettftext($res_image, 12, 0, 140, 565, $textColor, $font_path, $result_text);
-				imagejpeg($res_image, $imageURL, 100);
-				
-				$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
-				$file_name_with_full_path = realpath($imageURL);
-				$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_URL,$target_url);
-				curl_setopt($ch, CURLOPT_POST,1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-				$result=curl_exec ($ch);
-				curl_close ($ch);
-				imagedestroy($res_image);
-				
-				
-				
-				
-				// end betatesting
-			}
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group and failed: !listapvp.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$msg = "<b>La función !listapvp solo está disponible en chat privado con el bot.</b>";
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else {
-			error_log($logname." triggered: !rocosos.");
-			getRockMan($chat_id);
+			error_log($logname." triggered in private: !listapvp.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$msg = "<b>La función !listapvp estará disponible en la próxima actualización del bot.</b>";
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 		}
 	} else if (strpos(strtolower($text), "!botella") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
@@ -11094,10 +10976,10 @@ function processMessage($message) {
 						// si sigue, aceptar la guerra, avisar en ambos clanes
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. El jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>")); //  Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente.
 						apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
 						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
+						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. El jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>"));
 						// y editar db, la de guerra pendiente como aceptada
 						mysql_free_result($result);
 						$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;

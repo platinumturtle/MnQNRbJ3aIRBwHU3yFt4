@@ -10332,6 +10332,11 @@ function processMessage($message) {
 							$player_name = $playerName." [Nv. ".$playerLevel."]";
 							$rival_name = $rivalName." [Nv. ".$rivalLevel."]";
 							$player_nameX = 155;
+							$player_namealign = 33 - strlen($player_name);
+							if($player_namealign > 0) {
+								$player_nameX = $player_nameX + ($player_namealign * 8);
+							}
+							/*
 							if(strlen($player_name) < 25) {
 								if($player_name > 19) {
 									$player_nameX = $player_nameX + 50;
@@ -10353,7 +10358,13 @@ function processMessage($message) {
 									$player_nameX = $player_nameX + 90;
 								}
 							}
+							*/
 							$rival_nameX = 800;
+							$rival_namealign = 33 - strlen($rival_name);
+							if($rival_namealign > 0) {
+								$rival_nameX = $rival_nameX + ($rival_namealign * 8);
+							}
+							/*
 							if(strlen($rival_name) < 25) {
 								if($rival_name > 19) {
 									$rival_nameX = $rival_nameX + 50;
@@ -10375,6 +10386,7 @@ function processMessage($message) {
 									$rival_nameX = $rival_nameX + 90;
 								}
 							}
+							*/
 							$res_image = imagecreatetruecolor($base_width, $base_height);
 							imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $base_width, $base_height, $base_width, $base_height);
 							imagecopyresampled($res_image, $player_image, $player_x, $player_y, 0, 0, $player_scalewidth, $player_scaleheight, $player_width, $player_height);
@@ -10405,24 +10417,24 @@ function processMessage($message) {
 							// kkkkkkkkkkkkkkkk
 							imagettftext($res_image, 16, 0, $player_nameX, 380, $textColor, $font_path, $player_name);
 							imagettftext($res_image, 16, 0, $rival_nameX, 380, $textColor, $font_path, $rival_name);
-							imagettftext($res_image, 16, 0, 215, 410, $textColor, $font_path, "Vida:");
-							imagettftext($res_image, 16, 0, 895, 410, $textColor, $font_path, "Vida:");
+							imagettftext($res_image, 16, 0, 228, 410, $textColor, $font_path, "Vida:");
+							imagettftext($res_image, 16, 0, 908, 410, $textColor, $font_path, "Vida:");
 							imagettftext($res_image, 26, 0, 280, 410, $starsColor, $font_path, $player_hpstars);
 							imagettftext($res_image, 26, 0, 960, 410, $starsColor, $font_path, $rival_hpstars);
 							imagettftext($res_image, 16, 0, 200, 435, $textColor, $font_path, "Ataque:");
 							imagettftext($res_image, 16, 0, 880, 435, $textColor, $font_path, "Ataque:");
 							imagettftext($res_image, 26, 0, 280, 435, $starsColor, $font_path, $player_atstars);
 							imagettftext($res_image, 26, 0, 960, 435, $starsColor, $font_path, $rival_atstars);
-							imagettftext($res_image, 16, 0, 190, 460, $textColor, $font_path, "Defensa:");
-							imagettftext($res_image, 16, 0, 870, 460, $textColor, $font_path, "Defensa:");
+							imagettftext($res_image, 16, 0, 191, 460, $textColor, $font_path, "Defensa:");
+							imagettftext($res_image, 16, 0, 872, 460, $textColor, $font_path, "Defensa:");
 							imagettftext($res_image, 26, 0, 280, 460, $starsColor, $font_path, $player_defstars);
 							imagettftext($res_image, 26, 0, 960, 460, $starsColor, $font_path, $rival_defstars);
-							imagettftext($res_image, 16, 0, 185, 485, $textColor, $font_path, "Crítico:");
-							imagettftext($res_image, 16, 0, 165, 485, $textColor, $font_path, "Crítico:");
+							imagettftext($res_image, 16, 0, 206, 485, $textColor, $font_path, "Crítico:");
+							imagettftext($res_image, 16, 0, 887, 485, $textColor, $font_path, "Crítico:");
 							imagettftext($res_image, 26, 0, 280, 485, $starsColor, $font_path, $player_critstars);
 							imagettftext($res_image, 26, 0, 960, 485, $starsColor, $font_path, $rival_critstars);
-							imagettftext($res_image, 16, 0, 170, 510, $textColor, $font_path, "Velocidad:");
-							imagettftext($res_image, 16, 0, 150, 510, $textColor, $font_path, "Velocidad:");
+							imagettftext($res_image, 16, 0, 177, 510, $textColor, $font_path, "Velocidad:");
+							imagettftext($res_image, 16, 0, 858, 510, $textColor, $font_path, "Velocidad:");
 							imagettftext($res_image, 26, 0, 280, 510, $starsColor, $font_path, $player_spstars);
 							imagettftext($res_image, 26, 0, 960, 510, $starsColor, $font_path, $rival_spstars);
 							imagettftext($res_image, 12, 0, 140, 565, $textColor, $font_path, $result_text);

@@ -1572,7 +1572,7 @@ function getItemName($type, $power) {
 				// nivel 11
 				case 4: $name = "<i>Mosquitera (Defensa +4)</i>";
 						break;
-				case 5: $name = "Escudo de carton (Defensa +5)";
+				case 5: $name = "Escudo de cartón (Defensa +5)";
 						break;
 				case 6: $name = "<b>Escudo de PVC (Defensa +6)</b>";
 						break;

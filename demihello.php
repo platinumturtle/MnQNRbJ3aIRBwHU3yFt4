@@ -2326,7 +2326,7 @@ function getItemName($type, $power) {
 				// nivel 11
 				case 4: $name = "<i>Mosquitera (Defensa +4)</i>";
 						break;
-				case 5: $name = "Escudo de carton (Defensa +5)";
+				case 5: $name = "Escudo de cartón (Defensa +5)";
 						break;
 				case 6: $name = "<b>Escudo de PVC (Defensa +6)</b>";
 						break;
@@ -3685,8 +3685,6 @@ function getPlayerBattleResult($playerName, $rivalName, $winnerName, $loserName,
 }
 
 function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $homeAvatar, $awayAvatar, $home_id, $away_id) {
-	//$log = "⚔ <b>REPORTE DE BATALLA INTERCLAN</b>".PHP_EOL.PHP_EOL;
-	//$log = $log.getClanLevelByMembers($homeGroupMembers).$homeGroupName." 🆚 ".getClanLevelByMembers($awayGroupMembers).$awayGroupName.PHP_EOL.PHP_EOL;
 	$log = "";
 	$homeGroupName = removeEmoji($homeGroupName);
 	$awayGroupName = removeEmoji($awayGroupName);
@@ -3725,9 +3723,6 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 			$n = rand(0,$n);
 			$log = $log.$storedUnexpectedVictory[$n];
 	}
-	
-
-	
 	$imageURL = rand(0,29);
 	$imageShortURL = "/img/battle_".$imageURL.".jpg";
 	$imageURL = dirname(__FILE__).$imageShortURL;
@@ -3761,12 +3756,9 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$away_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
 		$awayAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 	}
-	
 	$textColor = imagecolorallocate($jpg_image, 90, 57, 22);
 	$starsColor = imagecolorallocate($jpg_image, 255, 255, 100);
 	$font_path = dirname(__FILE__)."/img/segoe.ttf";
-
-
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($home_width, $home_height) = getimagesize($homeAvatar);
 	list($away_width, $away_height) = getimagesize($awayAvatar);
@@ -3780,7 +3772,6 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$awayAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($away_width, $away_height) = getimagesize($awayAvatar);
 	}
-
 	$home_ratio = $home_width / $home_height;
 	if($home_ratio > 1) {
 		$home_scalewidth = 250;
@@ -3801,8 +3792,6 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$home_x = 180 + floor(($home_position * -1) / 2);
 		$home_y = 100;
 	}
-
-
 	$away_ratio = $away_width / $away_height;
 	if($away_ratio > 1) {
 		$away_scalewidth = 250;
@@ -3825,23 +3814,20 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	}
 	$home_name = $awayGroupName;
 	$away_name = $homeGroupName;
-	if(strlen($home_name) > 25) {
+	if(strlen($home_name) < 25) {
 		$home_nameX = 155 + 50;
 	} else {
 		$home_nameX = 155;
 	}
-	if(strlen($away_name) > 25) {
+	if(strlen($away_name) < 25) {
 		$away_nameX = 800 + 50;
 	} else {
 		$away_nameX = 800;		
 	}
-
-
 	$res_image = imagecreatetruecolor($base_width, $base_height);
 	imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $base_width, $base_height, $base_width, $base_height);
 	imagecopyresampled($res_image, $home_image, $home_x, $home_y, 0, 0, $home_scalewidth, $home_scaleheight, $home_width, $home_height);
 	imagecopyresampled($res_image, $away_image, $away_x, $away_y, 0, 0, $away_scalewidth, $away_scaleheight, $away_width, $away_height);
-
 	$home_name = wordwrap($home_name, 33, "\n", false);
 	if(strlen($home_name) > 90) {
 		$home_name = substr($home_name, 0, 87);
@@ -3870,7 +3856,6 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	imagettftext($res_image, 26, 0, 560, 540, $textColor, $font_path, $result_title);
 	imagettftext($res_image, 12, 0, 140, 565, $textColor, $font_path, $result_text);
 	imagejpeg($res_image, $imageURL, 100);
-
 	$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
 	$file_name_with_full_path = realpath($imageURL);
 	apiRequest("sendChatAction", array('chat_id' => $away_id, 'action' => "upload_photo"));
@@ -3896,21 +3881,9 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	$result=curl_exec ($ch);
 	curl_close ($ch);
 	imagedestroy($res_image);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//return $log;
 }
 
-function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
+function bossBattleResults($win, $lucky) { // ($chat_id, $win, $lucky, $playerName, $bossName)
 	if($win == 1) {
 		if($lucky == 1) {
 			$storedUnexpectedVictory = array(
@@ -3983,13 +3956,16 @@ function bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName) {
 			$msg = $storedStandardDefeat[$n];
 		}
 	}
+	/*
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	sleep(2);
 	$msg = "<b>⚔ REPORTE DE BATALLA</b>".PHP_EOL.PHP_EOL."<b>".$playerName." 🆚 ".$bossName."</b>".PHP_EOL.PHP_EOL."<i>".$msg."</i>";
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+	*/
+	return $msg;
 }
 
-function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
+function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAvatar, $totalHP, $totalAt, $totalDef, $totalCrit, $totalSp) {
 	if($level < 5 || $level > 99) {
 		return 0;
 	} else {
@@ -4017,7 +3993,8 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['hp']." ".ratePower($row['hp'])."</pre>".PHP_EOL;
+	$boss_hpstars = ratePower($row['hp']);
+	$msg = $msg.$row['hp']." ".$boss_hpstars."</pre>".PHP_EOL;
 	$msg = $msg."<pre>ATA:";
 	switch(strlen($row['attack'])){
 		case 1: $msg = $msg."   ";
@@ -4027,7 +4004,8 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['attack']." ".ratePower($row['attack'])."</pre>".PHP_EOL;
+	$boss_atstars = ratePower($row['attack']);
+	$msg = $msg.$row['attack']." ".$boss_atstars."</pre>".PHP_EOL;
 	$msg = $msg."<pre>DEF:";
 	switch(strlen($row['defense'])){
 		case 1: $msg = $msg."   ";
@@ -4037,7 +4015,8 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['defense']." ".ratePower($row['defense'])."</pre>".PHP_EOL;
+	$boss_defstars = ratePower($row['defense']);
+	$msg = $msg.$row['defense']." ".$boss_defstars."</pre>".PHP_EOL;
 	$msg = $msg."<pre>CRÍ:";
 	switch(strlen($row['critic'])){
 		case 1: $msg = $msg."   ";
@@ -4047,7 +4026,8 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['critic']." ".ratePower($row['critic'], 1)."</pre>".PHP_EOL;
+	$boss_critstars = ratePower($row['critic'], 1);
+	$msg = $msg.$row['critic']." ".$boss_critstars."</pre>".PHP_EOL;
 	$msg = $msg."<pre>VEL:";
 	switch(strlen($row['speed'])){
 		case 1: $msg = $msg."   ";
@@ -4057,7 +4037,8 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		case 3: $msg = $msg." ";
 				break;
 	}
-	$msg = $msg.$row['speed']." ".ratePower($row['speed'])."</pre>".PHP_EOL.PHP_EOL;
+	$boss_spstars = ratePower($row['speed']);
+	$msg = $msg.$row['speed']." ".$boss_spstars."</pre>".PHP_EOL.PHP_EOL;
 	$msg = $msg."<b>Puntos exp. por victoria:</b> ".$row['exp_points'];
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	sleep(1);
@@ -4113,13 +4094,186 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName) {
 		}
 	}
 	// mostrar reporte de batalla
-	bossBattleResults($chat_id, $win, $lucky, $playerName, $bossName);
 	error_log("Battle results (WINLUCKY): ".$win.$lucky);
 	if($win == 1) {
 		$newExp = $row['exp_points'];
 	} else {
 		$newExp = 0;
 	}
+	$logResult = bossBattleResults($win, $lucky);
+	// kkkkkkkkkkkkkkkkkkkkkkkk
+	
+	
+	$imageURL = rand(0,29);
+	$imageShortURL = "/img/battle_".$imageURL.".jpg";
+	$imageURL = dirname(__FILE__).$imageShortURL;
+	header('Content-type: image/jpeg');
+	$jpg_image = imagecreatefromjpeg('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
+	if(strlen($playerAvatar) > 5) {
+		$playerAvatarType = substr(strtolower($playerAvatar), strlen($playerAvatar) - 3);
+		if($playerAvatarType == "jpg") {
+			$player_image = imagecreatefromjpeg($playerAvatar);
+		} else if($playerAvatarType == "png") {
+			$player_image = imagecreatefrompng($playerAvatar);
+		} else {
+			$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+			$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		}
+	} else {
+		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+	}
+	$bossAvatar = $row['avatar'];
+	if(strlen($bossAvatar) > 5) {
+		$bossAvatarType = substr(strtolower($bossAvatar), strlen($bossAvatar) - 3);
+		if($bossAvatarType == "jpg") {
+			$boss_image = imagecreatefromjpeg($bossAvatar);
+		} else if($awayAvatarType == "png") {
+			$boss_image = imagecreatefrompng($bossAvatar);
+		} else {
+			$boss_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+			$bossAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		}
+	} else {
+		$boss_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$bossAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+	}
+	$textColor = imagecolorallocate($jpg_image, 90, 57, 22);
+	$starsColor = imagecolorallocate($jpg_image, 255, 255, 100);
+	$font_path = dirname(__FILE__)."/img/segoe.ttf";
+	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
+	list($player_width, $player_height) = getimagesize($playerAvatar);
+	list($boss_width, $boss_height) = getimagesize($bossAvatar);
+	if($player_width == 0) {
+		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		list($player_width, $player_height) = getimagesize($playerAvatar);
+	}
+	if($boss_width == 0) {
+		$boss_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$bossAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		list($boss_width, $boss_height) = getimagesize($bossAvatar);
+	}
+	$player_ratio = $player_width / $player_height;
+	if($player_ratio > 1) {
+		$player_scalewidth = 250;
+		$player_scaleheight = floor(250 / $player_ratio);
+	}
+	else {
+		$player_scalewidth = 250 * $player_ratio;
+		$player_scaleheight = 250;
+	}
+	$player_position = $player_scalewidth - $player_scaleheight;
+	if($player_position == 0) {
+		$player_x = 180;
+		$player_y = 100;
+	} else if($player_position > 0) {
+		$player_x = 180;
+		$player_y = 100 + floor($player_position / 2);
+	} else {
+		$player_x = 180 + floor(($player_position * -1) / 2);
+		$player_y = 100;
+	}
+	$boss_ratio = $boss_width / $boss_height;
+	if($boss_ratio > 1) {
+		$boss_scalewidth = 250;
+		$boss_scaleheight = floor(250 / $boss_ratio);
+	}
+	else {
+		$boss_scalewidth = 250 * $boss_ratio;
+		$boss_scaleheight = 250;
+	}
+	$boss_position = $boss_scalewidth - $boss_scaleheight;
+	if($boss_position == 0) {
+		$boss_x = 850;
+		$boss_y = 100;
+	} else if($boss_position > 0) {
+		$boss_x = 850;
+		$boss_y = 100 + floor($boss_position / 2);
+	} else {
+		$boss_x = 850 + floor(($boss_position * -1) / 2);
+		$boss_y = 100;
+	}
+	$player_name = removeEmoji($playerName);
+	$boss_name = $bossName;
+	if(strlen($player_name) < 25) {
+		$player_nameX = 155 + 50;
+	} else {
+		$player_nameX = 155;
+	}
+	if(strlen($boss_name) < 25) {
+		$boss_nameX = 800 + 50;
+	} else {
+		$boss_nameX = 800;		
+	}
+	$res_image = imagecreatetruecolor($base_width, $base_height);
+	imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $base_width, $base_height, $base_width, $base_height);
+	imagecopyresampled($res_image, $player_image, $player_x, $player_y, 0, 0, $player_scalewidth, $player_scaleheight, $player_width, $player_height);
+	imagecopyresampled($res_image, $boss_image, $boss_x, $boss_y, 0, 0, $boss_scalewidth, $boss_scaleheight, $boss_width, $boss_height);
+	if(strlen($player_name) > 50) {
+		$player_name = substr($player_name, 0, 47);
+		$player_name = rtrim($player_name);
+		$player_name = $player_name."...";
+	}
+	$player_name = $player_name." (Nv. ".$playerLevel.")";
+	if(strlen($boss_name) > 50) {
+		$boss_name = substr($boss_name, 0, 47);
+		$boss_name = rtrim($boss_name);
+		$boss_name = $boss_name."...";
+	}
+	$boss_name = $boss_name." (Nv. ".$row['level'].")";
+	$player_hpstars = ratePower($totalHP);
+	$player_atstars = ratePower($totalAt);
+	$player_defstars = ratePower($totalDef);
+	$player_critstars = ratePower($totalCrit);
+	$player_spstars = ratePower($totalSp);
+	$result_title = "RESULTADO";
+	$result_text = $logResult;
+	$result_text = wordwrap($result_text, 140, "\n", false);
+	mysql_free_result($result);
+	// kkkkkkkkkkkkkkkkkkkkkkkk
+	imagettftext($res_image, 16, 0, $player_nameX, 380, $textColor, $font_path, $player_name);
+	imagettftext($res_image, 16, 0, $boss_nameX, 380, $textColor, $font_path, $boss_name);
+	imagettftext($res_image, 16, 0, 215, 410, $textColor, $font_path, "Vida:");
+	imagettftext($res_image, 16, 0, 895, 410, $textColor, $font_path, "Vida:");
+	imagettftext($res_image, 26, 0, 280, 410, $starsColor, $font_path, $player_hpstars);
+	imagettftext($res_image, 26, 0, 960, 410, $starsColor, $font_path, $boss_hpstars);
+	imagettftext($res_image, 16, 0, 200, 410, $textColor, $font_path, "Ataque:");
+	imagettftext($res_image, 16, 0, 880, 410, $textColor, $font_path, "Ataque:");
+	imagettftext($res_image, 26, 0, 280, 435, $starsColor, $font_path, $player_atstars);
+	imagettftext($res_image, 26, 0, 960, 435, $starsColor, $font_path, $boss_atstars);
+	imagettftext($res_image, 16, 0, 190, 410, $textColor, $font_path, "Defensa:");
+	imagettftext($res_image, 16, 0, 870, 410, $textColor, $font_path, "Defensa:");
+	imagettftext($res_image, 26, 0, 280, 460, $starsColor, $font_path, $player_defstars);
+	imagettftext($res_image, 26, 0, 960, 460, $starsColor, $font_path, $boss_defstars);
+	imagettftext($res_image, 16, 0, 185, 410, $textColor, $font_path, "Crítico:");
+	imagettftext($res_image, 16, 0, 165, 410, $textColor, $font_path, "Crítico:");
+	imagettftext($res_image, 26, 0, 280, 485, $starsColor, $font_path, $player_critstars);
+	imagettftext($res_image, 26, 0, 960, 485, $starsColor, $font_path, $boss_critstars);
+	imagettftext($res_image, 16, 0, 170, 410, $textColor, $font_path, "Velocidad:");
+	imagettftext($res_image, 16, 0, 150, 410, $textColor, $font_path, "Velocidad:");
+	imagettftext($res_image, 26, 0, 280, 510, $starsColor, $font_path, $player_spstars);
+	imagettftext($res_image, 26, 0, 960, 510, $starsColor, $font_path, $boss_spstars);
+	imagettftext($res_image, 26, 0, 560, 540, $textColor, $font_path, $result_title);
+	imagettftext($res_image, 12, 0, 140, 565, $textColor, $font_path, $result_text);
+	imagejpeg($res_image, $imageURL, 100);
+	$target_url = "https://api.telegram.org/bot".BOT_TOKEN."/sendPhoto";
+	$file_name_with_full_path = realpath($imageURL);
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_photo"));
+	usleep(300000);
+	$post = array('chat_id' => $chat_id, 'photo' =>'@'.$file_name_with_full_path);
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL,$target_url);
+	curl_setopt($ch, CURLOPT_POST,1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+	$result=curl_exec ($ch);
+	curl_close ($ch);
+	imagedestroy($res_image);
+	
+	
+	
+	// kkkkkkkkkkkkkkkkkkkkkkkk
 	mysql_free_result($result);
 	return $newExp;
 }
@@ -9597,7 +9751,7 @@ function processMessage($message) {
 			// abrir db
 			$link = dbConnect();
 			// mirar si tiene pj
-			$query = "SELECT pb.exp_points, pb.critic, pb.level, pb.last_boss, ( pb.hp + pb.attack + pb.defense + ( pb.critic *3 ) + pb.speed + ( pb.helmet *3 ) + pb.body + pb.boots + pb.weapon + pb.shield ) AS total_power, pb.bottles, COALESCE( hb.total, 0 ) AS  'hero_power' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = ".$chat_id;
+			$query = "SELECT pb.exp_points, pb.critic, pb.level, pb.last_boss, ( pb.hp + pb.attack + pb.defense + ( pb.critic *3 ) + pb.speed + ( pb.helmet *3 ) + pb.body + pb.boots + pb.weapon + pb.shield ) AS total_power, pb.bottles, COALESCE( hb.total, 0 ) AS  'hero_power', pb.avatar, ( pb.hp + pb.body ) AS  'total_hp', ( pb.attack + pb.weapon ) AS  'total_attack', ( pb.defense + pb.shield ) AS  'total_defense', ( pb.critic + pb.helmet ) AS  'total_critic', ( pb.speed + pb.boots ) AS  'total_speed' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['level'])) {
@@ -9627,9 +9781,15 @@ function processMessage($message) {
 							$heroPower = $row['hero_power'];
 							$heroPower = getHeroPower($level, $heroPower);
 							$totalPower = $totalPower + $heroPower;
+							$playerAvatar = $row['avatar'];
+							$totalHP = $row['total_hp'];
+							$totalAt = $row['total_attack'];
+							$totalDef = $row['total_defense'];
+							$totalCrit = $row['total_critic'];
+							$totalSp = $row['total_speed'];
 							mysql_free_result($result);							
 							$playerName = getFullName($message['from']['first_name'], $message['from']['username']);
-							$bossExp = bossBattle($chat_id, $link, $level, $totalPower, $playerName);
+							$bossExp = bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAvatar, $totalHP, $totalAt, $totalDef, $totalCrit, $totalSp);
 							$currTime = time();
 							if($bossExp > 0) {
 								$expPoints = $expPoints + $bossExp;
@@ -10647,8 +10807,7 @@ function processMessage($message) {
 						$awayGroupPower = 0;
 					}
 					// si la tiene revisar si tu grupo sigue siendo **, pillar los miembros y poder de ambos clanes, y tambien los nombres
-					// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-					if($homeGroupMembers < 100 && $awayGroupMembers < 100) { // if($homeGroupMembers > 4 && $awayGroupMembers > 4) {
+					if($homeGroupMembers > 4 && $awayGroupMembers > 4) {
 						// si sigue, aceptar la guerra, avisar en ambos clanes
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						usleep(50000);
@@ -10658,10 +10817,9 @@ function processMessage($message) {
 						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible.</b>"));
 						// y editar db, la de guerra pendiente como aceptada
 						mysql_free_result($result);
-						// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-						//$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
-						//$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						//mysql_free_result($result);
+						$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
 						sleep(1);
 						// librar batalla
 						if($homeGroupPower >= $awayGroupPower) {
@@ -10784,27 +10942,16 @@ function processMessage($message) {
 						$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
 						$fullDate = translateDate($fullDate);
 						// insert en groupbattleresults, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
-						// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-						//$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$fullDate."');";
-						//$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						//mysql_free_result($result);
+						$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$fullDate."');";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
 						// sumarle +1 a las victorias de los playerbattle grupales
-						// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-						// $query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
-						// $result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						// mysql_free_result($result);
+						$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
 						sleep(1);
 						// mostrar el resumen de batalla
 						getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $homeGroupAvatar, $awayGroupAvatar, $homegroup_id, $chat_id);
-						/*
-						$msg = getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky);
-						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
-						apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
-						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => $msg));
-						*/
 					} else {
 						// si no, decir que no tienes miembros para aceptarla y sugerir lo de !rechazarguerra
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

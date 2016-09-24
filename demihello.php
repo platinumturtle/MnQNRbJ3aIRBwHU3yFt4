@@ -9623,11 +9623,13 @@ function processMessage($message) {
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		$currTime = time();
-		if(($currTime - 60) > $row['lastwarcheck']) {
+		$checkTime = $currTime - 60;
+		$showLog = 0;
+		error_log($currTime."  ".$checkTime."  ".$row['lastwarcheck']);
+		if($checkTime > $row['lastwarcheck']) {
 			$showLog = 1;
-		} else {
-			$showLog = 0;
-		}
+			error_log("DENTRO ".$currTime."  ".$checkTime."  ".$row['lastwarcheck']);
+		} 
 		if($showLog == 1) {
 			mysql_free_result($result);
 			$query = "UPDATE userbattle SET lastwarcheck = '".$currTime."' WHERE group_id = ".$checkGroup." AND user_id = ".$user_id;

@@ -4155,6 +4155,19 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($player_width, $player_height) = getimagesize($playerAvatar);
 	list($boss_width, $boss_height) = getimagesize($bossAvatar);
+	if(!isset($player_width)) {
+		error_log("NO EXISTE AVATAR");
+		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		list($player_width, $player_height) = getimagesize($playerAvatar);
+	}
+	if(!is_numeric($player_width)) {
+		error_log("WIDTH NO ES UN NUMERO");
+		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
+		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
+		list($player_width, $player_height) = getimagesize($playerAvatar);
+	}
+	/* kkkkkkkkkkkkkkkkkkkk
 	if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
 		error_log("Loading image ".$playerAvatar);
 	} else {
@@ -4162,6 +4175,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($player_width, $player_height) = getimagesize($playerAvatar);
 	}
+	*/
 	if(is_numeric($boss_width) && is_numeric($boss_height) && $boss_width > 0 && $boss_height > 0) {
 		error_log("Loading image ".$bossAvatar);
 	} else {
@@ -8424,8 +8438,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Con la función !rocososgrupo podrás ver el número de miembros que luchan por tu clan y un resumen de estadísticas de los mejores Rocosos.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>Utilizando !clanes verás el ránking de los clanes con más victorias de Telegram.</i>"
-				.PHP_EOL.PHP_EOL.
+				"▶️<i>Utilizando !clanes verás el ránking de los clanes con más victorias de Telegram.</i>";
+				apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", "text" => $text));
+
+				$text = 
 				"▶️<i>Para declarar la guerra a un grupo utiliza primero !declararguerra (o \"!clanes lista\") y revisa qué número identificativo tiene asignado a su izquierda el clan al que quieras derrotar. Si por ejemplo aparece con el número 3, la función se utilizará como \"!declararguerra 3\".</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Todos los miembros del clan ganador sumarán una victoria en guerras a su ficha de personaje. Si el jugador se une posteriormente a otro clan, todas las victorias anteriores se mantienen.</i>"
@@ -10068,6 +10084,7 @@ function processMessage($message) {
 			if($avatarURL == "") {
 				$link = dbConnect();
 				$query = "SELECT clan_avatar FROM groupbattle WHERE group_id = ".$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				$row = mysql_fetch_array($result);
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 				usleep(250000);

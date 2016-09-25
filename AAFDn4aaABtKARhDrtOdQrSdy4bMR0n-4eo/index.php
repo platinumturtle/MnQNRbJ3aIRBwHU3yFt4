@@ -3007,6 +3007,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($home_width, $home_height) = getimagesize($homeAvatar);
 	list($away_width, $away_height) = getimagesize($awayAvatar);
+	/*
 	if(is_numeric($home_width) && is_numeric($home_height) && $home_width > 0 && $home_height > 0) {
 		error_log("Loading image ".$homeAvatar);
 	} else {
@@ -3021,6 +3022,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$awayAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($away_width, $away_height) = getimagesize($awayAvatar);
 	}
+	*/
 	$home_ratio = $home_width / $home_height;
 	if($home_ratio > 1) {
 		$home_scalewidth = 250;
@@ -9965,6 +9967,7 @@ function processMessage($message) {
 							list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 							list($player_width, $player_height) = getimagesize($playerAvatar);
 							list($rival_width, $rival_height) = getimagesize($rivalAvatar);
+							/*
 							if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
 								error_log("Loading image ".$playerAvatar);
 							} else {
@@ -9979,6 +9982,7 @@ function processMessage($message) {
 								$rivalAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 								list($rival_width, $rival_height) = getimagesize($rivalAvatar);
 							}
+							*/
 							$player_ratio = $player_width / $player_height;
 							if($player_ratio > 1) {
 								$player_scalewidth = 250;
@@ -10370,7 +10374,7 @@ function processMessage($message) {
 						for($i=0;$i<20;$i++) {
 							$row = mysql_fetch_array($result);
 							if(isset($row['user'])) {
-								$msg = $msg."▶️ <pre>".$row['user']." (Nv. ".$row['level'].")</pre>".PHP_EOL;
+								$msg = $msg."<pre>▶️ ".$row['user']." (Nv. ".$row['level'].")</pre>".PHP_EOL;
 							} else if($i==0) {
 								$msg = $msg."<i>Nadie.</i>".PHP_EOL;
 							}

@@ -2929,7 +2929,7 @@ function getPlayerBattleResult($winnerName, $loserName, $lucky) {
 	return $log;
 }
 
-function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $awayAvatar, $homeAvatar, $home_id, $away_id, $mvp) { // avatares invertidos
+function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $homeAvatar, $awayAvatar, $home_id, $away_id, $mvp) {
 	$log = "";
 	$homeGroupName = removeEmoji($homeGroupName);
 	$awayGroupName = removeEmoji($awayGroupName);
@@ -3061,8 +3061,8 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$away_x = 850 + floor(($away_position * -1) / 2);
 		$away_y = 100;
 	}
-	$home_name = $awayGroupName;
-	$away_name = $homeGroupName;
+	$home_name = $homeGroupName;
+	$away_name = $awayGroupName;
 	$home_nameX = 155;
 	$home_namealign = 33 - strlen($home_name);
 	if($home_namealign > 0) {
@@ -3382,6 +3382,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($player_width, $player_height) = getimagesize($playerAvatar);
 	list($boss_width, $boss_height) = getimagesize($bossAvatar);
+	/*
 	if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
 		error_log("Loading image ".$playerAvatar);
 	} else {
@@ -3396,6 +3397,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 		$bossAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($boss_width, $boss_height) = getimagesize($bossAvatar);
 	}
+	*/
 	$player_ratio = $player_width / $player_height;
 	if($player_ratio > 1) {
 		$player_scalewidth = 250;

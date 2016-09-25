@@ -10927,7 +10927,7 @@ function processMessage($message) {
 						// si no, avisar de que use !pvp y lo vuelva a intentar
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						usleep(100000);
-						$msg = "<b>Tu personaje tiene los duelos PvP bloqueados. Escribe \"!pvp\" para volver a activarlos e inténtalo de nuevo.</b>"
+						$msg = "<b>Tu personaje tiene los duelos PvP bloqueados. Escribe \"!pvp\" para volver a activarlos e inténtalo de nuevo.</b>";
 						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 					}
 				} else {

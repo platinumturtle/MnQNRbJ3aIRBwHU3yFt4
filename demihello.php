@@ -10728,6 +10728,7 @@ function processMessage($message) {
 		} else {
 			error_log($logname." triggered in private: !type.");
 			$fileSource = substr($text, 6);
+			$fileSource = imagecreatefrompng($fileSource);
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => finfo_file($finfo, $fileSource)));
 			finfo_close($finfo);

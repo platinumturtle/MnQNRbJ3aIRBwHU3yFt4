@@ -2929,7 +2929,7 @@ function getPlayerBattleResult($winnerName, $loserName, $lucky) {
 	return $log;
 }
 
-function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $homeAvatar, $awayAvatar, $home_id, $away_id, $mvp) {
+function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $awayAvatar, $homeAvatar, $home_id, $away_id, $mvp) { // avatares invertidos
 	$log = "";
 	$homeGroupName = removeEmoji($homeGroupName);
 	$awayGroupName = removeEmoji($awayGroupName);

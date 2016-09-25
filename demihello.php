@@ -3897,7 +3897,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	imagedestroy($res_image);
 }
 
-function bossBattleResults($win, $lucky) { // ($chat_id, $win, $lucky, $playerName, $bossName)
+function bossBattleResults($win, $lucky) {
 	if($win == 1) {
 		if($lucky == 1) {
 			$storedUnexpectedVictory = array(
@@ -3970,12 +3970,6 @@ function bossBattleResults($win, $lucky) { // ($chat_id, $win, $lucky, $playerNa
 			$msg = $storedStandardDefeat[$n];
 		}
 	}
-	/*
-	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-	sleep(2);
-	$msg = "<b>⚔ REPORTE DE BATALLA</b>".PHP_EOL.PHP_EOL."<b>".$playerName." 🆚 ".$bossName."</b>".PHP_EOL.PHP_EOL."<i>".$msg."</i>";
-	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
-	*/
 	return $msg;
 }
 
@@ -4155,19 +4149,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($player_width, $player_height) = getimagesize($playerAvatar);
 	list($boss_width, $boss_height) = getimagesize($bossAvatar);
-	if(!isset($player_width)) {
-		error_log("NO EXISTE AVATAR");
-		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
-		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
-		list($player_width, $player_height) = getimagesize($playerAvatar);
-	}
-	if(!is_numeric($player_width)) {
-		error_log("WIDTH NO ES UN NUMERO");
-		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
-		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
-		list($player_width, $player_height) = getimagesize($playerAvatar);
-	}
-	/* kkkkkkkkkkkkkkkkkkkk
 	if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
 		error_log("Loading image ".$playerAvatar);
 	} else {
@@ -4175,7 +4156,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($player_width, $player_height) = getimagesize($playerAvatar);
 	}
-	*/
 	if(is_numeric($boss_width) && is_numeric($boss_height) && $boss_width > 0 && $boss_height > 0) {
 		error_log("Loading image ".$bossAvatar);
 	} else {
@@ -4232,57 +4212,11 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	if($player_namealign > 0) {
 		$player_nameX = $player_nameX + ($player_namealign * 5);
 	}
-	/*
-	if(strlen($player_name) < 25) {
-		if($player_name > 19) {
-			$player_nameX = $player_nameX + 50;
-		} else if($player_name > 17) {
-			$player_nameX = $player_nameX + 55;
-		} else if($player_name > 15) {
-			$player_nameX = $player_nameX + 60;
-		} else if($player_name > 13) {
-			$player_nameX = $player_nameX + 65;
-		} else if($player_name > 11) {
-			$player_nameX = $player_nameX + 70;
-		} else if($player_name > 9) {
-			$player_nameX = $player_nameX + 75;
-		} else if($player_name > 7) {
-			$player_nameX = $player_nameX + 80;
-		} else if($player_name > 5) {
-			$player_nameX = $player_nameX + 85;
-		} else {
-			$player_nameX = $player_nameX + 90;
-		}
-	}
-	*/
 	$boss_nameX = 800;
 	$boss_namealign = 33 - strlen($boss_name);
 	if($boss_namealign > 0) {
 		$boss_nameX = $boss_nameX + ($boss_namealign * 5);
 	}
-	/*
-	if(strlen($boss_name) < 25) {
-		if($boss_name > 19) {
-			$boss_nameX = $boss_nameX + 50;
-		} else if($boss_name > 17) {
-			$boss_nameX = $boss_nameX + 55;
-		} else if($boss_name > 15) {
-			$boss_nameX = $boss_nameX + 60;
-		} else if($boss_name > 13) {
-			$boss_nameX = $boss_nameX + 65;
-		} else if($boss_name > 11) {
-			$boss_nameX = $boss_nameX + 70;
-		} else if($boss_name > 9) {
-			$boss_nameX = $boss_nameX + 75;
-		} else if($boss_name > 7) {
-			$boss_nameX = $boss_nameX + 80;
-		} else if($boss_name > 5) {
-			$boss_nameX = $boss_nameX + 85;
-		} else {
-			$boss_nameX = $boss_nameX + 90;
-		}
-	}
-	*/
 	$res_image = imagecreatetruecolor($base_width, $base_height);
 	imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $base_width, $base_height, $base_width, $base_height);
 	imagecopyresampled($res_image, $player_image, $player_x, $player_y, 0, 0, $player_scalewidth, $player_scaleheight, $player_width, $player_height);
@@ -4428,7 +4362,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			}
 			$tipTicket = rand(1,10);
 			if($tipTicket == 7) {
-				$subTipTicket = rand(1, 4);
+				$subTipTicket = rand(1, 6);
 				if($subTipTicket == 1) {
 					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke y actualizaciones del bot, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase o conocer las nuevas funciones del bot. ¡No te pierdas nada!".PHP_EOL;
 				//} else if($subTipTicket == 2) {
@@ -4437,6 +4371,10 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 					$msg = $msg."<b>Consejo:</b> si consigues más de 200 puntos de heroicidad tu personaje será aún más fuerte a la hora de luchar contra jefes de zona y en duelos PvP. ¡Recuerda usar !boton ocasionalmente!".PHP_EOL;
 				} else if($subTipTicket == 4) {
 					$msg = $msg."<b>Consejo:</b> si utilizas la función !slots (o !777) podrás conseguir premios bonus como por ejemplo una botella de experiencia para tu personaje. Puedes ver la lista de premios bonus en /ayuda_slots".PHP_EOL;
+				} else if($subTipTicket == 5) {
+					$msg = $msg."<b>Consejo:</b> las batallas entre clanes, además de otorgar victorias de guerra y puntos de líder en rocosidad, ayuda a todos sus miembros a poder luchar contra jefes más rápido. ¡No te olvides de ir a la guerra!".PHP_EOL;
+				} else if($subTipTicket == 6) {
+					$msg = $msg."<b>Consejo:</b> en los duelos PvP también consigues experiencia extra si logras ganar a tu rival. Consulta !listapvp frecuentemente para retar a rivales asequibles para tu nivel.".PHP_EOL;
 				}
 			}
 			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
@@ -5201,7 +5139,6 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	$text = $text." ".$timeEmoji." pertenece a ".$row['user_name'].", se hizo con ella desde ".$row['group_name'].".</b>";
 	$text = $text.PHP_EOL."📍 <b>Justo en esta décima de segundo el mástil no se puede consultar.</b>";
 	$text = $text.PHP_EOL.PHP_EOL."🏆 <i>Consulta con !banderas el ránking global de banderas, con !banderasgrupo el ránking local y con !mastiles quién ha reclamado más veces un mástil en tu grupo.</i>";
-
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 	mysql_free_result($result);
 	mysql_close($link);
@@ -10091,12 +10028,12 @@ function processMessage($message) {
 				// mirar en la base de datos si hay avatar
 				if(isset($row['clan_avatar']) && strlen($row['clan_avatar']) > 5) {
 					// si hay, mostrrarlo
-					$msg = "<b>El avatar del clan guardado es el siguiente:</b>".PHP_EOL.$avatarURL.PHP_EOL.PHP_EOL;
+					$msg = "<b>El avatar del clan guardado es el siguiente:</b>".PHP_EOL.$row['clan_avatar'].PHP_EOL.PHP_EOL;
 				} else {
 					// si no hay, decirle como se añade
 					$msg = "<b>No hay ningún avatar almacenado en el clan. Puedes asignar uno no animado en formato .JPG o .PNG escribiendo, por ejemplo,</b> <pre>!avatarclan http://www.mipaginadeimagenes.com/imagendelclan.png</pre>".PHP_EOL;					
 				}
-				$msg = $msg."<i>La imagen del clan se peude consultar escribiendo \"!avatarclan\" y se puede eliminar escribiendo \"!avatarclan borrar\", y aparecerá como imagen del grupo en cada una de las guerras que  el clan libre.</i>";
+				$msg = $msg."<i>La imagen del clan se puede consultar escribiendo \"!avatarclan\" y se puede eliminar escribiendo \"!avatarclan borrar\", y aparecerá como imagen del grupo en cada una de las guerras que  el clan libre.</i>";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 				mysql_free_result($result);
 				mysql_close($link);

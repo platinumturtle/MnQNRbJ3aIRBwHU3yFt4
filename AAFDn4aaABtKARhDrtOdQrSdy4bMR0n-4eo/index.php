@@ -3007,12 +3007,16 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($home_width, $home_height) = getimagesize($homeAvatar);
 	list($away_width, $away_height) = getimagesize($awayAvatar);
-	if($home_width == 0) {
+	if(is_numeric($home_width) && is_numeric($home_height) && $home_width > 0 && $home_height > 0) {
+		error_log("Loading image ".$homeAvatar);
+	} else {
 		$home_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
 		$homeAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($home_width, $home_height) = getimagesize($homeAvatar);
 	}
-	if($away_width == 0) {
+	if(is_numeric($away_width) && is_numeric($away_height) && $away_width > 0 && $away_height > 0) {
+		error_log("Loading image ".$awayAvatar);
+	} else {
 		$away_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
 		$awayAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($away_width, $away_height) = getimagesize($awayAvatar);
@@ -3059,15 +3063,15 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	}
 	$home_name = $awayGroupName;
 	$away_name = $homeGroupName;
-	if(strlen($home_name) < 25) {
-		$home_nameX = 155 + 50;
-	} else {
-		$home_nameX = 155;
+	$home_nameX = 155;
+	$home_namealign = 33 - strlen($home_name);
+	if($home_namealign > 0) {
+		$home_nameX = $home_nameX + ($home_namealign * 5);
 	}
-	if(strlen($away_name) < 25) {
-		$away_nameX = 800 + 50;
-	} else {
-		$away_nameX = 800;		
+	$away_nameX = 800;
+	$away_namealign = 33 - strlen($away_name);
+	if($away_namealign > 0) {
+		$away_nameX = $away_nameX + ($away_namealign * 5);
 	}
 	$res_image = imagecreatetruecolor($base_width, $base_height);
 	imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $base_width, $base_height, $base_width, $base_height);
@@ -3378,12 +3382,16 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($player_width, $player_height) = getimagesize($playerAvatar);
 	list($boss_width, $boss_height) = getimagesize($bossAvatar);
-	if($player_width == 0) {
+	if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
+		error_log("Loading image ".$playerAvatar);
+	} else {
 		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
 		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($player_width, $player_height) = getimagesize($playerAvatar);
 	}
-	if($boss_width == 0) {
+	if(is_numeric($boss_width) && is_numeric($boss_height) && $boss_width > 0 && $boss_height > 0) {
+		error_log("Loading image ".$bossAvatar);
+	} else {
 		$boss_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
 		$bossAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($boss_width, $boss_height) = getimagesize($bossAvatar);
@@ -3503,7 +3511,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	imagedestroy($res_image);
 	mysql_free_result($result);
 	return $newExp;
-	return $newExp;
 }
 
 function getClanLevel($id, $link) {
@@ -3588,7 +3595,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			}
 			$tipTicket = rand(1,10);
 			if($tipTicket == 7) {
-				$subTipTicket = rand(1, 4);
+				$subTipTicket = rand(1, 6);
 				if($subTipTicket == 1) {
 					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke y actualizaciones del bot, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase o conocer las nuevas funciones del bot. ¡No te pierdas nada!".PHP_EOL;
 				//} else if($subTipTicket == 2) {
@@ -3597,6 +3604,10 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 					$msg = $msg."<b>Consejo:</b> si consigues más de 200 puntos de heroicidad tu personaje será aún más fuerte a la hora de luchar contra jefes de zona y en duelos PvP. ¡Recuerda usar !boton ocasionalmente!".PHP_EOL;
 				} else if($subTipTicket == 4) {
 					$msg = $msg."<b>Consejo:</b> si utilizas la función !slots (o !777) podrás conseguir premios bonus como por ejemplo una botella de experiencia para tu personaje. Puedes ver la lista de premios bonus en /ayuda_slots".PHP_EOL;
+				} else if($subTipTicket == 5) {
+					$msg = $msg."<b>Consejo:</b> las batallas entre clanes, además de otorgar victorias de guerra y puntos de líder en rocosidad, ayuda a todos sus miembros a poder luchar contra jefes más rápido. ¡No te olvides de ir a la guerra!".PHP_EOL;
+				} else if($subTipTicket == 6) {
+					$msg = $msg."<b>Consejo:</b> en los duelos PvP también consigues experiencia extra si logras ganar a tu rival. Consulta !listapvp frecuentemente para retar a rivales asequibles para tu nivel.".PHP_EOL;
 				}
 			}
 			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
@@ -5369,6 +5380,7 @@ function containsCommand($text) {
 						"!clanes",
 						"!atacar",
 						"!avatarpj",
+						"!avatarclan",
 						"!declararguerra",
 						"!aceptarguerra",
 						"!pvp",
@@ -7161,7 +7173,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.6 creado por @Kamisuke."
+				"@DemisukeBot v3.0.7 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -7579,6 +7591,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!pvp rechazar</b>: <i>Declina la solicitud de duelo PvP más antigua pendiente.</i>"
 				.PHP_EOL.PHP_EOL.
+				"➡️<b>!listapvp</b>: <i>Muestra una lista con jugadores ideales para enfrentar a tu personaje. Máximo 20 rivales.</i>"
+				.PHP_EOL.PHP_EOL.
 				"➡️<b>!rocosos</b>: <i>Muestra el ránking de los 10 Rocosos con más victorias en duelos PvP de Telegram.</i>"
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!rocososgrupo</b>: <i>Muestra cuántos rocosos se han unido a tu clan y un resumen de estadísticas de los diez más fuertes.</i>"
@@ -7586,6 +7600,8 @@ function commandsList($send_id, $mode) {
 				"➡️<b>!aceptarguerra</b>: <i>Acepta la solicitud de guerra entre grupos más antigua pendiente.</i>"
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!rechazarguerra</b>: <i>Desestima la solicitud de guerra entre grupos más antigua pendiente.</i>"
+				.PHP_EOL.PHP_EOL.
+				"➡️<b>!avatarclan</b>: <i>Muestra el logo del clan con \"!avatarclan\" o asigna una foto de perfil estática en formato JPG o PNG al clan con \"!avatarclan http://enlace_a_la_imagen\".</i>"
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!guerras (desde chat privado)</b>: <i>Muestra el número de solicitudes entrantes y salientes de duelos PvP pendientes, además de un resumen de las cinco últimas batallas entre guerras y duelos PvP.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -7626,8 +7642,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los avatares en .GIF no aparecerán en el resultado de las batallas.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>Cuando subas de nivel con !exp o !atacar las estadísticas de tu personaje mejorarán, y también recibirás puntos adicionales para utilizar donde quieras y ganarás como premio una nueva arma o armadura. Es posible que también llegues a una nueva zona, más difícil que la anterior pero con mejores recompensas. El nombre de la zona actual lo puedes ver en todo momento con la función !pj.</i>"
-				.PHP_EOL.PHP_EOL.
+				"▶️<i>Cuando subas de nivel con !exp o !atacar las estadísticas de tu personaje mejorarán, y también recibirás puntos adicionales para utilizar donde quieras y ganarás como premio una nueva arma o armadura. Es posible que también llegues a una nueva zona, más difícil que la anterior pero con mejores recompensas. El nombre de la zona actual lo puedes ver en todo momento con la función !pj.</i>";
+				apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", "text" => $text));
+
+				$text = 
 				"▶️<i>Cada objeto nuevo que recibas siempre será mejor que el anterior que ya tenía tu personaje, y se utilizará automáticamente. Un objeto con el nombre en cursiva es un objeto normal, un objeto con el nombre </i>regular <i>es un objeto mejorado, y un objeto con el nombre en</i> <b>negrita</b> <i>es un objeto único, más raro de conseguir y con mejor estadística.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La función !unirme está disponible a partir del nivel 6. Se debe utilizar en el grupo al cual te quieres unir.</i>"
@@ -7696,8 +7714,6 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Un jugador podría no responder con \"!pvp aceptar\" ni \"!pvp rechazar\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los duelos pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza desde chat privado con el bot.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Además de poder obtener la victoria en batalla, el jugador más rocoso del combate recibirá un punto de líder en rocosidad, visible en la ficha de personaje..</i>"
 				;
 	} else if($mode == "guerras_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -7709,6 +7725,12 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Una vez te unas a un clan puedes cambiarte a otro clan utilizando !unirme en otro grupo.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Puedes cambiar de clan todas las veces que quieras, sin embargo una vez te has unido a tu primer clan, tu personaje no podrá volver a estar sin clan asignado.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Un miembro del clan puede añadir una foto de perfil al grupo con !avatarclan. Se deberá escribir el enlace completo donde se aloja la imagen (comenzando desde http:// o https://). Los formatos compatibles son .jpg y .png siempre que la imagen no sea animada.</i>"
+				.PHP_EOL.
+				"<i>Ejemplo:</i> <pre>!avatarclan http://www.mipaginadeimagenes.com/imagen.jpg</pre>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Escribiendo \"!avatarclan borrar\" puedes eliminar la foto almacenada del clan. En las guerras aparecerá la imagen por defecto.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>En caso de necesidad muy alta de volver a tener tu personaje desligado a ningún clan puedes contactar con la administración del bot con la función !sugerencia y explicar tu caso para reestablecer este apartado.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -7730,8 +7752,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Con la función !rocososgrupo podrás ver el número de miembros que luchan por tu clan y un resumen de estadísticas de los mejores Rocosos.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>Utilizando !clanes verás el ránking de los clanes con más victorias de Telegram.</i>"
-				.PHP_EOL.PHP_EOL.
+				"▶️<i>Utilizando !clanes verás el ránking de los clanes con más victorias de Telegram.</i>";
+				apiRequest("sendMessage", array('chat_id' => $send_id, 'parse_mode' => "HTML", "text" => $text));
+
+				$text = 
 				"▶️<i>Para declarar la guerra a un grupo utiliza primero !declararguerra (o \"!clanes lista\") y revisa qué número identificativo tiene asignado a su izquierda el clan al que quieras derrotar. Si por ejemplo aparece con el número 3, la función se utilizará como \"!declararguerra 3\".</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Todos los miembros del clan ganador sumarán una victoria en guerras a su ficha de personaje. Si el jugador se une posteriormente a otro clan, todas las victorias anteriores se mantienen.</i>"
@@ -7743,6 +7767,10 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Los clanes que eliminen al bot del grupo no aparecerán en la lista de clanes con más victorias en guerras.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Además de poder obtener la victoria en batalla, el jugador más rocoso del combate recibirá un punto de líder en rocosidad, visible en la ficha de personaje..</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Los jugadores que participen en una guerra y la ganen podrán volver a utilizar las funciones !exp y !atacar nada más lograr la victoria.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Un clan podría no responder con \"!aceptarguerra\" ni \"!rechazarguerra\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -8552,6 +8580,40 @@ function processMessage($message) {
 						$slotB = rand(1,10);
 						usleep(rand(10,50));
 						$slotC = rand(1,10);
+						$bonus = 0;
+						if($slotA == $slotB && $slotB == $slotC) {
+							$bonus = 0;
+						} else {
+							if($slotA == $slotB) {
+								$bonus = 1;
+							} else if($slotA == $slotB) {
+								$bonus = 1;
+							} else if($slotB == $slotC) {
+								$bonus = 1;
+							} else {
+								$bonus = 0;
+							}
+						}
+						if($bonus == 1) {
+							$bonusTicket = rand(1, 20);
+							if($bonusTicket == 20) {
+								$slotA = 4;
+								$slotB = 4;
+								$slotC = 4;
+							} else if($bonusTicket > 17) {
+								$slotA = 3;
+								$slotB = 3;
+								$slotC = 3;
+							} else if($bonusTicket > 14) {
+								$slotA = 2;
+								$slotB = 2;
+								$slotC = 2;
+							} else if($bonusTicket > 10) {
+								$slotA = 1;
+								$slotB = 1;
+								$slotC = 1;
+							}
+						}
 						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
 						$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
 						$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
@@ -9035,7 +9097,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!guerras") !== false) {		
 		$link = dbConnect();
 		$msg = "";
-		$checkGroup = 0;
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !guerras.");
 			// calcular batallas pendientes del clan
@@ -9062,6 +9124,7 @@ function processMessage($message) {
 		} else {
 			error_log($logname." triggered in private: !guerras.");
 			// calcular batallas pendientes del jugador			
+			$checkGroup = 0;
 			$query = 'SELECT COUNT( * ) as "result" FROM playerbattlelog WHERE status = "REQUESTED" AND rival = '.$chat_id.' GROUP BY rival';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
@@ -9164,8 +9227,6 @@ function processMessage($message) {
 			$msg = $msg."<i>La zona horaria utilizada en las fechas mostradas es la hora peninsular española actual.</i>".PHP_EOL;
 		}
 		$msg = $msg."<i>¡Participa tú en la próxima batalla con !pvp o !declararguerra!</i>";
-		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		usleep(100000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if (strpos(strtolower($text), "!unirme") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
@@ -9453,6 +9514,97 @@ function processMessage($message) {
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 		}			
+	} else if (strpos(strtolower($text), "!avatarclan") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !avatarclan.");
+			// revisar si es una url correcta (250 caracateres, http:// o https:/ y .jpg, .png o .gif)
+			$start = strpos(strtolower($text), "!avatarclan") + 11;
+			$avatarURL = substr($text, $start);
+			$avatarURL = ltrim(rtrim($avatarURL));
+			if($avatarURL == "") {
+				$link = dbConnect();
+				$query = "SELECT clan_avatar FROM groupbattle WHERE group_id = ".$chat_id;
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$row = mysql_fetch_array($result);
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(250000);
+				// mirar en la base de datos si hay avatar
+				if(isset($row['clan_avatar']) && strlen($row['clan_avatar']) > 5) {
+					// si hay, mostrrarlo
+					$msg = "<b>El avatar del clan guardado es el siguiente:</b>".PHP_EOL.$row['clan_avatar'].PHP_EOL.PHP_EOL;
+				} else {
+					// si no hay, decirle como se añade
+					$msg = "<b>No hay ningún avatar almacenado en el clan. Puedes asignar uno no animado en formato .JPG o .PNG escribiendo, por ejemplo,</b> <pre>!avatarclan http://www.mipaginadeimagenes.com/imagendelclan.png</pre>".PHP_EOL;					
+				}
+				$msg = $msg."<i>La imagen del clan se puede consultar escribiendo \"!avatarclan\" y se puede eliminar escribiendo \"!avatarclan borrar\", y aparecerá como imagen del grupo en cada una de las guerras que  el clan libre.</i>";
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+				mysql_free_result($result);
+				mysql_close($link);
+			} else if(strlen($avatarURL) < 251) {
+				$headerCheck = substr($avatarURL, 0, 7);
+				$headerCheck = strtolower($headerCheck);
+				$footerCheck = substr($avatarURL, strlen($avatarURL) - 4);
+				$footerCheck = strtolower($footerCheck);
+				$doubleCheck = 0;
+				$eraseMode = 0;
+				if($headerCheck == "http://" || $headerCheck == "https:/") {
+					$doubleCheck = $doubleCheck + 1;
+				}
+				if($footerCheck == ".jpg" || $footerCheck == ".png") {
+					$doubleCheck = $doubleCheck + 1;
+				}
+				if(strtolower($avatarURL) == "borrar") {
+					$doubleCheck = 2;
+					$eraseMode = 1;
+				}
+				if($doubleCheck == 2) {
+					$user_id = $message['from']['id'];
+					$link = dbConnect();
+					$query = 'SELECT group_id FROM playerbattle WHERE user_id = '.$user_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					// si pertenece al clan este user...
+					if(isset($row['group_id']) && $chat_id == $row['group_id']) {
+						// mostrar mensaje de que se ha guardado, que aparecera cada vez que use !pj
+						mysql_free_result($result);
+						if($eraseMode == 0) {
+							$query = "UPDATE groupbattle SET clan_avatar = '".$avatarURL."' WHERE group_id = ".$chat_id;
+						} else {
+							$query = "UPDATE groupbattle SET clan_avatar = NULL WHERE group_id = ".$chat_id;
+						}
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$text = "<b>Se ha actualizado el avatar del clan. Utiliza la función !avatarclan para comprobar su estado.</b>";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+					} else {
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$text = "<b>Solo los miembros del clan puedes asignarle un avatar de clan al grupo, utiliza !unirme para formar parte del clan.</b>";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+					}
+					// cerrar db
+					mysql_free_result($result);
+					mysql_close($link);			  
+				} else {
+					// si no es correcta, ayudarle con el formato	
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$text = "<b>La dirección introducida no es correcta. Puedes asignar un avatar no animado en formato .JPG o .PNG escribiendo, por ejemplo,</b> <pre>!avatarclan http://www.mipaginadeimagenes.com/imagendelclan.png</pre>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				}
+			} else {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$text = "<b>La dirección introducida es muy larga, utiliza otro alojamiento de imágenes que te proporcione un enlace más corto.</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+			}			
+		} else {
+			error_log($logname." triggered in private: !avatarclan.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*El avatar de clan solo se puede cambiar desde grupos y supergrupos, ¡añádeme a tu grupo favorito y derrota a todos!*"));
+		}
 	} else if (strpos(strtolower($text), "!pvp") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group and failed: !pvp.");
@@ -9553,28 +9705,33 @@ function processMessage($message) {
 						$playerName = str_replace("<", "", $playerName);
 						$playerName = str_replace(">", "", $playerName);						
 						mysql_free_result($result);
-						$query = 'SELECT pb.exp_points, ( pb.hp + pb.attack + pb.defense + pb.critic + pb.critic + pb.critic + pb.speed + pb.helmet + pb.helmet + pb.helmet + pb.body + pb.boots + pb.weapon + pb.shield ) AS  "power", pb.pvp_allowed, COALESCE( hb.total, 0 ) AS  "hero_power", pb.avatar, ( pb.hp + pb.body ) AS  "total_hp", ( pb.attack + pb.weapon ) AS  "total_attack", ( pb.defense + pb.shield ) AS  "total_defense", ( pb.critic + pb.helmet ) AS  "total_critic", ( pb.speed + pb.boots ) AS  "total_speed", pb.level FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id IN ( '.$chat_id.', '.$rival_id.' ) ORDER BY FIELD( pb.user_id, '.$chat_id.', '.$rival_id.' )';
+						$query = 'SELECT pb.exp_points, ( pb.hp + pb.attack + pb.defense + pb.critic + pb.critic + pb.critic + pb.speed + pb.helmet + pb.helmet + pb.helmet + pb.body + pb.boots + pb.weapon + pb.shield ) AS  "power", pb.pvp_allowed, COALESCE( hb.total, 0 ) AS  "hero_power", pb.avatar, ( pb.hp + pb.body ) AS  "total_hp", ( pb.attack + pb.weapon ) AS  "total_attack", ( pb.defense + pb.shield ) AS  "total_defense", ( pb.critic + pb.helmet ) AS  "total_critic", ( pb.speed + pb.boots ) AS  "total_speed", pb.level, pb.bottles, pb.critic AS  "crit_points" FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id IN ( '.$chat_id.', '.$rival_id.' ) ORDER BY FIELD( pb.user_id, '.$chat_id.', '.$rival_id.' )';
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						$row = mysql_fetch_array($result);
 						$playerExp = $row['exp_points'];
 						$playerPower = $row['power'];
 						$playerHeroPower = $row['hero_power'];
+						$playerLevel = $row['level'];
 						$playerHeroPower = getHeroPower($playerLevel, $playerHeroPower);
 						$playerPermission = $row['pvp_allowed'];
 						$playerAvatar = $row['avatar'];
+						$playerBottles = $row['bottles'];
+						$playerCritPoints = $row['crit_points'];
 						$row = mysql_fetch_array($result);
 						$rivalExp = $row['exp_points'];
 						$rivalPower = $row['power'];
 						$rivalPermission = $row['pvp_allowed'];
 						$rivalHeroPower = $row['hero_power'];
-						$rivalHeroPower = getHeroPower($rivalLevel, $rivalHeroPower);
 						$rivalLevel = $row['level'];
+						$rivalHeroPower = getHeroPower($rivalLevel, $rivalHeroPower);
 						$rivalAvatar = $row['avatar'];
 						$rivalHP = $row['total_hp'];
 						$rivalAt = $row['total_attack'];
 						$rivalDef = $row['total_defense'];
 						$rivalCrit = $row['total_critic'];
 						$rivalSp = $row['total_speed'];
+						$rivalBottles = $row['bottles'];
+						$rivalCritPoints = $row['crit_points'];
 						// revisar si estan allowed
 						if($playerPermission == 1 && $rivalPermission == 1) {
 							// si si, aceptar la guerra, avisar en ambos jugadores
@@ -9607,6 +9764,11 @@ function processMessage($message) {
 							} else {
 								$percentHigher = (($rivalPower * 100) / $playerPower) - 100;
 							}
+							if($playerLevel > $rivalLevel) {
+								$levelDiff = $playerLevel - $rivalLevel;
+							} else {
+								$levelDiff = $rivalLevel - $playerLevel;
+							}
 							error_log("Percent diff. +".$percentHigher);
 							if($percentHigher < 15) {
 								// tener en cuenta la exp
@@ -9631,7 +9793,8 @@ function processMessage($message) {
 										$lucky = 1;
 									}
 								}
-							} else if($percentHigher > 300) {
+
+							} else if($levelDiff > 9) {
 								// 99,99
 								$battleTicket = rand(1,10000);
 								if($battleTicket < 10000) {
@@ -9641,10 +9804,22 @@ function processMessage($message) {
 									$win = 0;
 									$lucky = 1;
 								}
+							} else if($percentHigher > 300) {
+								// 99
+								$battleTicket = rand(1,100);
+								if($battleTicket < 100) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
 							} else if($percentHigher > 200) {
-								// 90
-								$battleTicket = rand(1,10);
-								if($battleTicket < 10) {
+
+								// 95
+								$battleTicket = rand(1,20);
+
+								if($battleTicket < 20) {
 									$win = 1;
 									$lucky = 0;
 								} else {
@@ -9652,9 +9827,11 @@ function processMessage($message) {
 									$lucky = 1;
 								}
 							} else if($percentHigher > 100) {
-								// 80
+
+								// 90
 								$battleTicket = rand(1,10);
-								if($battleTicket < 9) {
+
+								if($battleTicket < 10) {
 									$win = 1;
 									$lucky = 0;
 								} else {
@@ -9662,9 +9839,11 @@ function processMessage($message) {
 									$lucky = 1;
 								}
 							} else if($percentHigher > 50) {
-								// 70
+
+								// 80
 								$battleTicket = rand(1,10);
-								if($battleTicket < 8) {
+
+								if($battleTicket < 9) {
 									$win = 1;
 									$lucky = 0;
 								} else {
@@ -9672,9 +9851,11 @@ function processMessage($message) {
 									$lucky = 1;
 								}
 							} else {
-								// 60
+
+								// 70
 								$battleTicket = rand(1,10);
-								if($battleTicket < 7) {
+
+								if($battleTicket < 8) {
 									$win = 1;
 									$lucky = 0;
 								} else {
@@ -9689,11 +9870,19 @@ function processMessage($message) {
 									$winnerName = $playerName;
 									$loser_id = $rival_id;
 									$loserName = $rivalName;
+									$winnerCurrExp = $playerExp;
+									$winnerCurrLevel = $playerLevel;
+									$winnerBottles = $playerBottles;
+									$winnerCritic = $playerCritPoints;
 								} else {
 									$winner_id = $rival_id;
 									$winnerName = $rivalName;
 									$loser_id = $chat_id;
 									$loserName = $playerName;
+									$winnerCurrExp = $rivalExp;
+									$winnerCurrLevel = $rivalLevel;
+									$winnerBottles = $rivalBottles;
+									$winnerCritic = $rivalCritPoints;
 								}
 							} else {
 								if($win == 0) {
@@ -9701,11 +9890,19 @@ function processMessage($message) {
 									$winnerName = $playerName;
 									$loser_id = $rival_id;
 									$loserName = $rivalName;
+									$winnerCurrExp = $rivalExp;
+									$winnerCurrLevel = $rivalLevel;
+									$winnerBottles = $rivalBottles;
+									$winnerCritic = $rivalCritPoints;
 								} else {
 									$winner_id = $rival_id;
 									$winnerName = $rivalName;
 									$loser_id = $chat_id;
 									$loserName = $playerName;
+									$winnerCurrExp = $playerExp;
+									$winnerCurrLevel = $playerLevel;
+									$winnerBottles = $playerBottles;
+									$winnerCritic = $playerCritPoints;
 								}
 							}
 							sleep(1);
@@ -9766,12 +9963,16 @@ function processMessage($message) {
 							list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 							list($player_width, $player_height) = getimagesize($playerAvatar);
 							list($rival_width, $rival_height) = getimagesize($rivalAvatar);
-							if($player_width == 0) {
+							if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
+								error_log("Loading image ".$playerAvatar);
+							} else {
 								$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
 								$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 								list($player_width, $player_height) = getimagesize($playerAvatar);
 							}
-							if($rival_width == 0) {
+							if(is_numeric($rival_width) && is_numeric($rival_height) && $rival_width > 0 && $rival_height > 0) {
+								error_log("Loading image ".$rivalAvatar);
+							} else {
 								$rival_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
 								$rivalAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 								list($rival_width, $rival_height) = getimagesize($rivalAvatar);
@@ -9902,6 +10103,23 @@ function processMessage($message) {
 							$result=curl_exec ($ch);
 							curl_close ($ch);
 							imagedestroy($res_image);
+							$expAcquired = useBottleExp($winnerCurrLevel);
+							$expAcquired = floor($expAcquired / 4);
+							$newExp = $winnerCurrExp + $expAcquired;
+							$newLevel = getLevelFromExp($newExp);
+							apiRequest("sendChatAction", array('chat_id' => $winner_id, 'action' => "typing"));
+							$msg = "💪 <b>¡Has acabado sin energía, pero has ganado ".$expAcquired." puntos de experiencia en este duelo!</b>";
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $winner_id, 'parse_mode' => "HTML", "text" => $msg));
+							if($newLevel != $winnerCurrLevel) {
+								error_log($winnerName." is now level ".$newLevel.".");
+								levelUp($newLevel, $newExp, $winnerCritic, $winnerBottles, $link, $winner_id);
+							} else {
+								$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `last_exp` = '".$currentTime."' WHERE `user_id` = '".$winner_id."'";
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							}
+							mysql_free_result($result);
+							getPlayerInfo(0, $link, $winner_id, $winner_id);
 						} else {
 							// si no, decir que no tienes allowed para aceptarla 
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -10131,10 +10349,58 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else {
 			error_log($logname." triggered in private: !listapvp.");
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			$msg = "<b>La función !listapvp estará disponible en la próxima actualización del bot.</b>";
-			usleep(100000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+			$link = dbConnect();
+			$query = 'SELECT level, pvp_allowed FROM playerbattle WHERE user_id = '.$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			// mirar si tiene pj
+			if(isset($row['level'])) {
+				// si tiene pj, mirar si es lv 10+
+				if($row['level'] > 10) {
+					// si es 10+, mirar si tiene el pvp allowed
+					if($row['pvp_allowed'] == 1) {
+						// si lo tiene, pues eso es todo... a mostrar los datos
+						$level = $row['level'] + 3;
+						mysql_free_result($result);
+						$query = 'SELECT dt.user_name AS "user", dt.level FROM ( SELECT pb.level, ub.user_name, pb.exp_points FROM playerbattle pb, userbattle ub WHERE ub.user_id = pb.user_id AND pb.level >10 AND pb.pvp_allowed =1 AND ub.user_name !=  "" AND pb.user_id != '.$chat_id.' AND pb.level < '.$level.' GROUP BY pb.user_id ORDER BY pb.exp_points DESC LIMIT 0 , 20 )dt ORDER BY dt.exp_points ASC';
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$msg = "<b>⚔ Lista de rivales asequibles para tu nivel:</b>".PHP_EOL.PHP_EOL;
+						for($i=0;$i<20;$i++) {
+							$row = mysql_fetch_array($result);
+							if(isset($row['user'])) {
+								$msg = $msg."▶️ <pre>".$row['user']." (Nv. ".$row['level'].")</pre>".PHP_EOL;
+							} else if($i==0) {
+								$msg = $msg."<i>Nadie.</i>".PHP_EOL;
+							}
+						}
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(100000);
+						$msg = $msg.PHP_EOL."<i>Escribe \"!pvp\" seguido del nombre del rival al que quieres retar para enviarle una petición de duelo PvP.</i>".PHP_EOL."Ejemplo:".PHP_EOL."<pre>!pvp Kamisuke</pre>";
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					} else {
+						// si no, avisar de que use !pvp y lo vuelva a intentar
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						usleep(100000);
+						$msg = "<b>Tu personaje tiene los duelos PvP bloqueados. Escribe \"!pvp\" para volver a activarlos e inténtalo de nuevo.</b>";
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					}
+				} else {
+					// si no, decirle que su personaje aun no puede librar duelos pvp
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "<b>Los duelos PvP son para personajes de nivel 11 y superior, ¡entrena un poco más para estar a la altura!</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+				}
+			} else {
+				// si no, decirle que use !exp y entrene un rato
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$msg = "<b>Utiliza la función !exp para entrenar a tu propio personaje y poder librar duelos PvP.</b>";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+			}
+			//cerrar db
+			mysql_free_result($result);
+			mysql_close($link);
 		}
 	} else if (strpos(strtolower($text), "!botella") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
@@ -10382,10 +10648,10 @@ function processMessage($message) {
 						// si sigue, aceptar la guerra, avisar en ambos clanes
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. El jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>")); //  Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente.
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente. Además, el jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>")); //  Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente.
 						apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
 						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. El jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>"));
+						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente. Además, el jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>"));
 						// y editar db, la de guerra pendiente como aceptada
 						mysql_free_result($result);
 						$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
@@ -10546,6 +10812,9 @@ function processMessage($message) {
 						mysql_free_result($result);
 						// sumarle +1 a las victorias de los playerbattle grupales
 						$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						$query = "UPDATE playerbattle SET last_exp = last_exp - 600, last_boss = last_boss - 36000 WHERE level < 100 AND last_boss > 1000 AND group_id = ".$winner_id;
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						mysql_free_result($result);
 						$query = "UPDATE `playerbattle` SET `war_mvp` = `war_mvp` + 1 WHERE `user_id` = '".$mvp_id."'";

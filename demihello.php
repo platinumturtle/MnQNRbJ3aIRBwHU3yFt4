@@ -3814,6 +3814,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	}
 	$home_name = $awayGroupName;
 	$away_name = $homeGroupName;
+	/*
 	if(strlen($home_name) < 25) {
 		$home_nameX = 155 + 50;
 	} else {
@@ -3823,6 +3824,17 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$away_nameX = 800 + 50;
 	} else {
 		$away_nameX = 800;		
+	}
+	*/
+	$home_nameX = 155;
+	$home_namealign = 33 - strlen($home_name);
+	if($home_namealign > 0) {
+		$home_nameX = $home_nameX + ($home_namealign * 5);
+	}
+	$away_nameX = 800;
+	$away_namealign = 33 - strlen($away_name);
+	if($away_namealign > 0) {
+		$away_nameX = $away_nameX + ($away_namealign * 5);
 	}
 	$res_image = imagecreatetruecolor($base_width, $base_height);
 	imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $base_width, $base_height, $base_width, $base_height);
@@ -7824,7 +7836,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.6 creado por @Kamisuke."
+				"@DemisukeBot v3.0.7 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -8359,8 +8371,6 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Un jugador podría no responder con \"!pvp aceptar\" ni \"!pvp rechazar\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los duelos pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza desde chat privado con el bot.</i>"
-				.PHP_EOL.PHP_EOL.
-				"▶️<i>Además de poder obtener la victoria en batalla, el jugador más rocoso del combate recibirá un punto de líder en rocosidad, visible en la ficha de personaje..</i>"
 				;
 	} else if($mode == "guerras_rocosos") {
 		$text = "🔎 <b>Juego RPG: Los Rocosos de Demisuke</b> 💪"
@@ -8406,6 +8416,10 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Los clanes que eliminen al bot del grupo no aparecerán en la lista de clanes con más victorias en guerras.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Además de poder obtener la victoria en batalla, el jugador más rocoso del combate recibirá un punto de líder en rocosidad, visible en la ficha de personaje..</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Los jugadores que participen en una guerra y la ganen podrán volver a utilizar las funciones !exp y !atacar nada más lograr la victoria.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Un clan podría no responder con \"!aceptarguerra\" ni \"!rechazarguerra\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -9570,6 +9584,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!guerras") !== false) {		
 		$link = dbConnect();
 		$msg = "";
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !guerras.");
 			// calcular batallas pendientes del clan
@@ -9701,8 +9716,6 @@ function processMessage($message) {
 			$msg = $msg."<i>La zona horaria utilizada en las fechas mostradas es la hora peninsular española actual.</i>".PHP_EOL;
 		}
 		$msg = $msg."<i>¡Participa tú en la próxima batalla con !pvp o !declararguerra!</i>";
-		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-		usleep(100000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 	} else if (strpos(strtolower($text), "!unirme") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
@@ -10096,6 +10109,7 @@ function processMessage($message) {
 						$playerExp = $row['exp_points'];
 						$playerPower = $row['power'];
 						$playerHeroPower = $row['hero_power'];
+						$playerLevel = $row['level'];
 						$playerHeroPower = getHeroPower($playerLevel, $playerHeroPower);
 						$playerPermission = $row['pvp_allowed'];
 						$playerAvatar = $row['avatar'];
@@ -10104,8 +10118,8 @@ function processMessage($message) {
 						$rivalPower = $row['power'];
 						$rivalPermission = $row['pvp_allowed'];
 						$rivalHeroPower = $row['hero_power'];
-						$rivalHeroPower = getHeroPower($rivalLevel, $rivalHeroPower);
 						$rivalLevel = $row['level'];
+						$rivalHeroPower = getHeroPower($rivalLevel, $rivalHeroPower);
 						$rivalAvatar = $row['avatar'];
 						$rivalHP = $row['total_hp'];
 						$rivalAt = $row['total_attack'];
@@ -10144,6 +10158,11 @@ function processMessage($message) {
 							} else {
 								$percentHigher = (($rivalPower * 100) / $playerPower) - 100;
 							}
+							if($playerLevel > $rivalLevel) {
+								$levelDiff = $playerLevel - $rivalLevel;
+							} else {
+								$levelDiff = $rivalLevel - $playerLevel;
+							}
 							error_log("Percent diff. +".$percentHigher);
 							if($percentHigher < 15) {
 								// tener en cuenta la exp
@@ -10168,7 +10187,7 @@ function processMessage($message) {
 										$lucky = 1;
 									}
 								}
-							} else if($percentHigher > 300) {
+							} else if($levelDiff > 9) {
 								// 99,99
 								$battleTicket = rand(1,10000);
 								if($battleTicket < 10000) {
@@ -10178,7 +10197,27 @@ function processMessage($message) {
 									$win = 0;
 									$lucky = 1;
 								}
+							} else if($percentHigher > 300) {
+								// 99
+								$battleTicket = rand(1,100);
+								if($battleTicket < 100) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
 							} else if($percentHigher > 200) {
+								// 95
+								$battleTicket = rand(1,20);
+								if($battleTicket < 20) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							} else if($percentHigher > 100) {
 								// 90
 								$battleTicket = rand(1,10);
 								if($battleTicket < 10) {
@@ -10188,7 +10227,7 @@ function processMessage($message) {
 									$win = 0;
 									$lucky = 1;
 								}
-							} else if($percentHigher > 100) {
+							} else if($percentHigher > 50) {
 								// 80
 								$battleTicket = rand(1,10);
 								if($battleTicket < 9) {
@@ -10198,20 +10237,10 @@ function processMessage($message) {
 									$win = 0;
 									$lucky = 1;
 								}
-							} else if($percentHigher > 50) {
+							} else {
 								// 70
 								$battleTicket = rand(1,10);
 								if($battleTicket < 8) {
-									$win = 1;
-									$lucky = 0;
-								} else {
-									$win = 0;
-									$lucky = 1;
-								}
-							} else {
-								// 60
-								$battleTicket = rand(1,10);
-								if($battleTicket < 7) {
 									$win = 1;
 									$lucky = 0;
 								} else {
@@ -10264,11 +10293,6 @@ function processMessage($message) {
 							$msg = getPlayerBattleResult($winnerName, $loserName, $lucky);
 							$playerName = removeEmoji($playerName);
 							$rivalName = removeEmoji($rivalName);
-							
-							
-							
-							
-													
 							$imageURL = rand(0,29);
 							$imageShortURL = "/img/battle_".$imageURL.".jpg";
 							$imageURL = dirname(__FILE__).$imageShortURL;
@@ -10365,57 +10389,11 @@ function processMessage($message) {
 							if($player_namealign > 0) {
 								$player_nameX = $player_nameX + ($player_namealign * 5);
 							}
-							/*
-							if(strlen($player_name) < 25) {
-								if($player_name > 19) {
-									$player_nameX = $player_nameX + 50;
-								} else if($player_name > 17) {
-									$player_nameX = $player_nameX + 55;
-								} else if($player_name > 15) {
-									$player_nameX = $player_nameX + 60;
-								} else if($player_name > 13) {
-									$player_nameX = $player_nameX + 65;
-								} else if($player_name > 11) {
-									$player_nameX = $player_nameX + 70;
-								} else if($player_name > 9) {
-									$player_nameX = $player_nameX + 75;
-								} else if($player_name > 7) {
-									$player_nameX = $player_nameX + 80;
-								} else if($player_name > 5) {
-									$player_nameX = $player_nameX + 85;
-								} else {
-									$player_nameX = $player_nameX + 90;
-								}
-							}
-							*/
 							$rival_nameX = 800;
 							$rival_namealign = 33 - strlen($rival_name);
 							if($rival_namealign > 0) {
 								$rival_nameX = $rival_nameX + ($rival_namealign * 5);
 							}
-							/*
-							if(strlen($rival_name) < 25) {
-								if($rival_name > 19) {
-									$rival_nameX = $rival_nameX + 50;
-								} else if($rival_name > 17) {
-									$rival_nameX = $rival_nameX + 55;
-								} else if($rival_name > 15) {
-									$rival_nameX = $rival_nameX + 60;
-								} else if($rival_name > 13) {
-									$rival_nameX = $rival_nameX + 65;
-								} else if($rival_name > 11) {
-									$rival_nameX = $rival_nameX + 70;
-								} else if($rival_name > 9) {
-									$rival_nameX = $rival_nameX + 75;
-								} else if($rival_name > 7) {
-									$rival_nameX = $rival_nameX + 80;
-								} else if($rival_name > 5) {
-									$rival_nameX = $rival_nameX + 85;
-								} else {
-									$rival_nameX = $rival_nameX + 90;
-								}
-							}
-							*/
 							$res_image = imagecreatetruecolor($base_width, $base_height);
 							imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $base_width, $base_height, $base_width, $base_height);
 							imagecopyresampled($res_image, $player_image, $player_x, $player_y, 0, 0, $player_scalewidth, $player_scaleheight, $player_width, $player_height);
@@ -10490,13 +10468,39 @@ function processMessage($message) {
 							$result=curl_exec ($ch);
 							curl_close ($ch);
 							imagedestroy($res_image);
-							/*
-							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-							usleep(50000);
-							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
-							apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "typing"));
-							usleep(50000);
-							apiRequest("sendMessage", array('chat_id' => $rival_id, 'parse_mode' => "HTML", "text" => $msg));
+							/* kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+							hacer el cuarto de botella
+							
+							
+												$currExp = $row['exp_points'];
+					$currLevel = $row['level'];
+					$newBottles = $row['bottles'] - 1;
+					$critic = $row['critic'];
+					$currTime = time();
+					mysql_free_result($result);
+					$expAcquired = useBottleExp($currLevel);
+					$newExp = $currExp + $expAcquired;
+					$newLevel = getLevelFromExp($newExp);
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$msg = "🍾 <b>Te has bebido una botella de experiencia hasta cansarte y has ganado ".$expAcquired." puntos de experiencia.</b>";
+					usleep(100000);
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					if($newLevel != $row['level']){
+						error_log($logname." is now level ".$newLevel.".");
+						levelUp($newLevel, $newExp, $critic, $newBottles, $link, $chat_id);
+						mysql_free_result($result);
+						$query = "UPDATE `playerbattle` SET `bottles` = '".$newBottles."' WHERE `user_id` = '".$chat_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					} else {
+						$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `bottles` = '".$newBottles."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					}
+					mysql_free_result($result);
+					$user_id = $message['from']['id'];
+					getPlayerInfo(0, $link, $chat_id, $user_id);
+							
+							
+
 							*/
 						} else {
 							// si no, decir que no tienes allowed para aceptarla 
@@ -10717,6 +10721,16 @@ function processMessage($message) {
 		} else {
 			error_log($logname." triggered: !rocosos.");
 			getRockMan($chat_id);
+		}
+	} else if (strpos(strtolower($text), "!type") !== false) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !type.");
+		} else {
+			error_log($logname." triggered in private: !type.");
+			$fileSource = substr($text, 6);
+			$finfo = finfo_open(FILEINFO_MIME_TYPE);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, "text" => finfo_file($finfo, $fileSource)));
+			finfo_close($finfo);
 		}
 	} else if (strpos(strtolower($text), "!listapvp") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
@@ -10978,10 +10992,10 @@ function processMessage($message) {
 						// si sigue, aceptar la guerra, avisar en ambos clanes
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. El jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>")); //  Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente.
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente. Además, el jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>")); //  Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente.
 						apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
 						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. El jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>"));
+						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente. Además, el jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>"));
 						// y editar db, la de guerra pendiente como aceptada
 						mysql_free_result($result);
 						$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
@@ -11144,8 +11158,12 @@ function processMessage($message) {
 						$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						mysql_free_result($result);
+						$query = "UPDATE playerbattle SET last_exp = last_exp - 600, last_boss = last_boss - 36000 WHERE level < 100 AND last_boss > 1000 AND group_id = ".$winner_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
 						// +1 war mvp al mvp id en playerbattle
-						$query = "UPDATE playerbattle SET war_mvp = war_mvp + 1 WHERE user_id = ".$mvp_id;
+						// $query = "UPDATE playerbattle SET war_mvp = war_mvp + 1 WHERE user_id = ".$mvp_id;
+						$query = "UPDATE `playerbattle` SET `war_mvp` = `war_mvp` + 1 WHERE `user_id` = '".$mvp_id."'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						mysql_free_result($result);
 						sleep(1);

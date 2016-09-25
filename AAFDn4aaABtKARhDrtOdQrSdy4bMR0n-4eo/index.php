@@ -3437,13 +3437,11 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	if($player_namealign > 0) {
 		$player_nameX = $player_nameX + ($player_namealign * 5);
 	}
-
 	$boss_nameX = 800;
 	$boss_namealign = 33 - strlen($boss_name);
 	if($boss_namealign > 0) {
 		$boss_nameX = $boss_nameX + ($boss_namealign * 5);
 	}
-
 	$res_image = imagecreatetruecolor($base_width, $base_height);
 	imagecopyresampled($res_image, $jpg_image, 0, 0, 0, 0, $base_width, $base_height, $base_width, $base_height);
 	imagecopyresampled($res_image, $player_image, $player_x, $player_y, 0, 0, $player_scalewidth, $player_scaleheight, $player_width, $player_height);
@@ -9037,6 +9035,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!guerras") !== false) {		
 		$link = dbConnect();
 		$msg = "";
+		$checkGroup = 0;
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !guerras.");
 			// calcular batallas pendientes del clan
@@ -9062,8 +9061,7 @@ function processMessage($message) {
 			$msg = $msg."<b>Guerras declaradas pendientes de respuesta del rival:</b> ".$res.PHP_EOL.PHP_EOL;
 		} else {
 			error_log($logname." triggered in private: !guerras.");
-			// calcular batallas pendientes del jugador
-			$checkGroup = 0;
+			// calcular batallas pendientes del jugador			
 			$query = 'SELECT COUNT( * ) as "result" FROM playerbattlelog WHERE status = "REQUESTED" AND rival = '.$chat_id.' GROUP BY rival';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
@@ -9090,11 +9088,11 @@ function processMessage($message) {
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		$currTime = time();
-		if(($currTime - 60) > $row['lastwarcheck']) {
+		$checkTime = $currTime - 60;
+		$showLog = 0;
+		if($checkTime > $row['lastwarcheck']) {
 			$showLog = 1;
-		} else {
-			$showLog = 0;
-		}
+		} 
 		if($showLog == 1) {
 			mysql_free_result($result);
 			$query = "UPDATE userbattle SET lastwarcheck = '".$currTime."' WHERE group_id = ".$checkGroup." AND user_id = ".$user_id;
@@ -9576,7 +9574,8 @@ function processMessage($message) {
 						$rivalAt = $row['total_attack'];
 						$rivalDef = $row['total_defense'];
 						$rivalCrit = $row['total_critic'];
-						$rivalSp = $row['total_speed'];						// revisar si estan allowed
+						$rivalSp = $row['total_speed'];
+						// revisar si estan allowed
 						if($playerPermission == 1 && $rivalPermission == 1) {
 							// si si, aceptar la guerra, avisar en ambos jugadores
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -9728,11 +9727,6 @@ function processMessage($message) {
 							$msg = getPlayerBattleResult($winnerName, $loserName, $lucky);
 							$playerName = removeEmoji($playerName);
 							$rivalName = removeEmoji($rivalName);
-							
-							
-							
-							
-													
 							$imageURL = rand(0,29);
 							$imageShortURL = "/img/battle_".$imageURL.".jpg";
 							$imageURL = dirname(__FILE__).$imageShortURL;
@@ -10552,6 +10546,9 @@ function processMessage($message) {
 						mysql_free_result($result);
 						// sumarle +1 a las victorias de los playerbattle grupales
 						$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						mysql_free_result($result);
+						$query = "UPDATE `playerbattle` SET `war_mvp` = `war_mvp` + 1 WHERE `user_id` = '".$mvp_id."'";
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						mysql_free_result($result);
 						sleep(1);

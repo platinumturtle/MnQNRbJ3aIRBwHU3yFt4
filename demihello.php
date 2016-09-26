@@ -10586,7 +10586,7 @@ function processMessage($message) {
 							curl_setopt($ch, CURLOPT_POST,1);
 							curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-							$result=curl_exec ($ch);
+							$result_curl=curl_exec ($ch);
 							curl_close ($ch);
 							apiRequest("sendChatAction", array('chat_id' => $rival_id, 'action' => "upload_photo"));
 							usleep(300000);
@@ -10596,11 +10596,12 @@ function processMessage($message) {
 							curl_setopt($ch, CURLOPT_POST,1);
 							curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 							curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-							$result=curl_exec ($ch);
+							$result_curl=curl_exec ($ch);
 							curl_close ($ch);
 							imagedestroy($res_image);
 							$bossTime = time() - (3600*6) + 60;
 							$query = "UPDATE `playerbattle` SET `last_boss` = '".$bossTime."' WHERE `user_id` = '".$winner_id."'";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							apiRequest("sendChatAction", array('chat_id' => $winner_id, 'action' => "typing"));
 							$msg = "💪 <b>¡Has acabado sin energía, pero has atraído a los jefes de tu zona con tu heróica batalla y podrás enfrentarte a uno de ellos en unos segundos!</b>";
 							usleep(100000);

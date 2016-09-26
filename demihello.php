@@ -10455,6 +10455,7 @@ function processMessage($message) {
 							list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 							list($player_width, $player_height) = getimagesize($playerAvatar);
 							list($rival_width, $rival_height) = getimagesize($rivalAvatar);
+							/*
 							if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
 								error_log("Loading image ".$playerAvatar);
 							} else {
@@ -10469,6 +10470,7 @@ function processMessage($message) {
 								$rivalAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 								list($rival_width, $rival_height) = getimagesize($rivalAvatar);
 							}
+							*/
 							$player_ratio = $player_width / $player_height;
 							if($player_ratio > 1) {
 								$player_scalewidth = 250;

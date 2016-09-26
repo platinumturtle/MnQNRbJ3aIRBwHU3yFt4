@@ -10112,6 +10112,7 @@ function processMessage($message) {
 							$result=curl_exec ($ch);
 							curl_close ($ch);
 							imagedestroy($res_image);
+							/*
 							$expAcquired = useBottleExp($winnerCurrLevel);
 							$expAcquired = floor($expAcquired / 4);
 							$newExp = $winnerCurrExp + $expAcquired;
@@ -10129,6 +10130,12 @@ function processMessage($message) {
 							}
 							mysql_free_result($result);
 							getPlayerInfo(0, $link, $winner_id, $winner_id);
+							*/
+							///apiRequest("sendChatAction", array('chat_id' => $winner_id, 'action' => "typing"));
+							///$msg = "*Debido a un apagón de servidor producido durante la actualización a la versión 3.0.7 del bot, hasta la próxima*";
+							///usleep(100000);
+							//apiRequest("sendMessage", array('chat_id' => $winner_id, 'parse_mode' => "HTML", "text" => $msg));
+
 						} else {
 							// si no, decir que no tienes allowed para aceptarla 
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

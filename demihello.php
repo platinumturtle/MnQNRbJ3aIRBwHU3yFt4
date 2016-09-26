@@ -2574,6 +2574,8 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 		$newExtraPoints = 1228 - $extraPoints;
 		if($newExtraPoints > 50) {
 			$newExtraPoints = 50;
+		} else if($newExtraPoints < 0) {
+			$newExtraPoints = 0;
 		}
 		$extraTicketA = rand(0,1);
 		$extraTicketB = rand(0,1);
@@ -3765,6 +3767,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($home_width, $home_height) = getimagesize($homeAvatar);
 	list($away_width, $away_height) = getimagesize($awayAvatar);
+	/*
 	if(is_numeric($home_width) && is_numeric($home_height) && $home_width > 0 && $home_height > 0) {
 		error_log("Loading image ".$homeAvatar);
 	} else {
@@ -3779,6 +3782,7 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$awayAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($away_width, $away_height) = getimagesize($awayAvatar);
 	}
+	*/
 	$home_ratio = $home_width / $home_height;
 	if($home_ratio > 1) {
 		$home_scalewidth = 250;
@@ -3819,8 +3823,8 @@ function getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName,
 		$away_x = 850 + floor(($away_position * -1) / 2);
 		$away_y = 100;
 	}
-	$home_name = $awayGroupName;
-	$away_name = $homeGroupName;
+	$home_name = $homeGroupName;
+	$away_name = $awayGroupName;
 	/*
 	if(strlen($home_name) < 25) {
 		$home_nameX = 155 + 50;
@@ -4152,6 +4156,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($player_width, $player_height) = getimagesize($playerAvatar);
 	list($boss_width, $boss_height) = getimagesize($bossAvatar);
+	/*
 	if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
 		error_log("Loading image ".$playerAvatar);
 	} else {
@@ -4166,6 +4171,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 		$bossAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
 		list($boss_width, $boss_height) = getimagesize($bossAvatar);
 	}
+	*/
 	$player_ratio = $player_width / $player_height;
 	if($player_ratio > 1) {
 		$player_scalewidth = 250;
@@ -7809,7 +7815,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.7 creado por @Kamisuke."
+				"@DemisukeBot v3.0.8 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -9125,6 +9131,11 @@ function processMessage($message) {
 								$slotB = 1;
 								$slotC = 1;
 							}
+						}
+						if($slotA == $slotB && $slotB == $slotC && $row['tokens'] > 99999) {
+							$slotA = 8;
+							$slotB = 8;
+							$slotC = 8;
 						}
 						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
 						$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
@@ -10902,7 +10913,7 @@ function processMessage($message) {
 						for($i=0;$i<20;$i++) {
 							$row = mysql_fetch_array($result);
 							if(isset($row['user'])) {
-								$msg = $msg."▶️ <pre>".$row['user']." (Nv. ".$row['level'].")</pre>".PHP_EOL;
+								$msg = $msg."<pre>▶️ ".$row['user']." (Nv. ".$row['level'].")</pre>".PHP_EOL;
 							} else if($i==0) {
 								$msg = $msg."<i>Nadie.</i>".PHP_EOL;
 							}

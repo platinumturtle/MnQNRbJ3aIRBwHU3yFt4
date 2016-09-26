@@ -10905,7 +10905,11 @@ function processMessage($message) {
 					// si es 10+, mirar si tiene el pvp allowed
 					if($row['pvp_allowed'] == 1) {
 						// si lo tiene, pues eso es todo... a mostrar los datos
-						$level = $row['level'] + 1;
+						if($row['level'] < 20) {
+							$level = $row['level'] + 1;
+						} else {
+							$level = $row['level'] + 2;
+						}
 						mysql_free_result($result);
 						$query = 'SELECT dt.user_name AS "user", dt.level FROM ( SELECT pb.level, ub.user_name, pb.exp_points FROM playerbattle pb, userbattle ub WHERE ub.user_id = pb.user_id AND pb.level >10 AND pb.pvp_allowed =1 AND ub.user_name !=  "" AND pb.user_id != '.$chat_id.' AND pb.level < '.$level.' GROUP BY pb.user_id ORDER BY pb.exp_points DESC LIMIT 0 , 20 )dt ORDER BY dt.exp_points ASC';
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

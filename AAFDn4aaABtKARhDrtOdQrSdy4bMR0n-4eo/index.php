@@ -8625,6 +8625,9 @@ function processMessage($message) {
 						$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
 						// calcular el premio
 						if($slotA == $slotB && $slotB == $slotC) {
+							if($row['tokens'] > 99999) {
+								$slotA = 8;
+							}
 							error_log($logname." got a prize! Prize number ".$slotA);
 							$text = $text."❗️🎉 ¡Enhorabuena! Has ganado ";
 							switch($slotA){

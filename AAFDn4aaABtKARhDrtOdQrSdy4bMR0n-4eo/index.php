@@ -8618,6 +8618,11 @@ function processMessage($message) {
 								$slotC = 1;
 							}
 						}
+						if($slotA == $slotB && $slotB == $slotC && $row['tokens'] > 99999) {
+							$slotA = 8;
+							$slotB = 8;
+							$slotC = 8;
+						}
 						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
 						$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
 						$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
@@ -8625,9 +8630,6 @@ function processMessage($message) {
 						$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
 						// calcular el premio
 						if($slotA == $slotB && $slotB == $slotC) {
-							if($row['tokens'] > 99999) {
-								$slotA = 8;
-							}
 							error_log($logname." got a prize! Prize number ".$slotA);
 							$text = $text."❗️🎉 ¡Enhorabuena! Has ganado ";
 							switch($slotA){
@@ -9970,22 +9972,6 @@ function processMessage($message) {
 							list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 							list($player_width, $player_height) = getimagesize($playerAvatar);
 							list($rival_width, $rival_height) = getimagesize($rivalAvatar);
-							/*
-							if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
-								error_log("Loading image ".$playerAvatar);
-							} else {
-								$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
-								$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
-								list($player_width, $player_height) = getimagesize($playerAvatar);
-							}
-							if(is_numeric($rival_width) && is_numeric($rival_height) && $rival_width > 0 && $rival_height > 0) {
-								error_log("Loading image ".$rivalAvatar);
-							} else {
-								$rival_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
-								$rivalAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
-								list($rival_width, $rival_height) = getimagesize($rivalAvatar);
-							}
-							*/
 							$player_ratio = $player_width / $player_height;
 							if($player_ratio > 1) {
 								$player_scalewidth = 250;
@@ -10112,7 +10098,7 @@ function processMessage($message) {
 							$result=curl_exec ($ch);
 							curl_close ($ch);
 							imagedestroy($res_image);
-							/*
+
 							$expAcquired = useBottleExp($winnerCurrLevel);
 							$expAcquired = floor($expAcquired / 4);
 							$newExp = $winnerCurrExp + $expAcquired;
@@ -10121,7 +10107,7 @@ function processMessage($message) {
 							$msg = "💪 <b>¡Has acabado sin energía, pero has ganado ".$expAcquired." puntos de experiencia en este duelo!</b>";
 							usleep(100000);
 							apiRequest("sendMessage", array('chat_id' => $winner_id, 'parse_mode' => "HTML", "text" => $msg));
-							if($newLevel != $winnerCurrLevel) {
+							if($newLevel > $winnerCurrLevel) {
 								error_log($winnerName." is now level ".$newLevel.".");
 								levelUp($newLevel, $newExp, $winnerCritic, $winnerBottles, $link, $winner_id);
 							} else {
@@ -10130,7 +10116,7 @@ function processMessage($message) {
 							}
 							mysql_free_result($result);
 							getPlayerInfo(0, $link, $winner_id, $winner_id);
-							*/
+
 							///apiRequest("sendChatAction", array('chat_id' => $winner_id, 'action' => "typing"));
 							///$msg = "*Debido a un apagón de servidor producido durante la actualización a la versión 3.0.7 del bot, hasta la próxima*";
 							///usleep(100000);

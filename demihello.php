@@ -4362,7 +4362,11 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			}
 			$tipTicket = rand(1,10);
 			if($tipTicket == 7) {
-				$subTipTicket = rand(1, 6);
+				if($row['level'] > 10) {
+					$subTipTicket = rand(1, 6);
+				} else {
+					$subTipTicket = rand(1, 5);
+				}
 				if($subTipTicket == 1) {
 					$msg = $msg."<b>Consejo:</b> De vez en cuando hay eventos para los Rocosos de Demisuke y actualizaciones del bot, en el @CanalKamisuke puedes saber si hay algún evento cercano antes de que se te pase o conocer las nuevas funciones del bot. ¡No te pierdas nada!".PHP_EOL;
 				//} else if($subTipTicket == 2) {

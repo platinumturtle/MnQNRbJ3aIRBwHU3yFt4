@@ -4378,7 +4378,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 				} else if($subTipTicket == 5) {
 					$msg = $msg."<b>Consejo:</b> las batallas entre clanes, además de otorgar victorias de guerra y puntos de líder en rocosidad, ayuda a todos sus miembros a poder luchar contra jefes más rápido. ¡No te olvides de ir a la guerra!".PHP_EOL;
 				} else if($subTipTicket == 6) {
-					$msg = $msg."<b>Consejo:</b> en los duelos PvP también consigues experiencia extra si logras ganar a tu rival. Consulta !listapvp frecuentemente para retar a rivales asequibles para tu nivel.".PHP_EOL;
+					$msg = $msg."<b>Consejo:</b> en los duelos PvP puedes lograr atraer a un jefe de tu zona para volver a luchar si consigues la victoria. Consulta !listapvp frecuentemente para retar a rivales asequibles para tu nivel.".PHP_EOL;
 				}
 			}
 			$msg = $msg."<i>Consulta con !pj las estadísticas completas de tu personaje.</i>";
@@ -8336,6 +8336,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>Si te alzas con la victoria en un duelo PvP atraes a los jefes de tu zona y estarán disponibles para luchar contra ellos aunque la última batalla sea reciente.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Si tienes habilitado los duelos PvP tu personaje podría aparecer en el ránking de !rocosos.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Un jugador podría no responder con \"!pvp aceptar\" ni \"!pvp rechazar\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
@@ -10037,7 +10039,7 @@ function processMessage($message) {
 					// si no hay, decirle como se añade
 					$msg = "<b>No hay ningún avatar almacenado en el clan. Puedes asignar uno no animado en formato .JPG o .PNG escribiendo, por ejemplo,</b> <pre>!avatarclan http://www.mipaginadeimagenes.com/imagendelclan.png</pre>".PHP_EOL;					
 				}
-				$msg = $msg."<i>La imagen del clan se puede consultar escribiendo \"!avatarclan\" y se puede eliminar escribiendo \"!avatarclan borrar\", y aparecerá como imagen del grupo en cada una de las guerras que  el clan libre.</i>";
+				$msg = $msg."<i>La imagen del clan se puede consultar escribiendo \"!avatarclan\" y se puede eliminar escribiendo \"!avatarclan borrar\", y aparecerá como imagen del grupo en cada una de las guerras que el clan libre.</i>";
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 				mysql_free_result($result);
 				mysql_close($link);
@@ -10597,6 +10599,14 @@ function processMessage($message) {
 							$result=curl_exec ($ch);
 							curl_close ($ch);
 							imagedestroy($res_image);
+							$bossTime = time() - (3600*6) + 60;
+							$query = "UPDATE `playerbattle` SET `last_boss` = '".$bossTime."' WHERE `user_id` = '".$winner_id."'";
+							apiRequest("sendChatAction", array('chat_id' => $winner_id, 'action' => "typing"));
+							$msg = "💪 <b>¡Has acabado sin energía, pero has atraído a los jefes de tu zona con tu heróica batalla y podrás enfrentarte a uno de ellos en unos segundos!</b>";
+							usleep(100000);
+							apiRequest("sendMessage", array('chat_id' => $winner_id, 'parse_mode' => "HTML", "text" => $msg));
+
+/*
 							$expAcquired = useBottleExp($winnerCurrLevel);
 							$expAcquired = floor($expAcquired / 4);
 							$newExp = $winnerCurrExp + $expAcquired;
@@ -10605,7 +10615,7 @@ function processMessage($message) {
 							$msg = "💪 <b>¡Has acabado sin energía, pero has ganado ".$expAcquired." puntos de experiencia en este duelo!</b>";
 							usleep(100000);
 							apiRequest("sendMessage", array('chat_id' => $winner_id, 'parse_mode' => "HTML", "text" => $msg));
-							if($newLevel != $winnerCurrLevel) {
+							if($newLevel > $winnerCurrLevel) {
 								error_log($winnerName." is now level ".$newLevel.".");
 								levelUp($newLevel, $newExp, $winnerCritic, $winnerBottles, $link, $winner_id);
 							} else {
@@ -10614,6 +10624,7 @@ function processMessage($message) {
 							}
 							mysql_free_result($result);
 							getPlayerInfo(0, $link, $winner_id, $winner_id);
+*/
 						} else {
 							// si no, decir que no tienes allowed para aceptarla 
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

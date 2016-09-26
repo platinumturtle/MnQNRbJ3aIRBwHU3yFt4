@@ -121,6 +121,7 @@ function checkUserID($id) {
 					"119769161", // TaliBOT
 					"228805033", //German
 					"164798471",
+					"2599666", // mareklmc el macros
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {

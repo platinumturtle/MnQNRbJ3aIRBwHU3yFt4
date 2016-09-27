@@ -9351,24 +9351,24 @@ function processMessage($message) {
 			$randMultiplier = rand(1, 3);
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
-			$query = "SELECT last_exp FROM playerbattle WHERE user_id = ".$chat_id;
+			$query = "SELECT last_exp_check FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
-			if(isset($row['last_exp'])){
+			if(isset($row['last_exp_check'])){
 				$currTime = time();
 				$checkDouble = $currTime - 4;
 				//error_log("CURRTIME".$currTime." - TIME ".$checkDouble." - LAST EXP ".$row['last_exp']);
 				if($checkDouble > $row['last_exp']) {
-					$lastExpCheck = $row['last_exp'];
+					//$lastExpCheck = $row['last_exp'];
 					mysql_free_result($result);
-					$query = "UPDATE `playerbattle` SET `last_exp` = '".$currTime."' WHERE `user_id` = ".$chat_id;
+					$query = "UPDATE `playerbattle` SET `last_exp_check` = '".$currTime."' WHERE `user_id` = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					mysql_free_result($result);
 					$query = "SELECT last_exp, level, exp_points, critic, bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS 'total_extra' FROM playerbattle WHERE user_id = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
 					// si tiene pj mirar si han pasado 5min
-					if(($currTime - 299) > $lastExpCheck) {
+					if(($currTime - 299) > $row['last_exp']) {
 						// si si han pasado, mirar el nivel 
 							// segun el nivel, dar una experiencia u otra, con una funcion que muestre un texto al chat id enviado y devuelva la exp random final
 							$expAcquired = getPlayerExp($row['level'], $chat_id);
@@ -9398,7 +9398,7 @@ function processMessage($message) {
 					} else {
 						// si no han pasado, avisar de que no corra, que se espere 5min
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						$currTime = $currTime - $lastExpCheck;
+						$currTime = $currTime - $row['last_exp'];
 						if($currTime > 239) {
 							$energy = 80;
 						} else if ($currTime > 179) {
@@ -9876,25 +9876,23 @@ function processMessage($message) {
 			$randMultiplier = rand(1, 3);
 			$randomizer = $randomizer * $randMultiplier;
 			usleep($randomizer);
-			$query = "SELECT last_boss FROM playerbattle WHERE user_id = ".$chat_id;
+			$query = "SELECT last_boss_check FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			// mirar si tiene pj
-			if(isset($row['last_boss'])) {
+			if(isset($row['last_boss_check'])) {
 				$currTime = time();
 				$checkDouble = $currTime - 4;
 				// mirar si no es spam
-				if($checkDouble > $row['last_boss']) {
-					$lastBossCheck = $row['last_boss'];
+				if($checkDouble > $row['last_boss_check']) {
+					//$lastBossCheck = $row['last_boss'];
 					mysql_free_result($result);
-					$query = "UPDATE `playerbattle` SET `last_boss` = '".$currTime."' WHERE `user_id` = ".$chat_id;
+					$query = "UPDATE `playerbattle` SET `last_boss_check` = '".$currTime."' WHERE `user_id` = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					mysql_free_result($result);
 					$query = "SELECT pb.exp_points, pb.critic, pb.level, pb.last_boss, ( pb.hp + pb.attack + pb.defense + ( pb.critic *3 ) + pb.speed + ( pb.helmet *3 ) + pb.body + pb.boots + pb.weapon + pb.shield ) AS total_power, pb.bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS total_extra, COALESCE( hb.total, 0 ) AS  'hero_power', pb.avatar, ( pb.hp + pb.body ) AS  'total_hp', ( pb.attack + pb.weapon ) AS  'total_attack', ( pb.defense + pb.shield ) AS  'total_defense', ( pb.critic + pb.helmet ) AS  'total_critic', ( pb.speed + pb.boots ) AS  'total_speed' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
-
-					
 					// si tiene pj, mirar si cumple el nivel
 					if($row['level'] > 4) {
 						if($row['level'] < 100) {
@@ -9906,7 +9904,7 @@ function processMessage($message) {
 							} else {
 								$spawnTime = $spawnTime - (3600 * 6);
 							}
-							if($spawnTime >= $lastBossCheck) {
+							if($spawnTime >= $row['last_boss']) {
 							// si cumple el nivel, mirar si hace mucho que ya se cargo al ultimo
 								// si hace mucho, atacar al boss que le toque, mirar por nivel cual le toca sacar de la db
 									// librar batalla y mostrar los datos del boss y que ocurre en ella
@@ -9957,13 +9955,13 @@ function processMessage($message) {
 								// si hace poco, avisar de que se espere un rato
 								apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 								$text = "<b>No hay ningún jefe a la vista, tendrás que esperar un poco más para librar una nueva batalla.</b>".PHP_EOL;
-								$hours = date(g, ($lastBossCheck - $spawnTime));
+								$hours = date(g, ($row['last_boss'] - $spawnTime));
 								$hours = (int)$hours - 1;
-								(string)$minutes = date(i, ($lastBossCheck - $spawnTime));
+								(string)$minutes = date(i, ($row['last_boss'] - $spawnTime));
 								if($minutes[0] == "0") {
 									$minutes = $minutes[1];
 								}
-								(string)$seconds = date(s, ($lastBossCheck - $spawnTime));
+								(string)$seconds = date(s, ($row['last_boss'] - $spawnTime));
 								if($seconds[0] == "0") {
 									$seconds = $seconds[1];
 								}
@@ -10005,7 +10003,7 @@ function processMessage($message) {
 						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 					}
 				} else {
-					// kkkkkkkkkkkkkkkkkkkkkkk
+					error_log($logname." triggered !atacar in double check and failed.");
 				}
 			} else {
 				// si no tiene pj, decir que use !exp
@@ -11002,47 +11000,61 @@ function processMessage($message) {
 			error_log($logname." triggered: !botella.");
 			// abrir db
 			$link = dbConnect();
-			$query = "SELECT level, critic, exp_points, bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS 'total_extra' FROM playerbattle WHERE user_id = '".$chat_id."'";
+			$query = "SELECT level, critic, exp_points, bottles, last_bottle, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS 'total_extra' FROM playerbattle WHERE user_id = '".$chat_id."'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			// mirar si tiene pj
 			if(isset($row['bottles'])) {
-				// si tiene, mirar si tiene botellas
-				if($row['bottles'] > 0) {
-					// si tiene, usar una botella, restarle 1 al total y avisar
+				$randomizer = rand(0, 100000);
+				$randMultiplier = rand(1, 3);
+				$randomizer = $randomizer * $randMultiplier;
+				usleep($randomizer);
+				$currTime = time();
+				$checkDouble = $currTime - 2;
+				if($checkDouble > $row['last_bottle']) {
 					$currExp = $row['exp_points'];
 					$currLevel = $row['level'];
-					$newBottles = $row['bottles'] - 1;
+					$newBottles = $row['bottles'];
 					$critic = $row['critic'];
 					$totalExtraPoints = $row['total_extra'];
-					$currTime = time();
 					mysql_free_result($result);
-					$expAcquired = useBottleExp($currLevel);
-					$newExp = $currExp + $expAcquired;
-					$newLevel = getLevelFromExp($newExp);
-					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					$msg = "🍾 <b>Te has bebido una botella de experiencia hasta cansarte y has ganado ".$expAcquired." puntos de experiencia.</b>";
-					usleep(100000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
-					if($newLevel != $row['level']){
-						error_log($logname." is now level ".$newLevel.".");
-						levelUp($newLevel, $newExp, $critic, $newBottles, $totalExtraPoints, $link, $chat_id);
+					$query = "UPDATE `playerbattle` SET `last_bottle` = '".$currTime."' WHERE `user_id` = ".$chat_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					mysql_free_result($result);
+					// si tiene, mirar si tiene botellas
+					if($newBottles > 0) {
+						// si tiene, usar una botella, restarle 1 al total y avisar
+						$newBottles = $newBottles - 1;
 						mysql_free_result($result);
-						$query = "UPDATE `playerbattle` SET `bottles` = '".$newBottles."' WHERE `user_id` = '".$chat_id."'";
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$expAcquired = useBottleExp($currLevel);
+						$newExp = $currExp + $expAcquired;
+						$newLevel = getLevelFromExp($newExp);
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$msg = "🍾 <b>Te has bebido una botella de experiencia hasta cansarte y has ganado ".$expAcquired." puntos de experiencia.</b>";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+						if($newLevel != $row['level']){
+							error_log($logname." is now level ".$newLevel.".");
+							levelUp($newLevel, $newExp, $critic, $newBottles, $totalExtraPoints, $link, $chat_id);
+							mysql_free_result($result);
+							$query = "UPDATE `playerbattle` SET `bottles` = '".$newBottles."' WHERE `user_id` = '".$chat_id."'";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						} else {
+							$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `bottles` = '".$newBottles."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						}
+						mysql_free_result($result);
+						$user_id = $message['from']['id'];
+						getPlayerInfo(0, $link, $chat_id, $user_id);
 					} else {
-						$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `bottles` = '".$newBottles."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						// si no tiene, decirle que no le quedan botellas
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$msg = "<b>No te queda ninguna botella por utilizar en tu inventario.</b>";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 					}
-					mysql_free_result($result);
-					$user_id = $message['from']['id'];
-					getPlayerInfo(0, $link, $chat_id, $user_id);
 				} else {
-					// si no tiene, decirle que no le quedan botellas
-					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					$msg = "<b>No te queda ninguna botella por utilizar en tu inventario.</b>";
-					usleep(100000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+					error_log($logname." triggered !botella in double check and failed.");
 				}
 			} else {
 				// si no tiene, que use /exp

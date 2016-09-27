@@ -2554,6 +2554,20 @@ function getAreaName ($level) {
 	return $name;
 }
 
+function getPlayerMood ($level) {
+	$name = "✌😁 Normal";
+	if($level == 100) {
+		$name = "💪 Rocosidad máxima (defensa+)";
+	} else if($level > 91) {
+		$name = $name;
+	} else if($level > 89) {
+		$name = "👻 Personaje maldito (???)";
+	} else {
+		$name = $name;
+	}
+	return $name;
+}
+
 function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $user_id, $fromBoss = 0) {
 	$currTime = time();
 	$newHP = 0;
@@ -4448,6 +4462,8 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$msg = $msg."<b>Nivel:</b> ".$level.PHP_EOL;
 			$currZone = getAreaName($level);
 			$msg = $msg."<b>Zona:</b> <i>".$currZone."</i>".PHP_EOL;
+			$currMood = getPlayerMood($level);
+			$msg = $msg."<b>Estado:</b> <i>".$currMood."</i>".PHP_EOL.PHP_EOL;
 			if(strlen($group_id) > 1) {
 				mysql_free_result($result);
 				$query = "SELECT name FROM groupbattle WHERE group_id = '".$group_id."'";
@@ -7815,7 +7831,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.8 creado por @Kamisuke."
+				"@DemisukeBot v3.0.9 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -8274,6 +8290,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Para utilizar uno de tus puntos disponibles escribe la función seguido del nombre de la estadística, por ejemplo \"!gastarpunto VEL\".</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>El estado del personaje tendrá influencia en las batallas contra jefes si dicho estado favorece o desfavorece alguna de las estadísticas del personaje.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>El máximo de puntos que se pueden asignar por cada !gastarpunto es de 1.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los puntos adicionales son acumulables y no caducan. Puedes asignarlos cuando quieras, pero su uso es de vital importancia para poder derrotar a tus enemigos.</i>"
@@ -8349,6 +8367,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>El poder de los puntos de heroicidad dependerá del nivel de tu personaje. A mayor nivel, más poder obtendrás a cambio.</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>El estado del personaje tendrá influencia en las batallas entre jugadores si dicho estado favorece o desfavorece alguna de las estadísticas del personaje.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Una vez termine la batalla ambos jugadores recibirán el resultado del duelo, y un resumen más escueto aparecerá en !guerras para todos los usuarios del bot.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
@@ -8358,6 +8378,8 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Si tienes habilitado los duelos PvP tu personaje podría aparecer en el ránking de !rocosos.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Un jugador podría no responder con \"!pvp aceptar\" ni \"!pvp rechazar\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Las cinco horas de espera entre duelos se cuentan desde el último duelo aceptado. Un duelo rechazado no alargará el tiempo de espera.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los duelos pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza desde chat privado con el bot.</i>"
 				;
@@ -8390,6 +8412,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>No podrás entablar guerras PvP contra tu propio clan ni podrás utilizar sus funciones si no te has unido antes.</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>El estado de los personajes que participen en una guerra no tendrán influencia en las batallas.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cualquier miembro del clan podrá enviar una solicitud de guerra a otro clan desde el mismo chat de grupo.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Puedes enviar solicitudes de guerra una vez cada cinco horas.</i>"
@@ -8419,6 +8443,8 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Los jugadores que participen en una guerra y la ganen podrán volver a utilizar las funciones !exp y !atacar nada más lograr la victoria.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Un clan podría no responder con \"!aceptarguerra\" ni \"!rechazarguerra\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Las cinco horas de espera entre guerras se cuentan desde la última batalla librada. Una guerra rechazada no alargará el tiempo de espera.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Las guerras pendientes se pueden consultar en !guerras junto con el historial general si la función se utiliza en un grupo.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -10741,8 +10767,9 @@ function processMessage($message) {
 						$playerName = str_replace("<", "", $playerName);
 						$playerName = str_replace(">", "", $playerName);						
 						mysql_free_result($result);
-						// avisar en ambos players, y editar db, la de duelo pendiente como rechazada						
-						$query = "UPDATE playerbattlelog SET status = 'REJECTED' WHERE pbl_id = ".$rowToUpdate;
+						// avisar en ambos players, y editar db, la de duelo pendiente como rechazada	
+						$resetTime = 3600 * 5;						
+						$query = "UPDATE playerbattlelog SET status = 'REJECTED', epoch_time = ".$resetTime." WHERE pbl_id = ".$rowToUpdate;
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
@@ -11481,7 +11508,8 @@ function processMessage($message) {
 				if($chat_id == $row['group_id']) {	
 					mysql_free_result($result);
 					// avisar en ambos clanes, y editar muchas db, la de guerra pendiente como rechazada
-					$query = "UPDATE groupbattlelog SET status = 'REJECTED' WHERE gbl_id = ".$rowToUpdate;
+					$resetTime = 3600 * 5;	
+					$query = "UPDATE groupbattlelog SET status = 'REJECTED', epoch_time = ".$resetTime." WHERE gbl_id = ".$rowToUpdate;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					// mostrar todos los datos necesarios con sleep(1) y revisar que todo quede bien aqui
 					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

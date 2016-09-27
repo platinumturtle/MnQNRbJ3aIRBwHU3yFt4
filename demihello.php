@@ -9347,12 +9347,16 @@ function processMessage($message) {
 			error_log($logname." triggered: !exp.");
 			// iniciar db y mirar si tiene pj
 			$link = dbConnect();
-			// los dos randoms
+			$randomizer = rand(0, 100000);
+			$randMultiplier = rand(1, 3);
+			$randomizer = $randomizer * $randMultiplier;
+			usleep($randomizer);
 			$query = "SELECT last_exp FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			if(isset($row['last_exp'])){
 				$currTime = time();
 				$checkDouble = $currTime - 4;
+				error_log("CURRTIME".$currTime." - TIME ".$checkDouble." - LAST EXP ".$row['last_exp']);
 				if($checkDouble > $row['last_exp']) {
 					mysql_free_result($result);
 					$query = "UPDATE `playerbattle` SET `last_exp` = '".$currTime."' WHERE `user_id` = ".$chat_id;

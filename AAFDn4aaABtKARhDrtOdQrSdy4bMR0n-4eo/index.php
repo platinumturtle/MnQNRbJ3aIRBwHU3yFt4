@@ -8889,7 +8889,7 @@ function processMessage($message) {
 				$currTime = time();
 				$checkDouble = $currTime - 4;
 				//error_log("CURRTIME".$currTime." - TIME ".$checkDouble." - LAST EXP ".$row['last_exp']);
-				if($checkDouble > $row['last_exp']) {
+				if($checkDouble > $row['last_exp_check']) {
 					//$lastExpCheck = $row['last_exp'];
 					mysql_free_result($result);
 					$query = "UPDATE `playerbattle` SET `last_exp_check` = '".$currTime."' WHERE `user_id` = ".$chat_id;

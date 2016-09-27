@@ -9730,7 +9730,6 @@ function processMessage($message) {
 			usleep(100000);
 			$tempMsg = "<b>Cargando las últimas batallas libradas en Telegram. Espera, por favor...</b>";
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $tempMsg));
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			mysql_free_result($result);
 			$query = "UPDATE userbattle SET lastwarcheck = '".$currTime."' WHERE group_id = ".$checkGroup." AND user_id = ".$user_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -9792,6 +9791,8 @@ function processMessage($message) {
 					$msg = $msg."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
 				}
 			}
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
 		} else {
 			$msg = $msg."<i>El registro de batallas está disponible una vez por minuto, podrás consultarlo de nuevo en unos segundos.</i>".PHP_EOL;
 		}
@@ -10767,7 +10768,7 @@ function processMessage($message) {
 						$playerName = str_replace("<", "", $playerName);
 						$playerName = str_replace(">", "", $playerName);						
 						mysql_free_result($result);
-						// avisar en ambos players, y editar db, la de duelo pendiente como rechazada	
+						// avisar en ambos players, y editar db, la de duelo pendiente como rechazada
 						$resetTime = 3600 * 5;						
 						$query = "UPDATE playerbattlelog SET status = 'REJECTED', epoch_time = ".$resetTime." WHERE pbl_id = ".$rowToUpdate;
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

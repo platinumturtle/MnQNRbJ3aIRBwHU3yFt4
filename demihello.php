@@ -9347,75 +9347,97 @@ function processMessage($message) {
 			error_log($logname." triggered: !exp.");
 			// iniciar db y mirar si tiene pj
 			$link = dbConnect();
-			$query = "SELECT last_exp, level, exp_points, critic, bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS 'total_extra' FROM playerbattle WHERE user_id = ".$chat_id;
+			// los dos randoms
+			$query = "SELECT last_exp FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$row = mysql_fetch_array($result);
 			if(isset($row['last_exp'])){
 				$currTime = time();
-				// si tiene pj mirar si han pasado 5min
-				if(($currTime - 299) > $row['last_exp']) {
-					// si si han pasado, mirar el nivel 
-						// segun el nivel, dar una experiencia u otra, con una funcion que muestre un texto al chat id enviado y devuelva la exp random final
-						$expAcquired = getPlayerExp($row['level'], $chat_id);
-						$newExp = $row['exp_points'] + $expAcquired;
-						$newLevel = getLevelFromExp($newExp);
-						$critic = $row['critic'];
-						$bottles = $row['bottles'];
-						$totalExtraPoints = $row['total_extra'];
-						mysql_free_result($result);	
-						//error_log("COMPROBAR ".$expAcquired." ".$newExp." ".$newLevel." ".$row['exp_points']." ".$row['level']);
-						// comprobar si con la nueva exp sube de nivel
-						if($newLevel != $row['level']){
-							error_log($logname." is now level ".$newLevel.".");
-							levelUp($newLevel, $newExp, $critic, $bottles, $totalExtraPoints, $link, $chat_id);
-							//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
-								// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
-								// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
-						} else {
-							// sumar exp y last exp
-							$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						}
-						// mostrar mensaje del nivel, la exp total, una barra y la exp necesaria para subir de nivel
-						mysql_free_result($result);
-						$user_id = $message['from']['id'];
-						getPlayerInfo(0, $link, $chat_id, $user_id);
-				} else {
-					// si no han pasado, avisar de que no corra, que se espere 5min
-					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					$currTime = $currTime - $row['last_exp'];
-					if($currTime > 239) {
-						$energy = 80;
-					} else if ($currTime > 179) {
-						$energy = 60;
-					} else if ($currTime > 119) {
-						$energy = 40;
-					} else if ($currTime > 59) {
-						$energy = 20;
+				$checkDouble = $currTime - 4;
+				if($checkDouble > $row['last_exp']) {
+					mysql_free_result($result);
+					$query = "UPDATE `playerbattle` SET `last_exp` = '".$currTime."' WHERE `user_id` = ".$chat_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					mysql_free_result($result);
+			
+					$query = "SELECT last_exp, level, exp_points, critic, bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS 'total_extra' FROM playerbattle WHERE user_id = ".$chat_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+				
+					
+					// si tiene pj mirar si han pasado 5min
+					if(($currTime - 299) > $row['last_exp']) {
+						// si si han pasado, mirar el nivel 
+							// segun el nivel, dar una experiencia u otra, con una funcion que muestre un texto al chat id enviado y devuelva la exp random final
+							$expAcquired = getPlayerExp($row['level'], $chat_id);
+							$newExp = $row['exp_points'] + $expAcquired;
+							$newLevel = getLevelFromExp($newExp);
+							$critic = $row['critic'];
+							$bottles = $row['bottles'];
+							$totalExtraPoints = $row['total_extra'];
+							mysql_free_result($result);	
+							//error_log("COMPROBAR ".$expAcquired." ".$newExp." ".$newLevel." ".$row['exp_points']." ".$row['level']);
+							// comprobar si con la nueva exp sube de nivel
+							if($newLevel != $row['level']){
+								error_log($logname." is now level ".$newLevel.".");
+								levelUp($newLevel, $newExp, $critic, $bottles, $totalExtraPoints, $link, $chat_id);
+								//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
+									// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
+									// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
+							} else {
+								// sumar exp y last exp
+								$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							}
+							// mostrar mensaje del nivel, la exp total, una barra y la exp necesaria para subir de nivel
+							mysql_free_result($result);
+							$user_id = $message['from']['id'];
+							getPlayerInfo(0, $link, $chat_id, $user_id);
 					} else {
-						$energy = 5;
+						// si no han pasado, avisar de que no corra, que se espere 5min
+						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+						$currTime = $currTime - $row['last_exp'];
+						if($currTime > 239) {
+							$energy = 80;
+						} else if ($currTime > 179) {
+							$energy = 60;
+						} else if ($currTime > 119) {
+							$energy = 40;
+						} else if ($currTime > 59) {
+							$energy = 20;
+						} else {
+							$energy = 5;
+						}
+						$text = "*Tu rocoso personaje se encuentra descansando de su última tarea, espera a que recupere toda su energía, que todavía está al ".$energy."%.*";
+						usleep(100000);
+						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 					}
-					$text = "*Tu rocoso personaje se encuentra descansando de su última tarea, espera a que recupere toda su energía, que todavía está al ".$energy."%.*";
+					
+					
+				} else {
+					error_log($logname." is a new player!");
+					// si no tiene, dar mensaje de bienvenida, explicar un poco las normas y eso y que se divierta
+					// crear un nuevo pj con 0 de experiencia y todo de base
+					mysql_free_result($result);
+					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+					$query = "INSERT INTO `playerbattle` (`user_id`) VALUES ('".$chat_id."');";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$text = "<b>¡Bienvenido/a a 'Los Rocosos de Demisuke'!</b>".PHP_EOL.PHP_EOL;
+					$text = $text."<i>Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura.</i>".PHP_EOL;
+					$text = $text."<i>Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!</i>".PHP_EOL;
+					$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar /exp (o !exp)  para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
+					$text = $text."<i>Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!</i>".PHP_EOL;
+					$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
 					usleep(100000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 				}
 			} else {
-				error_log($logname." is a new player!");
-				// si no tiene, dar mensaje de bienvenida, explicar un poco las normas y eso y que se divierta
-				// crear un nuevo pj con 0 de experiencia y todo de base
-				mysql_free_result($result);
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				$query = "INSERT INTO `playerbattle` (`user_id`) VALUES ('".$chat_id."');";
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				$text = "<b>¡Bienvenido/a a 'Los Rocosos de Demisuke'!</b>".PHP_EOL.PHP_EOL;
-				$text = $text."<i>Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura.</i>".PHP_EOL;
-				$text = $text."<i>Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!</i>".PHP_EOL;
-				$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar /exp (o !exp)  para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
-				$text = $text."<i>Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!</i>".PHP_EOL;
-				$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
-				usleep(100000);
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				error_log($logname." triggered !exp in double check and failed.");
 			}
+			
+			
+			
+			
+			
 			// cerrar la db
 			mysql_free_result($result);
 			mysql_close($link);

@@ -9353,21 +9353,19 @@ function processMessage($message) {
 			usleep($randomizer);
 			$query = "SELECT last_exp FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
 			if(isset($row['last_exp'])){
 				$currTime = time();
 				$checkDouble = $currTime - 4;
-				error_log("CURRTIME".$currTime." - TIME ".$checkDouble." - LAST EXP ".$row['last_exp']);
+				//error_log("CURRTIME".$currTime." - TIME ".$checkDouble." - LAST EXP ".$row['last_exp']);
 				if($checkDouble > $row['last_exp']) {
 					mysql_free_result($result);
 					$query = "UPDATE `playerbattle` SET `last_exp` = '".$currTime."' WHERE `user_id` = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					mysql_free_result($result);
-			
 					$query = "SELECT last_exp, level, exp_points, critic, bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS 'total_extra' FROM playerbattle WHERE user_id = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
-				
-					
 					// si tiene pj mirar si han pasado 5min
 					if(($currTime - 299) > $row['last_exp']) {
 						// si si han pasado, mirar el nivel 
@@ -9415,33 +9413,26 @@ function processMessage($message) {
 						usleep(100000);
 						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
 					}
-					
-					
 				} else {
-					error_log($logname." is a new player!");
-					// si no tiene, dar mensaje de bienvenida, explicar un poco las normas y eso y que se divierta
-					// crear un nuevo pj con 0 de experiencia y todo de base
-					mysql_free_result($result);
-					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					$query = "INSERT INTO `playerbattle` (`user_id`) VALUES ('".$chat_id."');";
-					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-					$text = "<b>¡Bienvenido/a a 'Los Rocosos de Demisuke'!</b>".PHP_EOL.PHP_EOL;
-					$text = $text."<i>Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura.</i>".PHP_EOL;
-					$text = $text."<i>Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!</i>".PHP_EOL;
-					$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar /exp (o !exp)  para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
-					$text = $text."<i>Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!</i>".PHP_EOL;
-					$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
-					usleep(100000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+					error_log($logname." triggered !exp in double check and failed.");
 				}
 			} else {
-				error_log($logname." triggered !exp in double check and failed.");
+				error_log($logname." is a new player!");
+				// si no tiene, dar mensaje de bienvenida, explicar un poco las normas y eso y que se divierta
+				// crear un nuevo pj con 0 de experiencia y todo de base
+				mysql_free_result($result);
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$query = "INSERT INTO `playerbattle` (`user_id`) VALUES ('".$chat_id."');";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				$text = "<b>¡Bienvenido/a a 'Los Rocosos de Demisuke'!</b>".PHP_EOL.PHP_EOL;
+				$text = $text."<i>Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura.</i>".PHP_EOL;
+				$text = $text."<i>Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!</i>".PHP_EOL;
+				$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar /exp (o !exp)  para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
+				$text = $text."<i>Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!</i>".PHP_EOL;
+				$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 			}
-			
-			
-			
-			
-			
 			// cerrar la db
 			mysql_free_result($result);
 			mysql_close($link);
@@ -10862,7 +10853,8 @@ function processMessage($message) {
 						} else {
 							// si no existe explicarle que ese user no se encuentra, las normas son tal y tal...
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-							$msg = "<b>No se ha encontrado ningún jugador con ese nombre de usuario, comprueba que lo hayas escrito correctamente.</b>";
+							$msg = "<b>No se ha encontrado ningún jugador con ese nombre de usuario, comprueba que lo hayas escrito correctamente.</b>".PHP_EOL;
+							$msg = $msg."<b>Puedes ver una lista de rivales asequibles para tu nivel utilizando la función !listapvp.</b>";
 							usleep(100000);
 							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 						}

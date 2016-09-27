@@ -9359,6 +9359,7 @@ function processMessage($message) {
 				$checkDouble = $currTime - 4;
 				//error_log("CURRTIME".$currTime." - TIME ".$checkDouble." - LAST EXP ".$row['last_exp']);
 				if($checkDouble > $row['last_exp']) {
+					$lastExpCheck = $row['last_exp'];
 					mysql_free_result($result);
 					$query = "UPDATE `playerbattle` SET `last_exp` = '".$currTime."' WHERE `user_id` = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -9367,7 +9368,7 @@ function processMessage($message) {
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
 					// si tiene pj mirar si han pasado 5min
-					if(($currTime - 299) > $row['last_exp']) {
+					if(($currTime - 299) > $lastExpCheck) {
 						// si si han pasado, mirar el nivel 
 							// segun el nivel, dar una experiencia u otra, con una funcion que muestre un texto al chat id enviado y devuelva la exp random final
 							$expAcquired = getPlayerExp($row['level'], $chat_id);
@@ -9397,7 +9398,7 @@ function processMessage($message) {
 					} else {
 						// si no han pasado, avisar de que no corra, que se espere 5min
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						$currTime = $currTime - $row['last_exp'];
+						$currTime = $currTime - $lastExpCheck;
 						if($currTime > 239) {
 							$energy = 80;
 						} else if ($currTime > 179) {

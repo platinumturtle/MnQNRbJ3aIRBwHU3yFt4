@@ -9872,119 +9872,140 @@ function processMessage($message) {
 			error_log($logname." triggered: !atacar.");
 			// abrir db
 			$link = dbConnect();
-			// mirar si tiene pj
-			$query = "SELECT pb.exp_points, pb.critic, pb.level, pb.last_boss, ( pb.hp + pb.attack + pb.defense + ( pb.critic *3 ) + pb.speed + ( pb.helmet *3 ) + pb.body + pb.boots + pb.weapon + pb.shield ) AS total_power, pb.bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS total_extra, COALESCE( hb.total, 0 ) AS  'hero_power', pb.avatar, ( pb.hp + pb.body ) AS  'total_hp', ( pb.attack + pb.weapon ) AS  'total_attack', ( pb.defense + pb.shield ) AS  'total_defense', ( pb.critic + pb.helmet ) AS  'total_critic', ( pb.speed + pb.boots ) AS  'total_speed' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = ".$chat_id;
+			$randomizer = rand(0, 100000);
+			$randMultiplier = rand(1, 3);
+			$randomizer = $randomizer * $randMultiplier;
+			usleep($randomizer);
+			$query = "SELECT last_boss FROM playerbattle WHERE user_id = ".$chat_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
-			if(isset($row['level'])) {
-				// si tiene pj, mirar si cumple el nivel
-				if($row['level'] > 4) {
-					if($row['level'] < 100) {
-						$spawnTime = time();
-						if($row['level'] == 5) {
-							$spawnTime = $spawnTime - (3600 * 1);
-						} else if($row['level'] < 11) {
-							$spawnTime = $spawnTime - (3600 * 2);
-						} else {
-							$spawnTime = $spawnTime - (3600 * 6);
-						}
-						if($spawnTime >= $row['last_boss']) {
-						// si cumple el nivel, mirar si hace mucho que ya se cargo al ultimo
-							// si hace mucho, atacar al boss que le toque, mirar por nivel cual le toca sacar de la db
-								// librar batalla y mostrar los datos del boss y que ocurre en ella
-									// si gana la batalla, avisar de que ha ganado, y darle la exp
-										// hacer aqui todo el rollaco de !exp...
-									// si no gana, avisar de mala suerte
-							$level = $row['level'];
-							$totalPower = $row['total_power'];
-							$expPoints = $row['exp_points'];
-							$critic = $row['critic'];
-							$bottles = $row['bottles'];
-							$heroPower = $row['hero_power'];
-							$heroPower = getHeroPower($level, $heroPower);
-							$totalPower = $totalPower + $heroPower;
-							$playerAvatar = $row['avatar'];
-							$totalHP = $row['total_hp'];
-							$totalAt = $row['total_attack'];
-							$totalDef = $row['total_defense'];
-							$totalCrit = $row['total_critic'];
-							$totalSp = $row['total_speed'];
-							$totalExtraPoints = $row['total_extra'];
-							mysql_free_result($result);							
-							$playerName = getFullName($message['from']['first_name'], $message['from']['username']);
-							$bossExp = bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAvatar, $totalHP, $totalAt, $totalDef, $totalCrit, $totalSp);
-							$currTime = time();
-							if($bossExp > 0) {
-								$expPoints = $expPoints + $bossExp;
-								$newLevel = getLevelFromExp($expPoints);								
-								if($newLevel != $level){
-									error_log($logname." is now level ".$newLevel.".");
-									levelUp($newLevel, $expPoints, $critic, $bottles, $totalExtraPoints, $link, $chat_id, 1);
-									//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
-										// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
-										// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
+			// mirar si tiene pj
+			if(isset($row['last_boss'])) {
+				$currTime = time();
+				$checkDouble = $currTime - 4;
+				// mirar si no es spam
+				if($checkDouble > $row['last_boss']) {
+					$lastBossCheck = $row['last_boss'];
+					mysql_free_result($result);
+					$query = "UPDATE `playerbattle` SET `last_boss` = '".$currTime."' WHERE `user_id` = ".$chat_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					mysql_free_result($result);
+					$query = "SELECT pb.exp_points, pb.critic, pb.level, pb.last_boss, ( pb.hp + pb.attack + pb.defense + ( pb.critic *3 ) + pb.speed + ( pb.helmet *3 ) + pb.body + pb.boots + pb.weapon + pb.shield ) AS total_power, pb.bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS total_extra, COALESCE( hb.total, 0 ) AS  'hero_power', pb.avatar, ( pb.hp + pb.body ) AS  'total_hp', ( pb.attack + pb.weapon ) AS  'total_attack', ( pb.defense + pb.shield ) AS  'total_defense', ( pb.critic + pb.helmet ) AS  'total_critic', ( pb.speed + pb.boots ) AS  'total_speed' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = ".$chat_id;
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+
+					
+					// si tiene pj, mirar si cumple el nivel
+					if($row['level'] > 4) {
+						if($row['level'] < 100) {
+							$spawnTime = time();
+							if($row['level'] == 5) {
+								$spawnTime = $spawnTime - (3600 * 1);
+							} else if($row['level'] < 11) {
+								$spawnTime = $spawnTime - (3600 * 2);
+							} else {
+								$spawnTime = $spawnTime - (3600 * 6);
+							}
+							if($spawnTime >= $lastBossCheck) {
+							// si cumple el nivel, mirar si hace mucho que ya se cargo al ultimo
+								// si hace mucho, atacar al boss que le toque, mirar por nivel cual le toca sacar de la db
+									// librar batalla y mostrar los datos del boss y que ocurre en ella
+										// si gana la batalla, avisar de que ha ganado, y darle la exp
+											// hacer aqui todo el rollaco de !exp...
+										// si no gana, avisar de mala suerte
+								$level = $row['level'];
+								$totalPower = $row['total_power'];
+								$expPoints = $row['exp_points'];
+								$critic = $row['critic'];
+								$bottles = $row['bottles'];
+								$heroPower = $row['hero_power'];
+								$heroPower = getHeroPower($level, $heroPower);
+								$totalPower = $totalPower + $heroPower;
+								$playerAvatar = $row['avatar'];
+								$totalHP = $row['total_hp'];
+								$totalAt = $row['total_attack'];
+								$totalDef = $row['total_defense'];
+								$totalCrit = $row['total_critic'];
+								$totalSp = $row['total_speed'];
+								$totalExtraPoints = $row['total_extra'];
+								mysql_free_result($result);							
+								$playerName = getFullName($message['from']['first_name'], $message['from']['username']);
+								$bossExp = bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAvatar, $totalHP, $totalAt, $totalDef, $totalCrit, $totalSp);
+								$currTime = time();
+								if($bossExp > 0) {
+									$expPoints = $expPoints + $bossExp;
+									$newLevel = getLevelFromExp($expPoints);								
+									if($newLevel != $level){
+										error_log($logname." is now level ".$newLevel.".");
+										levelUp($newLevel, $expPoints, $critic, $bottles, $totalExtraPoints, $link, $chat_id, 1);
+										//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
+											// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
+											// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
+									} else {
+										// sumar exp y last exp
+										$query = "UPDATE `playerbattle` SET `exp_points` = '".$expPoints."', `last_boss` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+									}
 								} else {
-									// sumar exp y last exp
-									$query = "UPDATE `playerbattle` SET `exp_points` = '".$expPoints."', `last_boss` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+									$query = 'UPDATE playerbattle SET last_boss = '.$currTime.' WHERE user_id = '.$chat_id;
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 								}
+								mysql_free_result($result);	
+								$user_id = $message['from']['id'];
+								getPlayerInfo(0, $link, $chat_id, $user_id);
 							} else {
-								$query = 'UPDATE playerbattle SET last_boss = '.$currTime.' WHERE user_id = '.$chat_id;
-								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+								// si hace poco, avisar de que se espere un rato
+								apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+								$text = "<b>No hay ningún jefe a la vista, tendrás que esperar un poco más para librar una nueva batalla.</b>".PHP_EOL;
+								$hours = date(g, ($lastBossCheck - $spawnTime));
+								$hours = (int)$hours - 1;
+								(string)$minutes = date(i, ($lastBossCheck - $spawnTime));
+								if($minutes[0] == "0") {
+									$minutes = $minutes[1];
+								}
+								(string)$seconds = date(s, ($lastBossCheck - $spawnTime));
+								if($seconds[0] == "0") {
+									$seconds = $seconds[1];
+								}
+								$text = $text."<b>Tiempo restante:</b> ";
+								if((int)$hours > 0) {
+									$text = $text.$hours." hora";
+									if((int)$hours > 1) {
+										$text = $text."s";
+									}
+									$text = $text.", ";
+								}
+								if((int)$minutes > 0) {
+									$text = $text.$minutes." minuto";
+									if((int)$minutes > 1) {
+										$text = $text."s";
+									}
+									$text = $text.", ";
+								}
+								$text = $text.$seconds." segundo";
+								if((int)$seconds > 1) {
+									$text = $text."s.";
+								} else {
+									$text = $text.".";
+								}
+								usleep(100000);
+								apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 							}
-							mysql_free_result($result);	
-							$user_id = $message['from']['id'];
-							getPlayerInfo(0, $link, $chat_id, $user_id);
 						} else {
-							// si hace poco, avisar de que se espere un rato
 							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-							$text = "<b>No hay ningún jefe a la vista, tendrás que esperar un poco más para librar una nueva batalla.</b>".PHP_EOL;
-							$hours = date(g, ($row['last_boss'] - $spawnTime));
-							$hours = (int)$hours - 1;
-							(string)$minutes = date(i, ($row['last_boss'] - $spawnTime));
-							if($minutes[0] == "0") {
-								$minutes = $minutes[1];
-							}
-							(string)$seconds = date(s, ($row['last_boss'] - $spawnTime));
-							if($seconds[0] == "0") {
-								$seconds = $seconds[1];
-							}
-							$text = $text."<b>Tiempo restante:</b> ";
-							if((int)$hours > 0) {
-								$text = $text.$hours." hora";
-								if((int)$hours > 1) {
-									$text = $text."s";
-								}
-								$text = $text.", ";
-							}
-							if((int)$minutes > 0) {
-								$text = $text.$minutes." minuto";
-								if((int)$minutes > 1) {
-									$text = $text."s";
-								}
-								$text = $text.", ";
-							}
-							$text = $text.$seconds." segundo";
-							if((int)$seconds > 1) {
-								$text = $text."s.";
-							} else {
-								$text = $text.".";
-							}
+							$text = "<b>Como líder de rocosidad te has encargado de aniquilar el mal de la Tierra, ahora no quedan enemigos que vencer y descansas en paz.</b>";
 							usleep(100000);
 							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 						}
 					} else {
+						// si no cumple el nivel, avisar de que suba un poco mas
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						$text = "<b>Como líder de rocosidad te has encargado de aniquilar el mal de la Tierra, ahora no quedan enemigos que vencer y descansas en paz.</b>";
+						$text = "<b>Esta función todavía no está desbloqueada para tu personaje debido a su escaso poder, ¡entrena un poco más para estar a la altura!</b>";
 						usleep(100000);
 						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 					}
 				} else {
-					// si no cumple el nivel, avisar de que suba un poco mas
-					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					$text = "<b>Esta función todavía no está desbloqueada para tu personaje debido a su escaso poder, ¡entrena un poco más para estar a la altura!</b>";
-					usleep(100000);
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+					// kkkkkkkkkkkkkkkkkkkkkkk
 				}
 			} else {
 				// si no tiene pj, decir que use !exp

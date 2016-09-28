@@ -3159,7 +3159,7 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
 		//	sleep(1);
 		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
-		} else if($newLevel == 24 {
+		} else if($newLevel == 24) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 			$msg = $msg."<b>Has superado tus miedos con nota. Ya no parece que le temas a la oscuridad del bosque.</b>";
 			sleep(1);

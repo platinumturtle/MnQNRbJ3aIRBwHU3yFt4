@@ -9289,6 +9289,7 @@ function processMessage($message) {
 		$link = dbConnect();
 		$msg = "";
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(50000);
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !guerras.");
 			// calcular batallas pendientes del clan
@@ -9396,9 +9397,9 @@ function processMessage($message) {
 			$row = mysql_fetch_array($result);
 			$winnerName = getFullName($row['first_name'], $row['user_name']);
 			$msg = $msg."<b>💪 ¡".$winnerName."!</b>".PHP_EOL;
-			$msg = $msg."<b>Fecha:</b> ".$winDate.PHP_EOL;
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			usleep(100000);
+			$msg = $msg."<b>Fecha:</b> ".$winDate.PHP_EOL.PHP_EOL;
+			//apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			//usleep(100000);
 		} else {
 			$msg = $msg."<i>El registro de batallas está disponible una vez cada diez segundos por persona, podrás consultarlo de nuevo un poco más tarde.</i>".PHP_EOL;
 		}

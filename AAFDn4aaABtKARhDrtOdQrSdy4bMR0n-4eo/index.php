@@ -3051,7 +3051,7 @@ function getPlayerBattleResult($winnerName, $loserName, $lucky) {
 										"¡Qué mala pata! ".$loserName." es muy superior al rival, pero se ha confiado y ".$winnerName." se ha aprovechado de ello y ha ido directo a atacar puntos débiles. Se ha llevado la victoria por sorpresa.",
 										"Inexplicable batalla en la ".$loserName." tenía todas las de ganar y sin embargo se ha hecho daño al intentar atacar a su rival y ha perdido cualquier oportunidad de ganar. ".$winnerName." se ha topado con una victoria que no se esperaba.",
 										"Dominio de principio a fin de ".$loserName.", quien ha llevado la manija de la guerra durante toda la batalla, hasta que cuando el rival ya estaba debilitado, ".$winnerName." ha golpeado desde el mismo suelo a las piernas de su rival, le ha hecho caer y se lo ha cargado desde el suelo, una remontada totalmente inesperada.",
-										"El clan ".$loserName." es superior al rival. Ha comenzado atacando con varios críticos y enseguida se han puesto por delante, pero en mitad de la batalla se ha puesto a llover y eso ha beneficiado a ".$winnerName.", que llegaban a la guerra mejor preparados para luchar bajo todo tipo de condiciones climáticas y se ha podido aprovechar de los resbalones del rival.",
+										"Sin lugar a dudas ".$loserName." era superior al rival. Ha comenzado atacando con varios críticos y enseguida se ha puesto por delante, pero en mitad de la batalla se ha puesto a llover y eso ha beneficiado a ".$winnerName.", que parecía mejor preparado para luchar bajo todo tipo de condiciones climáticas y se ha podido aprovechar de los resbalones del rival.",
 										"Superioridad de ".$winnerName.", ".$loserName." no tiene nada que hacer contra un rival así. El problema es que sobre el papel el resultado parecía justo el contrario, ya que la diferencia entre los dos rivales era bastante clara.",
 										"¿Por qué ".$loserName." se movía lentamente? Ha intentado hacerlo bonito y se ha adornado demasiado. ".$winnerName.", que venía a esta batalla a lo que surgiera, ha tenido el viento a favor y se ha llevado la victoria sin despeinarse.",
 										"Una batalla muy encarrilada para ".$loserName.", hasta que se ha distraído con el paisaje y ".$winnerName." le ha hecho unos combos de críticos que ha dejado a su rival en el suelo.",
@@ -9338,6 +9338,7 @@ function processMessage($message) {
 		}
 		$user_id = $message['from']['id'];
 		mysql_free_result($result);
+		/*
 		$query = "SELECT lastwarcheck FROM userbattle WHERE user_id = ".$user_id." ORDER BY lastwarcheck DESC LIMIT 0, 1";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
@@ -9422,8 +9423,10 @@ function processMessage($message) {
 		if($showLog == 1) {
 			$msg = $msg."<i>La zona horaria utilizada en las fechas mostradas es la hora peninsular española actual.</i>".PHP_EOL;
 		}
+	*/
 		$msg = $msg."<i>¡Participa tú en la próxima batalla con !pvp o !declararguerra!</i>";
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+	
 	} else if (strpos(strtolower($text), "!unirme") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !unirme.");

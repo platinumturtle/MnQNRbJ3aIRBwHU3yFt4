@@ -4236,7 +4236,7 @@ function getPlayerBattleResult($winnerName, $loserName, $lucky) {
 										"¡Qué mala pata! ".$loserName." es muy superior al rival, pero se ha confiado y ".$winnerName." se ha aprovechado de ello y ha ido directo a atacar puntos débiles. Se ha llevado la victoria por sorpresa.",
 										"Inexplicable batalla en la ".$loserName." tenía todas las de ganar y sin embargo se ha hecho daño al intentar atacar a su rival y ha perdido cualquier oportunidad de ganar. ".$winnerName." se ha topado con una victoria que no se esperaba.",
 										"Dominio de principio a fin de ".$loserName.", quien ha llevado la manija de la guerra durante toda la batalla, hasta que cuando el rival ya estaba debilitado, ".$winnerName." ha golpeado desde el mismo suelo a las piernas de su rival, le ha hecho caer y se lo ha cargado desde el suelo, una remontada totalmente inesperada.",
-										"El clan ".$loserName." es superior al rival. Ha comenzado atacando con varios críticos y enseguida se han puesto por delante, pero en mitad de la batalla se ha puesto a llover y eso ha beneficiado a ".$winnerName.", que llegaban a la guerra mejor preparados para luchar bajo todo tipo de condiciones climáticas y se ha podido aprovechar de los resbalones del rival.",
+										"Sin lugar a dudas ".$loserName." era superior al rival. Ha comenzado atacando con varios críticos y enseguida se ha puesto por delante, pero en mitad de la batalla se ha puesto a llover y eso ha beneficiado a ".$winnerName.", que parecía mejor preparado para luchar bajo todo tipo de condiciones climáticas y se ha podido aprovechar de los resbalones del rival.",
 										"Superioridad de ".$winnerName.", ".$loserName." no tiene nada que hacer contra un rival así. El problema es que sobre el papel el resultado parecía justo el contrario, ya que la diferencia entre los dos rivales era bastante clara.",
 										"¿Por qué ".$loserName." se movía lentamente? Ha intentado hacerlo bonito y se ha adornado demasiado. ".$winnerName.", que venía a esta batalla a lo que surgiera, ha tenido el viento a favor y se ha llevado la victoria sin despeinarse.",
 										"Una batalla muy encarrilada para ".$loserName.", hasta que se ha distraído con el paisaje y ".$winnerName." le ha hecho unos combos de críticos que ha dejado a su rival en el suelo.",
@@ -5720,8 +5720,7 @@ function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
 		error_log($logname." tried to capture a doubleflag.");
 		$userTriggering = str_replace("@", "", $logname);
 		$admin_id = 6250647;
-		apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
-
+		apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", 'disable_notification' => TRUE, "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
 		mysql_free_result($result);
 		poleFail($hour, $chat_id, $link, $logname, $currentTime);
 	}
@@ -8829,9 +8828,9 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"➡️<b>!avatarclan</b>: <i>Muestra el logo del clan con \"!avatarclan\" o asigna una foto de perfil estática en formato JPG o PNG al clan con \"!avatarclan http://enlace_a_la_imagen\".</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!guerras (desde chat privado)</b>: <i>Muestra el número de solicitudes entrantes y salientes de duelos PvP pendientes, además de un resumen de las cinco últimas batallas entre guerras y duelos PvP.</i>"
+				"➡️<b>!guerras (desde chat privado)</b>: <i>Muestra el número de solicitudes entrantes y salientes de duelos PvP pendientes, además de un resumen de las cinco últimas batallas entre guerras y el ganador del último duelo PvP.</i>"
 				.PHP_EOL.PHP_EOL.
-				"➡️<b>!guerras (desde grupos)</b>: <i>Muestra el número de solicitudes entrantes y salientes de guerras entre clanes pendientes del grupo, además de un resumen de las cinco últimas batallas entre guerras y duelos PvP.</i>"
+				"➡️<b>!guerras (desde grupos)</b>: <i>Muestra el número de solicitudes entrantes y salientes de guerras entre clanes pendientes del grupo, además de un resumen de las cinco últimas batallas entre guerras y el ganador del último duelo PvP.</i>"
 				.PHP_EOL.PHP_EOL.
 				"<b>Reglas para un jugador:</b> Consulta /ayuda_1P_rocosos para ver todas las reglas."
 				.PHP_EOL.PHP_EOL.
@@ -8937,7 +8936,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>El estado del personaje tendrá influencia en las batallas entre jugadores si dicho estado favorece o desfavorece alguna de las estadísticas del personaje.</i>"
 				.PHP_EOL.PHP_EOL.
-				"▶️<i>Una vez termine la batalla ambos jugadores recibirán el resultado del duelo, y un resumen más escueto aparecerá en !guerras para todos los usuarios del bot.</i>"
+				"▶️<i>Una vez termine la batalla ambos jugadores recibirán el resultado del duelo, y el ganador aparecerá en !guerras para todos los usuarios del bot hasta que otro jugador consiga ganar un duelo más reciente.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
 				.PHP_EOL.PHP_EOL.
@@ -10234,6 +10233,7 @@ function processMessage($message) {
 		$link = dbConnect();
 		$msg = "";
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(50000);
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !guerras.");
 			// calcular batallas pendientes del clan
@@ -10287,7 +10287,7 @@ function processMessage($message) {
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		$currTime = time();
-		$checkTime = $currTime - 60;
+		$checkTime = $currTime - 10;
 		$showLog = 0;
 		error_log($currTime."  ".$checkTime."  ".$row['lastwarcheck']);
 		if($checkTime > $row['lastwarcheck']) {
@@ -10295,15 +10295,16 @@ function processMessage($message) {
 			error_log("DENTRO ".$currTime."  ".$checkTime."  ".$row['lastwarcheck']);
 		} 
 		if($showLog == 1) {
-			usleep(100000);
-			$tempMsg = "<b>Cargando las últimas batallas libradas en Telegram. Espera, por favor...</b>";
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $tempMsg));
 			mysql_free_result($result);
-			$query = "UPDATE userbattle SET lastwarcheck = '".$currTime."' WHERE group_id = ".$checkGroup." AND user_id = ".$user_id;
+			$query = "UPDATE `userbattle` SET `lastwarcheck` = ".$currTime." WHERE `user_id` = ".$user_id;
+			//$query = "UPDATE userbattle SET lastwarcheck = '".$currTime."' WHERE group_id = ".$checkGroup." AND user_id = ".$user_id;
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			mysql_free_result($result);
+			//usleep(100000);
+			//$tempMsg = "<b>Cargando las últimas batallas libradas en Telegram. Espera, por favor...</b>";
+			//apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $tempMsg));
 			$msg = $msg."⚔ <b>Registro de las cinco últimas batallas entre clanes libradas en Telegram:</b>".PHP_EOL.PHP_EOL;
-			$query = 'SELECT a.gbr_id, GROUP_CONCAT( b.name ) home_group, GROUP_CONCAT( c.name ) away_group, GROUP_CONCAT( d.name ) winner_group, a.date, a.mvp FROM groupbattleresults a LEFT JOIN groupbattle b ON FIND_IN_SET( b.group_id, a.home_group ) LEFT JOIN groupbattle c ON FIND_IN_SET( c.group_id, a.away_group ) LEFT JOIN groupbattle d ON FIND_IN_SET( d.group_id, a.winner_group ) GROUP BY a.gbr_id ORDER BY a.gbr_id DESC LIMIT 0, 5';
+			$query = 'SELECT a.gbr_id, gb.name AS home_group, gb2.name AS away_group, gb3.name AS winner_group, a.date, a.mvp FROM groupbattleresults a, groupbattle gb, groupbattle gb2, groupbattle gb3 WHERE a.home_group = gb.group_id AND a.away_group = gb2.group_id AND a.winner_group = gb3.group_id GROUP BY a.gbr_id ORDER BY a.gbr_id DESC LIMIT 0 , 5';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			for($i=0;$i<5;$i++) {
 				$row = mysql_fetch_array($result);
@@ -10330,39 +10331,23 @@ function processMessage($message) {
 				}
 			}
 			mysql_free_result($result);
-			$msg = $msg."⚔ <b>Registro de los cinco últimos duelos PvP entre Rocosos de Demisuke:</b>".PHP_EOL.PHP_EOL;
-			$query = 'SELECT a.pbr_id, GROUP_CONCAT( DISTINCT b.first_name ) player_name, GROUP_CONCAT( DISTINCT b.user_name ) player_user, GROUP_CONCAT( DISTINCT c.first_name ) rival_name, GROUP_CONCAT( DISTINCT c.user_name ) rival_user, GROUP_CONCAT( DISTINCT d.first_name ) winner_name, GROUP_CONCAT( DISTINCT d.user_name ) winner_user, a.date FROM playerbattleresults a LEFT JOIN userbattle b ON FIND_IN_SET( b.user_id, a.player ) LEFT JOIN userbattle c ON FIND_IN_SET( c.user_id, a.rival ) LEFT JOIN userbattle d ON FIND_IN_SET( d.user_id, a.winner ) GROUP BY a.pbr_id ORDER BY a.pbr_id DESC LIMIT 0 , 5';
+			$msg = $msg."⚔ <b>El último personaje ganador de un duelo PvP es:</b>".PHP_EOL.PHP_EOL;
+			$query = 'SELECT winner, date FROM playerbattleresults ORDER BY pbr_id DESC LIMIT 0 , 1';
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			for($i=0;$i<5;$i++) {
-				$row = mysql_fetch_array($result);
-				if(isset($row['pbr_id'])) {
-					switch($i) {
-						case 0: $msg = $msg."1⃣ ";
-								break;
-						case 1: $msg = $msg."2⃣ ";
-								break;
-						case 2: $msg = $msg."3⃣ ";
-								break;
-						case 3: $msg = $msg."4⃣ ";
-								break;
-						case 4: $msg = $msg."5⃣ ";
-								break;
-						default: break;
-					}
-					$playerName = getFullName($row['player_name'], $row['player_user']);
-					$rivalName = getFullName($row['rival_name'], $row['rival_user']);
-					$winnerName = getFullName($row['winner_name'], $row['winner_user']);
-					$msg = $msg.$playerName." 🆚 ".$rivalName.PHP_EOL;
-					$msg = $msg."<b>Fecha:</b> ".$row['date'].PHP_EOL;
-					$msg = $msg."<b>Resultado:</b>".PHP_EOL."<i>".getRandomResultSentence().$winnerName.".</i>".PHP_EOL.PHP_EOL;
-				} else if($i==0) {
-					$msg = $msg."<i>Ninguno.</i>".PHP_EOL.PHP_EOL;
-				}
-			}
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			usleep(100000);
+			$row = mysql_fetch_array($result);
+			$winner_id = $row['winner'];
+			$winDate = $row['date'];
+			mysql_free_result($result);
+			$query = 'SELECT first_name, user_name FROM userbattle WHERE user_id = '.$winner_id.' ORDER BY lastpoint DESC LIMIT 0 , 1';
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			$winnerName = getFullName($row['first_name'], $row['user_name']);
+			$msg = $msg."<b>💪 ¡".$winnerName."!</b>".PHP_EOL;
+			$msg = $msg."<b>Fecha:</b> ".$winDate.PHP_EOL.PHP_EOL;
+			//apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			//usleep(100000);
 		} else {
-			$msg = $msg."<i>El registro de batallas está disponible una vez por minuto, podrás consultarlo de nuevo en unos segundos.</i>".PHP_EOL;
+			$msg = $msg."<i>El registro de batallas está disponible una vez cada diez segundos por persona, podrás consultarlo de nuevo un poco más tarde.</i>".PHP_EOL;
 		}
 		mysql_free_result($result);
 		mysql_close($link);

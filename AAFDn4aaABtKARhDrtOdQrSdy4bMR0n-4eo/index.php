@@ -1805,8 +1805,60 @@ function getPlayerMood ($level, $power = 0) {
 		$res = "✌😁 Normal";
 		if($level == 100) {
 			$res = "💪 Rocosidad máxima";
+		} else if($level == 93) {
+			$res = "🏆 Mentalidad ganadora (ataque+)";
+		} else if($level == 91) {
+			$res = "😎 Alivio (vida+)";
 		} else if($level == 89 || $level == 90) {
 			$res = "👻 Personaje maldito (???)";
+		} else if($level == 85) {
+			$res = "😡 Mente en llamas (ataque-)";
+		} else if($level == 83) {
+			$res = "👹 Fuego sobre quemado (vida+)";
+		} else if($level == 81) {
+			$res = "👺 Con quemaduras (vida-)";
+		} else if($level == 77) {
+			$res = "📛 Modo ignífugo (defensa+)";
+		} else if($level == 76) {
+			$res = "🚶 Inmóvil (velocidad-)";
+		} else if($level == 73) {
+			$res = "😩 Con lesiones (defensa-)";
+		} else if($level == 71) {
+			$res = "👽 Paranormal (ataque-)";
+		} else if($level == 66) {
+			$res = "🌞 Ignorando el calor (defensa+)";
+		} else if($level == 65) {
+			$res = "😵 Estrés (velocidad-)";
+		} else if($level == 62) {
+			$res = "🤒 Sin comidas frías (vida-)";
+		} else if($level == 61) {
+			$res = "😱 Pavor (ataque-)";
+		} else if($level == 57) {
+			$res = "🍖 Cavernícola (vida+)";
+		} else if($level == 56) {
+			$res = "🌚 Camuflaje (defensa+)";
+		} else if($level == 52 || $level == 53) {
+			$res = "🙃 Espalda indefensa (defensa-)";
+		} else if($level == 51) {
+			$res = "🕵 Explorando (velocidad+)";
+		} else if($level == 48) {
+			$res = "🤓 Concentración máxima (defensa+)";
+		} else if($level == 47) {
+			$res = "😃 Feliz (velocidad+)";
+		} else if($level == 44) {
+			$res = "😐 Modo supervivencia (vida-)";
+		} else if($level == 42) {
+			$res = "😞 Con fatiga (ataque-)";
+		} else if($level == 38) {
+			$res = "😖 Sin aire (vida-)";
+		} else if($level == 34 || $level == 35) {
+			$res = "😩 Con agujetas (velocidad-)";
+		} else if($level == 33) {
+			$res = "🏃 En huida (velocidad+)";
+		} else if($level == 31) {
+			$res = "☃ Exceso de hielo (velocidad-)";
+		} else if($level == 26) {
+			$res = "❤️ Vital (vida+)";
 		} else if($level == 22 || $level == 23) {
 			$res = "😟 Sin rumbo (velocidad-)";
 		} else if($level == 21) {
@@ -1818,7 +1870,6 @@ function getPlayerMood ($level, $power = 0) {
 		} else if($level == 12) {
 			$res = "🤕 Débil (vida-)";
 		} else if($level == 8) {
-
 			$res = "🏃 Centella (velocidad+)";
 		} else if($level == 7) {
 			$res = "👷 Fuerte (ataque+)";
@@ -1827,10 +1878,60 @@ function getPlayerMood ($level, $power = 0) {
 		}
 	} else {
 		$res = 0;
-		if($level == 100) {
-			$res = "💪 Rocosidad máxima (defensa+)";
+		if($level == 93) {
+			$res =  2;
+		} else if($level == 91) {
+			$res = 1;
 		} else if($level == 89 || $level == 90) {
 			$res = 0;
+		} else if($level == 85) {
+			$res = -2;
+		} else if($level == 83) {
+			$res = 1;
+		} else if($level == 81) {
+			$res = -1;
+		} else if($level == 77) {
+			$res = 3;
+		} else if($level == 76) {
+			$res = -4;
+		} else if($level == 73) {
+			$res = -3;
+		} else if($level == 71) {
+			$res = -2;
+		} else if($level == 66) {
+			$res = 3;
+		} else if($level == 65) {
+			$res = -4;
+		} else if($level == 62) {
+			$res = -1;
+		} else if($level == 61) {
+			$res = -2;
+		} else if($level == 57) {
+			$res = 1;
+		} else if($level == 56) {
+			$res = 3;
+		} else if($level == 52 || $level == 53) {
+			$res = -3;
+		} else if($level == 51) {
+			$res = 4;
+		} else if($level == 48) {
+			$res = 3;
+		} else if($level == 47) {
+			$res = 4;
+		} else if($level == 44) {
+			$res = -1;
+		} else if($level == 42) {
+			$res = -2;
+		} else if($level == 38) {
+			$res = -1;
+		} else if($level == 34 || $level == 35) {
+			$res = -4;
+		} else if($level == 33) {
+			$res = 4;
+		} else if($level == 31) {
+			$res = -4;
+		} else if($level == 26) {
+			$res = -1;
 		} else if($level == 22 || $level == 23) {
 			$res = -4;
 		} else if($level == 21) {
@@ -2238,6 +2339,24 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 	} else {
 		$updateBottles = "";
 	}
+	// anti overpower 89
+	if($newLevel == 89) {
+		if($newHP > 821) {
+			$newHP = 821;
+		}
+		if($newDef > 821) {
+			$newDef = 821;
+		}
+		if($newAt > 784) {
+			$newAt = 784;
+		}
+		if($newCrit > 40) {
+			$newCrit = 40;
+		}
+		if($newSp > 823) {
+			$newSp = 823;
+		}
+	}
 	$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `level` = '".$newLevel."', `extra_points` = `extra_points` + ".$newExtraPoints.", `hp` = `hp` + ".$newHP.", `attack` = `attack` + ".$newAt.", `defense` = `defense` + ".$newDef.", `critic` = `critic` + ".$newCrit.", `speed` = `speed` + ".$newSp.", `".$newItemTypeName."` = ".$newItemPower.", `".$respawnType."` = ".$currTime.$updateBottles." WHERE `user_id` = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	mysql_free_result($result);		
@@ -2246,11 +2365,19 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 	$msg = "<b>¡Enhorabuena! Acabas de subir al nivel ".$newLevel.".</b>".PHP_EOL.PHP_EOL;
 	$msg = $msg."Las estadísticas de tu personaje han mejorado:".PHP_EOL;
-	$msg = $msg."<pre>VID +".$newHP."</pre>".PHP_EOL;
-	$msg = $msg."<pre>ATA +".$newAt."</pre>".PHP_EOL;
-	$msg = $msg."<pre>DEF +".$newDef."</pre>".PHP_EOL;
-	$msg = $msg."<pre>CRÍ +".$newCrit."</pre>".PHP_EOL;
-	$msg = $msg."<pre>VEL +".$newSp."</pre>".PHP_EOL.PHP_EOL;
+	if($newLevel == 89 || $newLevel == 90) {
+		$msg = $msg."<pre>VID +??? 👻</pre>".PHP_EOL;
+		$msg = $msg."<pre>ATA +??? 👻</pre>".PHP_EOL;
+		$msg = $msg."<pre>DEF +??? 👻</pre>".PHP_EOL;
+		$msg = $msg."<pre>CRÍ +??? 👻</pre>".PHP_EOL;
+		$msg = $msg."<pre>VEL +??? 👻</pre>".PHP_EOL.PHP_EOL;
+	} else {
+		$msg = $msg."<pre>VID +".$newHP."</pre>".PHP_EOL;
+		$msg = $msg."<pre>ATA +".$newAt."</pre>".PHP_EOL;
+		$msg = $msg."<pre>DEF +".$newDef."</pre>".PHP_EOL;
+		$msg = $msg."<pre>CRÍ +".$newCrit."</pre>".PHP_EOL;
+		$msg = $msg."<pre>VEL +".$newSp."</pre>".PHP_EOL.PHP_EOL;
+	}
 	$msg = $msg."Puedes consultar las estadísticas completas de tu personaje con la función !pj.".PHP_EOL.PHP_EOL;
 	$msg = $msg."<i>Has ganado ".$newExtraPoints." punto";
 	if($newExtraPoints > 1) {
@@ -2418,20 +2545,75 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 			$msg = $msg."<b>A partir de ahora tus puntos de heroicidad otorgarán aun más poder a la hora de combatir. ¡No te olvides de usar !boton con frecuencia!</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 26) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>El aire puro de la selva invade tus pulmones, y todo a tu alrededor parece comestible. Tu vitalidad te lo agradece con creces.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 27) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 28) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 			$msg = $msg."<b>Estás llegando al fondo de la selva, las temperaturas empiezan a no ser humanas, el frío cada vez es más intenso... ¿qué habrá al final de la selva?</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 29) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 30) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 			$msg = $msg."<b>Acabas de llegar a un glaciar oculto bajo tierra. No parece que el ser humano haya estado por aquí... O en todo caso, no parece que ningún ser humano que ha estado aquí haya vuelto con vida a la superficie.</b>".PHP_EOL;
 			$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 31) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>El hielo de esta zona está afectando a tus huesos. Tu velocidad se reduce ligeramente.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 32) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 33) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Estás cruzando una zona repleta de avalanchas. ¡Vas a tener que ir a la carrera por todas partes!</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 34) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>El agotamiento hace mella en tus piernas, prácticamente no puedes caminar más.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 35) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 36) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 37) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 			$msg = $msg."<b>Estás en el fondo del glaciar. Atrás queda la superficie fría cercana a la selva, y parece que te estás adaptando a las bajas temperaturas. ¡Tu rocosidad es cada vez mayor!</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 38) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>El agua fría te rodea constantemente, te está costando mucho respirar, lo que afecta a tu salud.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 39) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 40) {
@@ -2440,69 +2622,316 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 			$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 41) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 42) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>El terreno está lleno de trampas allá por donde pisas. Tu cansancio te está haciendo caer en varias trampas y cada vez sientes más fatiga.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 43) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 44) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Te acercas más y más al centro del planeta, sientes mucha más presión en el cuerpo que antes. Debes aprender a sobrevivir en condiciones extremas.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 45) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 46) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 47) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>¡Comienzas a ver una luz! El final parece estar más cerca, toda una alegría después de esta larga travesía...</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 48) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Sientes dentro de ti que la batalla final está muy cerca, comienzas a prepararte mentalmente para llevarte la gran victoria.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 49) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		}
 	} else if($newLevel < 75) {
+		$msg = "⚠️ ";
 		if($newLevel == 50) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>Los guardianes del portal ya son historia para ti. De hecho, quizás el mundo real también lo sea... Lo sobrenatural comienza ahora, en lo que parece ser una oscura cueva mitológica. ¡Hora de explorar un mundo desconocido!</b>".PHP_EOL;
+			$msg = $msg."<b>Los guardianes del portal ya son historia para ti. De hecho, quizás el mundo real también lo sea... Lo verdaderamente sobrenatural comienza ahora, en lo que parece ser una oscura cueva mitológica. ¡Hora de explorar un mundo desconocido!</b>".PHP_EOL;
 			$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 51) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Te sientes como en la mina de la ilusión de todo aquel ser aficionado a la arqueología, tu cuerpo te pide explorarlo todo.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 52) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>El mundo salvaje de la zona es mas temible de lo que parece, te acorralan con facilidad y sientes que tu espalda no está bien protegida.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 53) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 54) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 55) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>El tono de las paredes por esta zona parecen diferentes. Has caminado mucho, debes andar ya en las profundidades de estas cuevas...</b>";
+			$msg = $msg."<b>El tono de las paredes por esta zona parecen diferentes. Has caminado mucho, debes andar ya en las profundidades de estas cuevas...</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 56) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Te gusta la rocosidad del terreno, te inspira fuerza el simple hecho de mirar al horizonte, te gustaría mimetizarte con el entorno.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 57) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Estás aprendiendo a sobrevivir prácticamente igual a como se hacía en la prehistoria, tu mentalidad cada vez es más fuerte.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 58) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 59) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 60) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>La cueva comienza a quemar, a partir de aquí es mejor no tocar las paredes con las manos desnudas, el Infierno está cada vez más cerca, pero el camino a recorrer se hará eterno...</b>".PHP_EOL;
+			$msg = $msg."<b>La cueva comienza a quemar, a partir de aquí es mejor no tocar las paredes con las manos desnudas, el Infierno está cada vez más cerca, pero el camino a recorrer se hará eterno...</b>".PHP_EOL;
 			$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 61) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>El calor de las profundidades está siendo insoportable... ¿estarás llegando al Infierno?</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 62) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Está siendo imposible encontrar comidas frías, cualquier alimento que consigues se sirve sí o sí en caliente.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 63) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 64) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 65) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>¿Cuántas veces has luchado ya contra un jefe desde que iniciaste tu aventura? Parece un número incontable, ¡qué estrés esto de salvar al mundo!</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 66) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Llevas tanto tiempo en las profundidades de la cueva que te has acostumbrado a temperaturas altísimas, te sientes hasta mejor cuanto más lejos llegas.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 67) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 68) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>Cada vez hay más luz al fondo del pasaje. No por un sol que ilumine un cielo, sino por fuego que parece inundar el camino. A partir de ahora tendrás que tomar más medidas de precaución contra el fuego...</b>";
+			$msg = $msg."<b>Cada vez hay más luz al fondo del pasaje. No por un sol que ilumine un cielo, sino por fuego que parece inundar el camino. A partir de ahora tendrás que tomar más medidas de precaución contra el fuego...</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 69) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 70) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>¡Porras! El Infierno está a un paso, sin embargo toda la zona está repleta de guardianes que custodian la entrada, creando así un portal prácticamente infranqueable. Parece que solo los Elegidos podrán atravesar el portal... ¿conseguirás alcanzar la meta?</b>".PHP_EOL;
+			$msg = $msg."<b>¡Porras! El Infierno está a un paso, sin embargo toda la zona está repleta de guardianes que custodian la entrada, creando así un portal prácticamente infranqueable. Parece que solo los Elegidos podrán atravesar el portal... ¿conseguirás alcanzar la meta?</b>".PHP_EOL;
 			$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 71) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Este portal da muy, muy mala espina... Sientes presencias extrañas a tu alrededor. ¿Vendrán aquí los seres difuntos a descansar en paz? Parece el sitio más protegido del planeta.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 72) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 73) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>¡Vaya nivel de protección hay por este lugar! Tu cuerpo no aguantará mucho más. Agradecerías eternamente que ahora mismo apareciera un hospital en la zona...</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 74) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Has logrado sanar tus lesiones, tu estado ha vuelto a la normalidad.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		}
 	} else {
-		if($newLevel == 79) {
+		$msg = "⚠️ ";
+		if($newLevel == 75) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 76) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>Tu rocosidad ha aumentado a niveles estratosféricos. Todavía no consigues avanzar demasiado, pero la protección del portal parece mucho más débil ahora que el primer día que llegaste. ¡Ánimo, que ya lo tienes!</b>";
+			$msg = $msg."<b>Hay algo pegajoso en el suelo que está impidiendo que sigas avanzando hacia adelante. Este tipo de protección no te la esperabas...</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 77) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Eres consciente de que un nivel tan alto de protección debe tener algún motivo, por lo que comienzas a entrenar cómo luchar directamente contra el juego intuyendo que será algo vital en el futuro.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 78) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 79) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu rocosidad ha aumentado a niveles estratosféricos. Todavía no consigues avanzar demasiado, pero la protección del portal parece mucho más débil ahora que el primer día que llegaste. ¡Ánimo, que ya lo tienes!</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 80) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>Acabas de abrir las puertas del Infierno. Quién sabe si eso es bueno o es malo, todo aquí parece mortal. Es como si solo por respirar o mirar hacia adelante tu vida estuviera en grave peligro. El camino restante se prevé bastante cuesta arriba...</b>".PHP_EOL;
+			$msg = $msg."<b>Acabas de abrir las puertas del Infierno. Quién sabe si eso es bueno o es malo, todo aquí parece mortal. Es como si solo por respirar o mirar hacia adelante tu vida estuviera en grave peligro. El camino restante se prevé bastante cuesta arriba...</b>".PHP_EOL;
 			$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 81) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Prácticamente has olvidado un mundo sin fuego, es imposible salvaguardar tu cuerpo de las llamas mientras duermes...</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 82) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Te has curado las quemaduras, tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 83) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Te sientes como si hubieras dominado al fuego y lo tuvieras bajo tu control, ¡podría ser de gran ayuda para luchar contra lo que venga!</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 84) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 85) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Miras alrededor, y aunque no veas a nadie, sientes una presencia satánica muy cerca de ti de la que no te puedes librar, es como si alguien estuviera intentando derrotarte a través de tu propia mente.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 86) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 87) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 88) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>Estás llegando a los límites del Infierno. ¡Parecía una tarea imposible, pero parece que lo estás logrando!</b>";
+			$msg = $msg."<b>Estás llegando a los límites del Infierno. ¡Parecía una tarea imposible, pero parece que lo estás logrando!</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 89) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Una maldición ha caído sobre ti. Has llegado demasiado lejos, y tu entorno planea derrotarte a toda costa. La zona que se vislumbra al horizonte augura una muerte segura... ¿Es mejor continuar o abandonar? La maldición que cae sobre ti te impide conocer las estadísticas reales de tu personaje.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 90) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>Acabas de adentrarte en el Inframundo. El ambiente es realmente turbio, solo el hecho de mirar hacia adelante convierte al Infierno en un paraíso. Continuar hacia adelante se va a hacer eterno, pero la gloria está a solo un paso...</b>".PHP_EOL;
+			$msg = $msg."<b>Acabas de adentrarte en el Inframundo. El ambiente es realmente turbio, solo el hecho de mirar hacia adelante convierte al Infierno en un paraíso. Continuar hacia adelante se va a hacer eterno, pero la gloria está a solo un paso...</b>".PHP_EOL;
 			$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 91) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Te has librado de la maldición. ¡Ya puedes volver a ver tus estadísticas completas!</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 92) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 93) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Has logrado superar obstáculos sobrehumanos. El final está a la vuelta de la esquina. Es hora de mantener la mente fría y mentalizarse para poner el mejor punto final a tu aventura de una vez por todas.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 94) {
+			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+			$msg = $msg."<b>Tu estado ha vuelto a la normalidad.</b>";
+			sleep(1);
+			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 95) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 96) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 97) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 98) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>Ha llegado la hora de la verdad, ya estás preparado para hacer frente al jefe final. ¡A por él!</b>".PHP_EOL;
+			$msg = $msg."<b>Ha llegado la hora de la verdad, ya estás preparado para hacer frente al jefe final. ¡A por él!</b>".PHP_EOL;
 			$msg = $msg."<b>A partir de ahora te podrás enfrentar al jefe final. Él y su guardián serán los únicos jefes a los que podrás derrotar, el resto han caído a tus pies. ¡Ahora o nunca!</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
+		} else if($newLevel == 99) {
+		//	apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
+		//	$msg = $msg."<b>¡Has logrado una nueva invocación!</b>";
+		//	sleep(1);
+		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 100) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = "<b>¡Enhorabuena, has alcanzado la máxima experiencia, el Palacio Real del Inframundo ahora es tuyo!</b>".PHP_EOL;
+			$msg = $msg."<b>¡Enhorabuena, has alcanzado la máxima experiencia, el Palacio Real del Inframundo ahora es tuyo!</b>".PHP_EOL;
 			$msg = $msg."<b>Tu rocosidad es pura y contigo al mando del Inframundo el planeta estará a salvo. ¡Puedes aprovechar tu poder supremo para luchar contra los clanes más fuertes del mundo!</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
@@ -3848,115 +4277,137 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$msg = $msg."🎰 <b>Fichas de casino:</b> ".$tokens.PHP_EOL.PHP_EOL;
 			$msg = $msg."<b>Estadísticas base [y con equipo]:</b>".PHP_EOL;
 			$msg = $msg."<pre>VID:";
-			switch(strlen($hp)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
+			if($level == 89 || $level == 90) {
+				$msg = $msg." ??? 👻 ".ratePower($fullHP)."</pre>".PHP_EOL;
+			} else {
+				switch(strlen($hp)){
+					case 1: $msg = $msg."   ";
+							break;
+					case 2: $msg = $msg."  ";
+							break;
+					case 3: $msg = $msg." ";
+							break;
+				}
+				$msg = $msg.$hp." [";
+				$fullHP = $hp + $body;
+				if($fullHP > 999) {
+					$fullHP = 999;
+				}
+				switch(strlen($fullHP)){
+					case 1: $msg = $msg."  ";
+							break;
+					case 2: $msg = $msg." ";
+							break;
+					default: break;
+				}
+				$msg = $msg.$fullHP."] ".ratePower($fullHP)."</pre>".PHP_EOL;
 			}
-			$msg = $msg.$hp." [";
-			$fullHP = $hp + $body;
-			if($fullHP > 999) {
-				$fullHP = 999;
-			}
-			switch(strlen($fullHP)){
-				case 1: $msg = $msg."  ";
-						break;
-				case 2: $msg = $msg." ";
-						break;
-				default: break;
-			}
-			$msg = $msg.$fullHP."] ".ratePower($fullHP)."</pre>".PHP_EOL;
 			$msg = $msg."<pre>ATA:";
-			switch(strlen($attack)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
+			if($level == 89 || $level == 90) {
+				$msg = $msg." ??? 👻 ".ratePower($fullAttack)."</pre>".PHP_EOL;
+			} else {
+				switch(strlen($attack)){
+					case 1: $msg = $msg."   ";
+							break;
+					case 2: $msg = $msg."  ";
+							break;
+					case 3: $msg = $msg." ";
+							break;
+				}
+				$msg = $msg.$attack." [";
+				$fullAttack = $attack + $weapon;
+				if($fullAttack > 999) {
+					$fullAttack = 999;
+
+				}
+				switch(strlen($fullAttack)){
+					case 1: $msg = $msg."  ";
+							break;
+					case 2: $msg = $msg." ";
+							break;
+					default: break;
+				}
+				$msg = $msg.$fullAttack."] ".ratePower($fullAttack)."</pre>".PHP_EOL;
 			}
-			$msg = $msg.$attack." [";
-			$fullAttack = $attack + $weapon;
-			if($fullAttack > 999) {
-				$fullAttack = 999;
-			}
-			switch(strlen($fullAttack)){
-				case 1: $msg = $msg."  ";
-						break;
-				case 2: $msg = $msg." ";
-						break;
-				default: break;
-			}
-			$msg = $msg.$fullAttack."] ".ratePower($fullAttack)."</pre>".PHP_EOL;
 			$msg = $msg."<pre>DEF:";
-			switch(strlen($defense)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
+			if($level == 89 || $level == 90) {
+				$msg = $msg." ??? 👻 ".ratePower($fullDefense)."</pre>".PHP_EOL;
+			} else {
+				switch(strlen($defense)){
+					case 1: $msg = $msg."   ";
+							break;
+					case 2: $msg = $msg."  ";
+							break;
+					case 3: $msg = $msg." ";
+							break;
+				}
+				$msg = $msg.$defense." [";
+				$fullDefense = $defense + $shield;
+				if($fullDefense > 999) {
+					$fullDefense = 999;
+
+				}
+				switch(strlen($fullDefense)){
+					case 1: $msg = $msg."  ";
+							break;
+					case 2: $msg = $msg." ";
+							break;
+					default: break;
+				}
+				$msg = $msg.$fullDefense."] ".ratePower($fullDefense)."</pre>".PHP_EOL;
 			}
-			$msg = $msg.$defense." [";
-			$fullDefense = $defense + $shield;
-			if($fullDefense > 999) {
-				$fullDefense = 999;
-			}
-			switch(strlen($fullDefense)){
-				case 1: $msg = $msg."  ";
-						break;
-				case 2: $msg = $msg." ";
-						break;
-				default: break;
-			}
-			$msg = $msg.$fullDefense."] ".ratePower($fullDefense)."</pre>".PHP_EOL;
 			$msg = $msg."<pre>CRÍ:";
-			switch(strlen($critic)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
+			if($level == 89 || $level == 90) {
+				$msg = $msg." ??? 👻 ".ratePower($fullCritic, 1)."</pre>".PHP_EOL;
+			} else {
+				switch(strlen($critic)){
+					case 1: $msg = $msg."   ";
+							break;
+					case 2: $msg = $msg."  ";
+							break;
+					case 3: $msg = $msg." ";
+							break;
+				}
+				$msg = $msg.$critic." [";
+				$fullCritic = $critic + $helmet;
+				if($fullCritic > 80) {
+					$fullCritic = 80;
+				}
+				switch(strlen($fullCritic)){
+					case 1: $msg = $msg."  ";
+							break;
+					case 2: $msg = $msg." ";
+							break;
+					default: break;
+				}
+				$msg = $msg.$fullCritic."] ".ratePower($fullCritic, 1)."</pre>".PHP_EOL;
 			}
-			$msg = $msg.$critic." [";
-			$fullCritic = $critic + $helmet;
-			if($fullCritic > 80) {
-				$fullCritic = 80;
-			}
-			switch(strlen($fullCritic)){
-				case 1: $msg = $msg."  ";
-						break;
-				case 2: $msg = $msg." ";
-						break;
-				default: break;
-			}
-			$msg = $msg.$fullCritic."] ".ratePower($fullCritic, 1)."</pre>".PHP_EOL;
 			$msg = $msg."<pre>VEL:";
-			switch(strlen($speed)){
-				case 1: $msg = $msg."   ";
-						break;
-				case 2: $msg = $msg."  ";
-						break;
-				case 3: $msg = $msg." ";
-						break;
+			if($level == 89 || $level == 90) {
+				$msg = $msg." ??? 👻 ".ratePower($fullSpeed)."</pre>".PHP_EOL.PHP_EOL;
+			} else {
+				switch(strlen($speed)){
+					case 1: $msg = $msg."   ";
+							break;
+					case 2: $msg = $msg."  ";
+							break;
+					case 3: $msg = $msg." ";
+							break;
+				}
+				$msg = $msg.$speed." [";
+				$fullSpeed = $speed + $boots;
+				if($fullSpeed > 999) {
+					$fullSpeed = 999;
+				}
+				switch(strlen($fullSpeed)){
+					case 1: $msg = $msg."  ";
+							break;
+					case 2: $msg = $msg." ";
+							break;
+					default: break;
+				}
+				$msg = $msg.$fullSpeed."] ".ratePower($fullSpeed)."</pre>".PHP_EOL.PHP_EOL;
 			}
-			$msg = $msg.$speed." [";
-			$fullSpeed = $speed + $boots;
-			if($fullSpeed > 999) {
-				$fullSpeed = 999;
-			}
-			switch(strlen($fullSpeed)){
-				case 1: $msg = $msg."  ";
-						break;
-				case 2: $msg = $msg." ";
-						break;
-				default: break;
-			}
-			$msg = $msg.$fullSpeed."] ".ratePower($fullSpeed)."</pre>".PHP_EOL.PHP_EOL;
 			$msg = $msg."<b>Equipo:</b>".PHP_EOL;
 			$msg = $msg."🎩 ".getItemName(1, $helmet).PHP_EOL;
 			$msg = $msg."👔 ".getItemName(2, $body).PHP_EOL;
@@ -4585,7 +5036,6 @@ function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
 		$userTriggering = str_replace("@", "", $logname);
 		$admin_id = 6250647;
 		apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", 'disable_notification' => TRUE, "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
-
 		mysql_free_result($result);
 		poleFail($hour, $chat_id, $link, $logname, $currentTime);
 	}
@@ -8190,7 +8640,7 @@ function processMessage($message) {
 	}
     if (strpos($text, "/start") === 0) {
 	  error_log($logname." triggered: /start.");
-	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke para saber qué hace este bot."));
+	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke (o escribe !ayuda) para saber qué hace este bot. ¡Usando la función /exp podrás comenzar tu aventura RPG en Telegram!"));
     } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
 		error_log($logname." triggered: !ayuda.");
 		commandsList($chat_id, "main");
@@ -9548,6 +9998,8 @@ function processMessage($message) {
 										// si no gana, avisar de mala suerte
 								$level = $row['level'];
 								$totalPower = $row['total_power'];
+								$moodPower = getPlayerMood($level, 1);
+								$totalPower = $totalPower + $moodPower; 
 								$expPoints = $row['exp_points'];
 								$critic = $row['critic'];
 								$bottles = $row['bottles'];
@@ -9915,6 +10367,8 @@ function processMessage($message) {
 						$playerPower = $row['power'];
 						$playerHeroPower = $row['hero_power'];
 						$playerLevel = $row['level'];
+						$playerMoodPower = getPlayerMood($playerLevel, 1);
+						$playerPower = $playerPower + $playerMoodPower; 
 						$playerHeroPower = getHeroPower($playerLevel, $playerHeroPower);
 						$playerPermission = $row['pvp_allowed'];
 						$playerAvatar = $row['avatar'];
@@ -9926,6 +10380,8 @@ function processMessage($message) {
 						$rivalPermission = $row['pvp_allowed'];
 						$rivalHeroPower = $row['hero_power'];
 						$rivalLevel = $row['level'];
+						$rivalMoodPower = getPlayerMood($rivalLevel, 1);
+						$rivalPower = $rivalPower + $rivalMoodPower; 
 						$rivalHeroPower = getHeroPower($rivalLevel, $rivalHeroPower);
 						$rivalAvatar = $row['avatar'];
 						$rivalHP = $row['total_hp'];
@@ -12911,7 +13367,7 @@ if (isset($update["message"])) {
 		$text = str_replace(">", "", $text);
 		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text,$logname), "cache_time" => 60,]);
 	}
-}else if(isset($update["callback_query"])) {
+} else if(isset($update["callback_query"])) {
 	if(isset($update["callback_query"]['from']['username'])) {
 		$logname = $update["callback_query"]['from']['username'];
 	} else if (isset($update["callback_query"]['from']['first_name'])) {

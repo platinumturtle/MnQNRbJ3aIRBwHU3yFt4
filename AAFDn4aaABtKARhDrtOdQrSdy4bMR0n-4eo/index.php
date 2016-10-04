@@ -4584,7 +4584,7 @@ function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
 		error_log($logname." tried to capture a doubleflag.");
 		$userTriggering = str_replace("@", "", $logname);
 		$admin_id = 6250647;
-		apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
+		apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", 'disable_notification' => TRUE, "text" => "*".$userTriggering." ha intentado capturar una bandera fantasma y se le ha denegado el permiso.*"));
 
 		mysql_free_result($result);
 		poleFail($hour, $chat_id, $link, $logname, $currentTime);
@@ -7326,7 +7326,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.9c creado por @Kamisuke."
+				"@DemisukeBot v3.0.10 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"

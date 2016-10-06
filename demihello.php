@@ -5775,7 +5775,7 @@ function inlineOptions($text, $username, $user_id = 0) {
 		"id" => "0",
 		"title" => "Enviar ficha de personaje RPG",
 		"description" => "Si no tienes, aparecerá un botón para jugar.",
-		"message_text" => "<b>Próximamente</b>",
+		"message_text" => $player,
 		"parse_mode" => "HTML",
 		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_rpg.png",
 		"thumb_width" => 100,
@@ -5838,7 +5838,7 @@ function inlineRPG($user_id = 0) {
 		"id" => "0",
 		"title" => "Enviar ficha de personaje RPG",
 		"description" => "Si no tienes, aparecerá un botón para jugar.",
-		"message_text" => "<b>Próximamente</b>",
+		"message_text" => $player,
 		"parse_mode" => "HTML",
 		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_rpg.png",
 		"thumb_width" => 100,
@@ -14105,7 +14105,8 @@ if (isset($update["message"])) {
 		}
 	} else if($callback['data'] == "%RPGACTION%EXP") {
 		$query_id = $update["callback_query"]["id"];
-		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemitesterBot?start=exp"));
+		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=exp"));
+		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=exp"));
 	} else {
 		error_log($logname." clicked on a spoiler button.");
 		$query_id = $update["callback_query"]["id"];

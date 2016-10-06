@@ -3187,7 +3187,6 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 		//	$msg = $msg."<b>A partir de ahora podrás entrar en el coliseo y luchar junto a otros guerreros por la victoria. ¡Participa tantas veces como quieras escribiendo \"!coliseo entrar\"!</b> /ayuda_slots".PHP_EOL;
 		//	sleep(1);
 		//	apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
-		// kkkkkkkkkkkkkkkkkkkkk
 		} else if($newLevel == 5) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 			$msg = $msg."<b>Acabas de obtener un arma nueva, y con ella has desbloqueado la función !atacar, ¡ya puedes enfrentarte a los jefes de las zonas en las que te encuentres!".PHP_EOL;
@@ -4236,7 +4235,7 @@ function useExp ($chat_id) {
 					}
 					// mostrar mensaje del nivel, la exp total, una barra y la exp necesaria para subir de nivel
 					mysql_free_result($result);
-					$user_id = $message['from']['id'];
+					$user_id = $chat_id;
 					getPlayerInfo(0, $link, $chat_id, $user_id);
 			} else {
 				// si no han pasado, avisar de que no corra, que se espere 5min
@@ -4985,8 +4984,16 @@ function getClanLevelByMembers($levelNumber) {
 	return $level;
 }
 
+function getSummonName($level) {
+	$summon = "Ninguna";
+	if($level == 100) {
+		$summon = "<i>Ninguna</i>";
+	}
+	return $summon;
+}
+
 function getPlayerInfo($fullInfo, $link, $chat_id, $user_id, $inlineMode = 0) {
-	$query = "SELECT pb.group_id, pb.exp_points, pb.level, pb.extra_points, pb.hp, pb.attack, pb.defense, pb.critic, pb.speed, pb.helmet, pb.body, pb.boots, pb.weapon, pb.shield, pb.avatar, pb.bottles, pb.pvp_allowed, pb.pvp_wins, pb.pvp_group_wins, pb.last_boss, pb.war_mvp, COALESCE( hb.total, 0 ) AS  'hero_power', COALESCE( ub.tokens, 0 ) AS  'tokens' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id LEFT JOIN ( SELECT tokens, user_id, group_id FROM userbet )ub ON pb.user_id = ub.user_id AND ub.group_id =0 WHERE pb.user_id = '".$user_id."'";
+	$query = "SELECT pb.group_id, pb.exp_points, pb.level, pb.extra_points, pb.hp, pb.attack, pb.defense, pb.critic, pb.speed, pb.helmet, pb.body, pb.boots, pb.weapon, pb.shield, pb.summon, pb.avatar, pb.bottles, pb.pvp_allowed, pb.pvp_wins, pb.pvp_group_wins, pb.last_boss, pb.war_mvp, COALESCE( hb.total, 0 ) AS  'hero_power', COALESCE( ub.tokens, 0 ) AS  'tokens' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id LEFT JOIN ( SELECT tokens, user_id, group_id FROM userbet )ub ON pb.user_id = ub.user_id AND ub.group_id =0 WHERE pb.user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	if(isset($row['level'])){
@@ -5071,6 +5078,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id, $inlineMode = 0) {
 			$boots = $row['boots'];
 			$weapon = $row['weapon'];
 			$shield = $row['shield'];
+			$summon = $row['summon'];
 			$avatar = $row['avatar'];
 			$bottles = $row['bottles'];
 			$pvp_allowed = $row['pvp_allowed'];
@@ -5274,7 +5282,8 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id, $inlineMode = 0) {
 			$msg = $msg."👔 ".getItemName(2, $body).PHP_EOL;
 			$msg = $msg."👞 ".getItemName(3, $boots).PHP_EOL;
 			$msg = $msg."🗡 ".getItemName(4, $weapon).PHP_EOL;
-			$msg = $msg."🛡 ".getItemName(5, $shield);
+			$msg = $msg."🛡 ".getItemName(5, $shield).PHP_EOL;
+			$msg = $msg."☄ ".getSummonName($level);
 		}
 	} else {
 		$msg = "<b>¡Obtén tu propia ficha de personaje RPG en Telegram jugando a Los Rocosos de Demisuke y salva al mundo luchando contra grandes enemigos, contra tus amigos en duelos PvP o contra otros clanes declarando guerras!</b>";
@@ -6949,6 +6958,312 @@ function showMode($group_id, $newGroup = false) {
 	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "HTML", "text" => $message));			
 }
 
+function launchSlot($chat_id) {
+	// revisar si ya ha jugado, que estara en la userbet con groupi 0
+	$link = dbConnect();
+	$query = "SELECT tokens, last_slot FROM userbet WHERE user_id = ".$chat_id." AND group_id = 0";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	if(isset($row['tokens'])){
+		$checkTime = time();
+		$checkTime = $checkTime - 4;
+		// si existe, revisar el tiempo para saber si hace mas de 4seg que ha jugado
+		if($checkTime > $row['last_slot']){
+			// si si, comprobar si le queda pasta
+			if($row['tokens'] > 2) {
+				// si tiene, lanzar los slots, calcular si hay premio, restarle uno a su tokenbolsillo y sumarle el premio, actualizar el last_slot y decirle cuanto tiene
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				$text = "<b>Has insertado una moneda en la máquina y has usado la palanca. El resultado es...</b>";
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(500000);
+				$userTokens = $row['tokens'] - 3;
+				$currTime = time();
+				mysql_free_result($result);
+				// calcular resultado
+				$slotA = rand(1,10);
+				usleep(rand(10,50));
+				$slotB = rand(1,10);
+				usleep(rand(10,50));
+				$slotC = rand(1,10);
+				$bonus = 0;
+				if($slotA == $slotB && $slotB == $slotC) {
+					$bonus = 0;
+				} else {
+					if($slotA == $slotB) {
+						$bonus = 1;
+					} else if($slotA == $slotB) {
+						$bonus = 1;
+					} else if($slotB == $slotC) {
+						$bonus = 1;
+					} else {
+						$bonus = 0;
+					}
+				}
+				if($bonus == 1) {
+					$bonusTicket = rand(1, 20);
+					if($bonusTicket == 20) {
+						$slotA = 4;
+						$slotB = 4;
+						$slotC = 4;
+					} else if($bonusTicket > 17) {
+						$slotA = 3;
+						$slotB = 3;
+						$slotC = 3;
+					} else if($bonusTicket > 14) {
+						$slotA = 2;
+						$slotB = 2;
+						$slotC = 2;
+					} else if($bonusTicket > 10) {
+						$slotA = 1;
+						$slotB = 1;
+						$slotC = 1;
+					}
+				}
+				if($slotA == $slotB && $slotB == $slotC && $row['tokens'] > 99999) {
+					$slotA = 7;
+					$slotB = 7;
+					$slotC = 7;
+				}
+				$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
+				$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
+				$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
+				$text = $text."⬛️".emojiSlot($slotA + 1).emojiSlot($slotB + 1).emojiSlot($slotC + 1)."⬛️".PHP_EOL;
+				$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
+				// calcular el premio
+				if($slotA == $slotB && $slotB == $slotC) {
+					error_log($logname." got a prize! Prize number ".$slotA);
+					$text = $text."❗️🎉 ¡Enhorabuena! Has ganado ";
+					switch($slotA){
+						case 1: $prize = 10;
+								break;
+						case 2: $prize = 25;
+								break;
+						case 3: $prize = 50;
+								break;
+						case 4: $prize = 75;
+								break;
+						case 5: $prize = 100;
+								break;
+						case 6: $prize = 100;
+								break;
+						case 7: $prize = 250;
+								break;
+						case 8: $prize = 500;
+								break;
+						case 9: $prize = 1000;
+								break;
+						case 10: $prize = 10000;
+								break;
+						default: $prize = 0;
+								break;
+					}
+					$text = $text.$prize." fichas.".PHP_EOL;
+					if($slotA > 4) {
+						$query = 'SELECT level, bottles, last_exp, last_boss FROM playerbattle WHERE user_id = '.$chat_id;
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						if(isset($row['level'])) {
+							$level = $row['level'];
+							$bottles = $row['bottles'];
+							$lastExp = $row['last_exp'];
+							$lastBoss = $row['last_boss'];
+							mysql_free_result($result);
+							if($level < 100) {
+								if($slotA < 8) {
+									$lastExp = $lastExp - 3600;
+									if($lastExp < 0) {
+										$lastExp = 0;
+									}
+									$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
+									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+									$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
+								} else if($slotA < 10) {
+									if($level > 4) {
+										$lastBoss = $lastBoss - (3600 * 24);
+										if($lastBoss < 0) {
+											$lastBoss = 0;
+										}
+										$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+										$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
+									} else {
+										$lastExp = $lastExp - 3600;
+										if($lastExp < 0) {
+											$lastExp = 0;
+										}
+										$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+										$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
+									}
+								} else {
+									//botella o boss o exp
+									if($level > 2 && $bottles == 10) {
+										$text = $text."🎰 ¡Tienes el inventario de botellas lleno!".PHP_EOL;
+										$lastBoss = $lastBoss - (3600 * 24);
+										if($lastBoss < 0) {
+											$lastBoss = 0;
+										}
+										$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+										$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
+									} else if($level > 2 && $bottles < 10) {
+										$bottles = $bottles + 1;
+										$query = "UPDATE `playerbattle` SET `bottles` = '".$bottles."' WHERE `user_id` = '".$chat_id."'";
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+										$text = $text."🎰 Bonus adicional: ¡Has ganado una botella de experiencia! Puedes utilizarla con la función !botella.".PHP_EOL;
+									} else if($level > 4) {
+										$lastBoss = $lastBoss - (3600 * 24);
+										if($lastBoss < 0) {
+											$lastBoss = 0;
+										}
+										$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+										$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
+									} else {
+										$lastExp = $lastExp - 3600;
+										if($lastExp < 0) {
+											$lastExp = 0;
+										}
+										$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
+										$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+										$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
+									}
+								}
+								mysql_free_result($result);
+							}
+						}								
+					}
+				} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
+					$prize = 3;
+					$text = $text."💪 ¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
+				} else {
+					$prize = 0;
+				}
+				$userTokens = $userTokens + $prize;
+				$text = $text."<b>Fichas que te quedan:</b> ".$userTokens;
+				$query = "UPDATE `userbet` SET `tokens` = '".$userTokens."', `last_slot` = '".$currTime."' WHERE `user_id` = ".$chat_id." AND group_id = 0";
+				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+			} else {
+				// si no avisar de que no tiene pasta, que use el !fichas para recargarse de dinero
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				$text = "*No tienes fichas suficientes para jugar, utiliza la función !fichas para obtener fichas gratis.*";
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+			}
+		} else {
+			// si no, avisar de ludopatia
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			$text = "*Solo puedes tirar de la palanca una vez cada cinco segundos.*";
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+		}
+	} else {
+		// si no existe, avisar con una bienvenida de que ahora tiene 100 fichas y que se va a usar la primera de ellas para jugar
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(100000);
+		$text = "<b>¡Bienvenido/a al demigrante casino Demisuke de Telegram!.</b>".PHP_EOL.PHP_EOL;
+		$text = $text."Como es la primera vez que juegas, te regalo 100 fichas para que puedas hacer tus primeras tiradas.".PHP_EOL;
+		$text = $text."Recuerda que puedes conseguir más fichas usando la función !fichas y consultar los premios y las reglas con /ayuda_slots.".PHP_EOL;
+		$text = $text.PHP_EOL."<b>Realizando tu primera tirada... ¡Suerte!</b>";
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		mysql_free_result($result);
+		usleep(500000);
+		// hacer la tirada y hacer el insert completito, grupi 0, que no se olvide...
+		$userTokens = 97;
+		$currTime = time();
+		$slotA = rand(1,10);
+		usleep(rand(10,50));
+		$slotB = rand(1,10);
+		usleep(rand(10,50));
+		$slotC = rand(1,10);
+		$bonus = 0;
+		if($slotA == $slotB && $slotB == $slotC) {
+			$bonus = 0;
+		} else {
+			if($slotA == $slotB) {
+				$bonus = 1;
+			} else if($slotA == $slotB) {
+				$bonus = 1;
+			} else if($slotB == $slotC) {
+				$bonus = 1;
+			} else {
+				$bonus = 0;
+			}
+		}
+		if($bonus == 1) {
+			$bonusTicket = rand(1, 20);
+			if($bonusTicket == 20) {
+				$slotA = 4;
+				$slotB = 4;
+				$slotC = 4;
+			} else if($bonusTicket > 17) {
+				$slotA = 3;
+				$slotB = 3;
+				$slotC = 3;
+			} else if($bonusTicket > 14) {
+				$slotA = 2;
+				$slotB = 2;
+				$slotC = 2;
+			} else if($bonusTicket > 10) {
+				$slotA = 1;
+				$slotB = 1;
+				$slotC = 1;
+			}
+		}
+		$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
+		$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
+		$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
+		$text = $text."⬛️".emojiSlot($slotA + 1).emojiSlot($slotB + 1).emojiSlot($slotC + 1)."⬛️".PHP_EOL;
+		$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
+		// calcular el premio
+		if($slotA == $slotB && $slotB == $slotC) {
+			error_log($logname." got a prize! Prize number ".$slotA);
+			$text = $text."❗️🎉 ¡Enhorabuena! Has ganado ";
+			switch($slotA){
+				case 1: $prize = 10;
+						break;
+				case 2: $prize = 25;
+						break;
+				case 3: $prize = 50;
+						break;
+				case 4: $prize = 75;
+						break;
+				case 5: $prize = 100;
+						break;
+				case 6: $prize = 100;
+						break;
+				case 7: $prize = 250;
+						break;
+				case 8: $prize = 500;
+						break;
+				case 9: $prize = 1000;
+						break;
+				case 10: $prize = 10000;
+						break;
+				default: $prize = 0;
+						break;
+			}
+			$text = $text.$prize." fichas.".PHP_EOL;
+		} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
+			$prize = 3;
+			$text = $text."💪 ¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
+		} else {
+			$prize = 0;
+		}
+		$userTokens = $userTokens + $prize;
+		$text = $text."<b>Fichas que te quedan:</b> ".$userTokens;
+		$query = "INSERT INTO `userbet` (`user_id`, `group_id`, `tokens`, `last_slot`) VALUES ('".$chat_id."', '0', '".$userTokens."', '".$currTime."');";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+	}
+	mysql_free_result($result);
+	mysql_close($link);
+}
+
 function getSticker() {
 	$stickerList = array(
 						"BQADBAADWQADl2BfAAEq3kLUvoh-bAI",
@@ -8541,7 +8856,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.10 creado por @Kamisuke."
+				"@DemisukeBot v3.0.11 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -8581,11 +8896,13 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"<i>Para poder utilizar estas opciones basta con escribir</i><b>@DemisukeBot mensaje</b><i> y aparecerá un menú desplegable con las siguientes opciones:</i>"
 				.PHP_EOL.PHP_EOL.
+				"–<b>Ficha de personaje</b>: <i>Permite mostrar tu ficha de personaje RPG de Los Rocosos de Demisuke en cualquier chat privado o grupo, aunque el bot no sea miembro del grupo.</i>"
+				.PHP_EOL.PHP_EOL.
 				"–<b>Spoiler</b>: <i>El mensaje que escribas se enviará oculto y el receptor no verá su contenido hasta que pulse el botón \"Desvelar spoiler\".</i>"
 				.PHP_EOL.
 				"<i>Si el mensaje se envía como </i><b>@DemisukeBot mensaje1 spoiler: mensaje2</b> <i>el mensaje1 aparecerá públicamente justo encima del botón, a modo de alerta adicional, y el mensaje2 será el que permanezca oculto tras el botón.</i>"
 				.PHP_EOL.PHP_EOL.
-				"–<b>Negrita</b>: <i>El mensaje que escribas se enviará en negrita, sin configuración adicional</i>"
+				"–<b>Negrita</b>: <i>El mensaje que escribas se enviará en negrita, sin configuración adicional.</i>"
 				.PHP_EOL.PHP_EOL.
 				"–<b>Azul</b>: <i>El mensaje que escribas se enviará como si fuera un enlace, haciéndolo aparecer de color azul.</i>"
 				;
@@ -9002,6 +9319,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>El estado del personaje tendrá influencia en las batallas contra jefes si dicho estado favorece o desfavorece alguna de las estadísticas del personaje.</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>Las invocaciones no tendrán influencia en las batallas contra jefes.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>El máximo de puntos que se pueden asignar por cada !gastarpunto es de 1.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Los puntos adicionales son acumulables y no caducan. Puedes asignarlos cuando quieras, pero su uso es de vital importancia para poder derrotar a tus enemigos.</i>"
@@ -9079,6 +9398,8 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>El estado del personaje tendrá influencia en las batallas entre jugadores si dicho estado favorece o desfavorece alguna de las estadísticas del personaje.</i>"
 				.PHP_EOL.PHP_EOL.
+				"▶️<i>Las invocaciones tendrán influencia en los duelos PvP.</i>"
+				.PHP_EOL.PHP_EOL.
 				"▶️<i>Una vez termine la batalla ambos jugadores recibirán el resultado del duelo, y el ganador aparecerá en !guerras para todos los usuarios del bot hasta que otro jugador consiga ganar un duelo más reciente.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>La zona horaria de las fechas mostradas en la función !guerras pertenecen a la hora peninsular española actual (CET o CEST).</i>"
@@ -9123,6 +9444,8 @@ function commandsList($send_id, $mode) {
 				"▶️<i>No podrás entablar guerras PvP contra tu propio clan ni podrás utilizar sus funciones si no te has unido antes.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>El estado de los personajes que participen en una guerra no tendrán influencia en las batallas.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Las invocaciones tendrán influencia en las guerras libradas.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Cualquier miembro del clan podrá enviar una solicitud de guerra a otro clan desde el mismo chat de grupo.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -9330,6 +9653,9 @@ function processMessage($message) {
 			if($text == "/start exp") {
 				error_log($logname." triggered: /start exp.");
 				useExp($chat_id);
+			} else if($text == "/start 777") {
+				error_log($logname." triggered: /start 777.");
+				launchSlot($chat_id);
 			} else {
 				error_log($logname." triggered: /start.");
 				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke (o escribe !ayuda) para saber qué hace este bot. ¡Usando la función /exp podrás comenzar tu aventura RPG en Telegram!"));
@@ -9810,9 +10136,13 @@ function processMessage($message) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(100000);
 			$result = "<b>La máquina tragaperras solo está disponible desde chat privado con</b> @DemisukeBot<b>.</b>";
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result));
+			// kkkkkkkkkkkkkk
+			$playButton = (object) ["text" => "🎰 Jugar ahora", "callback_data" => "%SLOTACTION%777"];
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
 		} else {
 			error_log($logname." triggered in private: !slot.");
+			launchSlot($chat_id);
+			/*
 			// revisar si ya ha jugado, que estara en la userbet con groupi 0
 			$link = dbConnect();
 			$query = "SELECT tokens, last_slot FROM userbet WHERE user_id = ".$chat_id." AND group_id = 0";
@@ -10035,12 +10365,45 @@ function processMessage($message) {
 				$slotB = rand(1,10);
 				usleep(rand(10,50));
 				$slotC = rand(1,10);
-				$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL."⬛️";
-				$emojiA = emojiSlot($slotA);
-				$emojiB = emojiSlot($slotB);
-				$emojiC = emojiSlot($slotC);
-				$text = $text.$emojiA.$emojiB.$emojiC;
-				$text = $text."⬛️".PHP_EOL."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
+				$bonus = 0;
+				if($slotA == $slotB && $slotB == $slotC) {
+					$bonus = 0;
+				} else {
+					if($slotA == $slotB) {
+						$bonus = 1;
+					} else if($slotA == $slotB) {
+						$bonus = 1;
+					} else if($slotB == $slotC) {
+						$bonus = 1;
+					} else {
+						$bonus = 0;
+					}
+				}
+				if($bonus == 1) {
+					$bonusTicket = rand(1, 20);
+					if($bonusTicket == 20) {
+						$slotA = 4;
+						$slotB = 4;
+						$slotC = 4;
+					} else if($bonusTicket > 17) {
+						$slotA = 3;
+						$slotB = 3;
+						$slotC = 3;
+					} else if($bonusTicket > 14) {
+						$slotA = 2;
+						$slotB = 2;
+						$slotC = 2;
+					} else if($bonusTicket > 10) {
+						$slotA = 1;
+						$slotB = 1;
+						$slotC = 1;
+					}
+				}
+				$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
+				$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
+				$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
+				$text = $text."⬛️".emojiSlot($slotA + 1).emojiSlot($slotB + 1).emojiSlot($slotC + 1)."⬛️".PHP_EOL;
+				$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
 				// calcular el premio
 				if($slotA == $slotB && $slotB == $slotC) {
 					error_log($logname." got a prize! Prize number ".$slotA);
@@ -10084,6 +10447,7 @@ function processMessage($message) {
 			}
 			mysql_free_result($result);
 			mysql_close($link);
+			*/
 		}
 	} else if (strpos(strtolower($text), "!exp") !== false || strpos($text, "/exp") === 0 || strpos($text, "/exp@DemisukeBot") === 0) {
 		if($message['chat']['type'] == "private") {
@@ -10748,13 +11112,20 @@ function processMessage($message) {
 			} else {
 				// si no tiene pj, decir que use !exp
 				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				$text = "<b>No se encuentra ningún personaje con el que atacar, utiliza la función !exp para entrenar a tu propio personaje.</b>";
+				$text = "<b>No se encuentra ningún personaje con el que atacar, en breves momentos comenzará tu aventura con tu nuevo personaje.</b>";
 				usleep(100000);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				sleep(1);
+				useExp($chat_id);
 			}
 			// cerrar db
 			mysql_free_result($result);
 			mysql_close($link);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$expButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot, pulsa el botón para jugar con tu personaje.*", "reply_markup" => ["inline_keyboard" => [[$expButton],]]));
 		}
 	} else if (strpos(strtolower($text), "!avatarpj") !== false) {
 		error_log($logname." triggered: !avatarpj.");
@@ -14107,6 +14478,10 @@ if (isset($update["message"])) {
 		$query_id = $update["callback_query"]["id"];
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=exp"));
 		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=exp"));
+	} else if($callback['data'] == "%SLOTACTION%777") {
+		$query_id = $update["callback_query"]["id"];
+		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=777"));
+		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=777"));
 	} else {
 		error_log($logname." clicked on a spoiler button.");
 		$query_id = $update["callback_query"]["id"];

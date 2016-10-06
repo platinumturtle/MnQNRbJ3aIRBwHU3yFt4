@@ -8747,12 +8747,21 @@ function processMessage($message) {
 			error_log($logname." triggered: Notification from Admin Kamisuke.");
 			$destiny_id = substr($message['text'], strpos($message['text'],"(") + 1, strpos($message['text'],")") - strpos($message['text'],"(") - 1);
 			$textToSend = substr($message['text'], strpos($message['text'],")") + 2);
+			$withButton = 0;
 			if($destiny_id == "") {
 				$destiny_id = 6250647;
 			} else if($destiny_id == "canal") {
 				$destiny_id = "@CanalKamisuke";
+			} else if($destiny_id == "rpg") {
+				$destiny_id = "@CanalKamisuke";
+				$withButton = 1;
 			}
-			apiRequest("sendMessage", array('chat_id' => $destiny_id, 'parse_mode' => "Markdown", "text" => $textToSend));
+			if($withButton == 1) {
+				$playButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
+				apiRequest("sendMessage", array('chat_id' => $destiny_id, 'parse_mode' => "Markdown", "text" => $textToSend, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
+			} else {
+				apiRequest("sendMessage", array('chat_id' => $destiny_id, 'parse_mode' => "Markdown", "text" => $textToSend));
+			}
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Se ha enviado el mensaje al destinatario.*"));
 		} else if ($message['chat']['type'] == "private") {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*No he entendido lo que has dicho...".PHP_EOL."Utiliza* /demisuke * o escribe \"!ayuda\" para saber qué comandos son los que entiendo o añádeme a algún grupo y charlamos mejor.*"));

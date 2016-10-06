@@ -5290,7 +5290,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id, $inlineMode = 0) {
 		sleep(1);
 	}
 	$playButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
-	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg, "reply_markup" => ["inline_keyboard" => [[$playButton],]));
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
 }
 
 function failInsult() {
@@ -10191,7 +10191,7 @@ function processMessage($message) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			$expButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
 			usleep(100000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot, pulsa el botón para jugar con tu personaje.*", "reply_markup" => ["inline_keyboard" => [[$expButton],]));
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot, pulsa el botón para jugar con tu personaje.*", "reply_markup" => ["inline_keyboard" => [[$expButton],]]));
 		}
 	} else if (strpos(strtolower($text), "!gastarpunto") !== false) {
 		if($message['chat']['type'] == "private") {

@@ -4985,7 +4985,7 @@ function getClanLevelByMembers($levelNumber) {
 }
 
 function getSummonName($level) {
-	$summon = "Ninguna";
+	$summon = "<i>Ninguna</i>";
 	if($level == 100) {
 		$summon = "<i>Ninguna</i>";
 	}
@@ -5295,11 +5295,12 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id, $inlineMode = 0) {
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	if($fullInfo == 1){
 		usleep(100000);
+		$playButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
 	} else {
 		sleep(1);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
 	}
-	$playButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
-	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
 }
 
 function failInsult() {
@@ -6809,6 +6810,7 @@ function containsCommand($text) {
 						"!apuesta",
 						"!slot",
 						"!777",
+						"/777",
 						"!ludopata",
 						"!ludópata",
 						"!ruleta",
@@ -7142,7 +7144,7 @@ function launchSlot($chat_id) {
 					$prize = 0;
 				}
 				$userTokens = $userTokens + $prize;
-				$text = $text."<b>Fichas que te quedan:</b> ".$userTokens;
+				$text = $text."<b>Fichas que te quedan:</b> ".$userTokens.PHP_EOL."<i>Puedes volver a tirar con</i> /777";
 				$query = "UPDATE `userbet` SET `tokens` = '".$userTokens."', `last_slot` = '".$currTime."' WHERE `user_id` = ".$chat_id." AND group_id = 0";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
@@ -7255,7 +7257,7 @@ function launchSlot($chat_id) {
 			$prize = 0;
 		}
 		$userTokens = $userTokens + $prize;
-		$text = $text."<b>Fichas que te quedan:</b> ".$userTokens;
+		$text = $text."<b>Fichas que te quedan:</b> ".$userTokens.PHP_EOL."<i>Puedes volver a tirar con</i> /777";
 		$query = "INSERT INTO `userbet` (`user_id`, `group_id`, `tokens`, `last_slot`) VALUES ('".$chat_id."', '0', '".$userTokens."', '".$currTime."');";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
@@ -10130,7 +10132,7 @@ function processMessage($message) {
 			mysql_free_result($result);
 			mysql_close($link);
 		}
-	} else if (strpos(strtolower($text), "!slot") !== false || strpos(strtolower($text), "!777") !== false) {
+	} else if (strpos(strtolower($text), "!slot") !== false || strpos(strtolower($text), "!777") !== false ||  strpos($text, "/777@DemisukeBot") === 0 ||  strpos($text, "/777") === 0) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
 			error_log($logname." triggered in a group: !slot.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

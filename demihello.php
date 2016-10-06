@@ -10138,7 +10138,6 @@ function processMessage($message) {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(100000);
 			$result = "<b>La máquina tragaperras solo está disponible desde chat privado con</b> @DemisukeBot<b>.</b>";
-			// kkkkkkkkkkkkkk
 			$playButton = (object) ["text" => "🎰 Jugar ahora", "callback_data" => "%SLOTACTION%777"];
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
 		} else {

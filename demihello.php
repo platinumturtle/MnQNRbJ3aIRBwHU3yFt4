@@ -4187,6 +4187,101 @@ function chooseBoss($level) {
 	return $id;
 }
 
+function useExp ($chat_id) {
+	// iniciar db y mirar si tiene pj
+	$link = dbConnect();
+	$randomizer = rand(0, 100000);
+	$randMultiplier = rand(1, 3);
+	$randomizer = $randomizer * $randMultiplier;
+	usleep($randomizer);
+	$query = "SELECT last_exp_check FROM playerbattle WHERE user_id = ".$chat_id;
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	if(isset($row['last_exp_check'])){
+		$currTime = time();
+		$checkDouble = $currTime - 4;
+		//error_log("CURRTIME".$currTime." - TIME ".$checkDouble." - LAST EXP ".$row['last_exp']);
+		if($checkDouble > $row['last_exp_check']) {
+			//$lastExpCheck = $row['last_exp'];
+			mysql_free_result($result);
+			$query = "UPDATE `playerbattle` SET `last_exp_check` = '".$currTime."' WHERE `user_id` = ".$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			mysql_free_result($result);
+			$query = "SELECT last_exp, level, exp_points, critic, bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS 'total_extra' FROM playerbattle WHERE user_id = ".$chat_id;
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			// si tiene pj mirar si han pasado 5min
+			if(($currTime - 299) > $row['last_exp']) {
+				// si si han pasado, mirar el nivel 
+					// segun el nivel, dar una experiencia u otra, con una funcion que muestre un texto al chat id enviado y devuelva la exp random final
+					$expAcquired = getPlayerExp($row['level'], $chat_id);
+					$newExp = $row['exp_points'] + $expAcquired;
+					$newLevel = getLevelFromExp($newExp);
+					$critic = $row['critic'];
+					$bottles = $row['bottles'];
+					$totalExtraPoints = $row['total_extra'];
+					mysql_free_result($result);	
+					//error_log("COMPROBAR ".$expAcquired." ".$newExp." ".$newLevel." ".$row['exp_points']." ".$row['level']);
+					// comprobar si con la nueva exp sube de nivel
+					if($newLevel != $row['level']){
+						error_log($logname." is now level ".$newLevel.".");
+						levelUp($newLevel, $newExp, $critic, $bottles, $totalExtraPoints, $link, $chat_id);
+						//si sube de nivel, avisar con un mensaje, buscar la nueva ropa, darle los nuevos puntos (el critico max 40), la exp max 8m, los de gastar punto y actualizar la base de datos (al 10 avisar de que se cambia la exp ganada)
+							// si en este nuevo nivel desbloquea alguna funcion nueva, enviar mensaje
+							// mostrar los nuevos stats con una funcion, que tenga monospace (un !pj mini quizas)
+					} else {
+						// sumar exp y last exp
+						$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					}
+					// mostrar mensaje del nivel, la exp total, una barra y la exp necesaria para subir de nivel
+					mysql_free_result($result);
+					$user_id = $message['from']['id'];
+					getPlayerInfo(0, $link, $chat_id, $user_id);
+			} else {
+				// si no han pasado, avisar de que no corra, que se espere 5min
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				$currTime = $currTime - $row['last_exp'];
+				if($currTime > 239) {
+					$energy = 80;
+				} else if ($currTime > 179) {
+					$energy = 60;
+				} else if ($currTime > 119) {
+					$energy = 40;
+				} else if ($currTime > 59) {
+					$energy = 20;
+				} else {
+					$energy = 5;
+				}
+				$text = "*Tu rocoso personaje se encuentra descansando de su última tarea, espera a que recupere toda su energía, que todavía está al ".$energy."%.*";
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
+			}
+		} else {
+			error_log($logname." triggered !exp in double check and failed.");
+		}
+	} else {
+		error_log($logname." is a new player!");
+		// si no tiene, dar mensaje de bienvenida, explicar un poco las normas y eso y que se divierta
+		// crear un nuevo pj con 0 de experiencia y todo de base
+		mysql_free_result($result);
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		$query = "INSERT INTO `playerbattle` (`user_id`) VALUES ('".$chat_id."');";
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$text = "<b>¡Bienvenido/a a 'Los Rocosos de Demisuke'!</b>".PHP_EOL.PHP_EOL;
+		$text = $text."<i>Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura.</i>".PHP_EOL;
+		$text = $text."<i>Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!</i>".PHP_EOL;
+		$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar /exp (o !exp)  para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
+		$text = $text."<i>Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!</i>".PHP_EOL;
+		$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
+		usleep(100000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+	}
+	// cerrar la db
+	mysql_free_result($result);
+	mysql_close($link);
+}
+
 function removeEmoji($text){
     $result = preg_replace('/([0-9|#][\x{20E3}])|[\x{00ae}|\x{00a9}|\x{203C}|\x{2047}|\x{2048}|\x{2049}|\x{3030}|\x{303D}|\x{2139}|\x{2122}|\x{3297}|\x{3299}][\x{FE00}-\x{FEFF}]?|[\x{2190}-\x{21FF}][\x{FE00}-\x{FEFF}]?|[\x{2300}-\x{23FF}][\x{FE00}-\x{FEFF}]?|[\x{2460}-\x{24FF}][\x{FE00}-\x{FEFF}]?|[\x{25A0}-\x{25FF}][\x{FE00}-\x{FEFF}]?|[\x{2600}-\x{27BF}][\x{FE00}-\x{FEFF}]?|[\x{2900}-\x{297F}][\x{FE00}-\x{FEFF}]?|[\x{2B00}-\x{2BF0}][\x{FE00}-\x{FEFF}]?|[\x{1F000}-\x{1F6FF}][\x{FE00}-\x{FEFF}]?/u', '', $text);
 	$result = str_replace("*⃣‍", "", $result);
@@ -4890,7 +4985,7 @@ function getClanLevelByMembers($levelNumber) {
 	return $level;
 }
 
-function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
+function getPlayerInfo($fullInfo, $link, $chat_id, $user_id, $inlineMode = 0) {
 	$query = "SELECT pb.group_id, pb.exp_points, pb.level, pb.extra_points, pb.hp, pb.attack, pb.defense, pb.critic, pb.speed, pb.helmet, pb.body, pb.boots, pb.weapon, pb.shield, pb.avatar, pb.bottles, pb.pvp_allowed, pb.pvp_wins, pb.pvp_group_wins, pb.last_boss, pb.war_mvp, COALESCE( hb.total, 0 ) AS  'hero_power', COALESCE( ub.tokens, 0 ) AS  'tokens' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id LEFT JOIN ( SELECT tokens, user_id, group_id FROM userbet )ub ON pb.user_id = ub.user_id AND ub.group_id =0 WHERE pb.user_id = '".$user_id."'";
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
@@ -5182,16 +5277,20 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id) {
 			$msg = $msg."🛡 ".getItemName(5, $shield);
 		}
 	} else {
-		$msg = "<b>Todavía no has creado tu propio personaje. Utiliza la función !exp o </b>/exp<b> desde chat privado con el bot para comenzar a jugar.</b>";
+		$msg = "<b>¡Obtén tu propia ficha de personaje RPG en Telegram jugando a Los Rocosos de Demisuke y salva al mundo luchando contra grandes enemigos, contra tus amigos en duelos PvP o contra otros clanes declarando guerras!</b>";
 	}
 	mysql_free_result($result);
+	if($inlineMode == 1) {
+		return $msg;
+	}
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	if($fullInfo == 1){
 		usleep(100000);
 	} else {
 		sleep(1);
 	}
-	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+	$playButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg, "reply_markup" => ["inline_keyboard" => [[$playButton],]));
 }
 
 function failInsult() {
@@ -5635,7 +5734,10 @@ function rollDice($id) {
 	apiRequest("sendMessage", array('chat_id' => $id, 'parse_mode' => "Markdown", "text" => "*".$result[$n]."*"));
 }
 
-function inlineOptions($text, $username) {
+function inlineOptions($text, $username, $user_id = 0) {
+	$link = dbConnect();
+	$player = getPlayerInfo(1, $link, 0, $user_id, 1)
+	mysql_close($link);
 	$boldText = "<b>".$text."</b>";
 	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
 	$spoilerText = "<b>¡".$username." tiene un secreto que revelarte!</b>";
@@ -5667,9 +5769,26 @@ function inlineOptions($text, $username) {
 	}
 	$hiddenText = mb_strimwidth($hiddenText, 0, 64);
 	$keyboardButton = (object) ["text" => "Desvelar spoiler", "callback_data" => $hiddenText];
+	$playButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
 	$buttons[] = [
 		"type" => "article",
 		"id" => "0",
+		"title" => "Enviar ficha de personaje RPG",
+		"description" => "Si no tienes, aparecerá un botón para jugar.",
+		"message_text" => "<b>Próximamente</b>",
+		"parse_mode" => "HTML",
+		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_rpg.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
+		"reply_markup" => [
+			"inline_keyboard" => [[
+				$playButton,
+			]] 
+		], 
+	];
+	$buttons[] = [
+		"type" => "article",
+		"id" => "1",
 		"title" => "Enviar spoiler",
 		"description" => $descriptionText,
 		"message_text" => $spoilerText,
@@ -5685,7 +5804,7 @@ function inlineOptions($text, $username) {
 	];
     $buttons[] = [
 		"type" => "article",
-		"id" => "1",
+		"id" => "2",
 		"title" => "Enviar en negrita",
 		"description" => "Se enviará el texto en negrita.",
 		"message_text" => $boldText,
@@ -5696,7 +5815,7 @@ function inlineOptions($text, $username) {
     ];
 	$buttons[] = [
 		"type" => "article",
-		"id" => "2",
+		"id" => "3",
 		"title" => "Enviar en azul",
 		"description" => "El texto enviado parecerá un enlace.",
 		"message_text" => $blueText,
@@ -5707,6 +5826,30 @@ function inlineOptions($text, $username) {
 		"thumb_height" => 100,
     ];
 	return $buttons;	
+}
+
+function inlineRPG($user_id = 0) {
+	$link = dbConnect();
+	$player = getPlayerInfo(1, $link, 0, $user_id, 1)
+	mysql_close($link);
+	$playButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
+	$buttons[] = [
+		"type" => "article",
+		"id" => "0",
+		"title" => "Enviar ficha de personaje RPG",
+		"description" => "Si no tienes, aparecerá un botón para jugar.",
+		"message_text" => "<b>Próximamente</b>",
+		"parse_mode" => "HTML",
+		"thumb_url" => "https://demisuke-kamigram.rhcloud.com/demisuke_rpg.png",
+		"thumb_width" => 100,
+		"thumb_height" => 100,
+		"reply_markup" => [
+			"inline_keyboard" => [[
+				$playButton,
+			]] 
+		], 
+	];
+	return $buttons;
 }
 
 function checkPoint($hour, $chat_id, $link, $logname, $currentTime) {
@@ -9179,13 +9322,20 @@ function processMessage($message) {
 	}
 
     if (strpos($text, "/start") === 0) {
-      //apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => 'Hello', 'reply_markup' => array(
-      //  'keyboard' => array(array('Hello', 'Hi')),
-      //  'one_time_keyboard' => true,
-      //  'resize_keyboard' => true)));
-	  error_log($logname." triggered: /start.");
-	  apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke (o escribe !ayuda) para saber qué hace este bot. ¡Usando la función /exp podrás comenzar tu aventura RPG en Telegram!"));
-    } else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
+		//apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => 'Hello', 'reply_markup' => array(
+		//  'keyboard' => array(array('Hello', 'Hi')),
+		//  'one_time_keyboard' => true,
+		//  'resize_keyboard' => true)));
+		if($message['chat']['type'] == "private") {
+			if($text == "/start exp") {
+				error_log($logname." triggered: /start exp.");
+				useExp($chat_id);
+			} else {
+				error_log($logname." triggered: /start.");
+				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke (o escribe !ayuda) para saber qué hace este bot. ¡Usando la función /exp podrás comenzar tu aventura RPG en Telegram!"));
+			}
+		}
+	} else if (strpos($text, "/demisuke") === 0 || strpos($text, "/demisuke@DemisukeBot") === 0 || strpos(strtolower($text), "!ayuda") !== false) {
 		error_log($logname." triggered: !ayuda.");
 		commandsList($chat_id, "main");
     } else if (strpos($text, "/ayuda_modo") === 0 || strpos($text, "/ayuda_modo@DemisukeBot") === 0 || 
@@ -9938,6 +10088,10 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!exp") !== false || strpos($text, "/exp") === 0 || strpos($text, "/exp@DemisukeBot") === 0) {
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !exp.");
+			useExp($chat_id);
+			
+			/*
+			
 			// iniciar db y mirar si tiene pj
 			$link = dbConnect();
 			$randomizer = rand(0, 100000);
@@ -10030,10 +10184,14 @@ function processMessage($message) {
 			// cerrar la db
 			mysql_free_result($result);
 			mysql_close($link);
+			
+			
+			*/
 		} else {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			$expButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
 			usleep(100000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot.*"));
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot, pulsa el botón para jugar con tu personaje.*", "reply_markup" => ["inline_keyboard" => [[$expButton],]));
 		}
 	} else if (strpos(strtolower($text), "!gastarpunto") !== false) {
 		if($message['chat']['type'] == "private") {
@@ -13902,11 +14060,14 @@ if (isset($update["message"])) {
 	}
 	error_log($logname." starts inline query: ".$update["inline_query"]["query"]);
 	$queryId = $update["inline_query"]["id"];
+	$user_id = $update["inline_query"]['from']['id'];
 	if (isset($update["inline_query"]["query"]) && $update["inline_query"]["query"] !== "") {
 		$text = $update["inline_query"]["query"];
 		$text = str_replace("<", "", $text);
 		$text = str_replace(">", "", $text);
-		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text,$logname), "cache_time" => 60,]);
+		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineOptions($text,$logname,$user_id), "cache_time" => 60,]);
+	} else {
+		apiRequestJson("answerInlineQuery", ["inline_query_id" => $queryId, "results" => inlineRPG($user_id), "cache_time" => 60,]);
 	}
 } else if(isset($update["callback_query"])) {
 	debugMode($update);
@@ -13942,6 +14103,9 @@ if (isset($update["message"])) {
 		}else {
 			apiRequestJson("editMessageText", ["chat_id" => $callback['message']['chat']['id'], "message_id" => $callback['message']['message_id'], "text" => "*🌚 ¡Ha salido cruz!*", 'parse_mode' => "Markdown",]);
 		}
+	} else if($callback['data'] == "%RPGACTION%EXP") {
+		$query_id = $update["callback_query"]["id"];
+		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemitesterBot?start=exp"));
 	} else {
 		error_log($logname." clicked on a spoiler button.");
 		$query_id = $update["callback_query"]["id"];

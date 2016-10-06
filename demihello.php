@@ -5736,7 +5736,7 @@ function rollDice($id) {
 
 function inlineOptions($text, $username, $user_id = 0) {
 	$link = dbConnect();
-	$player = getPlayerInfo(1, $link, 0, $user_id, 1)
+	$player = getPlayerInfo(1, $link, 0, $user_id, 1);
 	mysql_close($link);
 	$boldText = "<b>".$text."</b>";
 	$blueText = "<a href='http://telegram.me/DemisukeBot'>".$text."</a>";
@@ -5830,7 +5830,7 @@ function inlineOptions($text, $username, $user_id = 0) {
 
 function inlineRPG($user_id = 0) {
 	$link = dbConnect();
-	$player = getPlayerInfo(1, $link, 0, $user_id, 1)
+	$player = getPlayerInfo(1, $link, 0, $user_id, 1);
 	mysql_close($link);
 	$playButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
 	$buttons[] = [

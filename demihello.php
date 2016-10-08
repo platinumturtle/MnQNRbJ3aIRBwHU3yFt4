@@ -4824,6 +4824,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	} else {
 		$newExp = 0;
 	}
+	/*
 	$logResult = bossBattleResults($win, $lucky);
 	$imageURL = rand(0,29);
 	$imageShortURL = "/img/battle_".$imageURL.".jpg";
@@ -4865,22 +4866,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($player_width, $player_height) = getimagesize($playerAvatar);
 	list($boss_width, $boss_height) = getimagesize($bossAvatar);
-	/*
-	if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
-		error_log("Loading image ".$playerAvatar);
-	} else {
-		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
-		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
-		list($player_width, $player_height) = getimagesize($playerAvatar);
-	}
-	if(is_numeric($boss_width) && is_numeric($boss_height) && $boss_width > 0 && $boss_height > 0) {
-		error_log("Loading image ".$bossAvatar);
-	} else {
-		$boss_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
-		$bossAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
-		list($boss_width, $boss_height) = getimagesize($bossAvatar);
-	}
-	*/
 	$player_ratio = $player_width / $player_height;
 	if($player_ratio > 1) {
 		$player_scalewidth = 250;
@@ -4994,6 +4979,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	$result=curl_exec ($ch);
 	curl_close ($ch);
 	imagedestroy($res_image);
+	*/
 	mysql_free_result($result);
 	return $newExp;
 }
@@ -11772,7 +11758,6 @@ function processMessage($message) {
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							mysql_free_result($result);
 							sleep(1);
-							/*
 							// mostrar el resumen de batalla
 							$winnerName = removeEmoji($winnerName);
 							$loserName = removeEmoji($loserName);
@@ -11944,7 +11929,6 @@ function processMessage($message) {
 							$result_curl=curl_exec ($ch);
 							curl_close ($ch);
 							imagedestroy($res_image);
-							*/
 							$bossTime = time() - (3600*6) + 60;
 							$query = "UPDATE `playerbattle` SET `last_boss` = '".$bossTime."' WHERE `user_id` = '".$winner_id."'";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

@@ -4824,7 +4824,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	} else {
 		$newExp = 0;
 	}
-	/*
 	$logResult = bossBattleResults($win, $lucky);
 	$imageURL = rand(0,29);
 	$imageShortURL = "/img/battle_".$imageURL.".jpg";
@@ -4979,7 +4978,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	$result=curl_exec ($ch);
 	curl_close ($ch);
 	imagedestroy($res_image);
-	*/
 	mysql_free_result($result);
 	return $newExp;
 }

@@ -4059,7 +4059,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	$tempText = "*El resultado completo de la batalla en formato imagen no está disponible por mantenimiento.*".PHP_EOL.PHP_EOL.$logResult;
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	usleep(100000);
-	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $logResult));
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $tempText));
 	/*
 	$imageURL = rand(0,29);
 	$imageShortURL = "/img/battle_".$imageURL.".jpg";

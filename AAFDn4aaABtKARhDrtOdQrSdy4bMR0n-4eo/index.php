@@ -6270,7 +6270,7 @@ function showMode($group_id, $newGroup = false) {
 	apiRequest("sendMessage", array('chat_id' => $group_id, 'parse_mode' => "HTML", "text" => $message));			
 }
 
-function launchSlot($chat_id) {
+function launchSlot($chat_id, $logname) {
 	// revisar si ya ha jugado, que estara en la userbet con groupi 0
 	$link = dbConnect();
 	$query = "SELECT tokens, last_slot FROM userbet WHERE user_id = ".$chat_id." AND group_id = 0";
@@ -9111,7 +9111,7 @@ function processMessage($message) {
 				useExp($chat_id);
 			} else if($text == "/start 777") {
 				error_log($logname." triggered: /start 777.");
-				launchSlot($chat_id);
+				launchSlot($chat_id, $logname);
 			} else {
 				error_log($logname." triggered: /start.");
 				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke (o escribe !ayuda) para saber qué hace este bot. ¡Usando la función /exp podrás comenzar tu aventura RPG en Telegram!"));
@@ -9650,12 +9650,17 @@ function processMessage($message) {
 			error_log($logname." triggered in a group: !slot.");
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(100000);
-			$result = "<b>La máquina tragaperras solo está disponible desde chat privado con</b> @DemisukeBot<b>.</b>";
-			$playButton = (object) ["text" => "🎰 Jugar ahora", "callback_data" => "%SLOTACTION%777"];
+			$result = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
+			$result = $result."⬛️".emojiSlot(9).emojiSlot(9).emojiSlot(9)."⬛️".PHP_EOL;
+			$result = $result."▶️".emojiSlot(10).emojiSlot(10).emojiSlot(10)."◀️".PHP_EOL;
+			$result = $result."⬛️".emojiSlot(1).emojiSlot(1).emojiSlot(1)."⬛️".PHP_EOL;
+			$result = $result."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
+			$result = $result."<b>🎰 La máquina tragaperras solo está disponible desde chat privado.</b>";
+			$playButton = (object) ["text" => "📍 Jugar ahora", "callback_data" => "%SLOTACTION%777"];
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
 		} else {
 			error_log($logname." triggered in private: !slot.");
-			launchSlot($chat_id);
+			launchSlot($chat_id, $logname);
 		}
 	} else if (strpos(strtolower($text), "!exp") !== false || strpos($text, "/exp") === 0 || strpos($text, "/exp@DemisukeBot") === 0) {
 		if($message['chat']['type'] == "private") {

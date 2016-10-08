@@ -3855,7 +3855,7 @@ function bossBattleResults($win, $lucky) {
 										"Combate de críticos. Tu rival te ha golpeado con mucha dureza y tú has contraatacado con golpes críticos, de no ser por ellos ahora estarías mordiendo el polvo...",
 										"¡Tienes demasiado poder de ataque! Tu rival era superior a ti, pero has logrado luchar con el 120% de tu fuerza ignorando toda tu defensa. Te la has jugado a una carta y te has llevado la victoria.",
 										"Esto no era lo esperado, tu rival era bastante mas poderoso de lo habitual, has tenido que sudar sangre para ganar esta batalla, has estado todo el rato contra las cuerdas.",
-										"¡Heróica batalla! Tu rival era mejor que tú, y lo ha demostrado a lo largo de todo el combate, pero cuando ya estabas moribundo en el suelo has conseguido derribar al rival y le has dado la vuelta a la tortilla.",
+										"¡Heroica batalla! Tu rival era mejor que tú, y lo ha demostrado a lo largo de todo el combate, pero cuando ya estabas moribundo en el suelo has conseguido derribar al rival y le has dado la vuelta a la tortilla.",
 										"Combate muy igualado, las barras de vida de tu rival y tú disminuían a la misma velocidad. Eso beneficiaba al rival, algo superior a ti, pero aun así te has logrado llevar la victoria.",
 										"¡Menuda locura! Tu rival ha sido superior a ti, pero una serie de combos finales con golpes críticos ha logrado contrarrestar esa falta de poder y ha provocado que la victoria sea tuya."
 										);
@@ -10257,9 +10257,12 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		}
 	} else if (strpos(strtolower($text), "!atacar") !== false) {
-		/*
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !atacar.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Función cerrada temporalmente por mantenimiento. Por favor, inténtalo más tarde.*"));
+			/*
 			// abrir db
 			$link = dbConnect();
 			$randomizer = rand(0, 100000);
@@ -10409,13 +10412,13 @@ function processMessage($message) {
 			// cerrar db
 			mysql_free_result($result);
 			mysql_close($link);
+			*/
 		} else {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			$expButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot, pulsa el botón para jugar con tu personaje.*", "reply_markup" => ["inline_keyboard" => [[$expButton],]]));
 		}
-		*/
 	} else if (strpos(strtolower($text), "!avatarpj") !== false) {
 		error_log($logname." triggered: !avatarpj.");
 		// revisar si es una url correcta (250 caracateres, http:// o https:/ y .jpg, .png o .gif)
@@ -11056,7 +11059,7 @@ function processMessage($message) {
 							$query = "UPDATE `playerbattle` SET `last_boss` = '".$bossTime."' WHERE `user_id` = '".$winner_id."'";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 							apiRequest("sendChatAction", array('chat_id' => $winner_id, 'action' => "typing"));
-							$msg = "💪 <b>¡Has acabado sin energía, pero has atraído a los jefes de tu zona con tu heróica batalla y podrás enfrentarte a uno de ellos en unos segundos!</b>";
+							$msg = "💪 <b>¡Has acabado sin energía, pero has atraído a los jefes de tu zona con tu heroica batalla y podrás enfrentarte a uno de ellos en unos segundos!</b>";
 							usleep(100000);
 							apiRequest("sendMessage", array('chat_id' => $winner_id, 'parse_mode' => "HTML", "text" => $msg));
 						} else {

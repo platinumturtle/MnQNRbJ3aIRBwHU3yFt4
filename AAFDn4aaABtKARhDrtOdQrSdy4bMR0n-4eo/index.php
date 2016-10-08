@@ -4056,6 +4056,11 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 		$newExp = 0;
 	}
 	$logResult = bossBattleResults($win, $lucky);
+	$tempText = "*El resultado completo de la batalla en formato imagen no está disponible por mantenimiento.*".PHP_EOL.PHP_EOL.$logResult;
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(100000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $logResult));
+	/*
 	$imageURL = rand(0,29);
 	$imageShortURL = "/img/battle_".$imageURL.".jpg";
 	$imageURL = dirname(__FILE__).$imageShortURL;
@@ -4096,22 +4101,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	list($base_width, $base_height) = getimagesize('https://demisuke-kamigram.rhcloud.com/img/battle.jpg');
 	list($player_width, $player_height) = getimagesize($playerAvatar);
 	list($boss_width, $boss_height) = getimagesize($bossAvatar);
-	/*
-	if(is_numeric($player_width) && is_numeric($player_height) && $player_width > 0 && $player_height > 0) {
-		error_log("Loading image ".$playerAvatar);
-	} else {
-		$player_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
-		$playerAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
-		list($player_width, $player_height) = getimagesize($playerAvatar);
-	}
-	if(is_numeric($boss_width) && is_numeric($boss_height) && $boss_width > 0 && $boss_height > 0) {
-		error_log("Loading image ".$bossAvatar);
-	} else {
-		$boss_image = imagecreatefrompng('https://demisuke-kamigram.rhcloud.com/img/avatar.png');
-		$bossAvatar = "https://demisuke-kamigram.rhcloud.com/img/avatar.png";
-		list($boss_width, $boss_height) = getimagesize($bossAvatar);
-	}
-	*/
 	$player_ratio = $player_width / $player_height;
 	if($player_ratio > 1) {
 		$player_scalewidth = 250;
@@ -4225,6 +4214,7 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	$result=curl_exec ($ch);
 	curl_close ($ch);
 	imagedestroy($res_image);
+	*/
 	mysql_free_result($result);
 	return $newExp;
 }
@@ -10259,10 +10249,6 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!atacar") !== false) {
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !atacar.");
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			usleep(100000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Función cerrada temporalmente por mantenimiento. Por favor, inténtalo más tarde.*"));
-			/*
 			// abrir db
 			$link = dbConnect();
 			$randomizer = rand(0, 100000);
@@ -10412,7 +10398,6 @@ function processMessage($message) {
 			// cerrar db
 			mysql_free_result($result);
 			mysql_close($link);
-			*/
 		} else {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			$expButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];

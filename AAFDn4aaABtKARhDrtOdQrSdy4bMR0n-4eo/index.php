@@ -10257,6 +10257,7 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		}
 	} else if (strpos(strtolower($text), "!atacar") !== false) {
+		/*
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !atacar.");
 			// abrir db
@@ -10414,6 +10415,7 @@ function processMessage($message) {
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot, pulsa el botón para jugar con tu personaje.*", "reply_markup" => ["inline_keyboard" => [[$expButton],]]));
 		}
+		*/
 	} else if (strpos(strtolower($text), "!avatarpj") !== false) {
 		error_log($logname." triggered: !avatarpj.");
 		// revisar si es una url correcta (250 caracateres, http:// o https:/ y .jpg, .png o .gif)

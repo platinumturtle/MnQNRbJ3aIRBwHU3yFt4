@@ -3483,7 +3483,7 @@ function chooseBoss($level) {
 	return $id;
 }
 
-function useExp ($chat_id) {
+function useExp ($chat_id, $logname = "user") {
 	// iniciar db y mirar si tiene pj
 	$link = dbConnect();
 	$randomizer = rand(0, 100000);
@@ -9281,7 +9281,7 @@ function processMessage($message) {
 		if($message['chat']['type'] == "private") {
 			if($text == "/start exp") {
 				error_log($logname." triggered: /start exp.");
-				useExp($chat_id);
+				useExp($chat_id, $logname);
 			} else if($text == "/start 777") {
 				error_log($logname." triggered: /start 777.");
 				launchSlot($chat_id, $logname);
@@ -9838,7 +9838,7 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!exp") !== false || strpos($text, "/exp") === 0 || strpos($text, "/exp@DemisukeBot") === 0) {
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !exp.");
-			useExp($chat_id);
+			useExp($chat_id, $logname);
 		} else {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			$expButton = (object) ["text" => "🎮 Jugar ahora", "callback_data" => "%RPGACTION%EXP"];
@@ -10257,7 +10257,6 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $msg));
 		}
 	} else if (strpos(strtolower($text), "!atacar") !== false) {
-		/*
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !atacar.");
 			// abrir db
@@ -10404,7 +10403,7 @@ function processMessage($message) {
 				usleep(100000);
 				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 				sleep(1);
-				useExp($chat_id);
+				useExp($chat_id, $logname);
 			}
 			// cerrar db
 			mysql_free_result($result);
@@ -10415,7 +10414,6 @@ function processMessage($message) {
 			usleep(100000);
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot, pulsa el botón para jugar con tu personaje.*", "reply_markup" => ["inline_keyboard" => [[$expButton],]]));
 		}
-		*/
 	} else if (strpos(strtolower($text), "!avatarpj") !== false) {
 		error_log($logname." triggered: !avatarpj.");
 		// revisar si es una url correcta (250 caracateres, http:// o https:/ y .jpg, .png o .gif)

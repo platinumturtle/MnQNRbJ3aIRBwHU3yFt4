@@ -4056,11 +4056,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 		$newExp = 0;
 	}
 	$logResult = bossBattleResults($win, $lucky);
-	$tempText = "*El resultado completo de la batalla en formato imagen no está disponible por mantenimiento.*".PHP_EOL.PHP_EOL.$logResult;
-	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-	usleep(100000);
-	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $tempText));
-	/*
 	$imageURL = rand(0,29);
 	$imageShortURL = "/img/battle_".$imageURL.".jpg";
 	$imageURL = dirname(__FILE__).$imageShortURL;
@@ -4214,7 +4209,6 @@ function bossBattle($chat_id, $link, $level, $totalPower, $playerName, $playerAv
 	$result=curl_exec ($ch);
 	curl_close ($ch);
 	imagedestroy($res_image);
-	*/
 	mysql_free_result($result);
 	return $newExp;
 }

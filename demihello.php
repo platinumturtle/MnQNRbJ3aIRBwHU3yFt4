@@ -14366,9 +14366,9 @@ if (isset($update["message"])) {
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=777"));
 		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=777"));
 	} else if(strpos($callback['data'], "%SLOTACTION%ROLEPLAY%") === 0) {
-		$option = substr(strpos($callback['data'], 21, 1);
-		$optionTime = substr(strpos($callback['data'], 22, 10);
-		$optionChance = substr(strpos($callback['data'], 32);
+		$option = substr($callback['data'], 21, 1);
+		$optionTime = substr($callback['data'], 22, 10);
+		$optionChance = substr($callback['data'], 32);
 		apiRequest("editMessageText", ["chat_id" => $chat_id, "message_id" => $callback['message']['message_id'], "text" => $option]);
 		$chat_id = $update["callback_query"]["from"]["id"];
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

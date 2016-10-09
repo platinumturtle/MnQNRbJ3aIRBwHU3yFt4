@@ -6056,8 +6056,16 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	exit;
 }
 
-function rolePlay($chat_id, $logname) {
+function rolePlay($chat_id,) {
 	// kkkkkkkkkkkkkkkkkkkkkk
+	
+	// control anti floodeo
+	
+		// control de medio minuto
+			
+			// control de nivel (10) (20) (30) (100)
+			
+				// control de zona
 	$msg = "<b>🎲 PREGUNTA DE ROL 🎲</b>";
 	$msg = $msg.PHP_EOL.PHP_EOL."Enunciado de la pregunta.";
 	$msg = $msg.PHP_EOL.PHP_EOL."<b>Respuestas:</b>";
@@ -9844,7 +9852,7 @@ function processMessage($message) {
 				launchSlot($chat_id, $logname);
 			}  else if($text == "/start rol") {
 				error_log($logname." triggered: /start rol.");
-				rolePlay($chat_id, $logname);
+				rolePlay($chat_id);
 			} else {
 				error_log($logname." triggered: /start.");
 				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke (o escribe !ayuda) para saber qué hace este bot. ¡Usando la función /exp podrás comenzar tu aventura RPG en Telegram!"));
@@ -10346,7 +10354,7 @@ function processMessage($message) {
 			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
 		} else {
 			error_log($logname." triggered in private: !rol.");
-			rolePlay($chat_id, $logname);
+			rolePlay($chat_id);
 		}
 	} else if (strpos(strtolower($text), "!exp") !== false || strpos($text, "/exp") === 0 || strpos($text, "/exp@DemisukeBot") === 0) {
 		if($message['chat']['type'] == "private") {
@@ -14369,14 +14377,13 @@ if (isset($update["message"])) {
 		$option = substr($callback['data'], 21, 1);
 		$optionTime = substr($callback['data'], 22, 10);
 		$optionChance = substr($callback['data'], 32);
-		apiRequest("editMessageText", ["chat_id" => $chat_id, "message_id" => $callback['message']['message_id'], "text" => $option]);
 		$chat_id = $update["callback_query"]["from"]["id"];
+		apiRequest("editMessageText", ["chat_id" => $chat_id, "message_id" => $callback['message']['message_id'], "text" => $option]);
+		// control de tiempo
+			// recompensa
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(250000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Resultado</b>"));	
-		//$query_id = $update["callback_query"]["id"];
-		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=777"));
-		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=777"));
 	} else if($callback['data'] == "%RPGACTION%ROLE") {
 		$query_id = $update["callback_query"]["id"];
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=rol"));

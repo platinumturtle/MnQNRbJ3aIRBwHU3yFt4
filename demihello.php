@@ -6056,6 +6056,30 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	exit;
 }
 
+function rolePlay($chat_id, $logname) {
+	// kkkkkkkkkkkkkkkkkkkkkk
+	$msg = "<b>🎲 PREGUNTA DE ROL 🎲</b>";
+	$msg = $msg."Pregunta.";
+	$msg = $msg.PHP_EOL.PHP_EOL"<b>Respuestas:</b>";
+	$msg = $msg.PHP_EOL."<i>♥ Respuesta</i>";
+	$msg = $msg.PHP_EOL."<i>♦ Respuesta</i>";
+	$msg = $msg.PHP_EOL."<i>♣ Respuesta</i>";
+	$msg = $msg.PHP_EOL."<i>♠ Respuesta</i>";
+	$msg = $msg.PHP_EOL.PHP_EOL."<i>Tienes un minuto para escoger tu respuesta.</i>";
+	$currTime = time();
+	$chanceA = 0;
+	$chanceB = 0;
+	$chanceC = 0;
+	$chanceD = 0;
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(100000);
+	$optionA = (object) ["text" => "♥", "callback_data" => "%RPGACTION%ROLEPLAY%A".$currTime.$chanceA];
+	$optionB = (object) ["text" => "♥", "callback_data" => "%RPGACTION%ROLEPLAY%B".$currTime.$chanceB];
+	$optionC = (object) ["text" => "♥", "callback_data" => "%RPGACTION%ROLEPLAY%C".$currTime.$chanceC];
+	$optionD = (object) ["text" => "♥", "callback_data" => "%RPGACTION%ROLEPLAY%D".$currTime.$chanceD];
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg, "reply_markup" => ["inline_keyboard" => [[$optionA, $optionB],[$optionC, $optionD]]]));
+}
+
 function getRockMan($chat_id) {
 	$link = dbConnect();
 	$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
@@ -6967,6 +6991,8 @@ function containsCommand($text) {
 						"!slot",
 						"!777",
 						"/777",
+						"!rol",
+						"/rol",
 						"!ludopata",
 						"!ludópata",
 						"!ruleta",
@@ -9816,6 +9842,9 @@ function processMessage($message) {
 			} else if($text == "/start 777") {
 				error_log($logname." triggered: /start 777.");
 				launchSlot($chat_id, $logname);
+			}  else if($text == "/start rol") {
+				error_log($logname." triggered: /start rol.");
+				rolePlay($chat_id, $logname);
 			} else {
 				error_log($logname." triggered: /start.");
 				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke (o escribe !ayuda) para saber qué hace este bot. ¡Usando la función /exp podrás comenzar tu aventura RPG en Telegram!"));
@@ -10306,312 +10335,18 @@ function processMessage($message) {
 		} else {
 			error_log($logname." triggered in private: !slot.");
 			launchSlot($chat_id, $logname);
-			/*
-			// revisar si ya ha jugado, que estara en la userbet con groupi 0
-			$link = dbConnect();
-			$query = "SELECT tokens, last_slot FROM userbet WHERE user_id = ".$chat_id." AND group_id = 0";
-			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-			$row = mysql_fetch_array($result);
-			if(isset($row['tokens'])){
-				$checkTime = time();
-				$checkTime = $checkTime - 4;
-				// si existe, revisar el tiempo para saber si hace mas de 4seg que ha jugado
-				if($checkTime > $row['last_slot']){
-					// si si, comprobar si le queda pasta
-					if($row['tokens'] > 2) {
-						// si tiene, lanzar los slots, calcular si hay premio, restarle uno a su tokenbolsillo y sumarle el premio, actualizar el last_slot y decirle cuanto tiene
-						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						usleep(100000);
-						$text = "<b>Has insertado una moneda en la máquina y has usado la palanca. El resultado es...</b>";
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
-						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						usleep(500000);
-						$userTokens = $row['tokens'] - 3;
-						$currTime = time();
-						mysql_free_result($result);
-						// calcular resultado
-						$slotA = rand(1,10);
-						usleep(rand(10,50));
-						$slotB = rand(1,10);
-						usleep(rand(10,50));
-						$slotC = rand(1,10);
-						$bonus = 0;
-						if($slotA == $slotB && $slotB == $slotC) {
-							$bonus = 0;
-						} else {
-							if($slotA == $slotB) {
-								$bonus = 1;
-							} else if($slotA == $slotB) {
-								$bonus = 1;
-							} else if($slotB == $slotC) {
-								$bonus = 1;
-							} else {
-								$bonus = 0;
-							}
-						}
-						if($bonus == 1) {
-							$bonusTicket = rand(1, 20);
-							if($bonusTicket == 20) {
-								$slotA = 4;
-								$slotB = 4;
-								$slotC = 4;
-							} else if($bonusTicket > 17) {
-								$slotA = 3;
-								$slotB = 3;
-								$slotC = 3;
-							} else if($bonusTicket > 14) {
-								$slotA = 2;
-								$slotB = 2;
-								$slotC = 2;
-							} else if($bonusTicket > 10) {
-								$slotA = 1;
-								$slotB = 1;
-								$slotC = 1;
-							}
-						}
-						if($slotA == $slotB && $slotB == $slotC && $row['tokens'] > 99999) {
-							$slotA = 7;
-							$slotB = 7;
-							$slotC = 7;
-						}
-						$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
-						$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
-						$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
-						$text = $text."⬛️".emojiSlot($slotA + 1).emojiSlot($slotB + 1).emojiSlot($slotC + 1)."⬛️".PHP_EOL;
-						$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
-						// calcular el premio
-						if($slotA == $slotB && $slotB == $slotC) {
-							error_log($logname." got a prize! Prize number ".$slotA);
-							$text = $text."❗️🎉 ¡Enhorabuena! Has ganado ";
-							switch($slotA){
-								case 1: $prize = 10;
-										break;
-								case 2: $prize = 25;
-										break;
-								case 3: $prize = 50;
-										break;
-								case 4: $prize = 75;
-										break;
-								case 5: $prize = 100;
-										break;
-								case 6: $prize = 100;
-										break;
-								case 7: $prize = 250;
-										break;
-								case 8: $prize = 500;
-										break;
-								case 9: $prize = 1000;
-										break;
-								case 10: $prize = 10000;
-										break;
-								default: $prize = 0;
-										break;
-							}
-							$text = $text.$prize." fichas.".PHP_EOL;
-							if($slotA > 4) {
-								$query = 'SELECT level, bottles, last_exp, last_boss FROM playerbattle WHERE user_id = '.$chat_id;
-								$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-								$row = mysql_fetch_array($result);
-								if(isset($row['level'])) {
-									$level = $row['level'];
-									$bottles = $row['bottles'];
-									$lastExp = $row['last_exp'];
-									$lastBoss = $row['last_boss'];
-									mysql_free_result($result);
-									if($level < 100) {
-										if($slotA < 8) {
-											$lastExp = $lastExp - 3600;
-											if($lastExp < 0) {
-												$lastExp = 0;
-											}
-											$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
-											$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-											$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
-										} else if($slotA < 10) {
-											if($level > 4) {
-												$lastBoss = $lastBoss - (3600 * 24);
-												if($lastBoss < 0) {
-													$lastBoss = 0;
-												}
-												$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
-												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
-
-											} else {
-												$lastExp = $lastExp - 3600;
-												if($lastExp < 0) {
-													$lastExp = 0;
-												}
-												$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
-												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
-											}
-										} else {
-											//botella o boss o exp
-											if($level > 2 && $bottles == 10) {
-												$text = $text."🎰 ¡Tienes el inventario de botellas lleno!".PHP_EOL;
-												$lastBoss = $lastBoss - (3600 * 24);
-												if($lastBoss < 0) {
-													$lastBoss = 0;
-												}
-												$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
-												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
-											} else if($level > 2 && $bottles < 10) {
-												$bottles = $bottles + 1;
-												$query = "UPDATE `playerbattle` SET `bottles` = '".$bottles."' WHERE `user_id` = '".$chat_id."'";
-												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-												$text = $text."🎰 Bonus adicional: ¡Has ganado una botella de experiencia! Puedes utilizarla con la función !botella.".PHP_EOL;
-											} else if($level > 4) {
-												$lastBoss = $lastBoss - (3600 * 24);
-												if($lastBoss < 0) {
-													$lastBoss = 0;
-												}
-												$query = "UPDATE `playerbattle` SET `last_boss` = '".$lastBoss."' WHERE `user_id` = '".$chat_id."'";
-												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función !atacar.".PHP_EOL;
-											} else {
-												$lastExp = $lastExp - 3600;
-												if($lastExp < 0) {
-													$lastExp = 0;
-												}
-												$query = "UPDATE `playerbattle` SET `last_exp` = '".$lastExp."' WHERE `user_id` = '".$chat_id."'";
-												$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-												$text = $text."🎰 Bonus adicional: se ha reiniciado el tiempo de espera de la función /exp.".PHP_EOL;
-											}
-										}
-										mysql_free_result($result);
-									}
-								}								
-							}
-						} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
-							$prize = 3;
-							$text = $text."💪 ¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
-						} else {
-							$prize = 0;
-						}
-						$userTokens = $userTokens + $prize;
-						$text = $text."<b>Fichas que te quedan:</b> ".$userTokens;
-						$query = "UPDATE `userbet` SET `tokens` = '".$userTokens."', `last_slot` = '".$currTime."' WHERE `user_id` = ".$chat_id." AND group_id = 0";
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
-					} else {
-						// si no avisar de que no tiene pasta, que use el !fichas para recargarse de dinero
-						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						usleep(100000);
-						$text = "*No tienes fichas suficientes para jugar, utiliza la función !fichas para obtener fichas gratis.*";
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
-					}
-				} else {
-					// si no, avisar de ludopatia
-					apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-					usleep(100000);
-					$text = "*Solo puedes tirar de la palanca una vez cada cinco segundos.*";
-					apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => $text));
-				}
-			} else {
-				// si no existe, avisar con una bienvenida de que ahora tiene 100 fichas y que se va a usar la primera de ellas para jugar
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				usleep(100000);
-				$text = "<b>¡Bienvenido/a al demigrante casino Demisuke de Telegram!.</b>".PHP_EOL.PHP_EOL;
-				$text = $text."Como es la primera vez que juegas, te regalo 100 fichas para que puedas hacer tus primeras tiradas.".PHP_EOL;
-				$text = $text."Recuerda que puedes conseguir más fichas usando la función !fichas y consultar los premios y las reglas con /ayuda_slots.".PHP_EOL;
-				$text = $text.PHP_EOL."<b>Realizando tu primera tirada... ¡Suerte!</b>";
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
-				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-				mysql_free_result($result);
-				usleep(500000);
-				// hacer la tirada y hacer el insert completito, grupi 0, que no se olvide...
-				$userTokens = 97;
-				$currTime = time();
-				$slotA = rand(1,10);
-				usleep(rand(10,50));
-				$slotB = rand(1,10);
-				usleep(rand(10,50));
-				$slotC = rand(1,10);
-				$bonus = 0;
-				if($slotA == $slotB && $slotB == $slotC) {
-					$bonus = 0;
-				} else {
-					if($slotA == $slotB) {
-						$bonus = 1;
-					} else if($slotA == $slotB) {
-						$bonus = 1;
-					} else if($slotB == $slotC) {
-						$bonus = 1;
-					} else {
-						$bonus = 0;
-					}
-				}
-				if($bonus == 1) {
-					$bonusTicket = rand(1, 20);
-					if($bonusTicket == 20) {
-						$slotA = 4;
-						$slotB = 4;
-						$slotC = 4;
-					} else if($bonusTicket > 17) {
-						$slotA = 3;
-						$slotB = 3;
-						$slotC = 3;
-					} else if($bonusTicket > 14) {
-						$slotA = 2;
-						$slotB = 2;
-						$slotC = 2;
-					} else if($bonusTicket > 10) {
-						$slotA = 1;
-						$slotB = 1;
-						$slotC = 1;
-					}
-				}
-				$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
-				$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
-				$text = $text."▶️".emojiSlot($slotA).emojiSlot($slotB).emojiSlot($slotC)."◀️".PHP_EOL;
-				$text = $text."⬛️".emojiSlot($slotA + 1).emojiSlot($slotB + 1).emojiSlot($slotC + 1)."⬛️".PHP_EOL;
-				$text = $text."⬛️⬛️⬛️⬛️🔲📍".PHP_EOL.PHP_EOL;
-				// calcular el premio
-				if($slotA == $slotB && $slotB == $slotC) {
-					error_log($logname." got a prize! Prize number ".$slotA);
-					$text = $text."❗️🎉 ¡Enhorabuena! Has ganado ";
-					switch($slotA){
-						case 1: $prize = 10;
-								break;
-						case 2: $prize = 25;
-								break;
-						case 3: $prize = 50;
-								break;
-						case 4: $prize = 75;
-								break;
-						case 5: $prize = 100;
-								break;
-						case 6: $prize = 100;
-								break;
-						case 7: $prize = 250;
-								break;
-						case 8: $prize = 500;
-								break;
-						case 9: $prize = 1000;
-								break;
-						case 10: $prize = 10000;
-								break;
-						default: $prize = 0;
-								break;
-					}
-					$text = $text.$prize." fichas.".PHP_EOL;
-				} else if($slotA == $slotB || $slotB == $slotC || $slotA == $slotC) {
-					$prize = 3;
-					$text = $text."💪 ¡Pareja! Se te devuelven las fichas usadas.".PHP_EOL;
-				} else {
-					$prize = 0;
-				}
-				$userTokens = $userTokens + $prize;
-				$text = $text."<b>Fichas que te quedan:</b> ".$userTokens;
-				$query = "INSERT INTO `userbet` (`user_id`, `group_id`, `tokens`, `last_slot`) VALUES ('".$chat_id."', '0', '".$userTokens."', '".$currTime."');";
-				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
-			}
-			mysql_free_result($result);
-			mysql_close($link);
-			*/
+		}
+	} else if (strpos(strtolower($text), "!rol") !== false ||  strpos($text, "/rol@DemisukeBot") === 0 ||  strpos($text, "/rol") === 0) {
+		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {
+			error_log($logname." triggered in a group: !rol.");
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			$result = "<b>Para rolear debes usar esta función desde chat privado.</b>";
+			$playButton = (object) ["text" => "🎲 Rolear ahora", "callback_data" => "%RPGACTION%ROLE"];
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $result, "reply_markup" => ["inline_keyboard" => [[$playButton],]]));
+		} else {
+			error_log($logname." triggered in private: !rol.");
+			rolePlay($chat_id, $logname);
 		}
 	} else if (strpos(strtolower($text), "!exp") !== false || strpos($text, "/exp") === 0 || strpos($text, "/exp@DemisukeBot") === 0) {
 		if($message['chat']['type'] == "private") {
@@ -14630,6 +14365,22 @@ if (isset($update["message"])) {
 		$query_id = $update["callback_query"]["id"];
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=777"));
 		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=777"));
+	} else if(strpos($callback['data'], "%SLOTACTION%ROLEPLAY%") === 0) {
+		$option = substr(strpos($callback['data'], 21, 1);
+		$optionTime = substr(strpos($callback['data'], 22, 10);
+		$optionChance = substr(strpos($callback['data'], 32);
+		apiRequest("editMessageText", ["chat_id" => $chat_id, "message_id" => $callback['message']['message_id'], "text" => $option]);
+		$chat_id = $update["callback_query"]["from"]["id"];
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(250000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Resultado</b>"));	
+		//$query_id = $update["callback_query"]["id"];
+		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=777"));
+		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=777"));
+	} else if($callback['data'] == "%RPGACTION%ROLE") {
+		$query_id = $update["callback_query"]["id"];
+		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=rol"));
+		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=rol"));
 	} else {
 		error_log($logname." clicked on a spoiler button.");
 		$query_id = $update["callback_query"]["id"];

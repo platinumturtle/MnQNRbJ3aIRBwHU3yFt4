@@ -6056,7 +6056,7 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	exit;
 }
 
-function rolePlay($chat_id,) {
+function rolePlay($chat_id) {
 	// kkkkkkkkkkkkkkkkkkkkkk
 	
 	// control anti floodeo

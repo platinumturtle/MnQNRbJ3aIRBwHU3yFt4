@@ -5197,7 +5197,7 @@ function getPlayerInfo($fullInfo, $link, $chat_id, $user_id, $inlineMode = 0) {
 				} else if($subTipTicket == 3) {
 					$msg = $msg."<b>Consejo:</b> si consigues más de 200 puntos de heroicidad tu personaje será aún más fuerte a la hora de luchar contra jefes de zona y en duelos PvP. ¡Recuerda usar !boton ocasionalmente!".PHP_EOL;
 				} else if($subTipTicket == 4) {
-					$msg = $msg."<b>Consejo:</b> si utilizas la función !slots (o</b> /777<b>) podrás conseguir premios bonus como por ejemplo una botella de experiencia para tu personaje. Puedes ver la lista de premios bonus en /ayuda_slots".PHP_EOL;
+					$msg = $msg."<b>Consejo:</b> si utilizas la función !slots (o /777) podrás conseguir premios bonus como por ejemplo una botella de experiencia para tu personaje. Puedes ver la lista de premios bonus en /ayuda_slots".PHP_EOL;
 				} else if($subTipTicket == 5) {
 					$msg = $msg."<b>Consejo:</b> las batallas entre clanes, además de otorgar victorias de guerra y puntos de líder en rocosidad, ayuda a todos sus miembros a poder luchar contra jefes más rápido. ¡No te olvides de ir a la guerra!".PHP_EOL;
 				} else if($subTipTicket == 6) {

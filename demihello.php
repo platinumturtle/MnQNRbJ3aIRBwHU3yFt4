@@ -6061,11 +6061,13 @@ function rolePlay($chat_id) {
 	
 	// control anti floodeo
 	
-		// control de medio minuto
-			
-			// control de nivel (10) (20) (30) (100)
-			
-				// control de zona
+		// control de pj
+	
+			// control de medio minuto
+				
+				// control de nivel (10) (20) (30) (100)
+				
+					// control de zona
 	$msg = "<b>🎲 PREGUNTA DE ROL 🎲</b>";
 	$msg = $msg.PHP_EOL.PHP_EOL."Enunciado de la pregunta.";
 	$msg = $msg.PHP_EOL.PHP_EOL."<b>Respuestas:</b>";
@@ -14374,16 +14376,35 @@ if (isset($update["message"])) {
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=777"));
 		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=777"));
 	} else if(strpos($callback['data'], "%RPGACTION%ROLEPLAY%") === 0) {
-		$option = substr($callback['data'], 21, 1);
-		$optionTime = substr($callback['data'], 22, 10);
-		$optionChance = substr($callback['data'], 32);
+		$option = substr($callback['data'], 20, 1);
+		switch($option) {
+			case 'A': $option = "♥";
+						break;
+			case 'B': $option = "♣";
+						break;
+			case 'C': $option = "♦";
+						break;
+			case 'D': $option = "♠";
+						break;
+			default: $option = "♥";
+						break;
+		}
+		$optionTime = substr($callback['data'], 21, 10);
+		$optionChance = substr($callback['data'], 31);
 		$chat_id = $update["callback_query"]["from"]["id"];
 		apiRequest("editMessageText", ["chat_id" => $chat_id, "message_id" => $callback['message']['message_id'], "text" => $option]);
+		$currTime = time();
+		$currTime = $currTime - 60;
 		// control de tiempo
+		if($currTime > $optionTime) {
 			// recompensa
+			$msg = "<b>Resultado </b>".$optionChance;
+		} else {
+			$msg = "<b>Tiempo agotado</b>";
+		}
 		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 		usleep(250000);
-		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>Resultado</b>"));	
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));	
 	} else if($callback['data'] == "%RPGACTION%ROLE") {
 		$query_id = $update["callback_query"]["id"];
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=rol"));

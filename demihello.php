@@ -6059,11 +6059,11 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 function rolePlay($chat_id, $logname) {
 	// kkkkkkkkkkkkkkkkkkkkkk
 	$msg = "<b>🎲 PREGUNTA DE ROL 🎲</b>";
-	$msg = $msg."Pregunta.";
+	$msg = $msg.PHP_EOL.PHP_EOL."Enunciado de la pregunta.";
 	$msg = $msg.PHP_EOL.PHP_EOL."<b>Respuestas:</b>";
 	$msg = $msg.PHP_EOL."<i>♥ Respuesta</i>";
-	$msg = $msg.PHP_EOL."<i>♦ Respuesta</i>";
 	$msg = $msg.PHP_EOL."<i>♣ Respuesta</i>";
+	$msg = $msg.PHP_EOL."<i>♦ Respuesta</i>";
 	$msg = $msg.PHP_EOL."<i>♠ Respuesta</i>";
 	$msg = $msg.PHP_EOL.PHP_EOL."<i>Tienes un minuto para escoger tu respuesta.</i>";
 	$currTime = time();
@@ -6074,9 +6074,9 @@ function rolePlay($chat_id, $logname) {
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	usleep(100000);
 	$optionA = (object) ["text" => "♥", "callback_data" => "%RPGACTION%ROLEPLAY%A".$currTime.$chanceA];
-	$optionB = (object) ["text" => "♥", "callback_data" => "%RPGACTION%ROLEPLAY%B".$currTime.$chanceB];
-	$optionC = (object) ["text" => "♥", "callback_data" => "%RPGACTION%ROLEPLAY%C".$currTime.$chanceC];
-	$optionD = (object) ["text" => "♥", "callback_data" => "%RPGACTION%ROLEPLAY%D".$currTime.$chanceD];
+	$optionB = (object) ["text" => "♣", "callback_data" => "%RPGACTION%ROLEPLAY%B".$currTime.$chanceB];
+	$optionC = (object) ["text" => "♦", "callback_data" => "%RPGACTION%ROLEPLAY%C".$currTime.$chanceC];
+	$optionD = (object) ["text" => "♠", "callback_data" => "%RPGACTION%ROLEPLAY%D".$currTime.$chanceD];
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg, "reply_markup" => ["inline_keyboard" => [[$optionA, $optionB],[$optionC, $optionD]]]));
 }
 
@@ -14365,7 +14365,7 @@ if (isset($update["message"])) {
 		$query_id = $update["callback_query"]["id"];
 		apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/Demitest_Bot?start=777"));
 		//apiRequest("answerCallbackQuery", array('callback_query_id' => $query_id, "url" => "telegram.me/DemisukeBot?start=777"));
-	} else if(strpos($callback['data'], "%SLOTACTION%ROLEPLAY%") === 0) {
+	} else if(strpos($callback['data'], "%RPGACTION%ROLEPLAY%") === 0) {
 		$option = substr($callback['data'], 21, 1);
 		$optionTime = substr($callback['data'], 22, 10);
 		$optionChance = substr($callback['data'], 32);

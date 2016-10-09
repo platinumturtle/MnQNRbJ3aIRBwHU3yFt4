@@ -6060,7 +6060,7 @@ function rolePlay($chat_id, $logname) {
 	// kkkkkkkkkkkkkkkkkkkkkk
 	$msg = "<b>🎲 PREGUNTA DE ROL 🎲</b>";
 	$msg = $msg."Pregunta.";
-	$msg = $msg.PHP_EOL.PHP_EOL"<b>Respuestas:</b>";
+	$msg = $msg.PHP_EOL.PHP_EOL."<b>Respuestas:</b>";
 	$msg = $msg.PHP_EOL."<i>♥ Respuesta</i>";
 	$msg = $msg.PHP_EOL."<i>♦ Respuesta</i>";
 	$msg = $msg.PHP_EOL."<i>♣ Respuesta</i>";

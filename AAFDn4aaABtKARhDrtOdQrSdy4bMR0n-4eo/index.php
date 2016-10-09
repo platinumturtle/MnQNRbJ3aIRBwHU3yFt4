@@ -120,7 +120,7 @@ function checkUserID($id) {
 	$bannedID = array(
 					"119769161", // TaliBOT
 					"228805033", //German
-					"164798471",
+					"164798471", // 12215455 = @KantyBena20 bot de slots
 					"", // 2599666 mareklmc el macros
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
@@ -6460,7 +6460,7 @@ function launchSlot($chat_id, $logname) {
 				} else {
 					if($slotA == $slotB) {
 						$bonus = 1;
-					} else if($slotA == $slotB) {
+					} else if($slotA == $slotC) {
 						$bonus = 1;
 					} else if($slotB == $slotC) {
 						$bonus = 1;
@@ -6489,9 +6489,31 @@ function launchSlot($chat_id, $logname) {
 					}
 				}
 				if($slotA == $slotB && $slotB == $slotC && $row['tokens'] > 99999) {
-					$slotA = 7;
-					$slotB = 7;
-					$slotC = 7;
+					if($row['tokens'] > 399999) {
+						if($slotA > 1) {
+							$slotA = 1;
+							$slotB = 1;
+							$slotC = 1;
+						}
+					} else if($row['tokens'] > 299999) {
+						if($slotA > 3) {
+							$slotA = 3;
+							$slotB = 3;
+							$slotC = 3;
+						}
+					} else if($row['tokens'] > 199999) {
+						if($slotA > 5) {
+							$slotA = 5;
+							$slotB = 5;
+							$slotC = 5;
+						}
+					} else {
+						if($slotA > 7) {
+							$slotA = 7;
+							$slotB = 7;
+							$slotC = 7;
+						}
+					}
 				}
 				$text = "⬛️⬛️⬛️⬛️⬛️".PHP_EOL;
 				$text = $text."⬛️".emojiSlot($slotA - 1).emojiSlot($slotB - 1).emojiSlot($slotC - 1)."⬛️".PHP_EOL;
@@ -6609,6 +6631,9 @@ function launchSlot($chat_id, $logname) {
 					$prize = 0;
 				}
 				$userTokens = $userTokens + $prize;
+				if($userTokens > 999999) {
+					$userTokens = 999999;
+				}
 				$text = $text."<b>Fichas que te quedan:</b> ".$userTokens.PHP_EOL."<i>Puedes volver a tirar con</i> /777";
 				$query = "UPDATE `userbet` SET `tokens` = '".$userTokens."', `last_slot` = '".$currTime."' WHERE `user_id` = ".$chat_id." AND group_id = 0";
 				$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

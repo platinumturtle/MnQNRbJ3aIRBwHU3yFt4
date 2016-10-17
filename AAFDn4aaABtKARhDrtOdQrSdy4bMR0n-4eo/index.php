@@ -7318,6 +7318,7 @@ function goodbye() {
 function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
+						"BQADBAADqQAD_2-vAAEzfur8ScvqegI",
 						"BQADBAADjQAD_2-vAAH0blw-pAABgIQC",
 						"BQADBAAD7gcAApdgXwABDIGKu1t4To4C",
 						"BQADBAADDAgAApdgXwABtRHIDTFw_W0C",
@@ -8414,7 +8415,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.12 creado por @Kamisuke."
+				"@DemisukeBot v3.0.12b creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"

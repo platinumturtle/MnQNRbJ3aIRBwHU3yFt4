@@ -3230,7 +3230,7 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 3) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
-			$msg = $msg."<b>A partir de ahora podrás conseguir botellas de experiencia para tu personaje con la función !slots (o !777). Consulta la tabla de premios bonus con</b> /ayuda_slots".PHP_EOL;
+			$msg = $msg."<b>A partir de ahora podrás conseguir botellas de experiencia para tu personaje con las funciones</b> /777 <b>y</b> /rol<b>. Puedes consultar la tabla de premios bonus de la máquina tragaperras con</b> /ayuda_slots".PHP_EOL;
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		//}  else if($newLevel == 4) {
@@ -4323,7 +4323,7 @@ function useExp ($chat_id) {
 		$text = "<b>¡Bienvenido/a a 'Los Rocosos de Demisuke'!</b>".PHP_EOL.PHP_EOL;
 		$text = $text."<i>Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura.</i>".PHP_EOL;
 		$text = $text."<i>Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!</i>".PHP_EOL;
-		$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar /exp (o !exp)  para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices la función !exp, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
+		$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar</i> /exp <i>y rolear con</i> /rol <i>para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices las funciones !exp y !rol, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
 		$text = $text."<i>Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!</i>".PHP_EOL;
 		$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
 		usleep(100000);
@@ -6057,17 +6057,33 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 }
 
 function rolePlay($chat_id) {
-	// kkkkkkkkkkkkkkkkkkkkkk
+	// abrir db
+	$link = dbConnect();
+	$query = "SELECT level, last_role, last_role_check FROM playerbattle WHERE user_id = '".$chat_id."'";
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysql_fetch_array($result);
+	// mirar si tiene pj
+	if(isset($row['level'])) {
+		// si tiene, mirar el control anti floodeo
 	
-	// control anti floodeo
+			// si hace mas de 5seg, control de medio minuto
+				// si entra, mirarel nivel (10) (20) (30) (100) para los premios y elegir pregunta por zona
+				// si no, que se espere medio minuto y tiempo restante
+			// si no, anular la peticion por double check
+		// cerrar db
+		mysql_free_result($result);
+		mysql_close($link);
+	} else {
+		// cerrar db
+		mysql_free_result($result);
+		mysql_close($link);
+		// si no tiene, usar exp
+		useExp($chat_id, "RolUser");
+	}
 	
-		// control de pj
 	
-			// control de medio minuto
-				
-				// control de nivel (10) (20) (30) (100)
-				
-					// control de zona
+	
+	
 	$msg = "<b>🎲 PREGUNTA DE ROL 🎲</b>";
 	$msg = $msg.PHP_EOL.PHP_EOL."Enunciado de la pregunta.";
 	$msg = $msg.PHP_EOL.PHP_EOL."<b>Respuestas:</b>";
@@ -14396,7 +14412,7 @@ if (isset($update["message"])) {
 		$currTime = time();
 		$currTime = $currTime - 60;
 		// control de tiempo
-		if($currTime > $optionTime) {
+		if($currTime < $optionTime) {
 			// recompensa
 			$msg = "<b>Resultado </b>".$optionChance;
 		} else {

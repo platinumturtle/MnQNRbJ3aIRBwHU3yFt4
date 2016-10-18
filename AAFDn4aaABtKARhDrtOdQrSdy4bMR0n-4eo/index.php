@@ -119,6 +119,7 @@ function insult($name) {
 function checkUserID($id) {
 	$bannedID = array(
 					"119769161", // TaliBOT
+					"28033932", // Oniwa spammer de dados y de historia 
 					"228805033", //German
 					"164798471", // 12215455 = @KantyBena20 bot de slots
 					"", // 2599666 mareklmc el macros

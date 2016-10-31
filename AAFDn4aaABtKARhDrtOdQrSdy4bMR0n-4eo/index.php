@@ -7319,6 +7319,7 @@ function goodbye() {
 function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
+						"BQADBAAD4gAD-itAAAFjftbx0ALhkQI",
 						"BQADBAADqQAD_2-vAAEzfur8ScvqegI",
 						"BQADBAADjQAD_2-vAAH0blw-pAABgIQC",
 						"BQADBAAD7gcAApdgXwABDIGKu1t4To4C",
@@ -7400,6 +7401,7 @@ function getHitIt() {
 function getMyTen() {
 	$storedGif = array(
 						"BQADBAADtQYAApdgXwABkmJgEDaRaNYC",
+						"BQADBAADeAYAAh4cZAeSZBnchqBoJQI",
 						"BQADBAAD2CEAAq8cZAdMInl3ChiE9wI",
 						"BQADBAADtgYAApdgXwABPVd0LoJew2EC",
 						"BQADBAADtwYAApdgXwABHKyPb9hZWzMC",
@@ -7418,6 +7420,7 @@ function getMyTen() {
 function getReport() {
 	$storedGif = array(
 						"BQADBAADkQYAApdgXwABA1oS6JMrSG8C",
+						"BQADBAADigMAAkOEMQABZc_jhbt9RssC",
 						"BQADBAADnwYAApdgXwABW2TrtUlSxk8C",
 						"BQADBAADoAYAApdgXwABMUW85gF4ikkC",
 						"BQADBAADoQYAApdgXwABwBIozn6az90C",
@@ -8416,7 +8419,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.12b creado por @Kamisuke."
+				"@DemisukeBot v3.0.13 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -10290,6 +10293,11 @@ function processMessage($message) {
 					$query = "UPDATE `playerbattle` SET `last_boss_check` = '".$currTime."' WHERE `user_id` = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					mysql_free_result($result);
+					$query = "SELECT time FROM commonsetup WHERE cs_id = 005";
+					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+					$row = mysql_fetch_array($result);
+					$spawnTimeHours = $row['time'];
+					mysql_free_result($result);
 					$query = "SELECT pb.exp_points, pb.critic, pb.level, pb.last_boss, ( pb.hp + pb.attack + pb.defense + ( pb.critic *3 ) + pb.speed + ( pb.helmet *3 ) + pb.body + pb.boots + pb.weapon + pb.shield ) AS total_power, pb.bottles, ( extra_hp + extra_attack + extra_defense + extra_critic + extra_speed ) AS total_extra, COALESCE( hb.total, 0 ) AS  'hero_power', pb.avatar, ( pb.hp + pb.body ) AS  'total_hp', ( pb.attack + pb.weapon ) AS  'total_attack', ( pb.defense + pb.shield ) AS  'total_defense', ( pb.critic + pb.helmet ) AS  'total_critic', ( pb.speed + pb.boots ) AS  'total_speed' FROM playerbattle pb LEFT JOIN ( SELECT total, user_id FROM heroesbattle )hb ON pb.user_id = hb.user_id WHERE pb.user_id = ".$chat_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 					$row = mysql_fetch_array($result);
@@ -10302,7 +10310,7 @@ function processMessage($message) {
 							} else if($row['level'] < 11) {
 								$spawnTime = $spawnTime - (3600 * 2);
 							} else {
-								$spawnTime = $spawnTime - (3600 * 6);
+								$spawnTime = $spawnTime - (3600 * $spawnTimeHours);
 							}
 							if($spawnTime >= $row['last_boss']) {
 							// si cumple el nivel, mirar si hace mucho que ya se cargo al ultimo

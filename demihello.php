@@ -4323,7 +4323,7 @@ function useExp ($chat_id) {
 		$text = "<b>¡Bienvenido/a a 'Los Rocosos de Demisuke'!</b>".PHP_EOL.PHP_EOL;
 		$text = $text."<i>Como es la primera vez que juegas, se te ha creado tu nuevo personaje con el que defenderás al mundo del mal aumentando tu rocosidad a lo largo de tu aventura.</i>".PHP_EOL;
 		$text = $text."<i>Todavía no tienes experiencia en el juego, así que te he enviado al campo de entrenamiento de rocosos, el área donde es más fácil subir de nivel, y desde aquí deberás viajar al centro de la Tierra para librarla de sus seres malignos. ¡Seguro que por el camino te toparás con ellos!</i>".PHP_EOL;
-		$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar</i> /exp <i>y rolear con</i> /rol <i>para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices las funciones !exp y !rol, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
+		$text = $text.PHP_EOL."<i>A partir de ahora ya puedes volver a utilizar</i> /exp <i>y rolear con</i> /rol <i>para utilizar tu personaje en distintas tareas en las que ganar experiencia. Cuanto más utilices estas funciones, más experiencia conseguirás, ¡e incluso podrás subir de nivel! Puedes ver las estadísticas de tu personaje con la función !pj.</i>".PHP_EOL;
 		$text = $text."<i>Al subir de nivel desbloquearás nuevas opciones para tu personaje y podrás mejorar sus estadisticas, ¡y cuando seas fuerte podrás luchar contra temidos jefes y formar clanes con tus amigos para luchar contra otros rocosos!</i>".PHP_EOL;
 		$text = $text.PHP_EOL."Siempre que necesites ayuda puedes consultar /ayuda_rocosos o el menú de !ayuda. ¡Suerte en tu aventura, que te diviertas!".PHP_EOL;
 		usleep(100000);
@@ -6065,7 +6065,7 @@ function rolePlay($chat_id) {
 	// mirar si tiene pj
 	if(isset($row['level'])) {
 		// si tiene, mirar el control anti floodeo
-	
+		// kkkkkkkkkkkkkkkkkk
 			// si hace mas de 5seg, control de medio minuto
 				// si entra, mirarel nivel (10) (20) (30) (100) para los premios y elegir pregunta por zona
 				// si no, que se espere medio minuto y tiempo restante
@@ -14414,6 +14414,7 @@ if (isset($update["message"])) {
 		// control de tiempo
 		if($currTime < $optionTime) {
 			// recompensa
+			// kkkkkkkkkk
 			$msg = "<b>Resultado </b>".$optionChance;
 		} else {
 			$msg = "<b>Tiempo agotado</b>";

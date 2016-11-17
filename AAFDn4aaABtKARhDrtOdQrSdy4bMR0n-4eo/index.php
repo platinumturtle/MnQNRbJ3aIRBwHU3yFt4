@@ -5018,6 +5018,8 @@ function launchTdsPts($chat_id) {
 	if($chooseType > 3) {
 		$gif = Array (
 						"BQADBAADLwcAApdgXwAB5GRVtoyljo4C",
+						"BQADBAADXgEAAnviSgukLmE3cklOMAI",
+						"BQADBAADbQQAAkxCbQABtG7LLSBxbHgC",
 						"BQADBAAECQACjeVsAAEJ2lgEFaLGhAI",
 						"BQADBAADWgEAAtWlKAABJtdmRuWDvY4C",
 						"BQADBAADMQcAApdgXwABIgfkLN1r5mQC",
@@ -7319,6 +7321,11 @@ function goodbye() {
 function getPole() {
 	$storedGif = array(
 						"BQADBAADsgADEnk0AAG2JEbcde8xGwI",
+						"BQADBAAD8AADmU2HAAGqdvX1uqhJygI",
+						"BQADBAADCAAD2afXDL_BpPqsYowrAg",
+						"BQADBAAD6BsAAvwYZAdHlQNf9Tdn1AI",
+						"BQADBAADgAEAAtWlKAABuq79otQ1D00C",
+						"BQADBAADmwoAAj236wQhAx9OinuTSQI",
 						"BQADBAAD4gAD-itAAAFjftbx0ALhkQI",
 						"BQADBAADqQAD_2-vAAEzfur8ScvqegI",
 						"BQADBAADjQAD_2-vAAH0blw-pAABgIQC",
@@ -7420,6 +7427,8 @@ function getMyTen() {
 function getReport() {
 	$storedGif = array(
 						"BQADBAADkQYAApdgXwABA1oS6JMrSG8C",
+						"BQADAQAD4AADOFsMCuoeifLaNklGAg",
+						"BQADAgAD6WkCAAEKgFoNJjSCznHENuAC",
 						"BQADBAADigMAAkOEMQABZc_jhbt9RssC",
 						"BQADBAADnwYAApdgXwABW2TrtUlSxk8C",
 						"BQADBAADoAYAApdgXwABMUW85gF4ikkC",
@@ -8419,7 +8428,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.13 creado por @Kamisuke."
+				"@DemisukeBot v3.0.14 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"

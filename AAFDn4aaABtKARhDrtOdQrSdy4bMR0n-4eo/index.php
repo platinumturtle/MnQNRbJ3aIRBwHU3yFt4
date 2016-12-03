@@ -123,6 +123,7 @@ function checkUserID($id) {
 					"228805033", //German
 					"164798471", // 12215455 = @KantyBena20 bot de slots
 					"", // 2599666 mareklmc el macros
+					"39009478", // N3tl0 spammer de dados
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
@@ -5047,6 +5048,7 @@ function launchTdsPts($chat_id) {
 function launchMonkey($chat_id) {
 	$gif = Array (
 					"BQADBAADkwcAApdgXwABna9BpzMpDrEC",
+					"BQADBAADgzkAAmEdZAd8k22fiXj2MgI",
 					"BQADBAADlAcAApdgXwABqO7vUmC_05IC",
 					"BQADBAADlQcAApdgXwAB6nZtgNVykU8C",
 					"BQADBAADlgcAApdgXwABpte_ZNyrqGwC",

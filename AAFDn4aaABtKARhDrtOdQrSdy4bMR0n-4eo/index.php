@@ -118,13 +118,13 @@ function insult($name) {
 
 function checkUserID($id) {
 	$bannedID = array(
-					"119769161", // TaliBOT
-					"28033932", // Oniwa spammer de dados y de historia 
+					//"119769161", // TaliBOT
+					//"28033932", // Oniwa spammer de dados y de historia 
 					"228805033", //German
 					"164798471", // 12215455 = @KantyBena20 bot de slots
 					"", // 2599666 mareklmc el macros
-					"39009478", // N3tl0 spammer de dados
-					"42711", // Zabrios spammer de dados
+					//"39009478", // N3tl0 spammer de dados
+					//"42711", // Zabrios spammer de dados
 					"155597731", // bilbado spam de dados
 					"197894379", // sergi spam de dados
 					"" // @JoGel 120644940, @esteve_10 3746896
@@ -9464,8 +9464,30 @@ function processMessage($message) {
 			error_log($logname." tried to trigger and failed due to group restrictions: Adios.");
 		}
     } else if (strpos(strtolower($text), "!dados") !== false) {
-		error_log($logname." triggered: !dados.");
-		rollDice($chat_id);
+		// mirar el dice check de este usuario
+		$currTime = time();
+		$checkTime = $currTime - 7;
+		$user_id = $message['from']['id'];
+		$link = dbConnect();
+		$query = "SELECT DISTINCT lastdicecheck FROM userbattle WHERE user_id = ".$user_id;
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$diceCheck = $row['lastdicecheck'];
+		$rollable = 0;
+		if($checkTime > $diceCheck) {
+			mysql_free_result($result);
+			$query = "UPDATE `userbattle` SET `lastdicecheck` = '".$currTime."' WHERE `user_id` = '".$user_id."'";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$rollable = 1;
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		if($rollable == 1) {
+			error_log($logname." triggered: !dados.");
+			rollDice($chat_id);
+		} else {
+			error_log($logname." is spamming: !dados.");
+		}
     } else if (isset($message['forward_from']['username'])){
 		if($message['forward_from']['username'] == 'DemisukeBot' || $message['forward_from']['username'] == 'Demitest_bot') {
 			if($randomTicket > -1) {

@@ -9963,8 +9963,30 @@ function processMessage($message) {
 			error_log($logname." tried to trigger and failed due to group restrictions: Adios.");
 		}
     } else if (strpos(strtolower($text), "!dados") !== false) {
-		error_log($logname." triggered: !dados.");
-		rollDice($chat_id);
+		// mirar el dice check de este usuario
+		$currTime = time();
+		$checkTime = $currTime - 7;
+		$user_id = $message['from']['id'];
+		$link = dbConnect();
+		$query = "SELECT lastdicecheck FROM userbattle WHERE user_id = ".$user_id;
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$row = mysql_fetch_array($result);
+		$diceCheck = $row['lastdicecheck'];
+		$rollable = 0;
+		if($checkTime > $diceCheck) {
+			mysql_free_result($result);
+			$query = "INSERT INTO `userbattle` (`lastdicecheck`) VALUES ('".$currTime."');";
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$rollable = 1;
+		}
+		mysql_free_result($result);
+		mysql_close($link);
+		if($rollable == 1) {
+			error_log($logname." triggered: !dados.");
+			rollDice($chat_id);
+		} else {
+			error_log($logname." is spamming: !dados.");
+		}
     } else if (isset($message['forward_from']['username'])){
 		if($message['forward_from']['username'] == 'DemisukeBot' || $message['forward_from']['username'] == 'Demitest_bot') {
 			if($randomTicket > -1) {

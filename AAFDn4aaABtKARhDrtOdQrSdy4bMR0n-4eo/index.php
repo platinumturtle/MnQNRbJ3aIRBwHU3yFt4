@@ -125,6 +125,8 @@ function checkUserID($id) {
 					"", // 2599666 mareklmc el macros
 					"39009478", // N3tl0 spammer de dados
 					"42711", // Zabrios spammer de dados
+					"155597731", // bilbado spam de dados
+					"197894379", // sergi spam de dados
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {

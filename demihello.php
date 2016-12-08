@@ -9968,14 +9968,14 @@ function processMessage($message) {
 		$checkTime = $currTime - 7;
 		$user_id = $message['from']['id'];
 		$link = dbConnect();
-		$query = "SELECT lastdicecheck FROM userbattle WHERE user_id = ".$user_id;
+		$query = "SELECT DISTINCT lastdicecheck FROM userbattle WHERE user_id = ".$user_id;
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$row = mysql_fetch_array($result);
 		$diceCheck = $row['lastdicecheck'];
 		$rollable = 0;
 		if($checkTime > $diceCheck) {
 			mysql_free_result($result);
-			$query = "INSERT INTO `userbattle` (`lastdicecheck`) VALUES ('".$currTime."');";
+			$query = "UPDATE `userbattle` SET `lastdicecheck` = '".$currTime."' WHERE `user_id` = '".$user_id."'";
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$rollable = 1;
 		}

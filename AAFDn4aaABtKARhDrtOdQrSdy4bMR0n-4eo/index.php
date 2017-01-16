@@ -4990,6 +4990,7 @@ function randomFart() {
 function getSong() {
 	$storedSong = array(
 					"AwADBAADbwcAApdgXwABX68UgNLIQ90C",
+					"AwADBAADsQkAApdgXwABsDlS44RaQmUC",
 					"AwADBAADcAcAApdgXwAB666WIUXdJpUC",
 					"AwADBAADcQcAApdgXwABNzxxVoUpZkIC",
 					"AwADBAADcgcAApdgXwABqY13kei68BMC",
@@ -8423,6 +8424,26 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
+				"💎 <b>Packs de stickers:</b>"
+				.PHP_EOL.
+				"🔗[Kamisuke](http://telegram.me/addstickers/Kamisuke)"
+				.PHP_EOL.
+				"🔗[Kamisuke (vol.2)](http://telegram.me/addstickers/Kamisuke2)"
+				.PHP_EOL.
+				"🔗[Kamisuke (vol.3)](http://telegram.me/addstickers/Kamisuke3)"
+				.PHP_EOL.
+				"🔗[Kamisuke (vol.4)](http://telegram.me/addstickers/Kamisuke4)"
+				.PHP_EOL.
+				"🔗[Japanimals](http://telegram.me/addstickers/Japanimals)"
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
+				"💎 <b>Tema para Telegram Desktop:</b>"
+				.PHP_EOL.
+				"🔗[Minimal White](https://t.me/tthemebot?start=t124)"
+				.PHP_EOL.
+				"〰〰〰〰〰〰〰〰〰"
+				.PHP_EOL.
 				"<i>¿Tienes alguna </i><b>sugerencia</b><i> para el bot?, ¿le encuentras algún fallo? Puedes utilizar la función \"!sugerencia\" para dejar un mensaje en el bot. Si utilizas esta función desde un chat privado con el bot podrías obtener una respuesta del desarrollador a tu mensaje si fuera conveniente.</i>"
 				.PHP_EOL.
 				"Si quieres saber cuándo hay nuevas actualizaciones únete al @CanalKamisuke y conocerás todas las novedades al instante."
@@ -8433,7 +8454,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.14 creado por @Kamisuke."
+				"@DemisukeBot v3.0.15 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"

@@ -8426,21 +8426,21 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"💎 <b>Packs de stickers:</b>"
 				.PHP_EOL.
-				"🔗[Kamisuke](http://telegram.me/addstickers/Kamisuke)"
+				"🔗<a href=\"http://telegram.me/addstickers/Kamisuke\">Kamisuke</a>"
 				.PHP_EOL.
-				"🔗[Kamisuke (vol.2)](http://telegram.me/addstickers/Kamisuke2)"
+				"🔗<a href=\"http://telegram.me/addstickers/Kamisuke2\">Kamisuke (vol.2)</a>"
 				.PHP_EOL.
-				"🔗[Kamisuke (vol.3)](http://telegram.me/addstickers/Kamisuke3)"
+				"🔗<a href=\"http://telegram.me/addstickers/Kamisuke3\">Kamisuke (vol.3)</a>"
 				.PHP_EOL.
-				"🔗[Kamisuke (vol.4)](http://telegram.me/addstickers/Kamisuke4)"
+				"🔗<a href=\"http://telegram.me/addstickers/Kamisuke4\">Kamisuke (vol.4)</a>"
 				.PHP_EOL.
-				"🔗[Japanimals](http://telegram.me/addstickers/Japanimals)"
+				"🔗<a href=\"http://telegram.me/addstickers/Japanimals\">Japanimals</a>"
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"💎 <b>Tema para Telegram Desktop:</b>"
 				.PHP_EOL.
-				"🔗[Minimal White](https://t.me/tthemebot?start=t124)"
+				"🔗<a href=\"https://t.me/tthemebot?start=t124\">Minimal White</a>"
 				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.

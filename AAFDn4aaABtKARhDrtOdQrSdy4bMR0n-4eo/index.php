@@ -141,6 +141,7 @@ function checkUsername($username) {
 	$bannedUsername = array(
 					"Diegofa31",
 					"Demisuke",
+					"antoniobeta", //spam boton
 					""
 				);
 	for($i=0;$i<sizeof($bannedUsername);$i++) {

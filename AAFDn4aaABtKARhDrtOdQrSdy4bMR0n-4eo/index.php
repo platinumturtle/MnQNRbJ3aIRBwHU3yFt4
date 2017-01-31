@@ -128,6 +128,8 @@ function checkUserID($id) {
 					"155597731", // bilbado spam de dados
 					"197894379", // sergi spam de dados
 					"117915871", // antoniobeta, spammer de boton
+					"6260536", // PepeSpro spammer heroesgrupo
+					"278249997", // GeoLuiso posible spammer
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {

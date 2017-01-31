@@ -127,6 +127,7 @@ function checkUserID($id) {
 					//"42711", // Zabrios spammer de dados
 					"155597731", // bilbado spam de dados
 					"197894379", // sergi spam de dados
+					"117915871", // antoniobeta, spammer de boton
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
@@ -141,7 +142,6 @@ function checkUsername($username) {
 	$bannedUsername = array(
 					"Diegofa31",
 					"Demisuke",
-					"antoniobeta", //spam boton
 					""
 				);
 	for($i=0;$i<sizeof($bannedUsername);$i++) {
@@ -4804,7 +4804,7 @@ function randomSentence($isInvoking = false) {
 						"manual",					"de la Antártida",
 						"terrícola",				"de Saturno",
 						"velocista",				"escolar",
-						"centinela",				"lendakari",
+						"centinela",				"lehendakari",
 						"revolución",				"serbocroata",
 						"estelar",					"oriental",
 						"fantasma",					"illuminati",

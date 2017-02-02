@@ -6082,7 +6082,7 @@ function getHeroesBattle($myself, $global, $group = 0, $groupName = "grupo") {
 			$query = "SELECT user_id, name, total FROM heroesbattle WHERE total > 119 ORDER BY total DESC , last_check";
 		} else {
 			$text = "<b>🏁 Los diez héroes de ".$groupName.":</b>";
-			$query = "SELECT user_id, name, total FROM heroesbattle WHERE user_id IN ( SELECT user_id FROM userbattle WHERE group_id = ".$group." ) ORDER BY total DESC , last_check";
+			$query = "SELECT hb.user_id, hb.name, hb.total FROM heroesbattle hb, userbattle ub WHERE hb.user_id = ub.user_id AND ub.group_id = ".$group." GROUP BY hb.user_id ORDER BY hb.total DESC , hb.last_check LIMIT 0 , 10";
 		}
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		$text = $text.PHP_EOL.PHP_EOL.
@@ -8457,7 +8457,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.15 creado por @Kamisuke."
+				"@DemisukeBot v3.0.15a creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"

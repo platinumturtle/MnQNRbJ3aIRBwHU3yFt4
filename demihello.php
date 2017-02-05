@@ -641,8 +641,11 @@ function gotMention($nickname,$usercheck) {
 						"¿Me has llamado, ".$nickname."?",
 						"¿Qué dices de mí ".$nickname."?",
 						"¿Que yo qué?",
+						"Si soy muy pesado hazme callar con !cambiarmodo...",
+						"Si soy muy pesado hazme callar con !cambiarmodo...",
 						"¿Yo?",
 						"¿Eh?",
+						"Si soy muy pesado hazme callar con !cambiarmodo...",
 						"¿Debería acudir a la llamada?",
 						"Espero que no me hayas insultado ".$nickname."...",
 						"¿Has dicho algo, ".$nickname."?",
@@ -749,8 +752,19 @@ function insult($name) {
 
 function checkUserID($id) {
 	$bannedID = array(
-					"119769161", // TaliBOT - 121704708 Rayne, 152288222 oikarinen
-					"" // MH (13707497)
+					//"119769161", // TaliBOT
+					//"28033932", // Oniwa spammer de dados y de historia 
+					"228805033", //German
+					"164798471", // 12215455 = @KantyBena20 bot de slots
+					"", // 2599666 mareklmc el macros
+					//"39009478", // N3tl0 spammer de dados
+					//"42711", // Zabrios spammer de dados
+					"155597731", // bilbado spam de dados
+					"197894379", // sergi spam de dados
+					"117915871", // antoniobeta, spammer de boton
+					"6260536", // PepeSpro spammer heroesgrupo
+					"278249997", // GeoLuiso posible spammer
+					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
 		if($bannedID[$i] == $id) {
@@ -762,7 +776,8 @@ function checkUserID($id) {
 
 function checkUsername($username) {
 	$bannedUsername = array(
-					"", // DemoniaBot ShurNutriaFC DemoniaGothKestrell TaliBOT
+					"Diegofa31",
+					"Demisuke",
 					""
 				);
 	for($i=0;$i<sizeof($bannedUsername);$i++) {
@@ -775,7 +790,7 @@ function checkUsername($username) {
 
 function checkGroup($group) {
 	$bannedGroup = array(
-					"", // -1001044604308 GNU/Vodka
+					"",
 					""
 				);
 	for($i=0;$i<sizeof($bannedGroup);$i++) {
@@ -788,7 +803,7 @@ function checkGroup($group) {
 
 function rankedGroup($group) {
 	$bannedGroup = array(
-					"", // -1001044604308 GNU/Vodka, -1001056538642 Rincón Demigrante
+					"", // -1001056538642 Rincón Demigrante
 					""
 				);
 	for($i=0;$i<sizeof($bannedGroup);$i++) {

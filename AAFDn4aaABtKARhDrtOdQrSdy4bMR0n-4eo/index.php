@@ -130,6 +130,7 @@ function checkUserID($id) {
 					"117915871", // antoniobeta, spammer de boton
 					"6260536", // PepeSpro spammer heroesgrupo
 					"278249997", // GeoLuiso posible spammer
+					"181690", // bot Barbanaranja
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
@@ -213,6 +214,7 @@ function emojiSlot($slot) {
 	}
 	return $emoji;
 }
+
 function cleanHTML ($message) {
 	$message = str_replace("<b>", "", $message);
 	$message = str_replace("<i>", "", $message);
@@ -481,6 +483,7 @@ function getHeroPower($level, $power) {
 	}
 	return $result;
 }
+
 function getPlayerExp($currLevel, $user_id) {
 	$exp = 0;
 	$text = "*Te has quedado dormido y has perdido la oportunidad, el personaje no reacciona.*";

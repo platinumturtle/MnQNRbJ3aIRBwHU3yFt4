@@ -131,6 +131,7 @@ function checkUserID($id) {
 					"6260536", // PepeSpro spammer heroesgrupo
 					"278249997", // GeoLuiso posible spammer
 					"", // 181690 bot Barbanaranja
+					"15308510", // 15308510 boillos spammer de 777
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
@@ -1963,6 +1964,7 @@ function getPlayerMood ($level, $power = 0) {
 	}
 	return $res;
 }
+
 function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $user_id, $fromBoss = 0) {
 	$currTime = time();
 	$newHP = 0;
@@ -2999,6 +3001,7 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 		}
 	}
 }
+
 function getMaxExpFromLevel($level) {
 	$exp = 0;
 	if($level > 90) {
@@ -8448,6 +8451,10 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"🔗<a href=\"https://t.me/tthemebot?start=t124\">Minimal White</a>"
 				.PHP_EOL.
+				"💎 <b>Tema para Telegram Android:</b>"
+				.PHP_EOL.
+				"🔗<a href=\"https://t.me/DemisukeBot?start=ANDMINWHI\">Minimalist White</a>"
+				.PHP_EOL.
 				"〰〰〰〰〰〰〰〰〰"
 				.PHP_EOL.
 				"<i>¿Tienes alguna </i><b>sugerencia</b><i> para el bot?, ¿le encuentras algún fallo? Puedes utilizar la función \"!sugerencia\" para dejar un mensaje en el bot. Si utilizas esta función desde un chat privado con el bot podrías obtener una respuesta del desarrollador a tu mensaje si fuera conveniente.</i>"
@@ -8460,7 +8467,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.15a creado por @Kamisuke."
+				"@DemisukeBot v3.0.2 creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -9340,6 +9347,15 @@ function processMessage($message) {
 			} else if($text == "/start 777") {
 				error_log($logname." triggered: /start 777.");
 				launchSlot($chat_id, $logname);
+			} else if($text == "/start ANDMINWHI") {
+				error_log($logname." triggered: /start ANDMINWHI.");
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				$text = "<b>TEMA PARA ANDROID</b>".PHP_EOL."Abre el siguiente archivo desde tu dispositivo Android para instalar el tema Minimalist White creado por @Kamisuke.";
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "upload_document"));
+				usleep(750000);
+				apiRequest("sendDocument", array('chat_id' => $chat_id, "document" => "BQADBAADqgADDE5oUcHGnOn5GfGUAg"));
 			} else {
 				error_log($logname." triggered: /start.");
 				apiRequestJson("sendMessage", array('chat_id' => $chat_id, "text" => "Buenas, te doy la bienvenida a @DemisukeBot.".PHP_EOL."Usa el comando /demisuke (o escribe !ayuda) para saber qué hace este bot. ¡Usando la función /exp podrás comenzar tu aventura RPG en Telegram!"));

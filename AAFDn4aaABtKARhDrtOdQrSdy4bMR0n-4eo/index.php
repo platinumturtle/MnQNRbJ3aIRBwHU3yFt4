@@ -131,7 +131,7 @@ function checkUserID($id) {
 					"6260536", // PepeSpro spammer heroesgrupo
 					"278249997", // GeoLuiso posible spammer
 					"", // 181690 bot Barbanaranja
-					"15308510", // 15308510 boillos spammer de 777
+					"", // 15308510 boillos spammer de 777
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {

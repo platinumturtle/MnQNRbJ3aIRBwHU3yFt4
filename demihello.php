@@ -155,6 +155,24 @@ function checkUsername($username) {
 	}
 }
 
+
+function checkUserAccess($username) {
+	$allowedUsername = array(
+					"Kamisuke",
+					"Arbustoad"
+				);
+	$allowedAccess = 0;
+	for($i=0;$i<sizeof($allowedUsername);$i++) {
+		if($allowedUsername[$i] == $username) {
+			$allowedAccess = 1;
+		}
+	}
+	if($allowedAccess == 0) {
+			error_log("@".$username." can't access to Demitest.");
+			exit;
+	}
+}
+
 function checkGroup($group) {
 	$bannedGroup = array(
 					"",
@@ -13689,6 +13707,11 @@ if (!$update) {
 
 
 if (isset($update["message"])) {
+	if(isset($update["message"]['from']['username'])) {
+		checkUserAccess($update["message"]['from']['username']);
+	} else {
+		exit;
+	}
 	if($update["message"]["chat"]["type"] == "channel") {
 		error_log("Ignored message from a channel.");
 		exit;

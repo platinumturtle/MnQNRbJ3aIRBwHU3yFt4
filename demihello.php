@@ -3,7 +3,7 @@
 define('BOT_TOKEN', '175756236:AAGmeuMt5ZFUAY8bNtDwyyQPq3nL2ScMIbI');
 define('API_URL', 'https://api.telegram.org/bot'.BOT_TOKEN.'/');
 include 'api.php';
-include 'debugmode/_debugmode.php';
+include 'debug/_debugmode.php';
 
 function gotMention($nickname,$usercheck) {
 	// Parse Mode = HTML

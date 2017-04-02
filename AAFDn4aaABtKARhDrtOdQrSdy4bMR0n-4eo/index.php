@@ -61,7 +61,7 @@ function insult($name) {
 						"ojalá fueras un pavo para hornearte y saber que después de una buena comida tú solo seas mi próxima diarrea",
 						"te voy a dar un euro para poder decir que hay algo que te puedo robar, porque no tienes ni dignidad",
 						"vete a la selva tropical a cazar tabiques de contrachapado inalámbrico, al menos tu vida tendrá sentido",
-						"ojalá tuvieras escamas para poder respirar en el agua para que sólo pudieras vivir donde yo no esté",
+						"ojalá tuvieras escamas para respirar en el agua para que solo pudieras vivir donde yo no esté",
 						"te voy a encender las luces de tu casa hasta que me pagues por no ignorarte como ser humano tal y como hacen los demás",
 						"eres la típica persona que roba el euro de los carritos y se cuela en el metro y mientras se baja música y películas piratas por internet se queja de que los políticos roban. Ahí te atropelle un sidecar con patines",
 						"por mucho que vayas al gim esa cara que tienes no se arregla ni con cirugía, déjalo ya",
@@ -9166,7 +9166,7 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {
 			$isCommand = containsCommand($message['text']);
-			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0 && $usersGroupCount > 3) {
+			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0 && $usersGroupCount > 3 && strlen($message['text']) > 4) {
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);

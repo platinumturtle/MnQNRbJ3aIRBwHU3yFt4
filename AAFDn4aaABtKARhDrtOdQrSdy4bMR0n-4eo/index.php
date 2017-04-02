@@ -9194,6 +9194,8 @@ function processMessage($message) {
 					$query = "UPDATE userbattle SET group_name = '".$grouptitle."', first_name = '".$firstname."', user_name = '".$username."', total = ".$total.", lastpoint = ".$time." WHERE group_id = ".$chat_id." AND user_id = ".$user_id;
 					$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 				}
+			} else {
+				error_log("NO ENTRO");
 			}
 		} else {
 			mysql_free_result($result);

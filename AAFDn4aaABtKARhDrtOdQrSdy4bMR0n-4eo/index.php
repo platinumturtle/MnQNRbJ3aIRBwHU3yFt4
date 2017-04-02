@@ -9166,7 +9166,9 @@ function processMessage($message) {
 		$row = mysql_fetch_array($result);
 		if(isset($row['ub_id'])) {
 			$isCommand = containsCommand($message['text']);
+			error_log("TEST - ".$isCommand." - ".$message['text']." - ");
 			if(($time - 5 ) > $row['lastpoint'] && $isCommand == 0 && $usersGroupCount > 3 && strlen($message['text']) > 4) {
+				error_log(strlen($message['text']." - ");
 				$ub_id = $row['ub_id'];
 				$total = $row['total'] + 1;
 				mysql_free_result($result);

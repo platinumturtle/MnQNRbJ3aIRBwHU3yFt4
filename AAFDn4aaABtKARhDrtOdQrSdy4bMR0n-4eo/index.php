@@ -9140,7 +9140,7 @@ function processMessage($message) {
 			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 			$row = mysql_fetch_array($result);
 			if(isset($row['total'])) {
-				$isCommand = containsCommand($message['text']);
+				$isCommand = containsCommand($message['text']); 
 				if($row['total'] > 0 && ($time - 4 ) > $row['lastpoint'] && $usersGroupCount > 3 && $isCommand == 0 && strlen($message['text']) > 4) {
 					$total = $row['total'] + 1;
 					mysql_free_result($result);

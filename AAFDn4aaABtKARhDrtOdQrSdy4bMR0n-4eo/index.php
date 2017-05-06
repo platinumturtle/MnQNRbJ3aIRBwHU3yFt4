@@ -132,6 +132,7 @@ function checkUserID($id) {
 					"278249997", // GeoLuiso posible spammer
 					"", // 181690 bot Barbanaranja
 					"", // 15308510 boillos spammer de 777
+					"", // 109728029 andreias spammer de 777
 					"" // @JoGel 120644940, @esteve_10 3746896
 				);
 	for($i=0;$i<sizeof($bannedID);$i++) {
@@ -3617,6 +3618,20 @@ function removeEmoji($text){
 	return $result;
 }
 
+function changeName ($chat_id, $username, $firstname) {
+	$link = dbConnect();
+	$query = "UPDATE `userbattle` SET `username` = '".$username."', `first_name` = '".$firstname."' WHERE `user_id` = ".$chat_id;
+	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	mysql_free_result($result);
+	// mostrar nombre actualizado 
+	$msg = "<b>Tu nombre y usuario han sido actualizados correctamente en la base de datos.</b>";
+	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+	usleep(500000);
+	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg));
+	// cerrar la db
+	mysql_close($link);
+}
+
 function getPlayerBattleResult($winnerName, $loserName, $lucky) {
 	$log = "";
 	if($lucky == 0) {
@@ -6321,6 +6336,7 @@ function containsCommand($text) {
 						"!guerras",
 						"!refrán",
 						"!refran",
+						"!nombre",
 						"!historia"
 					);
 					
@@ -10330,6 +10346,15 @@ function processMessage($message) {
 				$grouptitle = str_replace(">","",$grouptitle);
 				getClanRank($chat_id, $grouptitle, 1);
 			}
+		}
+	} else if (strpos(strtolower($text), "!nombre") !== false) {
+		if($message['chat']['type'] == "private") {
+			error_log($logname." triggered: !nombre.");
+			changeName($chat_id, $message['from']['username'], $message['from']['first_name']);
+		} else {
+			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+			usleep(100000);
+			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "reply_to_message_id" => $message_id, "text" => "*Esta función solo está disponible desde chat privado con el bot.*"));
 		}
 	} else if (strpos($text, "/getMyPower") === 0) {
 		if($message['from']['id'] == '6250647') {

@@ -10353,7 +10353,7 @@ function processMessage($message) {
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !nombre.");
 			$username = $message['from']['username'];
-			$firstname = $message['from']['first_name']
+			$firstname = $message['from']['first_name'];
 			changeName($chat_id, $username, $firstname);
 		} else {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

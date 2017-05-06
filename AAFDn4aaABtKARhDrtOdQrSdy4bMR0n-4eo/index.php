@@ -3619,6 +3619,8 @@ function removeEmoji($text){
 }
 
 function changeName ($chat_id, $username, $firstname) {
+	// kkkkkkkkkkkkkkkkkkkkkkkkkk
+	error_log("ENTRO A LA FUNC ".$username." - ".$firstname." - ".$chat_id);
 	$link = dbConnect();
 	$query = "UPDATE `userbattle` SET `username` = '".$username."', `first_name` = '".$firstname."' WHERE `user_id` = ".$chat_id;
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -10350,7 +10352,9 @@ function processMessage($message) {
 	} else if (strpos(strtolower($text), "!nombre") !== false) {
 		if($message['chat']['type'] == "private") {
 			error_log($logname." triggered: !nombre.");
-			changeName($chat_id, $message['from']['username'], $message['from']['first_name']);
+			$username = $message['from']['username'];
+			$firstname = $message['from']['first_name']
+			changeName($chat_id, $username, $firstname);
 		} else {
 			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 			usleep(100000);

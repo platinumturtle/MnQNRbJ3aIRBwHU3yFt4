@@ -147,6 +147,7 @@ function checkUsername($username) {
 	$bannedUsername = array(
 					"Diegofa31",
 					"Jiro7",
+					"Rikitin",
 					"Demisuke",
 					""
 				);

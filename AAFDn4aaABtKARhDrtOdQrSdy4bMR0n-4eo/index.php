@@ -3619,8 +3619,6 @@ function removeEmoji($text){
 }
 
 function changeName ($chat_id, $username, $firstname) {
-	// kkkkkkkkkkkkkkkkkkkkkkkkkk
-	error_log("ENTRO A LA FUNC ".$username." - ".$firstname." - ".$chat_id);
 	$link = dbConnect();
 	$query = "UPDATE `userbattle` SET `user_name` = '".$username."', `first_name` = '".$firstname."' WHERE `user_id` = ".$chat_id;
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

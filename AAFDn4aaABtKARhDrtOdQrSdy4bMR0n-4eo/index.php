@@ -149,6 +149,7 @@ function checkUsername($username) {
 					"Jiro7",
 					"Rikitin",
 					"NateRobinson",
+					"omaRvko",
 					"Demisuke",
 					""
 				);

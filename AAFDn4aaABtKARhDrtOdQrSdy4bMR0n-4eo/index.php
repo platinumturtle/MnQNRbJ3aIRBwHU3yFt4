@@ -5407,6 +5407,7 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 }
 
 function getRockMan($chat_id) {
+	/*
 	$link = dbConnect();
 	$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
@@ -5463,6 +5464,8 @@ function getRockMan($chat_id) {
 	mysql_free_result($result);
 	mysql_close($link);
 	$text = $text."<i>En esta lista tan solo aparecerán aquellos rocosos que tengan permitidos los duelos PvP ordenados por victorias.</i>";
+	*/
+	$text = $text."<i>Esta función está en mantenimiento, por favor inténtalo más tarde.</i>";
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	usleep(100000);
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
@@ -11409,6 +11412,8 @@ function processMessage($message) {
 			}
 		} else {
 			error_log($logname." triggered: !rocosos.");
+			$admin_id = 6250647;
+			apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", 'disable_notification' => TRUE, "text" => "*".$logname." está usando !rocosos.*"));
 			getRockMan($chat_id);
 		}
 	} else if (strpos(strtolower($text), "!listapvp") !== false) {

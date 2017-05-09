@@ -146,9 +146,9 @@ function checkUserID($id) {
 function checkUsername($username) {
 	$bannedUsername = array(
 					"Diegofa31",
-					"Jiro7",
-					"Rikitin",
-					"NateRobinson",
+					"", // Jiro7 spammer de !rocosos
+					"", // Rikitin spammer de !rocosos
+					"", // NateRobinson spammer de !rocosos
 					"", // omaRvko posible spammer de !rocosos
 					"Demisuke",
 					""

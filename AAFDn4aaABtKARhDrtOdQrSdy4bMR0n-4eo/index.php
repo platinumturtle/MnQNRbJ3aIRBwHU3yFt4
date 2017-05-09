@@ -149,7 +149,7 @@ function checkUsername($username) {
 					"Jiro7",
 					"Rikitin",
 					"NateRobinson",
-					"omaRvko",
+					"", // omaRvko posible spammer de !rocosos
 					"Demisuke",
 					""
 				);

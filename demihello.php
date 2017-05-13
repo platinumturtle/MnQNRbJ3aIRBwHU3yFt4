@@ -5511,18 +5511,17 @@ function getRockMan($chat_id) {
 	//$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
 	$query = 'SELECT ub.ub_id, ub.first_name, ub.user_name, pb.level FROM playerbattle pb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-	$rockData = array(
-				mysql_fetch_array($result),
-				mysql_fetch_array($result),
-				mysql_fetch_array($result),
-				mysql_fetch_array($result),
-				mysql_fetch_array($result),
-				mysql_fetch_array($result),
-				mysql_fetch_array($result),
-				mysql_fetch_array($result),
-				mysql_fetch_array($result),
-				mysql_fetch_array($result)
-			);
+	$rockData[10] = array();
+	$rockData[0] = mysql_fetch_array($result),
+	$rockData[1] = mysql_fetch_array($result),
+	$rockData[2] = mysql_fetch_array($result),
+	$rockData[3] = mysql_fetch_array($result),
+	$rockData[4] = mysql_fetch_array($result),
+	$rockData[5] = mysql_fetch_array($result),
+	$rockData[6] = mysql_fetch_array($result),
+	$rockData[7] = mysql_fetch_array($result),
+	$rockData[8] = mysql_fetch_array($result),
+	$rockData[9] = mysql_fetch_array($result);
 	$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
 	$text = $text.var_dump($rockData);
 	/*for($i=0;$i<10;$i++) {

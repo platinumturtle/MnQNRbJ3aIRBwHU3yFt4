@@ -5512,16 +5512,16 @@ function getRockMan($chat_id) {
 	$query = 'SELECT ub.ub_id, ub.first_name, ub.user_name, pb.level FROM playerbattle pb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$rockData = array(
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result)),
-				array(mysql_fetch_array($result))
+				mysql_fetch_array($result),
+				mysql_fetch_array($result),
+				mysql_fetch_array($result),
+				mysql_fetch_array($result),
+				mysql_fetch_array($result),
+				mysql_fetch_array($result),
+				mysql_fetch_array($result),
+				mysql_fetch_array($result),
+				mysql_fetch_array($result),
+				mysql_fetch_array($result)
 			);
 	$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
 	$text = $text.var_dump($rockData);

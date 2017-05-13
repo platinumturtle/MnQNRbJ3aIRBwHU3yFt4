@@ -5406,7 +5406,7 @@ function poleFail($hour, $chat_id, $link, $logname, $currentTime) {
 	exit;
 }
 
-function getRockMan($chat_id) {
+function getRockMan($chat_id, $user_id) {
 	$link = dbConnect();
 	$currTime = time();
 	$checkTime = $currTime - 10;
@@ -11495,9 +11495,10 @@ function processMessage($message) {
 			}
 		} else {
 			error_log($logname." triggered: !rocosos.");
+			// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
 			$admin_id = 6250647;
 			apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", 'disable_notification' => TRUE, "text" => "*".$logname." está usando !rocosos.*"));
-			getRockMan($chat_id);
+			getRockMan($chat_id, $user_id);
 		}
 	} else if (strpos(strtolower($text), "!listapvp") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {

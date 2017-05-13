@@ -5506,17 +5506,17 @@ function rolePlay($chat_id) {
 	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $msg, "reply_markup" => ["inline_keyboard" => [[$optionA, $optionB],[$optionC, $optionD]]]));
 }
 
-function getRockMan($chat_id) {
+function getRockMan($chat_id, $user_id) {
 	$link = dbConnect();
 	$currTime = time();
 	$checkTime = $currTime - 5;
-	$query = "SELECT DISTINCT lastrockmancheck FROM userbattle WHERE user_id = ".$chat_id;
+	$query = "SELECT DISTINCT lastrockmancheck FROM userbattle WHERE user_id = ".$user_id;
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$row = mysql_fetch_array($result);
 	$rockManCheck = $row['lastrockmancheck'];
 	mysql_free_result($result);
 	if($checkTime > $rockManCheck) {
-		$query = "UPDATE `userbattle` SET `lastdicecheck` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
+		$query = "UPDATE `userbattle` SET `lastrockmancheck` = '".$currTime."' WHERE `user_id` = '".$user_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 		mysql_free_result($result);
 		//$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
@@ -5581,7 +5581,7 @@ function getRockMan($chat_id) {
 		usleep(100000);
 		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 	} else {
-		error_log($chat_id." is spamming: !rocosos.");
+		error_log($user_id." is spamming: !rocosos.");
 	}
 	mysql_close($link);
 }
@@ -11374,7 +11374,8 @@ function processMessage($message) {
 			}
 		} else {
 			error_log($logname." triggered: !rocosos.");
-			getRockMan($chat_id);
+			$user_id = $message['from']['id'];
+			getRockMan($chat_id, $user_id);
 		}
 	} else if (strpos(strtolower($text), "!type") !== false) {
 		if($message['chat']['type'] == "group" || $message['chat']['type'] == "supergroup") {

@@ -5523,7 +5523,7 @@ function getRockMan($chat_id) {
 	$rockData[8] = mysql_fetch_array($result);
 	$rockData[9] = mysql_fetch_array($result);
 	$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
-	$text = $text.var_dump($rockData);
+	$text = $text.$rockData[4]['level'];
 	/*for($i=0;$i<10;$i++) {
 		error_log($rockData[$i][0]);
 	}

@@ -5525,7 +5525,7 @@ function getRockMan($chat_id) {
 			);
 	$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
 	for($i=0;$i<10;$i++) {
-		error_log(var_dump($rockData[$i]));
+		error_log($rockData[$i][0]);
 	}
 	/*
 	for($i=0;$i<10;$i++) {

@@ -5508,81 +5508,82 @@ function rolePlay($chat_id) {
 
 function getRockMan($chat_id) {
 	$link = dbConnect();
-	//$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
-	$query = 'SELECT ub.ub_id, ub.first_name, ub.user_name, pb.level FROM playerbattle pb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
+	$currTime = time();
+	$checkTime = $currTime - 5;
+	$query = "SELECT DISTINCT lastrockmancheck FROM userbattle WHERE user_id = ".$chat_id;
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-	$rockData[10] = array();
-	for($i=0;$i<10;$i++) {
-		$rockData[$i] = mysql_fetch_array($result);
-	}
-	/*
-	$rockData[0] = mysql_fetch_array($result);
-	$rockData[1] = mysql_fetch_array($result);
-	$rockData[2] = mysql_fetch_array($result);
-	$rockData[3] = mysql_fetch_array($result);
-	$rockData[4] = mysql_fetch_array($result);
-	$rockData[5] = mysql_fetch_array($result);
-	$rockData[6] = mysql_fetch_array($result);
-	$rockData[7] = mysql_fetch_array($result);
-	$rockData[8] = mysql_fetch_array($result);
-	$rockData[9] = mysql_fetch_array($result);
-	*/
-	$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
-	// un free results, luego el for, y que en cada principio haya un select con la id y al final free results, el de fuera del for ya no iria. cuando esto vaya, hacer el timer a 10seg
+	$row = mysql_fetch_array($result);
+	$rockManCheck = $row['lastrockmancheck'];
 	mysql_free_result($result);
-	for($i=0;$i<10;$i++) {
-		$query = 'SELECT ub.ub_id, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND ub.ub_id = '.$rockData[$i]['ub_id'];
+	if($checkTime > $rockManCheck) {
+		$query = "UPDATE `userbattle` SET `lastdicecheck` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
 		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-		$row = mysql_fetch_array($result);
-		switch($i) {
-			case 0: $text = $text."<b>🏆 Líder </b>";
-					break;
-			case 1: $text = $text."<b>🎖2º </b>";
-					break;
-			case 2: $text = $text."<b>🏅3º </b>";
-					break;
-			case 3: $text = $text."4⃣ ";
-					break;
-			case 4: $text = $text."5⃣ ";
-					break;
-			case 5: $text = $text."6⃣ ";
-					break;
-			case 6: $text = $text."7⃣ ";
-					break;
-			case 7: $text = $text."8⃣ ";
-					break;
-			case 8: $text = $text."9⃣ ";
-					break;
-			case 9: $text = $text."🔟 ";
-					break;
-			default: break;
-		}
-		$text = $text."<b>".getFullName($rockData[$i]['first_name'], $rockData[$i]['user_name'])."</b>".PHP_EOL;
-		if(strlen($row['name']) > 0) {
-			$text = $text."<b>Del clan ".$row['name']."</b>".PHP_EOL;
-		}
-		$text = $text."<b>Nivel: </b>".$row['level'].PHP_EOL;
-		$tempFormattedPoints = number_format($row['pvp_wins'], 0, ',', '.');
-		$text = $text."<b>Victorias PvP:</b> ".$tempFormattedPoints.PHP_EOL;
-		$text = $text."<b>Estadísticas:</b>".PHP_EOL;
-		$text = $text."<pre>VID: ".ratePower($row['hp_points'])."</pre>".PHP_EOL;
-		$text = $text."<pre>ATA: ".ratePower($row['attack_points'])."</pre>".PHP_EOL;
-		$text = $text."<pre>DEF: ".ratePower($row['defense_points'])."</pre>".PHP_EOL;
-		$text = $text."<pre>CRÍ: ".ratePower($row['critic_points'], 1)."</pre>".PHP_EOL;
-		$text = $text."<pre>VEL: ".ratePower($row['speed_points'])."</pre>".PHP_EOL.PHP_EOL;
-		if($i == 4) {
-			apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-			usleep(100000);
-			apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
-			$text = "";
-		}
 		mysql_free_result($result);
+		//$query = 'SELECT ub.first_name, ub.user_name, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
+		$query = 'SELECT ub.ub_id, ub.first_name, ub.user_name, pb.level FROM playerbattle pb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.pvp_allowed =1 AND pb.level > 10 GROUP BY pb.user_id ORDER BY pb.pvp_wins DESC , pb.exp_points DESC LIMIT 0 , 10';
+		$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+		$rockData[10] = array();
+		for($i=0;$i<10;$i++) {
+			$rockData[$i] = mysql_fetch_array($result);
+		}
+		$text = "<b>🏁 TOP 10 de jugadores más rocosos en el PvP de Telegram:</b>".PHP_EOL.PHP_EOL;
+		mysql_free_result($result);
+		for($i=0;$i<10;$i++) {
+			$query = 'SELECT ub.ub_id, IF( pb.group_id IS NOT NULL , gb.name,  "" ) AS  "name", pb.level, ( hp + body ) AS  "hp_points", ( attack + weapon ) AS  "attack_points", ( defense + shield ) AS  "defense_points", ( critic + helmet ) AS  "critic_points", ( speed + boots ) AS  "speed_points", pb.pvp_wins FROM playerbattle pb, groupbattle gb, userbattle ub WHERE ( pb.group_id = gb.group_id OR pb.group_id IS NULL ) AND pb.user_id = ub.user_id AND ub.ub_id = '.$rockData[$i]['ub_id'];
+			$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+			$row = mysql_fetch_array($result);
+			switch($i) {
+				case 0: $text = $text."<b>🏆 Líder </b>";
+						break;
+				case 1: $text = $text."<b>🎖2º </b>";
+						break;
+				case 2: $text = $text."<b>🏅3º </b>";
+						break;
+				case 3: $text = $text."4⃣ ";
+						break;
+				case 4: $text = $text."5⃣ ";
+						break;
+				case 5: $text = $text."6⃣ ";
+						break;
+				case 6: $text = $text."7⃣ ";
+						break;
+				case 7: $text = $text."8⃣ ";
+						break;
+				case 8: $text = $text."9⃣ ";
+						break;
+				case 9: $text = $text."🔟 ";
+						break;
+				default: break;
+			}
+			$text = $text."<b>".getFullName($rockData[$i]['first_name'], $rockData[$i]['user_name'])."</b>".PHP_EOL;
+			if(strlen($row['name']) > 0) {
+				$text = $text."<b>Del clan ".$row['name']."</b>".PHP_EOL;
+			}
+			$text = $text."<b>Nivel: </b>".$row['level'].PHP_EOL;
+			$tempFormattedPoints = number_format($row['pvp_wins'], 0, ',', '.');
+			$text = $text."<b>Victorias PvP:</b> ".$tempFormattedPoints.PHP_EOL;
+			$text = $text."<b>Estadísticas:</b>".PHP_EOL;
+			$text = $text."<pre>VID: ".ratePower($row['hp_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>ATA: ".ratePower($row['attack_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>DEF: ".ratePower($row['defense_points'])."</pre>".PHP_EOL;
+			$text = $text."<pre>CRÍ: ".ratePower($row['critic_points'], 1)."</pre>".PHP_EOL;
+			$text = $text."<pre>VEL: ".ratePower($row['speed_points'])."</pre>".PHP_EOL.PHP_EOL;
+			if($i == 4) {
+				apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+				usleep(100000);
+				apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+				$text = "";
+			}
+			mysql_free_result($result);
+		}
+		$text = $text."<i>En esta lista tan solo aparecerán aquellos rocosos que tengan permitidos los duelos PvP ordenados por victorias.</i>";
+		apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+		usleep(100000);
+		apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
+	} else {
+		error_log($chat_id." is spamming: !rocosos.");
 	}
 	mysql_close($link);
-	$text = $text."<i>En esta lista tan solo aparecerán aquellos rocosos que tengan permitidos los duelos PvP ordenados por victorias.</i>";
-	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-	usleep(100000);
-	apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => $text));
 }
 
 function getRockManGroup($chat_id) {

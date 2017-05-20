@@ -130,6 +130,7 @@ function checkUserID($id) {
 					"117915871", // antoniobeta, spammer de boton
 					"6260536", // PepeSpro spammer heroesgrupo
 					"278249997", // GeoLuiso posible spammer
+					"285391209", // "Demisuke_Bot"
 					"", // 181690 bot Barbanaranja
 					"", // 15308510 boillos spammer de 777
 					"", // 109728029 andreias spammer de 777
@@ -4358,7 +4359,7 @@ function getSummonName($power) {
 		}
 	} else if($power > 10) {
 		switch($power) {
-			case 11: $summon = "Guará antártico 🐺 (Poder +1)";
+			case 11: $summon = "Guará antártico 🐺 (Poder +11)";
 					break;
 			case 12: $summon = "<b>Mamut recio 🐘 (Poder +12)</b>";
 					break;
@@ -11431,9 +11432,8 @@ function processMessage($message) {
 			}
 		} else {
 			error_log($logname." triggered: !rocosos.");
-			// kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-			$admin_id = 6250647;
-			apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", 'disable_notification' => TRUE, "text" => "*".$logname." está usando !rocosos.*"));
+			//$admin_id = 6250647;
+			//apiRequest("sendMessage", array('chat_id' => $admin_id, 'parse_mode' => "Markdown", 'disable_notification' => TRUE, "text" => "*".$logname." está usando !rocosos.*"));
 			getRockMan($chat_id, $user_id);
 		}
 	} else if (strpos(strtolower($text), "!listapvp") !== false) {
@@ -11549,9 +11549,9 @@ function processMessage($message) {
 						if($newLevel != $row['level']){
 							error_log($logname." is now level ".$newLevel.".");
 							levelUp($newLevel, $newExp, $critic, $newBottles, $totalExtraPoints, $link, $chat_id);
-							mysql_free_result($result);
-							$query = "UPDATE `playerbattle` SET `bottles` = '".$newBottles."' WHERE `user_id` = '".$chat_id."'";
-							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							//mysql_free_result($result);
+							//$query = "UPDATE `playerbattle` SET `bottles` = '".$newBottles."' WHERE `user_id` = '".$chat_id."'";
+							//$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 						} else {
 							$query = "UPDATE `playerbattle` SET `exp_points` = '".$newExp."', `bottles` = '".$newBottles."', `last_exp` = '".$currTime."' WHERE `user_id` = '".$chat_id."'";
 							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));

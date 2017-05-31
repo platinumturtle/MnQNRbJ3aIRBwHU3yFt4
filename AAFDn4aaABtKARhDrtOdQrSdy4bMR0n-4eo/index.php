@@ -152,7 +152,7 @@ function checkUsername($username) {
 					"", // NateRobinson spammer de !rocosos
 					"", // omaRvko posible spammer de !rocosos
 					"", // Gopke spammer de !aceptarguerra
-					"CuleBokeron", // CuleBokeron spammer de !pvp aceptar 
+					"", // CuleBokeron spammer de !pvp aceptar 
 					"Demisuke_Bot",
 					"Demisuke",
 					""

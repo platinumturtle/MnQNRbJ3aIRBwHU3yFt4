@@ -11637,7 +11637,7 @@ function processMessage($message) {
 									// si lo es, lanzar en la db la guerra pendiente y avisar a ambos grupos de que acepten o rechacen o ignoren
 									// crear un pending en la groupbattlelog
 									mysql_free_result($result);
-									$query = "INSERT INTO `groupbattlelog` (`home_group`, `away_group`, `epoch_time`) VALUES ('".$chat_id."', '".$rival_id."', '".$currTime."')";
+									$query = "INSERT INTO `groupbattlelog` (`home_group`, `from_user`, `away_group`, `epoch_time`) VALUES ('".$chat_id."', '".$user_id."', '".$rival_id."', '".$currTime."')";
 									$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 									// avisar al equipo home
 									apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

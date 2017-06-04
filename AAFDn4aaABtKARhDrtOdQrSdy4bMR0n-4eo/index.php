@@ -5734,8 +5734,8 @@ function getClanList($chat_id) {
 				$clanName = $row['name'];
 			}
 			//$clanName = utf8_encode($clanName);
-			$clanName = preg_replace('/[^\p{Arabic}\da-z-]/ui', '', $clanName);
-			$text = $text."<pre>【".$number."】".getClanLevelByMembers($row['members']).$clanName."</pre>".PHP_EOL;
+			//$clanName = preg_replace('/[^\p{Arabic}\da-z-]/ui', '', $clanName);
+			$text = $text."【".$number."】".getClanLevelByMembers($row['members']).$clanName."".PHP_EOL;
 		} else if($i==0) {
 			$text = $text."<i>Ninguno.</i>".PHP_EOL;
 		}

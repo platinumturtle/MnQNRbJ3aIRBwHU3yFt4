@@ -5746,6 +5746,7 @@ function getClanList($chat_id) {
 	}
 	mysql_free_result($result);
 	mysql_close($link);
+	$text = utf8_encode($text);
 	$text = $text.PHP_EOL."<i>Utiliza el número que aparece entre corchetes al principio de cada línea para declararle la guerra a ese clan, por ejemplo con \"!declararguerra 1\".</i>";
 	apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
 	usleep(100000);

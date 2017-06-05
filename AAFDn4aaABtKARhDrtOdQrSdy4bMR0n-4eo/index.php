@@ -5756,7 +5756,7 @@ function getClanList($chat_id) {
 
 function getClanRank($chat_id, $groupTitle = "Ninguno", $isGroup = 0) {
 	//HTML Parse Mode
-	$link = dbConnect(); 
+	$link = dbConnect();
 	$query = 'SELECT gb.name, COALESCE (pb.cnt, 0) AS "members", COALESCE (gbr.cnt, 0) AS "pvp_victories" FROM groupbattle gb LEFT JOIN ( SELECT group_id, COUNT( * ) AS cnt FROM playerbattle GROUP BY group_id ) pb ON pb.group_id = gb.group_id LEFT JOIN ( SELECT winner_group, COUNT( * ) AS  cnt FROM groupbattleresults GROUP BY winner_group ) gbr ON gb.group_id = gbr.winner_group WHERE gb.lastpoint >0 HAVING pvp_victories > 0 ORDER BY pvp_victories DESC , members DESC , gb.group_id ASC LIMIT 0 , 10';
 	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
 	$text = "<b>🏁 TOP 10 de clanes con victorias PvP de Telegram:</b>".PHP_EOL.PHP_EOL;

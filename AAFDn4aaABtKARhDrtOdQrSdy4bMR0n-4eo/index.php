@@ -8515,7 +8515,7 @@ function commandsList($send_id, $mode) {
 				.PHP_EOL.
 				"La utilización de este bot es totalmente gratuita, pero si deseas contribuir a mejorar los servicios de Demisuke puedes donar la cantidad que quieras de manera voluntaria <a href=\"https://www.paypal.me/Kamisuke/1\">pulsando aquí</a>. ¡Muchas gracias!"
 				.PHP_EOL.PHP_EOL.
-				"@DemisukeBot v3.0.2c creado por @Kamisuke."
+				"@DemisukeBot v3.0.2d creado por @Kamisuke."
 				;
 	} else if($mode == "modo") {
 		$text = "🔧 <b>Configuración del bot en grupos</b> ⚙"
@@ -9137,6 +9137,8 @@ function commandsList($send_id, $mode) {
 				"▶️<i>Los jugadores que participen en una guerra y la ganen podrán volver a utilizar las funciones !exp y !atacar nada más lograr la victoria.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Un clan podría no responder con \"!aceptarguerra\" ni \"!rechazarguerra\" a una solicitud pendiente, sin embargo éstas no caducan y siempre se podrán responder en el futuro por fecha más antigua.</i>"
+				.PHP_EOL.PHP_EOL.
+				"▶️<i>Puedes aceptar una guerra cada dos minutos.</i>"
 				.PHP_EOL.PHP_EOL.
 				"▶️<i>Las cinco horas de espera entre guerras se cuentan desde la última batalla librada. Una guerra rechazada no alargará el tiempo de espera.</i>"
 				.PHP_EOL.PHP_EOL.
@@ -11763,38 +11765,92 @@ function processMessage($message) {
 					}
 					// si la tiene revisar si tu grupo sigue siendo **, pillar los miembros y poder de ambos clanes, y tambien los nombres
 					if($homeGroupMembers > 4 && $awayGroupMembers > 4) {
-						// si sigue, aceptar la guerra, avisar en ambos clanes
-						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
-						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente. Además, el jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>")); //  Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente.
-						apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
-						usleep(50000);
-						apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente. Además, el jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>"));
-						// y editar db, la de guerra pendiente como aceptada
+						// si sigue, revisar el timer, si  puede aceptar otra guerra más o no
 						mysql_free_result($result);
-						$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
+						$query = 'SELECT lastacceptedwar FROM groupbattle WHERE group_id = '.$chat_id;
 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+						$row = mysql_fetch_array($result);
+						$lastTimeCheck = $row['lastacceptedwar'];
 						mysql_free_result($result);
-						sleep(1);
-						// librar batalla
-						if($homeGroupPower >= $awayGroupPower) {
-							$homeIsStronger = 1;
-							$powerDiff = $homeGroupPower - $awayGroupPower;
-							$membersDiff = $homeGroupMembers - $awayGroupMembers;
-						} else {
-							$homeIsStronger = 0;
-							$powerDiff = $awayGroupPower - $homeGroupPower;
-							$membersDiff = $awayGroupMembers - $homeGroupMembers;
-						}
-						if($homeIsStronger == 1) {
-							$percentHigher = (($homeGroupPower * 100) / $awayGroupPower) - 100;
-						} else {
-							$percentHigher = (($awayGroupPower * 100) / $homeGroupPower) - 100;
-						}
-						error_log("Percent diff. +".$percentHigher);
-						if($percentHigher < 10) {
-							// tener en cuenta los miembros
-							if($membersDiff >= 0) {
+						$deadTime = time();
+						$lastTimeCheck = $lastTimeCheck + 120;
+						if($lastTimeCheck < $deadTime) {
+							// si no está con otro, actualizar el timer, aceptar la guerra, avisar en ambos clanes
+							apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));
+							usleep(50000);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "HTML", "text" => "<b>¡Se ha aceptado la guerra contra el clan ".$homeGroupName."! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente. Además, el jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>")); //  Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente.
+							apiRequest("sendChatAction", array('chat_id' => $homegroup_id, 'action' => "typing"));
+							usleep(50000);
+							apiRequest("sendMessage", array('chat_id' => $homegroup_id, 'parse_mode' => "HTML", "text" => "<b>¡El clan ".$awayGroupName." ha aceptado vuestra solicitud de guerra pendiente! El resumen de la batalla aparecerá a continuación en los clanes participantes en cuanto esté disponible. Todos los rocosos del clan ganador recibirán energías para volver a utilizar las funciones !exp y !atacar inmediatamente. Además, el jugador que mejor luche en esta batalla recibirá también un punto de líder en rocosidad.</b>"));
+							// y editar db, la de guerra pendiente como aceptada y el timer
+							mysql_free_result($result);
+							$query = "UPDATE `groupbattle` SET `lastacceptedwar` = '".$deadTime."' WHERE `group_id` = ".$chat_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							$query = "UPDATE groupbattlelog SET status = 'ACCEPTED' WHERE gbl_id = ".$logToUpdate;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							sleep(1);
+							// librar batalla
+							if($homeGroupPower >= $awayGroupPower) {
+								$homeIsStronger = 1;
+								$powerDiff = $homeGroupPower - $awayGroupPower;
+								$membersDiff = $homeGroupMembers - $awayGroupMembers;
+							} else {
+								$homeIsStronger = 0;
+								$powerDiff = $awayGroupPower - $homeGroupPower;
+								$membersDiff = $awayGroupMembers - $homeGroupMembers;
+							}
+							if($homeIsStronger == 1) {
+								$percentHigher = (($homeGroupPower * 100) / $awayGroupPower) - 100;
+							} else {
+								$percentHigher = (($awayGroupPower * 100) / $homeGroupPower) - 100;
+							}
+							error_log("Percent diff. +".$percentHigher);
+							if($percentHigher < 10) {
+								// tener en cuenta los miembros
+								if($membersDiff >= 0) {
+									// 90
+									$battleTicket = rand(1,10);
+									if($battleTicket < 10) {
+										$win = 1;
+										$lucky = 0;
+									} else {
+										$win = 0;
+										$lucky = 1;
+									}
+								} else {
+									// 30
+									$battleTicket = rand(1,10);
+									if($battleTicket < 4) {
+										$win = 1;
+										$lucky = 0;
+									} else {
+										$win = 0;
+										$lucky = 1;
+									}
+								}
+							} else if($percentHigher > 300) {
+								// 99,99
+								$battleTicket = rand(1,10000);
+								if($battleTicket < 10000) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							} else if($percentHigher > 200) {
+								// 95
+								$battleTicket = rand(1,20);
+								if($battleTicket < 20) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
+							} else if($percentHigher > 100) {
 								// 90
 								$battleTicket = rand(1,10);
 								if($battleTicket < 10) {
@@ -11804,10 +11860,20 @@ function processMessage($message) {
 									$win = 0;
 									$lucky = 1;
 								}
+							} else if($percentHigher > 50) {
+								// 85
+								$battleTicket = rand(1,20);
+								if($battleTicket < 18) {
+									$win = 1;
+									$lucky = 0;
+								} else {
+									$win = 0;
+									$lucky = 1;
+								}
 							} else {
-								// 30
-								$battleTicket = rand(1,10);
-								if($battleTicket < 4) {
+								// 75
+								$battleTicket = rand(1,20);
+								if($battleTicket < 16) {
 									$win = 1;
 									$lucky = 0;
 								} else {
@@ -11815,132 +11881,87 @@ function processMessage($message) {
 									$lucky = 1;
 								}
 							}
-						} else if($percentHigher > 300) {
-							// 99,99
-							$battleTicket = rand(1,10000);
-							if($battleTicket < 10000) {
-								$win = 1;
-								$lucky = 0;
+							error_log("GROUPWINLUCKY ".$win.$lucky);
+							if($homeIsStronger == 1) {
+								if($win == 1) {
+									$winner_id = $homegroup_id;
+									$winnerName = $homeGroupName;
+									$loser_id = $awaygroup_id;
+									$loserName = $awayGroupName;
+								} else {
+									$winner_id = $awaygroup_id;
+									$winnerName = $awayGroupName;
+									$loser_id = $homegroup_id;
+									$loserName = $homeGroupName;
+								}
 							} else {
-								$win = 0;
-								$lucky = 1;
+								if($win == 0) {
+									$winner_id = $homegroup_id;
+									$winnerName = $homeGroupName;
+									$loser_id = $awaygroup_id;
+									$loserName = $awayGroupName;
+								} else {
+									$winner_id = $awaygroup_id;
+									$winnerName = $awayGroupName;
+									$loser_id = $homegroup_id;
+									$loserName = $homeGroupName;
+								}
 							}
-						} else if($percentHigher > 200) {
-							// 95
-							$battleTicket = rand(1,20);
-							if($battleTicket < 20) {
-								$win = 1;
-								$lucky = 0;
+							sleep(1);
+							$query = "SELECT pb.user_id, ub.first_name, ub.user_name FROM playerbattle pb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.group_id = ".$winner_id." GROUP BY pb.user_id ORDER BY pb.exp_points DESC";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							$users = array();
+							while ($row_user = mysql_fetch_assoc($result)) {
+								$users[] = $row_user;
+							}
+							mysql_free_result($result);
+							$totalUsers = count($users);
+							$totalUsers = $totalUsers - 1;
+							$selectedUserA = rand(0, $totalUsers);
+							$selectedUserB = rand(0, $totalUsers);
+							$selectedUserC = rand(0, $totalUsers);
+							if($selectedUserA < $selectedUserB) {
+								if($selectedUserA < $selectedUserC) {
+									$selectedUser = $selectedUserA;
+								} else {
+									$selectedUser = $selectedUserC;
+								}
 							} else {
-								$win = 0;
-								$lucky = 1;
+								if($selectedUserB < $selectedUserC) {
+									$selectedUser = $selectedUserB;
+								} else {
+									$selectedUser = $selectedUserC;
+								}
 							}
-						} else if($percentHigher > 100) {
-							// 90
-							$battleTicket = rand(1,10);
-							if($battleTicket < 10) {
-								$win = 1;
-								$lucky = 0;
-							} else {
-								$win = 0;
-								$lucky = 1;
-							}
-						} else if($percentHigher > 50) {
-							// 85
-							$battleTicket = rand(1,20);
-							if($battleTicket < 18) {
-								$win = 1;
-								$lucky = 0;
-							} else {
-								$win = 0;
-								$lucky = 1;
-							}
+							$mvpName = getFullName($users[$selectedUser]['first_name'], $users[$selectedUser]['user_name']);
+							$mvpName = removeEmoji($mvpName);
+							$mvp_id = $users[$selectedUser]['user_id'];
+							$currentTime = time();
+							$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
+							$fullDate = translateDate($fullDate);
+							// insert en groupbattleresults, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
+							$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `mvp`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$mvpName."', '".$fullDate."');";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							// sumarle +1 a las victorias de los playerbattle grupales
+							$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							$query = "UPDATE playerbattle SET last_exp = last_exp - 600, last_boss = last_boss - 36000 WHERE level < 100 AND last_boss > 1000 AND group_id = ".$winner_id;
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							$query = "UPDATE `playerbattle` SET `war_mvp` = `war_mvp` + 1 WHERE `user_id` = '".$mvp_id."'";
+							$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
+							mysql_free_result($result);
+							sleep(1);
+							// mostrar el resumen de batalla
+							getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $homeGroupAvatar, $awayGroupAvatar, $homegroup_id, $chat_id, $mvpName);
 						} else {
-							// 75
-							$battleTicket = rand(1,20);
-							if($battleTicket < 16) {
-								$win = 1;
-								$lucky = 0;
-							} else {
-								$win = 0;
-								$lucky = 1;
-							}
+							error_log("Too many accepted wars requests.");
+							mysql_close($link);
+							apiRequest("sendMessage", array('chat_id' => $chat_id, 'parse_mode' => "Markdown", "text" => "*Puedes aceptar una nueva guerra cada dos minutos.*"));
+							exit;
 						}
-						error_log("GROUPWINLUCKY ".$win.$lucky);
-						if($homeIsStronger == 1) {
-							if($win == 1) {
-								$winner_id = $homegroup_id;
-								$winnerName = $homeGroupName;
-								$loser_id = $awaygroup_id;
-								$loserName = $awayGroupName;
-							} else {
-								$winner_id = $awaygroup_id;
-								$winnerName = $awayGroupName;
-								$loser_id = $homegroup_id;
-								$loserName = $homeGroupName;
-							}
-						} else {
-							if($win == 0) {
-								$winner_id = $homegroup_id;
-								$winnerName = $homeGroupName;
-								$loser_id = $awaygroup_id;
-								$loserName = $awayGroupName;
-							} else {
-								$winner_id = $awaygroup_id;
-								$winnerName = $awayGroupName;
-								$loser_id = $homegroup_id;
-								$loserName = $homeGroupName;
-							}
-						}
-						sleep(1);
-						$query = "SELECT pb.user_id, ub.first_name, ub.user_name FROM playerbattle pb, userbattle ub WHERE pb.user_id = ub.user_id AND pb.group_id = ".$winner_id." GROUP BY pb.user_id ORDER BY pb.exp_points DESC";
- 						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						$users = array();
-						while ($row_user = mysql_fetch_assoc($result)) {
-							$users[] = $row_user;
-						}
-						mysql_free_result($result);
-						$totalUsers = count($users);
-						$totalUsers = $totalUsers - 1;
-						$selectedUserA = rand(0, $totalUsers);
-						$selectedUserB = rand(0, $totalUsers);
-						$selectedUserC = rand(0, $totalUsers);
-						if($selectedUserA < $selectedUserB) {
-							if($selectedUserA < $selectedUserC) {
-								$selectedUser = $selectedUserA;
-							} else {
-								$selectedUser = $selectedUserC;
-							}
-						} else {
-							if($selectedUserB < $selectedUserC) {
-								$selectedUser = $selectedUserB;
-							} else {
-								$selectedUser = $selectedUserC;
-							}
-						}
-						$mvpName = getFullName($users[$selectedUser]['first_name'], $users[$selectedUser]['user_name']);
-						$mvpName = removeEmoji($mvpName);
-						$mvp_id = $users[$selectedUser]['user_id'];
-						$currentTime = time();
-						$fullDate = date("l, j F Y. (H:i:s)", $currentTime);
-						$fullDate = translateDate($fullDate);
-						// insert en groupbattleresults, guardar registro de guerra (una db con winner id y loser id ayudaria luego a saber los pvp points)
-						$query = "INSERT INTO `groupbattleresults` (`home_group`, `away_group`, `winner_group`, `mvp`, `date`) VALUES ('".$homegroup_id."', '".$awaygroup_id."', '".$winner_id."', '".$mvpName."', '".$fullDate."');";
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						mysql_free_result($result);
-						// sumarle +1 a las victorias de los playerbattle grupales
-						$query = "UPDATE playerbattle SET pvp_group_wins = pvp_group_wins + 1 WHERE group_id = ".$winner_id;
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						mysql_free_result($result);
-						$query = "UPDATE playerbattle SET last_exp = last_exp - 600, last_boss = last_boss - 36000 WHERE level < 100 AND last_boss > 1000 AND group_id = ".$winner_id;
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						mysql_free_result($result);
-						$query = "UPDATE `playerbattle` SET `war_mvp` = `war_mvp` + 1 WHERE `user_id` = '".$mvp_id."'";
-						$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-						mysql_free_result($result);
-						sleep(1);
-						// mostrar el resumen de batalla
-						getGroupBattleResult($homeGroupName, $homeGroupMembers, $awayGroupName, $awayGroupMembers, $winnerName, $loserName, $lucky, $homeGroupAvatar, $awayGroupAvatar, $homegroup_id, $chat_id, $mvpName);
 					} else {
 						// si no, decir que no tienes miembros para aceptarla y sugerir lo de !rechazarguerra
 						apiRequest("sendChatAction", array('chat_id' => $chat_id, 'action' => "typing"));

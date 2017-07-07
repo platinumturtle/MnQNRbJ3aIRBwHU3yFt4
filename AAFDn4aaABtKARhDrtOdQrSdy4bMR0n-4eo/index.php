@@ -131,7 +131,7 @@ function checkUserID($id) {
 					"6260536", // PepeSpro spammer heroesgrupo
 					"278249997", // GeoLuiso posible spammer
 					"285391209", // "Demisuke_Bot"
-					"12517466", // Spammer de !777 TenshiKun
+					"", // 12517466 Spammer de !777 TenshiKun
 					"", // 181690 bot Barbanaranja
 					"", // 15308510 boillos spammer de 777
 					"", // 109728029 andreias spammer de 777

@@ -131,6 +131,7 @@ function checkUserID($id) {
 					"6260536", // PepeSpro spammer heroesgrupo
 					"278249997", // GeoLuiso posible spammer
 					"285391209", // "Demisuke_Bot"
+					"", // 351638421 @DiosadelosBosques spammer de !boton
 					"", // 12517466 Spammer de !777 TenshiKun
 					"", // 181690 bot Barbanaranja
 					"", // 15308510 boillos spammer de 777
@@ -2746,7 +2747,7 @@ function levelUp($newLevel, $newExp, $currCrit, $bottles, $extraPoints, $link, $
 		if($newLevel == 50) {
 			apiRequest("sendChatAction", array('chat_id' => $user_id, 'action' => "typing"));
 			$msg = $msg."<b>Los guardianes del portal ya son historia para ti. De hecho, quizás el mundo real también lo sea... Lo verdaderamente sobrenatural comienza ahora, en lo que parece ser una oscura cueva mitológica. ¡Hora de explorar un mundo desconocido!</b>".PHP_EOL;
-			$msg = $msg."<b>A partir de ahora podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
+			$msg = $msg."<b>A partir de ahora las botellas de experiencia tendrán menos efecto en ti, pero podrás realizar nuevas tareas con !exp y enfrentarte a nuevos jefes con !atacar, y recibirás más puntos de experiencia por cada una de estas acciones.</b>";
 			sleep(1);
 			apiRequest("sendMessage", array('chat_id' => $user_id, 'parse_mode' => "HTML", "text" => $msg));
 		} else if($newLevel == 51) {

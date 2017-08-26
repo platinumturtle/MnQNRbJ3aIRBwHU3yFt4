@@ -4,8 +4,16 @@ function dbConnect() {
 	$pass = "vRsz68!0";
 	$server = "5.135.189.62:8443";
 	$db = "laluciernaga_drupal";
-	$con = mysqli_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysql_error());
+	/*$con = mysqli_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysql_error());
 	mysqli_select_db($con, $db) or die('No se pudo seleccionar la base de datos');
+*/
+	$con = mysqli_connect($server,$user,$pass, $db);
+	if (!$con) {
+	    echo "Error: No se pudo conectar a MySQL." . PHP_EOL;
+	    echo "errno de depuración: " . mysqli_connect_errno() . PHP_EOL;
+	    echo "error de depuración: " . mysqli_connect_error() . PHP_EOL;
+	    exit;
+	}
 	mysqli_set_charset($con, "utf8mb4");
 	return $con;
 }
@@ -26,7 +34,8 @@ print_r("</center>");
 
 	$link = dbConnect();
 	$query = "SELECT module FROM block WHERE bid = 19";
-	$result = mysqli_query($link, $query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$result = mysqli_query($link, $query);
+	
 	$row = mysqli_fetch_array($result);
 	echo $row['module'];
 	mysqli_free_result($result);

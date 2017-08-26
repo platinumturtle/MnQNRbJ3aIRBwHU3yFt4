@@ -2,7 +2,7 @@
 function dbConnect() {
 	$user = "drupal_luci";
 	$pass = "vRsz68!0";
-	$server = "https://ns3028663.ip-5-135-189.eu:3306";
+	$server = "ns3028663.ip-5-135-189.eu";
 	$db = "laluciernaga_drupal";
 	$con = mysqli_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysqli_error());
 	mysqli_select_db($con, $db) or die('No se pudo seleccionar la base de datos');

@@ -31,7 +31,7 @@ print_r("<center>");
 print_r("<img src='/logo.png' />");
 print_r("</center>");
 
-/*
+
 	$link = dbConnect();
 	$query = "SELECT module FROM block WHERE bid = 19";
 	$result = mysqli_query($link, $query);
@@ -43,7 +43,7 @@ print_r("</center>");
 	mysqli_free_result($result);
 	mysqli_close($link);
 
-*/
+
 
 
 print_r("</body>");

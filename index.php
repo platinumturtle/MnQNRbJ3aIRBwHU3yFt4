@@ -4,7 +4,7 @@ function dbConnect() {
 	$pass = "vRsz68!0";
 	$server = "5.135.189.62:8443";
 	$db = "laluciernaga_drupal";
-	$con = mysqli_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysqli_error());
+	$con = mysqli_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysql_error());
 	mysqli_select_db($con, $db) or die('No se pudo seleccionar la base de datos');
 	mysqli_set_charset($con, "utf8mb4");
 	return $con;

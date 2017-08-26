@@ -4,9 +4,9 @@ function dbConnect() {
 	$pass = "vRsz68!0";
 	$server = "https://ns3028663.ip-5-135-189.eu:3306";
 	$db = "laluciernaga_drupal";
-	$con = mysql_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysql_error());
-	mysql_select_db($db) or die('No se pudo seleccionar la base de datos');
-	mysql_set_charset("utf8mb4");
+	$con = mysqli_connect($server,$user,$pass) or die('No se pudo conectar: ' . mysqli_error());
+	mysqli_select_db($con, $db) or die('No se pudo seleccionar la base de datos');
+	mysqli_set_charset($con, "utf8mb4");
 	return $con;
 }
 
@@ -26,11 +26,11 @@ print_r("</center>");
 
 	$link = dbConnect();
 	$query = "SELECT module FROM block WHERE bid = 19";
-	$result = mysql_query($query) or die(error_log('SQL ERROR: ' . mysql_error()));
-	$row = mysql_fetch_array($result);
+	$result = mysqli_query($link, $query) or die(error_log('SQL ERROR: ' . mysql_error()));
+	$row = mysqli_fetch_array($result);
 	echo $row['module'];
-	mysql_free_result($result);
-	mysql_close($link);
+	mysqli_free_result($result);
+	mysqli_close($link);
 
 
 

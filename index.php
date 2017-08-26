@@ -35,9 +35,11 @@ print_r("</center>");
 	$link = dbConnect();
 	$query = "SELECT module FROM block WHERE bid = 19";
 	$result = mysqli_query($link, $query);
-	
+	if(!$result){
+		print_r(mysqli_error($link));
+	}
 	$row = mysqli_fetch_array($result);
-	echo $row['module'];
+	print_r($row['module']);
 	mysqli_free_result($result);
 	mysqli_close($link);
 
